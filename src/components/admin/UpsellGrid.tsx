@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
-import { capitalizeFirstLetter, formatThousands } from "@/libraries/utils";
+import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";

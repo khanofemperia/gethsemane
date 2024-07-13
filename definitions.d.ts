@@ -1,5 +1,5 @@
 // Basic types
-type VisibilityType = "draft" | "published" | "hidden";
+type VisibilityType = "DRAFT" | "PUBLISHED" | "HIDDEN";
 
 // Reusable types
 type ColorType = {

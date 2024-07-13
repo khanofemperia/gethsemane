@@ -16,7 +16,7 @@ import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { AddProductAction } from "@/actions/collections";
 import Image from "next/image";
-import { capitalizeFirstLetter, formatThousands } from "@/libraries/utils";
+import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
 import Link from "next/link";
 import {
   RemoveProductButton,
@@ -26,7 +26,7 @@ import {
   ChangeProductIndexButton,
   ChangeProductIndexOverlay,
 } from "./ChangeProductIndexOverlay";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type CollectionProductType = {
   id: string;

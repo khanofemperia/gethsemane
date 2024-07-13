@@ -9,7 +9,7 @@ import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { ChangeCollectionIndexAction } from "@/actions/collections";
 import { useItemSelectorStore } from "@/zustand/admin/itemSelectorStore";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type ButtonDataType = {
   id: string;

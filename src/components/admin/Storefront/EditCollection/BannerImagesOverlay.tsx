@@ -10,8 +10,8 @@ import Overlay from "@/ui/Overlay";
 import { UpdateCollectionAction } from "@/actions/collections";
 import Image from "next/image";
 import { CiImageOn } from "react-icons/ci";
-import { isGifImage, isValidRemoteImage } from "@/libraries/utils";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { isGifImage, isValidRemoteImage } from "@/lib/utils";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function BannerImagesButton() {
   const { showOverlay } = useOverlayStore();

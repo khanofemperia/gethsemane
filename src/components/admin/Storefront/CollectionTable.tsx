@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeftIcon, ChevronRightIcon, EditIcon } from "@/icons";
-import { capitalizeFirstLetter } from "@/libraries/utils";
+import { capitalizeFirstLetter } from "@/lib/utils";
 import clsx from "clsx";
 import Link from "next/link";
 import { useState } from "react";

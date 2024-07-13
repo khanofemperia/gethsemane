@@ -2,7 +2,7 @@
 
 import { CreateProductAction } from "@/actions/products";
 import AlertMessage from "@/components/shared/AlertMessage";
-import { capitalizeFirstLetter, isValidRemoteImage } from "@/libraries/utils";
+import { capitalizeFirstLetter, isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -11,7 +11,7 @@ import { ArrowLeftIcon, ChevronDownIcon, CloseIcon } from "@/icons";
 import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function NewProductMenuButton() {
   const { showOverlay } = useOverlayStore();
@@ -92,7 +92,8 @@ export function NewProductOverlay() {
         }
         const data = await response.json();
         const publishedCategories = data.filter(
-          (category: CategoryType) => category.visibility === "PUBLISHED"
+          (category: CategoryType) =>
+            category.visibility === ("PUBLISHED" as VisibilityType)
         );
         setCategories(publishedCategories);
       } catch (error) {

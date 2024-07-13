@@ -9,7 +9,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import UpdateCategoriesAction from "@/actions/categories";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type CategorySectionType = {
   visibility: string;

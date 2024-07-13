@@ -8,10 +8,7 @@ import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { UpdateCollectionAction } from "@/actions/collections";
-import Image from "next/image";
-import { CiImageOn } from "react-icons/ci";
-import { isValidRemoteImage } from "@/libraries/utils";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function BasicDetailsButton() {
   const { showOverlay } = useOverlayStore();

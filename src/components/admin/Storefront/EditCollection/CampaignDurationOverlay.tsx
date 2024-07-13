@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { formatDate } from "@/libraries/utils";
+import { formatDate } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -11,7 +11,7 @@ import Overlay from "@/ui/Overlay";
 import { UpdateCollectionAction } from "@/actions/collections";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function CampaignDurationButton() {
   const { showOverlay } = useOverlayStore();

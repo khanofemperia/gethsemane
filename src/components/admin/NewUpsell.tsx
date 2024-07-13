@@ -2,7 +2,7 @@
 
 import { CreateUpsellAction } from "@/actions/upsells";
 import AlertMessage from "@/components/shared/AlertMessage";
-import { isValidRemoteImage } from "@/libraries/utils";
+import { isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -11,7 +11,7 @@ import { ArrowLeftIcon, CloseIcon } from "@/icons";
 import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function NewUpsellMenuButton() {
   const { showOverlay } = useOverlayStore();

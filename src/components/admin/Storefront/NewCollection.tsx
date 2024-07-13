@@ -6,7 +6,7 @@ import {
   formatDate,
   isGifImage,
   isValidRemoteImage,
-} from "@/libraries/utils";
+} from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -19,7 +19,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { CiImageOn } from "react-icons/ci";
 import { CreateCollectionAction } from "@/actions/collections";
 import Overlay from "@/ui/Overlay";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type BannerImagesType = {
   desktopImage: string;

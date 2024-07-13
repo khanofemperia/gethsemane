@@ -8,7 +8,7 @@ import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { UpdateCollectionAction } from "@/actions/collections";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function VisibilityButton() {
   const { showOverlay } = useOverlayStore();
