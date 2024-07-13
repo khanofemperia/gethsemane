@@ -1,12 +1,9 @@
 import { NewProductOverlay } from "@/components/admin/NewProduct";
 import ProductGrid from "@/components/admin/ProductGrid";
-import { fetchData } from "@/libraries/utils";
+import { getProducts } from "@/lib/getData";
 
 export default async function Products() {
-  const products = await fetchData<ProductType[]>({
-    path: "/api/admin/products",
-    fields: ["id", "mainImage", "name", "price", "slug", "visibility"],
-  });
+  const products = await getProducts({ fields: ["id", "mainImage", "name", "price", "slug", "visibility"] }) as ProductType[];
 
   return (
     <>

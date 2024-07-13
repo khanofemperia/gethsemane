@@ -1,10 +1,9 @@
 import DataChip from "@/ui/DataChip";
 import {
   capitalizeFirstLetter,
-  fetchData,
   formatThousands,
   isValidRemoteImage,
-} from "@/libraries/utils";
+} from "@/lib/utils";
 import { notFound } from "next/navigation";
 import {
   VisibilityButton,
@@ -32,16 +31,9 @@ import {
   BannerImagesButton,
   BannerImagesOverlay,
 } from "@/components/admin/Storefront/EditCollection/BannerImagesOverlay";
+import { getCollection } from "@/lib/getData";
 
-type CollectionProductType = {
-  id: string;
-  name: string;
-  index: number;
-  price: string;
-  mainImage: string;
-  slug: string;
-  visibility: string;
-};
+type ProductWithIndex = ProductType & { index: number };
 
 type CollectionDataType = {
   id: string;
@@ -56,12 +48,11 @@ type CollectionDataType = {
     endDate: string;
   };
   visibility: string;
-  status: string;
   collectionType: string;
   index: number;
   updatedAt: string;
   createdAt: string;
-  products: CollectionProductType[];
+  products: ProductWithIndex[];
 };
 
 export default async function EditCollection({
@@ -73,12 +64,10 @@ export default async function EditCollection({
   const CAMPAIGN_STATUS_UPCOMING = "Upcoming";
   const CAMPAIGN_STATUS_ACTIVE = "Active";
 
-  const collectionId = params.slug.split("-").pop();
-  const data = await fetchData<CollectionDataType | null>({
-    path: `api/admin/collections/${collectionId}`,
-  });
+  const collectionId = params.slug.split("-").pop() as string;
+  const collection = await getCollection({ id: collectionId });
 
-  if (!data) {
+  if (!collection) {
     notFound();
   }
 
@@ -91,7 +80,7 @@ export default async function EditCollection({
     bannerImages,
     visibility,
     products,
-  } = data;
+  } = collection as CollectionDataType;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -355,7 +344,7 @@ export default async function EditCollection({
               <VisibilityButton />
             </div>
             <div className="p-5">
-              <DataChip value={visibility as ChipValueType} />
+              <DataChip value={visibility as VisibilityType} />
             </div>
           </div>
         </div>

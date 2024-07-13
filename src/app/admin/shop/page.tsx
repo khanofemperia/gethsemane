@@ -8,18 +8,16 @@ import {
   PageHeroButton,
   PageHeroOverlay,
 } from "@/components/admin/Storefront/PageHero";
-import { fetchData } from "@/libraries/utils";
+import { getCategories, getCollections, getPageHero, getSettings } from "@/lib/getData";
 import clsx from "clsx";
 
 export default async function Storefront() {
-  const collections = await fetchData<CollectionType[]>({
-    path: "/api/admin/collections",
-  });
-  const categories = await fetchData<CategoryType[]>({
-    path: "/api/admin/categories",
-  });
-  const pageHero = await fetchData<PageHeroType>({ path: "/api/admin/page-hero" });
-  const settings = await fetchData<SettingType>({ path: "/api/admin/settings" });
+  const pageHero = await getPageHero() as PageHeroType;
+  const categories = await getCategories() as CategoryType[];
+  const settings = await getSettings() as SettingsType;
+  const collections = await getCollections({
+    fields: ["title", "slug", "products", "bannerImages"],
+  }) as CollectionType[];
 
   return (
     <>

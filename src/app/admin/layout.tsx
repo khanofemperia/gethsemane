@@ -1,6 +1,6 @@
 import Navbar from "@/components/admin/Navbar";
 
-export default function WebsiteLayout({
+export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

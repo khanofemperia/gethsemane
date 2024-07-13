@@ -4,10 +4,9 @@ import {
 } from "@/components/admin/EditProduct/BasicDetailsOverlay";
 import DataChip from "@/ui/DataChip";
 import {
-  fetchData,
   formatThousands,
   isValidRemoteImage,
-} from "@/libraries/utils";
+} from "@/lib/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import styles from "./styles.module.css";
@@ -36,16 +35,17 @@ import {
   DescriptionOverlay,
 } from "@/components/admin/EditProduct/DescriptionOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
+import { getProduct } from "@/lib/getData";
 
 export default async function EditProduct({
   params,
 }: {
   params: { slug: string };
 }) {
-  const productId = params.slug.split("-").pop();
-  const data = await fetchData<ProductType | null>({path: `api/admin/products/${productId}`});
+  const productId = params.slug.split("-").pop() as string;
+  const product = await getProduct({id: productId});
 
-  if (!data) {
+  if (!product) {
     notFound();
   }
 
@@ -61,7 +61,7 @@ export default async function EditProduct({
     colors,
     description,
     visibility,
-  } = data;
+  } = product as ProductType;
 
   return (
     <>
@@ -280,7 +280,7 @@ export default async function EditProduct({
               <VisibilityButton />
             </div>
             <div className="p-5">
-              <DataChip value={visibility as ChipValueType} />
+              <DataChip value={visibility as VisibilityType} />
             </div>
           </div>
         </div>

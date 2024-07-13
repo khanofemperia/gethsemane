@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { isGifImage, isValidRemoteImage } from "@/libraries/utils";
+import { isGifImage, isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -11,18 +11,7 @@ import Image from "next/image";
 import { CiImageOn } from "react-icons/ci";
 import Overlay from "@/ui/Overlay";
 import { UpdatePageHeroAction } from "@/actions/page-hero";
-import { AlertMessageType } from "@/libraries/sharedTypes";
-
-type PageHeroType = {
-  id: string;
-  images: {
-    desktopImage: string | null;
-    mobileImage: string | null;
-  };
-  title: string | null;
-  destinationUrl: string | null;
-  visibility: string;
-};
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function PageHeroButton({ visibility }: { visibility: string }) {
   const HIDDEN = "HIDDEN";
@@ -70,7 +59,11 @@ export function PageHeroButton({ visibility }: { visibility: string }) {
   );
 }
 
-export function PageHeroOverlay({ pageHero }: { pageHero: PageHeroType }) {
+export function PageHeroOverlay({
+  pageHero,
+}: {
+  pageHero: Partial<PageHeroType>;
+}) {
   const HIDDEN = "HIDDEN";
   const PUBLISHED = "PUBLISHED";
 
@@ -82,13 +75,13 @@ export function PageHeroOverlay({ pageHero }: { pageHero: PageHeroType }) {
   const [showAlert, setShowAlert] = useState(false);
   const [title, setTitle] = useState<string>(pageHero.title || "");
   const [desktopImage, setDesktopImage] = useState<string>(
-    pageHero.images.desktopImage || ""
+    pageHero.images?.desktop || ""
   );
   const [mobileImage, setMobileImage] = useState<string>(
-    pageHero.images.mobileImage || ""
+    pageHero.images?.mobile || ""
   );
   const [visibility, setVisibility] = useState<string>(
-    pageHero.visibility.toUpperCase()
+    pageHero.visibility?.toUpperCase() || HIDDEN
   );
   const [destinationUrl, setDestinationUrl] = useState<string>(
     pageHero.destinationUrl || ""
@@ -170,8 +163,8 @@ export function PageHeroOverlay({ pageHero }: { pageHero: PageHeroType }) {
     hideOverlay({ pageName, overlayName });
     setTitle(pageHero.title || "");
     setDestinationUrl(pageHero.destinationUrl || "");
-    setDesktopImage(pageHero.images.desktopImage || "");
-    setMobileImage(pageHero.images.mobileImage || "");
+    setDesktopImage(pageHero.images?.desktop || "");
+    setMobileImage(pageHero.images?.mobile || "");
   };
 
   const hideAlertMessage = () => {

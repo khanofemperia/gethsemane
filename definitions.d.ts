@@ -94,8 +94,9 @@ type CollectionType = {
 
 type SettingsType = {
   categorySection: {
-    visibility: VisibilityType;
+    visibility: string;
   };
+  [key: string]: any;
 };
 
 type PageHeroType = {

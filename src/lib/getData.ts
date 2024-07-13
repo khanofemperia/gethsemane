@@ -4,6 +4,7 @@ import {
   getDoc,
   getDocs,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
@@ -170,32 +171,51 @@ export async function getProducts(
   return sortProducts(products);
 }
 
-export async function getPageHero(): Promise<PageHeroType | null> {
-  const documentRef = doc(database, "pageHero", "homepageHero");
+/**
+ * Get a collection by ID. Optionally specify fields.
+ *
+ * @example
+ * const collection = await getCollection({
+ *   id: "12345",
+ *   fields: ['id', 'title', 'products'],
+ * });
+ */
+export async function getCollection(
+  options: SingleItemOptionsType
+): Promise<Partial<CollectionType> | null> {
+  const sanitizedOptions = sanitizeOptions(options);
+  const { id, fields } = sanitizedOptions;
+
+  if (!id) {
+    return null;
+  }
+
+  const documentRef = doc(database, "collection", id);
   const snapshot = await getDoc(documentRef);
 
   if (!snapshot.exists()) {
     return null;
   }
 
-  return snapshot.data() as PageHeroType;
-}
+  const data = snapshot.data();
 
-export async function getCategories(): Promise<CategoryType[] | null> {
-  const snapshot = await getDocs(collection(database, "categories"));
-
-  if (snapshot.empty) {
-    return null;
+  let selectedFields: Partial<CollectionType> = {};
+  if (fields.length) {
+    fields.forEach((field) => {
+      if (data.hasOwnProperty(field)) {
+        selectedFields[field as keyof CollectionType] = data[field];
+      }
+    });
+  } else {
+    selectedFields = data;
   }
 
-  const categories: CategoryType[] = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...(doc.data() as Omit<CategoryType, "id">),
-  }));
+  const collection = {
+    id: snapshot.id,
+    ...selectedFields,
+  };
 
-  categories.sort((a, b) => a.index - b.index);
-
-  return categories;
+  return collection;
 }
 
 /**
@@ -270,4 +290,71 @@ export async function getCollections(
   );
 
   return sortCollections(collections);
+}
+
+export async function getPageHero(): Promise<PageHeroType | null> {
+  const documentRef = doc(database, "pageHero", "homepageHero");
+  const snapshot = await getDoc(documentRef);
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return snapshot.data() as PageHeroType;
+}
+
+export async function getCategories(): Promise<CategoryType[] | null> {
+  const snapshot = await getDocs(collection(database, "categories"));
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  const categories: CategoryType[] = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<CategoryType, "id">),
+  }));
+
+  categories.sort((a, b) => a.index - b.index);
+
+  return categories;
+}
+
+export async function getSettings(): Promise<SettingsType | null> {
+  const defaultSettings: SettingsType = {
+    categorySection: {
+      visibility: "HIDDEN",
+    },
+  };
+
+  const documentRef = doc(database, "settings", "defaultSettings");
+  const snapshot = await getDoc(documentRef);
+
+  if (!snapshot.exists()) {
+    await setDoc(documentRef, defaultSettings);
+    return defaultSettings;
+  }
+
+  const currentSettings = snapshot.data() as SettingsType;
+  let needsUpdate = false;
+
+  for (const key of Object.keys(defaultSettings)) {
+    if (!(key in currentSettings)) {
+      currentSettings[key] = defaultSettings[key];
+      needsUpdate = true;
+    }
+  }
+
+  for (const key of Object.keys(currentSettings)) {
+    if (!(key in defaultSettings)) {
+      delete currentSettings[key];
+      needsUpdate = true;
+    }
+  }
+
+  if (needsUpdate) {
+    await setDoc(documentRef, currentSettings);
+  }
+
+  return currentSettings;
 }
