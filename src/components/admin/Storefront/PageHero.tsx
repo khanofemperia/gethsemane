@@ -332,7 +332,7 @@ export function PageHeroOverlay({
                             placeholder="Paste image URL"
                             value={desktopImage}
                             onChange={(e) => setDesktopImage(e.target.value)}
-                            className="h-full w-full px-3 text-gray"
+                            className="h-full w-full px-3"
                           />
                         </div>
                       </div>
@@ -373,7 +373,7 @@ export function PageHeroOverlay({
                             placeholder="Paste image URL"
                             value={mobileImage}
                             onChange={(e) => setMobileImage(e.target.value)}
-                            className="h-full w-full px-3 text-gray"
+                            className="h-full w-full px-3"
                           />
                         </div>
                       </div>
