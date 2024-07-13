@@ -140,7 +140,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
     <div className="mx-auto flex flex-wrap justify-start px-5 md:px-0 md:w-[762px] lg:w-[1016px]">
       {upsells.length > 0 ? (
         <>
-          <div className="flex flex-col gap-3">
+          <div className="w-full flex flex-col gap-3">
             <div className="w-full px-5 flex flex-col min-[588px]:flex-row gap-2 items-center justify-between">
               <div className="max-w-full flex flex-nowrap rounded-full bg-[#efefef] overflow-x-visible overflow-y-hidden invisible-scrollbar *:min-w-max *:h-9 *:rounded-full *:flex *:items-center *:justify-center *:font-semibold *:text-sm *:ease-in-out *:duration-300 *:transition">
                 <button
