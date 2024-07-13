@@ -146,9 +146,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                 <button
                   onClick={() => handleFilterChange(ALL)}
                   className={`px-3 pl-[14px] h-9 hover:bg-[#e4e4e4] rounded-full ${
-                    filter === ALL
-                      ? "text-blue"
-                      : "text-gray hover:text-black"
+                    filter === ALL ? "text-blue" : "text-gray hover:text-black"
                   }`}
                 >
                   View all ({upsells.length})
@@ -248,13 +246,13 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                   </div>
                   <button
                     onClick={jumpToLastPage}
-                    className="w-9 h-9 flex items-center justify-center border rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
+                    className="w-9 h-9 flex items-center justify-center border rounded-full ease-in-out duration-300 transition bg-white active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
                   >
                     {totalPages}
                   </button>
                   <button
                     onClick={handleNext}
-                    className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition bg-white active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed "
+                    className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed "
                   >
                     <ChevronRightIcon className="-mr-[2px]" size={24} />
                   </button>

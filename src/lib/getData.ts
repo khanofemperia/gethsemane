@@ -197,7 +197,7 @@ export async function getCollection(
     return null;
   }
 
-  const documentRef = doc(database, "collection", id);
+  const documentRef = doc(database, "collections", id);
   const snapshot = await getDoc(documentRef);
 
   if (!snapshot.exists()) {

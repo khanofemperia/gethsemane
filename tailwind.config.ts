@@ -10,7 +10,9 @@ const customColors = {
     DEFAULT: "#ee3b3b",
     dimmed: "#ec2323",
   },
-  green: "#009e00",
+  green: {
+    DEFAULT: "#009e00",
+  },
   blue: {
     DEFAULT: "#0a5ddc",
     dimmed: "#084db5",
