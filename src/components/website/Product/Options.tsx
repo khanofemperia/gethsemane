@@ -30,7 +30,7 @@ function ProductColors({ colors }: ProductColorsType) {
             key={index}
             className={`relative w-[40px] h-[40px] flex items-center justify-center cursor-pointer hover:before:content-[''] hover:before:h-12 hover:before:w-12 hover:before:absolute hover:before:rounded-[6px] hover:before:border hover:before:border-black ${
               selectedColor === name &&
-              "before:content-[''] before:h-12 before:w-12 before:absolute before:rounded-[6px] before:border before:border-custom-blue hover:before:!border-custom-blue"
+              "before:content-[''] before:h-12 before:w-12 before:absolute before:rounded-[6px] before:border before:border-blue hover:before:!border-blue"
             }`}
           >
             <div className="w-full h-full flex items-center justify-center relative overflow-hidden bg-lightgray border rounded">
@@ -61,7 +61,7 @@ function ProductSizeChart({ sizeChart }: ProductSizeChartType) {
               onClick={() => setSelectedSize(size.name)}
               className={`font-medium border rounded-full relative px-4 h-7 flex items-center justify-center hover:border-black ${
                 selectedSize === size.name &&
-                "border-white hover:border-white before:border before:border-custom-blue before:content-[''] before:h-8 before:w-[calc(100%_+_8px)] before:absolute before:rounded-full"
+                "border-white hover:border-white before:border before:border-blue before:content-[''] before:h-8 before:w-[calc(100%_+_8px)] before:absolute before:rounded-full"
               }`}
             >
               {size.name}

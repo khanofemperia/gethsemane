@@ -22,7 +22,7 @@ export default async function Storefront() {
     getCategories() as Promise<CategoryType[]>,
     getSettings() as Promise<SettingsType>,
     getCollections({
-      fields: ["title", "slug", "products", "bannerImages"],
+      fields: ["title", "slug", "products", "campaignDuration"],
     }) as Promise<CollectionType[]>,
   ]);
 
@@ -42,7 +42,7 @@ export default async function Storefront() {
                     "relative w-10 h-5 rounded-full ease-in-out duration-200",
                     {
                       "bg-white border": true,
-                      "bg-custom-blue border border-custom-blue": false,
+                      "bg-blue border border-blue": false,
                     }
                   )}
                 >

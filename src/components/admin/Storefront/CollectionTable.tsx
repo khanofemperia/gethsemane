@@ -169,7 +169,7 @@ export default function CollectionTable({
                                 campaignDuration.endDate
                               ) === CAMPAIGN_STATUS_UPCOMING && (
                                 <IoHourglassOutline
-                                  className="stroke-custom-gold fill-custom-gold"
+                                  className="stroke-gold fill-gold"
                                   size={18}
                                 />
                               )}
@@ -178,7 +178,7 @@ export default function CollectionTable({
                                 campaignDuration.endDate
                               ) === CAMPAIGN_STATUS_ACTIVE && (
                                 <HiOutlineClock
-                                  className="stroke-custom-green"
+                                  className="stroke-green"
                                   size={18}
                                 />
                               )}
@@ -187,23 +187,23 @@ export default function CollectionTable({
                                 campaignDuration.endDate
                               ) === CAMPAIGN_STATUS_ENDED && (
                                 <HiOutlineBan
-                                  className="stroke-custom-red"
+                                  className="stroke-red"
                                   size={18}
                                 />
                               )}
                               <span
                                 className={clsx("italic", {
-                                  "text-custom-gold":
+                                  "text-gold":
                                     getCampaignStatus(
                                       campaignDuration.startDate,
                                       campaignDuration.endDate
                                     ) === CAMPAIGN_STATUS_UPCOMING,
-                                  "text-custom-green":
+                                  "text-green":
                                     getCampaignStatus(
                                       campaignDuration.startDate,
                                       campaignDuration.endDate
                                     ) === CAMPAIGN_STATUS_ACTIVE,
-                                  "text-custom-red":
+                                  "text-red":
                                     getCampaignStatus(
                                       campaignDuration.startDate,
                                       campaignDuration.endDate
@@ -223,7 +223,7 @@ export default function CollectionTable({
                                     className={clsx(
                                       "px-3 rounded-full h-6 w-max flex gap-1 items-center",
                                       {
-                                        "bg-custom-green/10 border border-custom-green/15":
+                                        "bg-green/10 border border-green/15":
                                           getCampaignStatus(
                                             campaignDuration.startDate,
                                             campaignDuration.endDate
@@ -247,7 +247,7 @@ export default function CollectionTable({
                                     />
                                     <span
                                       className={clsx({
-                                        "text-custom-green":
+                                        "text-green":
                                           getCampaignStatus(
                                             campaignDuration.startDate,
                                             campaignDuration.endDate
@@ -263,7 +263,7 @@ export default function CollectionTable({
                                     className={clsx(
                                       "px-3 rounded-full h-6 w-max flex gap-1 items-center",
                                       {
-                                        "bg-custom-red/10 border border-custom-red/15":
+                                        "bg-red/10 border border-red/15":
                                           getCampaignStatus(
                                             campaignDuration.startDate,
                                             campaignDuration.endDate
@@ -287,7 +287,7 @@ export default function CollectionTable({
                                     />
                                     <span
                                       className={clsx({
-                                        "text-custom-red":
+                                        "text-red":
                                           getCampaignStatus(
                                             campaignDuration.startDate,
                                             campaignDuration.endDate
@@ -316,7 +316,7 @@ export default function CollectionTable({
                           </td>
                           <td className="px-3 w-[100px] min-w-[100px] border-r">
                             {visibility === "PUBLISHED" ? (
-                              <p className="px-3 rounded-full h-6 w-max flex gap-1 items-center bg-custom-green/10 border border-custom-green/15 text-custom-green">
+                              <p className="px-3 rounded-full h-6 w-max flex gap-1 items-center bg-green/10 border border-green/15 text-green">
                                 {capitalizeFirstLetter(
                                   visibility.toLowerCase()
                                 )}
@@ -366,7 +366,7 @@ export default function CollectionTable({
                   className={clsx(
                     "min-w-[36px] max-w-[36px] h-9 px-1 text-center border cursor-text outline-none rounded-full bg-white",
                     {
-                      "border-custom-red": !isPageInRange,
+                      "border-red": !isPageInRange,
                     }
                   )}
                   type="text"

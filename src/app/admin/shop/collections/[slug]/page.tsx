@@ -130,7 +130,7 @@ export default async function EditCollection({
                   campaignDuration.endDate
                 ) === CAMPAIGN_STATUS_UPCOMING && (
                   <IoHourglassOutline
-                    className="stroke-custom-gold fill-custom-gold"
+                    className="stroke-gold fill-gold"
                     size={18}
                   />
                 )}
@@ -138,27 +138,27 @@ export default async function EditCollection({
                   campaignDuration.startDate,
                   campaignDuration.endDate
                 ) === CAMPAIGN_STATUS_ACTIVE && (
-                  <HiOutlineClock className="stroke-custom-green" size={18} />
+                  <HiOutlineClock className="stroke-green" size={18} />
                 )}
                 {getCampaignStatus(
                   campaignDuration.startDate,
                   campaignDuration.endDate
                 ) === CAMPAIGN_STATUS_ENDED && (
-                  <HiOutlineBan className="stroke-custom-red" size={18} />
+                  <HiOutlineBan className="stroke-red" size={18} />
                 )}
                 <span
                   className={clsx("italic", {
-                    "text-custom-gold":
+                    "text-gold":
                       getCampaignStatus(
                         campaignDuration.startDate,
                         campaignDuration.endDate
                       ) === CAMPAIGN_STATUS_UPCOMING,
-                    "text-custom-green":
+                    "text-green":
                       getCampaignStatus(
                         campaignDuration.startDate,
                         campaignDuration.endDate
                       ) === CAMPAIGN_STATUS_ACTIVE,
-                    "text-custom-red":
+                    "text-red":
                       getCampaignStatus(
                         campaignDuration.startDate,
                         campaignDuration.endDate
@@ -177,7 +177,7 @@ export default async function EditCollection({
                     className={clsx(
                       "px-3 rounded-full h-6 w-max flex gap-1 items-center",
                       {
-                        "bg-custom-green/10 border border-custom-green/15":
+                        "bg-green/10 border border-green/15":
                           getCampaignStatus(
                             campaignDuration.startDate,
                             campaignDuration.endDate
@@ -198,7 +198,7 @@ export default async function EditCollection({
                     <ChevronRightIcon className="stroke-gray" size={16} />
                     <span
                       className={clsx({
-                        "text-custom-green":
+                        "text-green":
                           getCampaignStatus(
                             campaignDuration.startDate,
                             campaignDuration.endDate
@@ -214,7 +214,7 @@ export default async function EditCollection({
                     className={clsx(
                       "px-3 rounded-full h-6 w-max flex gap-1 items-center",
                       {
-                        "bg-custom-red/10 border border-custom-red/15":
+                        "bg-red/10 border border-red/15":
                           getCampaignStatus(
                             campaignDuration.startDate,
                             campaignDuration.endDate
@@ -235,7 +235,7 @@ export default async function EditCollection({
                     <ChevronRightIcon className="stroke-gray" size={16} />
                     <span
                       className={clsx({
-                        "text-custom-red":
+                        "text-red":
                           getCampaignStatus(
                             campaignDuration.startDate,
                             campaignDuration.endDate

@@ -55,7 +55,7 @@ export function NewProductEmptyGridButton() {
   return (
     <button
       type="button"
-      className="h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue active:bg-custom-blue-dimmed lg:hover:bg-custom-blue-dimmed"
+      className="h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue active:bg-blue-dimmed lg:hover:bg-blue-dimmed"
       onClick={openOverlay}
     >
       New product
@@ -261,10 +261,10 @@ export function NewProductOverlay() {
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                 >
                   <ArrowLeftIcon
-                    className="fill-custom-blue -ml-[2px]"
+                    className="fill-blue -ml-[2px]"
                     size={20}
                   />
-                  <span className="font-semibold text-sm text-custom-blue">
+                  <span className="font-semibold text-sm text-blue">
                     New product
                   </span>
                 </button>
@@ -272,10 +272,10 @@ export function NewProductOverlay() {
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-custom-blue-dimmed": !loading,
+                      "active:bg-blue-dimmed": !loading,
                     }
                   )}
                 >
@@ -341,7 +341,7 @@ export function NewProductOverlay() {
                       placeholder="Denim Mini Skirt"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                       required
                     />
                   </div>
@@ -357,7 +357,7 @@ export function NewProductOverlay() {
                       placeholder="denim-mini-skirt"
                       value={formData.slug}
                       onChange={handleInputChange}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                       required
                     />
                   </div>
@@ -373,7 +373,7 @@ export function NewProductOverlay() {
                       placeholder="34.99"
                       value={formData.price}
                       onChange={handleInputChange}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                       required
                     />
                   </div>
@@ -416,10 +416,10 @@ export function NewProductOverlay() {
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-custom-blue-dimmed": !loading,
+                    "active:bg-blue-dimmed": !loading,
                   }
                 )}
               >

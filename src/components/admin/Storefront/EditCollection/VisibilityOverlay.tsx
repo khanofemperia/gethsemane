@@ -138,10 +138,10 @@ export function VisibilityOverlay({
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                 >
                   <ArrowLeftIcon
-                    className="fill-custom-blue -ml-[2px]"
+                    className="fill-blue -ml-[2px]"
                     size={20}
                   />
-                  <span className="font-semibold text-sm text-custom-blue">
+                  <span className="font-semibold text-sm text-blue">
                     Visibility
                   </span>
                 </button>
@@ -150,10 +150,10 @@ export function VisibilityOverlay({
                   type="button"
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-custom-blue-dimmed": !loading,
+                      "active:bg-blue-dimmed": !loading,
                     }
                   )}
                 >
@@ -183,7 +183,7 @@ export function VisibilityOverlay({
                           "w-5 h-5 rounded-full bg-white",
                           { border: selectedVisibility !== DRAFT },
                           {
-                            "border-4 border-custom-blue":
+                            "border-4 border-blue":
                               selectedVisibility === DRAFT,
                           }
                         )}
@@ -204,7 +204,7 @@ export function VisibilityOverlay({
                           "w-5 h-5 rounded-full bg-white",
                           { border: selectedVisibility !== PUBLISHED },
                           {
-                            "border-4 border-custom-blue":
+                            "border-4 border-blue":
                               selectedVisibility === PUBLISHED,
                           }
                         )}
@@ -225,7 +225,7 @@ export function VisibilityOverlay({
                           "w-5 h-5 rounded-full bg-white",
                           { border: selectedVisibility !== HIDDEN },
                           {
-                            "border-4 border-custom-blue":
+                            "border-4 border-blue":
                               selectedVisibility === HIDDEN,
                           }
                         )}
@@ -241,10 +241,10 @@ export function VisibilityOverlay({
                 type="button"
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-custom-blue-dimmed": !loading,
+                    "active:bg-blue-dimmed": !loading,
                   }
                 )}
               >

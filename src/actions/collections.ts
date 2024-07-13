@@ -1,6 +1,6 @@
 "use server";
 
-import { database } from "@/libraries/firebase";
+import { database } from "@/lib/firebase";
 import {
   setDoc,
   doc,
@@ -9,10 +9,10 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
-import { generateId } from "@/libraries/utils";
-import { currentTimestamp } from "@/libraries/utils";
+import { generateId } from "@/lib/utils";
+import { currentTimestamp } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type DataType = {
   image: string;

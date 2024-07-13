@@ -1,6 +1,6 @@
 "use server";
 
-import { database } from "@/libraries/firebase";
+import { database } from "@/lib/firebase";
 import {
   setDoc,
   doc,
@@ -9,9 +9,9 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { generateId, currentTimestamp } from "@/libraries/utils";
+import { generateId, currentTimestamp } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type CreateProductType = {
   category: string;

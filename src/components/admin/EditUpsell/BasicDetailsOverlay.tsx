@@ -1,17 +1,16 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { capitalizeFirstLetter, isValidRemoteImage } from "@/libraries/utils";
-import { FormEvent, useState, useEffect, useRef } from "react";
+import { isValidRemoteImage } from "@/lib/utils";
+import { FormEvent, useState, useEffect } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, ChevronDownIcon, CloseIcon, EditIcon } from "@/icons";
+import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
-import { UpdateProductAction } from "@/actions/products";
 import { UpdateUpsellAction } from "@/actions/upsells";
 import Image from "next/image";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type DataType = {
   id: string;
@@ -143,10 +142,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                     className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                   >
                     <ArrowLeftIcon
-                      className="fill-custom-blue -ml-[2px]"
+                      className="fill-blue -ml-[2px]"
                       size={20}
                     />
-                    <span className="font-semibold text-sm text-custom-blue">
+                    <span className="font-semibold text-sm text-blue">
                       Basic details
                     </span>
                   </button>
@@ -154,10 +153,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                     type="submit"
                     disabled={loading}
                     className={clsx(
-                      "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                      "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                       {
                         "bg-opacity-50": loading,
-                        "active:bg-custom-blue-dimmed": !loading,
+                        "active:bg-blue-dimmed": !loading,
                       }
                     )}
                   >
@@ -183,7 +182,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                         placeholder="137.99"
                         value={formData.price}
                         onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                         required
                       />
                     </div>
@@ -202,13 +201,16 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                         placeholder="55.99"
                         value={formData.salePrice}
                         onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                         required
                       />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="mainImage" className="font-semibold text-sm">
+                    <label
+                      htmlFor="mainImage"
+                      className="font-semibold text-sm"
+                    >
                       Main image
                     </label>
                     <div>
@@ -245,10 +247,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                   type="submit"
                   disabled={loading}
                   className={clsx(
-                    "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                    "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-custom-blue-dimmed": !loading,
+                      "active:bg-blue-dimmed": !loading,
                     }
                   )}
                 >

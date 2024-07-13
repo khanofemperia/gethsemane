@@ -112,10 +112,10 @@ export function RemoveProductOverlay({
                   type="button"
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-red",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-red",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-custom-red-dimmed lg:hover:bg-custom-red-dimmed":
+                      "active:bg-red-dimmed lg:hover:bg-red-dimmed":
                         !loading,
                     }
                   )}

@@ -9,7 +9,7 @@ export default function Upsell() {
       >
         <div className="mx-auto flex flex-col md:flex-col sm:flex-row gap-6 sm:gap-4">
           <div className="text-center flex flex-col gap-2 items-center justify-center">
-            <div className="*:text-xl *:md:text-2xl *:text-custom-red *:font-extrabold *:italic *:[text-shadow:#707070_0px_1px_0px] *:leading-[26px] *:[word-spacing:2px] *:[letter-spacing:-1px]">
+            <div className="*:text-xl *:md:text-2xl *:text-red *:font-extrabold *:italic *:[text-shadow:#707070_0px_1px_0px] *:leading-[26px] *:[word-spacing:2px] *:[letter-spacing:-1px]">
               <p>UPGRADE MY ORDER</p>
               <p>WITH THIS BEST-SELLING</p>
               <p>COMBO SET</p>
@@ -18,7 +18,7 @@ export default function Upsell() {
               <span className="font-semibold leading-6 text-lg text-gray">
                 $89.99 value
               </span>
-              <span className="font-semibold leading-6 text-nowrap text-lg text-custom-green">
+              <span className="font-semibold leading-6 text-nowrap text-lg text-green">
                 today it's yours for $37.99
               </span>
             </div>
@@ -35,7 +35,7 @@ export default function Upsell() {
         </div>
         <button
           type="button"
-          className="w-full h-12 rounded-md shadow-custom2 bg-custom-red text-white text-xl font-extrabold [text-shadow:#707070_0px_1px_0px] leading-[26px] [word-spacing:2px] [letter-spacing:-1px]"
+          className="w-full h-12 rounded-md shadow2 bg-red text-white text-xl font-extrabold [text-shadow:#707070_0px_1px_0px] leading-[26px] [word-spacing:2px] [letter-spacing:-1px]"
         >
           YES, LET'S UPGRADE
         </button>

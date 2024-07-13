@@ -39,8 +39,8 @@ export default function PageNav() {
         onClick={togglePagesNav}
         className="h-9 px-3 rounded-full flex items-center justify-center bg-blue-100 border border-[#bad8fe] active:border-[#92c1fd]"
       >
-        <span className="font-medium text-custom-blue">Shop</span>
-        <ChevronDownIcon className="stroke-custom-blue -mr-[4px]" size={20} />
+        <span className="font-medium text-blue">Shop</span>
+        <ChevronDownIcon className="stroke-blue -mr-[4px]" size={20} />
       </button>
       <div
         className={clsx("w-44 absolute top-[44px] -left-1 z-10", {

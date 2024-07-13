@@ -8,7 +8,7 @@ import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type ColumnType = {
   index: number;
@@ -326,10 +326,10 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                 >
                   <ArrowLeftIcon
-                    className="fill-custom-blue -ml-[2px]"
+                    className="fill-blue -ml-[2px]"
                     size={20}
                   />
-                  <span className="font-semibold text-sm text-custom-blue">
+                  <span className="font-semibold text-sm text-blue">
                     Sizes
                   </span>
                 </button>
@@ -338,10 +338,10 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                   type="button"
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-custom-blue-dimmed": !loading,
+                      "active:bg-blue-dimmed": !loading,
                     }
                   )}
                 >
@@ -372,7 +372,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                             ? columns.map((column) => column.name).join(", ")
                             : ""
                         }
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                         type="text"
                         name="name"
                         placeholder="Size, Length, etc."
@@ -393,7 +393,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                             ? entryLabels.map((label) => label.name).join(", ")
                             : ""
                         }
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                         type="text"
                         name="entryLabels"
                         placeholder="S, M, L, etc."
@@ -559,10 +559,10 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                 type="button"
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-custom-blue-dimmed": !loading,
+                    "active:bg-blue-dimmed": !loading,
                   }
                 )}
               >

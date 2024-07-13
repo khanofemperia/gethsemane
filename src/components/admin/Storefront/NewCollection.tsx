@@ -79,7 +79,7 @@ export function NewCollectionEmptyTableButton() {
   return (
     <button
       type="button"
-      className="h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue active:bg-custom-blue-dimmed lg:hover:bg-custom-blue-dimmed"
+      className="h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue active:bg-blue-dimmed lg:hover:bg-blue-dimmed"
       onClick={openOverlay}
     >
       New collection
@@ -262,10 +262,10 @@ export function NewCollectionOverlay() {
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                 >
                   <ArrowLeftIcon
-                    className="fill-custom-blue -ml-[2px]"
+                    className="fill-blue -ml-[2px]"
                     size={20}
                   />
-                  <span className="font-semibold text-sm text-custom-blue">
+                  <span className="font-semibold text-sm text-blue">
                     New collection
                   </span>
                 </button>
@@ -273,10 +273,10 @@ export function NewCollectionOverlay() {
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-custom-blue-dimmed": !loading,
+                      "active:bg-blue-dimmed": !loading,
                     }
                   )}
                 >
@@ -388,7 +388,7 @@ export function NewCollectionOverlay() {
                       placeholder={`Belle Jolie Lipstick - She "Marks" Her Man with Her Lips`}
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                       required
                     />
                   </div>
@@ -409,7 +409,7 @@ export function NewCollectionOverlay() {
                           .toLowerCase();
                         setSlug(sanitizedValue);
                       }}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                       required
                     />
                   </div>
@@ -522,10 +522,10 @@ export function NewCollectionOverlay() {
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-custom-blue-dimmed": !loading,
+                    "active:bg-blue-dimmed": !loading,
                   }
                 )}
               >

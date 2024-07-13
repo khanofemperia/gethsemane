@@ -2,7 +2,7 @@
 
 import { CloseIcon } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { productInternationalSizes } from "@/libraries/utils";
+import { productInternationalSizes } from "@/lib/utils";
 import { useEffect } from "react";
 import Overlay from "@/ui/Overlay";
 

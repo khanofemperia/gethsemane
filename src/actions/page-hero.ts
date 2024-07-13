@@ -1,9 +1,9 @@
 "use server";
 
 import { doc, updateDoc } from "firebase/firestore";
-import { database } from "@/libraries/firebase";
+import { database } from "@/lib/firebase";
 import { revalidatePath } from "next/cache";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type PageHeroType = {
   images: {

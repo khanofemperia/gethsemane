@@ -56,7 +56,7 @@ export default function StickyBar({ Options }: { Options: React.ReactNode }) {
             Add to Cart
           </button>
           <div className="w-full h-[44px] min-[840px]:h-12 relative rounded-full">
-            <button className="peer inline-block text-center align-middle h-[44px] min-[840px]:h-12 w-full text-sm min-[840px]:text-base border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-300 transition bg-custom-amber hover:bg-custom-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
+            <button className="peer inline-block text-center align-middle h-[44px] min-[840px]:h-12 w-full text-sm min-[840px]:text-base border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-300 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
               Yes, Let's Upgrade
             </button>
             {!barIsHidden && (
@@ -64,10 +64,10 @@ export default function StickyBar({ Options }: { Options: React.ReactNode }) {
                 <div className="w-max rounded-md pb-[10px] bg-white">
                   <div className="w-full">
                     <div>
-                      <h2 className="font-black text-center text-[21px] text-custom-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                      <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
                         UPGRADE MY ORDER
                       </h2>
-                      <div className="mt-1 text-center font-medium text-custom-amber-dimmed">
+                      <div className="mt-1 text-center font-medium text-amber-dimmed">
                         $137.99 (42% Off)
                       </div>
                     </div>

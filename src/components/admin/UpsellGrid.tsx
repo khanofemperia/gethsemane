@@ -147,7 +147,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                   onClick={() => handleFilterChange(ALL)}
                   className={`px-3 pl-[14px] h-9 hover:bg-[#e4e4e4] rounded-full ${
                     filter === ALL
-                      ? "text-custom-blue"
+                      ? "text-blue"
                       : "text-gray hover:text-black"
                   }`}
                 >
@@ -157,7 +157,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                   onClick={() => handleFilterChange(PUBLISHED)}
                   className={`px-3 h-9 hover:bg-[#e4e4e4] rounded-full ${
                     filter === PUBLISHED
-                      ? "text-custom-blue"
+                      ? "text-blue"
                       : "text-gray hover:text-black"
                   }`}
                 >
@@ -173,7 +173,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                   onClick={() => handleFilterChange(INACTIVE)}
                   className={`px-3 pr-[14px] h-9 hover:bg-[#e4e4e4] rounded-full ${
                     filter === INACTIVE
-                      ? "text-custom-blue"
+                      ? "text-blue"
                       : "text-gray hover:text-black"
                   }`}
                 >
@@ -239,7 +239,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                     className={clsx(
                       "min-w-[36px] max-w-[36px] h-9 px-1 text-center border cursor-text outline-none rounded-full bg-white",
                       {
-                        "border-custom-red": !isPageInRange,
+                        "border-red": !isPageInRange,
                       }
                     )}
                   />

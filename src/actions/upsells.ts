@@ -1,10 +1,10 @@
 "use server";
 
-import { database } from "@/libraries/firebase";
+import { database } from "@/lib/firebase";
 import { setDoc, doc, getDoc } from "firebase/firestore";
-import { generateId, currentTimestamp } from "@/libraries/utils";
+import { generateId, currentTimestamp } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
-import { AlertMessageType } from "@/libraries/sharedTypes";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 type CreateUpsellType = {
   price: string;

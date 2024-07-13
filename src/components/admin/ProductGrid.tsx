@@ -156,7 +156,7 @@ export default function ProductGrid({ products }: { products: ProductType[] }) {
                   onClick={() => handleFilterChange(ALL)}
                   className={`px-3 pl-[14px] h-9 hover:bg-[#e4e4e4] rounded-full ${
                     filter === ALL
-                      ? "text-custom-blue"
+                      ? "text-blue"
                       : "text-gray hover:text-black"
                   }`}
                 >
@@ -166,7 +166,7 @@ export default function ProductGrid({ products }: { products: ProductType[] }) {
                   onClick={() => handleFilterChange(PUBLISHED)}
                   className={`px-3 h-9 hover:bg-[#e4e4e4] rounded-full ${
                     filter === PUBLISHED
-                      ? "text-custom-blue"
+                      ? "text-blue"
                       : "text-gray hover:text-black"
                   }`}
                 >
@@ -183,7 +183,7 @@ export default function ProductGrid({ products }: { products: ProductType[] }) {
                   onClick={() => handleFilterChange(INACTIVE)}
                   className={`px-3 pr-[14px] h-9 hover:bg-[#e4e4e4] rounded-full ${
                     filter === INACTIVE
-                      ? "text-custom-blue"
+                      ? "text-blue"
                       : "text-gray hover:text-black"
                   }`}
                 >
@@ -244,7 +244,7 @@ export default function ProductGrid({ products }: { products: ProductType[] }) {
                     className={clsx(
                       "min-w-[36px] max-w-[36px] h-9 px-1 text-center border cursor-text outline-none rounded-full bg-white",
                       {
-                        "border-custom-red": !isPageInRange,
+                        "border-red": !isPageInRange,
                       }
                     )}
                   />

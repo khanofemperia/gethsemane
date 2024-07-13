@@ -147,10 +147,10 @@ export function ChangeProductIndexOverlay() {
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                 >
                   <ArrowLeftIcon
-                    className="fill-custom-blue -ml-[2px]"
+                    className="fill-blue -ml-[2px]"
                     size={20}
                   />
-                  <span className="font-semibold text-sm text-custom-blue">
+                  <span className="font-semibold text-sm text-blue">
                     Reposition up/down
                   </span>
                 </button>
@@ -158,10 +158,10 @@ export function ChangeProductIndexOverlay() {
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-custom-blue-dimmed": !loading,
+                      "active:bg-blue-dimmed": !loading,
                     }
                   )}
                 >
@@ -192,7 +192,7 @@ export function ChangeProductIndexOverlay() {
                       name="index"
                       value={selectedProduct.index}
                       onChange={handleIndexChange}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-custom-blue"
+                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                       required
                     />
                   </div>
@@ -204,10 +204,10 @@ export function ChangeProductIndexOverlay() {
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-custom-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-custom-blue-dimmed": !loading,
+                    "active:bg-blue-dimmed": !loading,
                   }
                 )}
               >
