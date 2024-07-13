@@ -2,32 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@layer base {
+  * {
+    @apply outline-none;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+  body {
+    @apply overflow-x-hidden overflow-y-visible text-black;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
+@layer components {
+  .body-scrollbar::-webkit-scrollbar,
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-[12px] rounded-full bg-white;
+  }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .body-scrollbar::-webkit-scrollbar-thumb,
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply rounded-full border-[2px] border-solid border-white transition duration-300 ease-in-out bg-[#bbbbbb] hover:bg-neutral-400;
+  }
+
+  .custom-x-scrollbar::-webkit-scrollbar {
+    @apply h-[12px] rounded-full bg-white;
+  }
+
+  .custom-x-scrollbar::-webkit-scrollbar-thumb {
+    @apply rounded-full border-[2px] border-solid border-white transition duration-300 ease-in-out bg-[#bbbbbb] hover:bg-neutral-400;
+  }
+
+  .invisible-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .invisible-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .overflow-hidden {
+    overflow: hidden;
   }
 }
