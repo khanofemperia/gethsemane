@@ -25,6 +25,22 @@ type SanitizedOptionsType = {
   visibility?: "DRAFT" | "PUBLISHED" | "HIDDEN";
 };
 
+type Sortable = { [key: string]: any };
+
+function sortItems<T extends Sortable>(
+  items: T[],
+  key: keyof T,
+  isDate: boolean = false
+): T[] {
+  return items.sort((a, b) => {
+    if (isDate) {
+      return new Date(b[key]).getTime() - new Date(a[key]).getTime();
+    } else {
+      return (a[key] as number) - (b[key] as number);
+    }
+  });
+}
+
 function sanitizeOptions(
   options: BaseOptionsType | SingleItemOptionsType
 ): SanitizedOptionsType {
@@ -55,16 +71,6 @@ function sanitizeOptions(
   }
 
   return sanitizedOptions;
-}
-
-function sortProducts<T extends { updatedAt: string }>(products: T[]): T[] {
-  return products.sort(
-    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  );
-}
-
-function sortCollections<T extends { index: number }>(collections: T[]): T[] {
-  return collections.sort((a, b) => a.index - b.index);
 }
 
 /**
@@ -168,7 +174,8 @@ export async function getProducts(
     } as ProductType;
   });
 
-  return sortProducts(products);
+  const sortedProducts = sortItems(products, "updatedAt", true);
+  return sortedProducts;
 }
 
 /**
@@ -289,7 +296,43 @@ export async function getCollections(
     })
   );
 
-  return sortCollections(collections);
+  const sortedCollections = sortItems(collections, "index");
+  return sortedCollections;
+}
+
+export async function getUpsells(): Promise<UpsellType[] | null> {
+  const collectionRef = collection(database, "upsells");
+  const snapshot = await getDocs(collectionRef);
+
+  const upsells: UpsellType[] = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<UpsellType, "id">),
+  }));
+
+  const sortedUpsells = sortItems(upsells, "updatedAt", true);
+  return sortedUpsells;
+}
+
+export async function getUpsell({
+  id,
+}: {
+  id: string;
+}): Promise<Partial<UpsellType> | null> {
+  const documentRef = doc(database, "upsells", id);
+  const snapshot = await getDoc(documentRef);
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  const data = snapshot.data();
+
+  const upsell = {
+    id: snapshot.id,
+    ...data,
+  };
+
+  return upsell;
 }
 
 export async function getPageHero(): Promise<PageHeroType | null> {

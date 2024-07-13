@@ -3,7 +3,7 @@ import {
   BasicDetailsOverlay,
 } from "@/components/admin/EditUpsell/BasicDetailsOverlay";
 import DataChip from "@/ui/DataChip";
-import { fetchData, formatThousands } from "@/libraries/utils";
+import { formatThousands } from "@/lib/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
@@ -11,19 +11,20 @@ import {
   VisibilityOverlay,
 } from "@/components/admin/EditUpsell/VisibilityOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
+import { getUpsell } from "@/lib/getData";
 
 export default async function EditUpsell({
   params,
 }: {
   params: { id: string };
 }) {
-  const data = await fetchData<UpsellType | null>({path: `api/admin/upsells/${params.id}`});
+  const upsell = await getUpsell({ id: params.id }) as UpsellType;
 
-  if (!data) {
+  if (!upsell) {
     notFound();
   }
 
-  const { id, price, salePrice, mainImage, visibility } = data;
+  const { id, price, salePrice, mainImage, visibility } = upsell as UpsellType;
 
   return (
     <>
@@ -80,7 +81,7 @@ export default async function EditUpsell({
               <VisibilityButton />
             </div>
             <div className="p-5">
-              <DataChip value={visibility as ChipValueType} />
+              <DataChip value={visibility as VisibilityType} />
             </div>
           </div>
         </div>

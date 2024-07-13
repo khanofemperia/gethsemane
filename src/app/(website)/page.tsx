@@ -6,9 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
-  const pageHero = await getPageHero();
-  const categories = await getCategories();
-  const collections = await getCollections({ fields: ["title", "slug", "products", "bannerImages"] });
+  const [pageHero, categories, collections] = await Promise.all([
+    getPageHero(),
+    getCategories(),
+    getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
+  ]);
 
   return (
     <>

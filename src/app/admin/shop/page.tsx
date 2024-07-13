@@ -8,16 +8,23 @@ import {
   PageHeroButton,
   PageHeroOverlay,
 } from "@/components/admin/Storefront/PageHero";
-import { getCategories, getCollections, getPageHero, getSettings } from "@/lib/getData";
+import {
+  getCategories,
+  getCollections,
+  getPageHero,
+  getSettings,
+} from "@/lib/getData";
 import clsx from "clsx";
 
 export default async function Storefront() {
-  const pageHero = await getPageHero() as PageHeroType;
-  const categories = await getCategories() as CategoryType[];
-  const settings = await getSettings() as SettingsType;
-  const collections = await getCollections({
-    fields: ["title", "slug", "products", "bannerImages"],
-  }) as CollectionType[];
+  const [pageHero, categories, settings, collections] = await Promise.all([
+    getPageHero() as Promise<PageHeroType>,
+    getCategories() as Promise<CategoryType[]>,
+    getSettings() as Promise<SettingsType>,
+    getCollections({
+      fields: ["title", "slug", "products", "bannerImages"],
+    }) as Promise<CollectionType[]>,
+  ]);
 
   return (
     <>
