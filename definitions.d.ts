@@ -83,8 +83,8 @@ type CollectionType = {
   campaignDuration: DateRangeType;
   collectionType: string;
   bannerImages?: {
-    desktop: string;
-    mobile: string;
+    desktopImage: string;
+    mobileImage: string;
   };
   products: ProductType[];
   visibility: VisibilityType;

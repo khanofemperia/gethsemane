@@ -9,9 +9,10 @@ export function FeaturedProducts({
   collection: CollectionType;
 }) {
   const { id, slug, title, products } = collection;
+  
   return (
     <>
-      <div className="w-full max-w-[968px] mx-auto mb-2 md:mb-4 pl-[26px] pr-[22px] flex items-center justify-between md:justify-normal gap-4">
+      <div className="w-full max-w-[968px] mx-auto mb-2 md:mb-4 pl-[24px] pr-[22px] flex items-center justify-between md:justify-normal gap-4">
         <h2 className="font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
           {title}
         </h2>
