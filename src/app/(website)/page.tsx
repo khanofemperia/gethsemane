@@ -50,7 +50,7 @@ export default async function Home() {
         {categories && categories.length > 0 && (
           <Categories categories={categories} />
         )}
-        <div className="flex flex-col gap-10">
+        <div className="max-w-[968px] mx-auto flex flex-col gap-10">
           {collections &&
             collections.length > 0 &&
             collections.map((collection, index) => {

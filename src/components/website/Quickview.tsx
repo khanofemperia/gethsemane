@@ -27,28 +27,38 @@ type QuickviewButtonType = {
   };
 };
 
-export function QuickviewButton({ product }: QuickviewButtonType) {
+export function QuickviewButton({
+  product,
+  onClick,
+}: QuickviewButtonType & { onClick?: (event: React.MouseEvent) => void }) {
   const { showOverlay } = useQuickviewStore();
   const setSelectedProduct = useQuickviewStore(
     (state) => state.setSelectedProduct
   );
 
-  const handleClick = async () => {
-    try {
-      const response = await fetch(`/api/carts/products/${product.id}`);
-      const { isInCart, productInCart } = await response.json();
-
-      setSelectedProduct(product, isInCart, productInCart);
-      showOverlay();
-    } catch (error) {
-      console.error("Error checking cart:", error);
+  const handleClick = async (event: React.MouseEvent) => {
+    if (onClick) {
+      event.stopPropagation();
+      onClick(event);
     }
+
+    console.log("Opening quickview...");
+
+    // try {
+    //   const response = await fetch(`/api/carts/products/${product.id}`);
+    //   const { isInCart, productInCart } = await response.json();
+
+    //   setSelectedProduct(product, isInCart, productInCart);
+    //   showOverlay();
+    // } catch (error) {
+    //   console.error("Error checking cart:", error);
+    // }
   };
 
   return (
     <button
-      // onClick={handleClick}
-      className="absolute right-[10px] bottom-[10px] outline-none border-none rounded-full w-[44px] h-7 flex items-center justify-center before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-0 before:right-0 before:border before:border-black before:rounded-full before:transition before:duration-100 before:ease-in-out active:before:scale-105 lg:hover:before:scale-105"
+      onClick={handleClick}
+      className="outline-none border-none rounded-full w-[44px] h-7 flex items-center justify-center relative before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-0 before:right-0 before:border before:border-black before:rounded-full before:transition before:duration-100 before:ease-in-out active:before:scale-105 lg:hover:before:scale-105"
     >
       <Image
         src="/images/other/cart_plus.svg"

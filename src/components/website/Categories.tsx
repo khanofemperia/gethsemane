@@ -1,117 +1,112 @@
 "use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { capitalizeFirstLetter } from "@/lib/utils";
-import clsx from "clsx";
+import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { ComponentPropsWithRef, useCallback, useEffect, useState } from "react";
+import { EmblaCarouselType } from "embla-carousel";
+import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 
-const INITIAL_CATEGORY_WIDTH = 110;
-const DESKTOP_CATEGORY_WIDTH = 120;
-const GAP_BETWEEN_CATEGORIES = 20;
-const PADDING_AND_GAP_ADJUSTMENT = 12;
-const DESKTOP_CAROUSEL_MAX_WIDTH = 828;
-const MOBILE_CAROUSEL_MAX_WIDTH = 768;
-const DESKTOP_SCREEN_WIDTH = 1024;
+type UsePrevNextButtonsType = {
+  prevBtnDisabled: boolean;
+  nextBtnDisabled: boolean;
+  onPrevButtonClick: () => void;
+  onNextButtonClick: () => void;
+};
 
-export function Categories({
-  categories,
-}: {
-  categories: CategoryType[];
-}) {
-  const [distance, setDistance] = useState(0);
-  const [isPrevButtonHidden, setIsPrevButtonHidden] = useState(true);
-  const [isNextButtonHidden, setIsNextButtonHidden] = useState(true);
-  const [categoryWidth, setCategoryWidth] = useState(INITIAL_CATEGORY_WIDTH);
-  const [shouldTransition, setShouldTransition] = useState(true);
+export const usePrevNextButtons = (
+  emblaApi: EmblaCarouselType | undefined
+): UsePrevNextButtonsType => {
+  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
+  const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
 
-  const carouselRef = useRef(null);
+  const onPrevButtonClick = useCallback(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollPrev();
+  }, [emblaApi]);
 
-  const resetCarousel = (screenWidth: number) => {
-    setShouldTransition(false);
-    setDistance(0);
-    setIsPrevButtonHidden(true);
+  const onNextButtonClick = useCallback(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollNext();
+  }, [emblaApi]);
 
-    const totalCategoriesWidth =
-      categories.length * (categoryWidth + GAP_BETWEEN_CATEGORIES) -
-      PADDING_AND_GAP_ADJUSTMENT;
-
-    if (screenWidth >= MOBILE_CAROUSEL_MAX_WIDTH) {
-      setIsNextButtonHidden(totalCategoriesWidth <= MOBILE_CAROUSEL_MAX_WIDTH);
-    } else {
-      setIsNextButtonHidden(totalCategoriesWidth <= screenWidth);
-    }
-
-    if (screenWidth >= DESKTOP_SCREEN_WIDTH) {
-      setCategoryWidth(DESKTOP_CATEGORY_WIDTH);
-    } else {
-      setCategoryWidth(INITIAL_CATEGORY_WIDTH);
-    }
-  };
-
-  useEffect(() => {
-    const handleResize = () => resetCarousel(window.innerWidth);
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [categories]);
-
-  useEffect(() => {
-    const totalCategoriesWidth =
-      categories.length * (categoryWidth + GAP_BETWEEN_CATEGORIES) -
-      PADDING_AND_GAP_ADJUSTMENT;
-
-    const screenWidth = window.innerWidth;
-
-    if (screenWidth >= MOBILE_CAROUSEL_MAX_WIDTH) {
-      if (screenWidth >= DESKTOP_SCREEN_WIDTH) {
-        setIsNextButtonHidden(
-          distance <= -(totalCategoriesWidth - DESKTOP_CAROUSEL_MAX_WIDTH)
-        );
-      } else {
-        setIsNextButtonHidden(
-          distance <= -(totalCategoriesWidth - MOBILE_CAROUSEL_MAX_WIDTH)
-        );
-      }
-    } else {
-      setIsNextButtonHidden(distance <= -(totalCategoriesWidth - screenWidth));
-    }
-
-    setIsPrevButtonHidden(distance === 0);
-  }, [distance, categories.length, categoryWidth]);
-
-  useEffect(() => {
-    resetCarousel(window.innerWidth);
+  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
+    setPrevBtnDisabled(!emblaApi.canScrollPrev());
+    setNextBtnDisabled(!emblaApi.canScrollNext());
   }, []);
 
-  const handleNext = () => {
-    setShouldTransition(true);
-    setDistance(distance - (categoryWidth + GAP_BETWEEN_CATEGORIES));
-  };
+  useEffect(() => {
+    if (!emblaApi) return;
 
-  const handlePrev = () => {
-    setShouldTransition(true);
-    setDistance(distance + (categoryWidth + GAP_BETWEEN_CATEGORIES));
+    onSelect(emblaApi);
+    emblaApi.on("reInit", onSelect).on("select", onSelect);
+  }, [emblaApi, onSelect]);
+
+  return {
+    prevBtnDisabled,
+    nextBtnDisabled,
+    onPrevButtonClick,
+    onNextButtonClick,
   };
+};
+
+type PropType = ComponentPropsWithRef<"button">;
+
+export const PrevButton: React.FC<PropType> = (props) => {
+  const { children, ...restProps } = props;
 
   return (
-    <div className="relative mb-5 w-full max-w-[768px] lg:max-w-[828px] mx-auto flex justify-center">
-      <div className="overflow-hidden" ref={carouselRef}>
-        <div
-          style={{ transform: `translateX(${distance}px)` }}
-          className={clsx("w-max flex gap-5 p-1", {
-            "ease-in-out duration-300 transition": shouldTransition,
-          })}
-        >
+    <button
+      className="embla__button embla__button--prev disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute left-4 lg:-left-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
+      type="button"
+      {...restProps}
+    >
+      <ChevronLeftIcon className="stroke-white mr-[2px]" size={22} />
+      {children}
+    </button>
+  );
+};
+
+export const NextButton: React.FC<PropType> = (props) => {
+  const { children, ...restProps } = props;
+
+  return (
+    <button
+      className="embla__button embla__button--next disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute right-4 lg:-right-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
+      type="button"
+      {...restProps}
+    >
+      <ChevronRightIcon className="stroke-white ml-[2px]" size={22} />
+      {children}
+    </button>
+  );
+};
+
+export function Categories({ categories }: { categories: CategoryType[] }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+  });
+
+  const {
+    prevBtnDisabled,
+    nextBtnDisabled,
+    onPrevButtonClick,
+    onNextButtonClick,
+  } = usePrevNextButtons(emblaApi);
+
+  return (
+    <div className="relative w-full mx-auto">
+      <div
+        className="embla py-1 px-4 overflow-hidden relative select-none mb-5 w-full max-w-[768px] md:w-[calc(100%-38px)]s lg:max-w-[828px] mx-auto"
+        ref={emblaRef}
+      >
+        <div className="embla__container w-full flex">
           {categories.map(({ index, name, image }) => (
             <Link
+              href="#"
               key={index}
-              href={`/shop/categories/${name.toLowerCase()}`}
-              className="flex flex-col gap-2 items-center rounded-xl p-[10px] ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
+              className="embla__slide mr-5 last:mr-0 flex flex-col gap-2 items-center rounded-xl p-[10px] ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
             >
               <div className="lg:hidden w-[90px] h-[90px] rounded-full shadow-[rgba(0,0,0,0.2)_0px_1px_3px_0px,_rgba(27,31,35,0.15)_0px_0px_0px_1px]">
                 <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center z-10">
@@ -142,22 +137,8 @@ export function Categories({
           ))}
         </div>
       </div>
-      {!isPrevButtonHidden && (
-        <button
-          onClick={handlePrev}
-          className="w-9 h-9 rounded-full absolute left-4 lg:-left-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
-        >
-          <ChevronLeftIcon className="stroke-white mr-[2px]" size={22} />
-        </button>
-      )}
-      {!isNextButtonHidden && (
-        <button
-          onClick={handleNext}
-          className="w-9 h-9 rounded-full absolute right-4 lg:-right-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
-        >
-          <ChevronRightIcon className="stroke-white ml-[2px]" size={22} />
-        </button>
-      )}
+      <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
+      <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} />
     </div>
   );
 }

@@ -7,11 +7,9 @@ export function Banner({
   collection: CollectionType;
 }) {
   return (
-    <div className="w-full max-w-[968px] mx-auto py-1 pl-4 pr-3">
+    <div className="py-1 px-[14px]">
       <Link
-        href={`/shop/collections/${collection.slug.toLowerCase()}-${
-          collection.id
-        }`}
+        href="#"
       >
         <div className="w-full rounded-2xl p-[10px] ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]">
           <div className="w-full flex items-center justify-center rounded-xl overflow-hidden">
