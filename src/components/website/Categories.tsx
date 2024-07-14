@@ -96,9 +96,9 @@ export function Categories({ categories }: { categories: CategoryType[] }) {
   } = usePrevNextButtons(emblaApi);
 
   return (
-    <div className="relative w-full max-w-max mx-auto">
+    <div className="relative mb-10 w-full max-w-max mx-auto">
       <div
-        className="embla py-1 px-3 overflow-hidden relative select-none mb-5 w-full max-w-[836px] mx-auto"
+        className="embla relative select-none overflow-hidden w-full max-w-[768px] lg:max-w-[828px] py-1 px-3 md:px-1 mx-auto"
         ref={emblaRef}
       >
         <div className="embla__container w-full flex">
