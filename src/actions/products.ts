@@ -62,7 +62,7 @@ export async function CreateProductAction(data: CreateProductType) {
         main: data.mainImage,
         gallery: [],
       },
-      variants: {
+      options: {
         colors: [],
         sizes: [],
       },

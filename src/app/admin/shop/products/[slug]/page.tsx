@@ -27,10 +27,7 @@ import {
   ColorsButton,
   ColorsOverlay,
 } from "@/components/admin/EditProduct/ColorsOverlay";
-import {
-  DescriptionButton,
-  DescriptionOverlay,
-} from "@/components/admin/EditProduct/DescriptionOverlay";
+import { DescriptionButton } from "@/components/admin/EditProduct/DescriptionOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
 import { getProduct } from "@/lib/getData";
 
@@ -53,7 +50,7 @@ export default async function EditProduct({
     slug,
     pricing,
     images,
-    variants,
+    options,
     description,
     visibility,
   } = product as ProductType;
@@ -62,43 +59,35 @@ export default async function EditProduct({
     <>
       <div className="max-w-[768px] flex flex-col gap-10 px-5">
         <div>
-          <p className="text-sm mb-4 md:max-w-[85%]">
-            Important for SEO: a name that includes target keywords in the first
-            four words, a short URL with three or four keywords, and prices that
-            help your business grow while making customers feel they're getting
-            a good deal.
-          </p>
+          <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">Basic details</h2>
+            <p className="text-sm md:max-w-[85%]">
+              Important for SEO: a name that includes target keywords in the
+              first four words, a short URL slug with three or four keywords, and
+              prices that help your business grow while making customers feel
+              they're getting a good deal.
+            </p>
+          </div>
           <div className="w-full shadow rounded-xl bg-white">
-            <div className="w-full h-14 border-b flex items-center justify-between pl-5 pr-[10px]">
-              <h2 className="font-semibold text-xl">Basic details</h2>
-              <BasicDetailsButton />
+            <div className="p-5 border-t first:border-none">
+              <h3 className="text-xs text-gray mb-2">Category</h3>
+              <p className="font-medium">{category}</p>
             </div>
-            <div className="flex flex-col gap-5 p-5 pt-4">
-              <IDCopyButton id={id} />
-              <div>
-                <h3 className="text-sm font-semibold mb-2">Category</h3>
-                <div className="w-max max-w-full h-9 px-4 rounded-full bg-lightgray flex items-center text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
-                  {category}
-                </div>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold mb-2">Name</h3>
-                <div className="w-max max-w-full h-9 px-4 rounded-full bg-lightgray flex items-center text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
-                  {name}
-                </div>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold mb-2">Slug</h3>
-                <div className="w-max max-w-full h-9 px-4 rounded-full bg-lightgray flex items-center text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
-                  {slug}-{id}
-                </div>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold mb-2">Price</h3>
-                <div className="w-max max-w-full h-9 px-4 rounded-full bg-lightgray flex items-center text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
-                  ${formatThousands(pricing.basePrice)}
-                </div>
-              </div>
+            <div className="p-5 border-t first:border-none">
+              <h3 className="text-xs text-gray mb-2">Name</h3>
+              <p className="font-medium max-w-[540px]">{name}</p>
+            </div>
+            <div className="p-5 border-t first:border-none">
+              <h3 className="text-xs text-gray mb-2">Price</h3>
+              <p className="font-medium">
+                ${formatThousands(pricing.basePrice)}
+              </p>
+            </div>
+            <div className="p-5 border-t first:border-none">
+              <h3 className="text-xs text-gray mb-2">Slug</h3>
+              <p className="font-medium">
+                {slug}-{id}
+              </p>
             </div>
           </div>
         </div>
@@ -285,8 +274,8 @@ export default async function EditProduct({
       {/* <BasicDetailsOverlay data={{ id, category, name, slug, pricing }} /> */}
       {/* <MainImageOverlay data={{ id, images }} /> */}
       <ImagesOverlay data={{ id, images: images.gallery }} />
-      {/* <ColorsOverlay data={{ id, variants }} /> */}
-      {/* <SizeChartOverlay data={{ id, variants }} /> */}
+      {/* <ColorsOverlay data={{ id, options }} /> */}
+      {/* <SizeChartOverlay data={{ id, options }} /> */}
       {/* <DescriptionOverlay data={{ id, description }} />
       <VisibilityOverlay data={{ id, visibility }} /> */}
     </>

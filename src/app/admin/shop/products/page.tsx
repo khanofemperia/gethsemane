@@ -9,7 +9,7 @@ export default async function Products() {
 
   return (
     <>
-      <ProductGrid products={products} />
+      <ProductGrid products={products || []} />
       <NewProductOverlay />
     </>
   );

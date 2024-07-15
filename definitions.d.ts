@@ -134,10 +134,9 @@ type ProductType = {
     main: string;
     gallery: string[];
   };
-  variants: {
+  options: {
     colors: Array<{
       name: string;
-      hexCode: string;
       image: string;
     }>;
     sizes: Array<{
