@@ -22,6 +22,28 @@ type HighlightPointsType = {
   keyPoints: string[];
 };
 
+type DiscountType = {
+  percentage: number;
+  savings: number;
+};
+
+type UpsellItemType = {
+  id: string;
+  name: string;
+  salePrice: number;
+  price: number;
+};
+
+type ImageType = {
+  name: string;
+  image: string;
+};
+
+type HighlightsType = {
+  headline: string;
+  keyPoints: string[];
+} | null;
+
 // Specific types
 type CategoryType = {
   id: string;
@@ -52,24 +74,6 @@ type UpsellType = {
   price: string;
   salePrice: string;
   mainImage: string;
-  visibility: VisibilityType;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type ProductType = {
-  id: string;
-  category: string;
-  name: string;
-  slug: string;
-  price: string;
-  mainImage: string;
-  images: string[] | null;
-  colors: ColorType[] | null;
-  sizes: SizeChartType | null;
-  upsell: UpsellType;
-  description: string | null;
-  highlights: HighlightPointsType | null;
   visibility: VisibilityType;
   createdAt: string;
   updatedAt: string;
@@ -108,4 +112,68 @@ type PageHeroType = {
   title: string;
   destinationUrl: string;
   visibility: VisibilityType;
+};
+
+/***************************************************************/
+type ProductType = {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  description: string;
+  highlights: {
+    headline: string;
+    keyPoints: string[];
+  };
+  pricing: {
+    basePrice: number;
+    salePrice?: number;
+    discountPercentage?: number;
+  };
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  variants: {
+    colors: Array<{
+      name: string;
+      hexCode: string;
+      image: string;
+    }>;
+    sizes: Array<{
+      name: string;
+      measurements: Record<
+        string,
+        {
+          inches: string;
+          centimeters: string;
+        }
+      >;
+    }>;
+  };
+  sizeChart: {
+    columns: Array<{
+      index: number;
+      name: string;
+    }>;
+    measurements: Array<{
+      size: string;
+      values: Record<string, string>;
+    }>;
+  };
+  seo: {
+    metaTitle: string;
+    metaDescription: string;
+    keywords: string[];
+  };
+  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+  createdAt: string;
+  updatedAt: string;
+  sourceInfo: {
+    platform: string;
+    url: string;
+    storeId: string;
+    storeName: string;
+    storeUrl: string;
+  };
 };

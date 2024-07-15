@@ -125,7 +125,7 @@ export async function getProduct(
  *
  * @example
  * const products = await getProducts({
- *   fields: ['id', 'name', 'price'],
+ *   fields: ['id', 'name', 'basePrice'],
  *   visibility: 'PUBLISHED'
  * });
  */

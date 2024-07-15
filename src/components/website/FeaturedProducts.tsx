@@ -142,7 +142,7 @@ export function FeaturedProducts({
                   className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
                 >
                   <Link
-                    href="#"
+                    href={`/${slug}-${id}`}
                     className="w-full aspect-square rounded-xl flex items-center justify-center overflow-hidden"
                   >
                     <Image
@@ -155,13 +155,11 @@ export function FeaturedProducts({
                   </Link>
                   <div
                     className="pt-[10px] flex flex-col gap-[6px]"
-                    onClick={() => router.push("#")}
+                    onClick={() => router.push(`/${slug}-${id}`)}
                   >
                     <p className="text-sm line-clamp-1">{name}</p>
                     <div className="flex items-start justify-between w-full">
-                      <span className="font-semibold w-max h-5">
-                        ${price}
-                      </span>
+                      <span className="font-semibold w-max h-5">${price}</span>
                       <QuickviewButton
                         onClick={(event) => event.stopPropagation()}
                         product={{

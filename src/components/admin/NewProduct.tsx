@@ -12,6 +12,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
+import { getCategories } from "@/lib/getData";
 
 export function NewProductMenuButton() {
   const { showOverlay } = useOverlayStore();
@@ -74,34 +75,20 @@ export function NewProductOverlay() {
   const [selectedCategory, setSelectedCategory] = useState("Select");
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [formData, setFormData] = useState({
-    category: "",
     name: "",
     slug: "",
-    price: "",
+    category: "",
+    basePrice: "",
     mainImage: "",
   });
 
   const categoryRef = useRef(null);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch("/api/admin/categories");
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-        const data = await response.json();
-        const publishedCategories = data.filter(
-          (category: CategoryType) =>
-            category.visibility === ("PUBLISHED" as VisibilityType)
-        );
-        setCategories(publishedCategories);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategories();
+    (async () => {
+      const categories = (await getCategories()) as CategoryType[];
+      setCategories(categories);
+    })();
   }, []);
 
   const { hideOverlay } = useOverlayStore();
@@ -213,7 +200,7 @@ export function NewProductOverlay() {
       category: "",
       name: "",
       slug: "",
-      price: "",
+      basePrice: "",
       mainImage: "",
     });
   };
@@ -260,10 +247,7 @@ export function NewProductOverlay() {
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                 >
-                  <ArrowLeftIcon
-                    className="fill-blue -ml-[2px]"
-                    size={20}
-                  />
+                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
                     New product
                   </span>
@@ -363,15 +347,15 @@ export function NewProductOverlay() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="price" className="font-semibold text-sm">
-                    Price
+                  <label htmlFor="basePrice" className="font-semibold text-sm">
+                    Base price
                   </label>
                   <div className="w-full h-9 relative">
                     <input
                       type="text"
-                      name="price"
+                      name="basePrice"
                       placeholder="34.99"
-                      value={formData.price}
+                      value={formData.basePrice}
                       onChange={handleInputChange}
                       className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                       required

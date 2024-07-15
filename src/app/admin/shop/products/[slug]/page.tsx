@@ -3,10 +3,7 @@ import {
   BasicDetailsButton,
 } from "@/components/admin/EditProduct/BasicDetailsOverlay";
 import DataChip from "@/ui/DataChip";
-import {
-  formatThousands,
-  isValidRemoteImage,
-} from "@/lib/utils";
+import { formatThousands, isValidRemoteImage } from "@/lib/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import styles from "./styles.module.css";
@@ -43,7 +40,7 @@ export default async function EditProduct({
   params: { slug: string };
 }) {
   const productId = params.slug.split("-").pop() as string;
-  const product = await getProduct({id: productId});
+  const product = await getProduct({ id: productId });
 
   if (!product) {
     notFound();
@@ -54,11 +51,9 @@ export default async function EditProduct({
     category,
     name,
     slug,
-    price,
-    mainImage,
+    pricing,
     images,
-    sizes,
-    colors,
+    variants,
     description,
     visibility,
   } = product as ProductType;
@@ -101,7 +96,7 @@ export default async function EditProduct({
               <div>
                 <h3 className="text-sm font-semibold mb-2">Price</h3>
                 <div className="w-max max-w-full h-9 px-4 rounded-full bg-lightgray flex items-center text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
-                  ${formatThousands(price)}
+                  ${formatThousands(pricing.basePrice)}
                 </div>
               </div>
             </div>
@@ -124,12 +119,12 @@ export default async function EditProduct({
                   <MainImageButton />
                 </div>
                 <div className="p-5">
-                  {!mainImage || !isValidRemoteImage(mainImage) ? (
+                  {!images.main || !isValidRemoteImage(images.main) ? (
                     <p className="italic text-gray">Nothing yet</p>
                   ) : (
                     <div className="w-full max-w-[280px] rounded-xl aspect-square flex items-center justify-center overflow-hidden">
                       <Image
-                        src={mainImage}
+                        src={images.main}
                         alt={name}
                         width={280}
                         height={280}
@@ -145,19 +140,21 @@ export default async function EditProduct({
                   <ImagesButton />
                 </div>
                 <div className="p-5 flex flex-wrap gap-2">
-                  {!images ||
-                  images.every((url) => !isValidRemoteImage(url)) ? (
+                  {!images.gallery.length ||
+                  images.gallery.every(
+                    (image) => !isValidRemoteImage(image)
+                  ) ? (
                     <p className="italic text-gray">Nothing yet</p>
                   ) : (
-                    images.map(
-                      (url, index) =>
-                        isValidRemoteImage(url) && (
+                    images.gallery.map(
+                      (image, index) =>
+                        isValidRemoteImage(image) && (
                           <div
                             key={index}
                             className="max-w-[148px] lg:max-w-[210px] w-[calc(50%-4px)] border rounded-xl aspect-square flex items-center justify-center overflow-hidden"
                           >
                             <Image
-                              src={url}
+                              src={image}
                               alt={name}
                               width={210}
                               height={210}
@@ -190,7 +187,7 @@ export default async function EditProduct({
                     <SizeChartButton />
                   </div>
                   <div className="p-5">
-                    {sizes?.entryLabels.length ? (
+                    {/* {variants.sizes.length ? (
                       <div className="w-full max-w-[508px] flex flex-wrap gap-2 *:h-9 *:min-w-14 *:px-4 *:rounded-full *:flex *:items-center *:justify-center *:bg-lightgray">
                         {sizes.entryLabels.map((size, index) => (
                           <span key={index}>{size.name}</span>
@@ -198,7 +195,7 @@ export default async function EditProduct({
                       </div>
                     ) : (
                       <p className="italic text-gray">Nothing yet</p>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div>
@@ -206,7 +203,7 @@ export default async function EditProduct({
                     <h3 className="text-sm font-semibold">Colors</h3>
                     <ColorsButton />
                   </div>
-                  <div className="p-5 flex flex-wrap gap-2">
+                  {/* <div className="p-5 flex flex-wrap gap-2">
                     {!colors ||
                     !colors.some((color) => isValidRemoteImage(color.image)) ? (
                       <p className="italic text-gray">Nothing yet</p>
@@ -236,7 +233,7 @@ export default async function EditProduct({
                           )
                       )
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -285,13 +282,13 @@ export default async function EditProduct({
           </div>
         </div>
       </div>
-      <BasicDetailsOverlay data={{ id, category, name, slug, price }} />
-      <MainImageOverlay data={{ id, mainImage }} />
-      <ImagesOverlay data={{ id, images }} />
-      <ColorsOverlay data={{ id, colors }} />
-      <SizeChartOverlay data={{ id, chart: sizes }} />
-      <DescriptionOverlay data={{ id, description }} />
-      <VisibilityOverlay data={{ id, visibility }} />
+      {/* <BasicDetailsOverlay data={{ id, category, name, slug, pricing }} /> */}
+      {/* <MainImageOverlay data={{ id, images }} /> */}
+      <ImagesOverlay data={{ id, images: images.gallery }} />
+      {/* <ColorsOverlay data={{ id, variants }} /> */}
+      {/* <SizeChartOverlay data={{ id, variants }} /> */}
+      {/* <DescriptionOverlay data={{ id, description }} />
+      <VisibilityOverlay data={{ id, visibility }} /> */}
     </>
   );
 }

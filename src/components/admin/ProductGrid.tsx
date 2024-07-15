@@ -15,15 +15,6 @@ const HIDDEN = "HIDDEN";
 const INACTIVE = "INACTIVE";
 const ALL = "ALL";
 
-type ProductType = {
-  id: string;
-  mainImage: string;
-  name: string;
-  price: string;
-  slug: string;
-  visibility: string;
-};
-
 export default function ProductGrid({ products }: { products: ProductType[] }) {
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -198,7 +189,7 @@ export default function ProductGrid({ products }: { products: ProductType[] }) {
               </div>
             </div>
             <div className="w-full flex flex-wrap justify-start">
-              {gridData.map(({ id, name, price, mainImage, slug }, index) => (
+              {gridData.map(({ id, name, pricing, images, slug }, index) => (
                 <Link
                   key={index}
                   href={`/admin/shop/products/${slug}-${id}`}
@@ -206,9 +197,9 @@ export default function ProductGrid({ products }: { products: ProductType[] }) {
                 >
                   <div className="relative w-full h-full">
                     <div className="aspect-square w-full overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
-                      {mainImage && (
+                      {images.main && (
                         <Image
-                          src={mainImage}
+                          src={images.main}
                           alt={name}
                           width={216}
                           height={216}
@@ -218,7 +209,7 @@ export default function ProductGrid({ products }: { products: ProductType[] }) {
                     </div>
                     <div className="flex items-center justify-center absolute bottom-0 text-sm w-full">
                       <span className="font-bold">
-                        ${formatThousands(price)}
+                        ${formatThousands(pricing.basePrice)}
                       </span>
                     </div>
                   </div>

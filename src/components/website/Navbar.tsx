@@ -70,16 +70,6 @@ export default function Navbar() {
     }
   }, [isSearchVisible]);
 
-  const toggleSearch = () => {
-    setIsNavbarHidden(isSearchVisible);
-
-    if (isSearchVisible) {
-      setIsSearchVisible(false);
-    } else {
-      setIsSearchVisible(true);
-    }
-  };
-
   return (
     <>
       <nav
