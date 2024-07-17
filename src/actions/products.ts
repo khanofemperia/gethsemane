@@ -21,24 +21,6 @@ type CreateProductType = {
   mainImage: string;
 };
 
-type ColorType = {
-  name: string;
-  image: string;
-};
-
-type EditProduct = {
-  id: string;
-  name?: string;
-  price?: string;
-  slug?: string;
-  description?: string;
-  mainImage?: string | null;
-  images?: string[] | null;
-  sizes?: SizeChartType | null;
-  colors?: ColorType[] | null;
-  visibility?: string;
-};
-
 export async function CreateProductAction(data: CreateProductType) {
   try {
     const documentRef = doc(database, "products", generateId());
@@ -65,10 +47,6 @@ export async function CreateProductAction(data: CreateProductType) {
       options: {
         colors: [],
         sizes: [],
-      },
-      sizeChart: {
-        columns: [],
-        measurements: [],
       },
       seo: {
         metaTitle: "",
@@ -104,15 +82,29 @@ export async function CreateProductAction(data: CreateProductType) {
   }
 }
 
-export async function UpdateProductAction(data: EditProduct) {
+export async function UpdateProductAction(
+  data: {
+    id: string;
+    options?: Partial<ProductType["options"]>;
+    sizeChart?: SizeChartType;
+  } & Partial<Omit<ProductType, "options" | "sizeChart">>
+) {
   try {
     const docRef = doc(database, "products", data.id);
     const docSnap = await getDoc(docRef);
-    const currentProduct = docSnap.data();
+    const currentProduct = docSnap.data() as ProductType;
 
     const updatedProduct = {
       ...currentProduct,
       ...data,
+      options: {
+        ...currentProduct.options,
+        ...data.options,
+      },
+      images: {
+        ...currentProduct.images,
+        gallery: data.images?.gallery ?? currentProduct.images.gallery,
+      },
       updatedAt: currentTimestamp(),
     };
 

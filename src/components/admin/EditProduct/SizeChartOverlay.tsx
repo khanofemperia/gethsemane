@@ -1,3 +1,6 @@
+/*
+
+
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
@@ -10,24 +13,21 @@ import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-type ColumnType = {
-  index: number;
-  name: string;
-};
+type MeasurementType = { inches: string; centimeters: string };
 
-type EntryLabelType = {
-  index: number;
-  name: string;
-};
+type ColumnType = { index: number; name: string };
 
-type ProductSizeType = {
-  size: string;
-  measurements: Record<string, { in: string; cm: string }>;
+type SizeChartType = {
+  columns: ColumnType[];
+  values: {
+    name: string;
+    measurements: Record<string, MeasurementType>;
+  }[];
 };
 
 type DataType = {
   id: string;
-  chart: SizeChartType | null;
+  sizes: SizeChartType;
 };
 
 export function SizeChartButton() {
@@ -42,7 +42,7 @@ export function SizeChartButton() {
     <button
       onClick={() => showOverlay({ pageName, overlayName })}
       type="button"
-      className="w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+      className="w-9 h-9 rounded-full absolute top-2 right-2 flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
     >
       <EditIcon size={20} />
     </button>
@@ -50,23 +50,19 @@ export function SizeChartButton() {
 }
 
 export function SizeChartOverlay({ data }: { data: DataType }) {
-  const chartExists =
-    data.chart !== null && Object.keys(data.chart || {}).length > 0;
-  const chartColumns = chartExists
-    ? (data.chart?.columns || []).sort((a: any, b: any) => a.index - b.index)
-    : [];
-  const chartEntryLabels = chartExists
-    ? (data.chart?.entryLabels || []).sort(
-        (a: any, b: any) => a.index - b.index
-      )
-    : [];
-  const chartEntries = chartExists ? data.chart?.sizes || [] : [];
+  const sizes =
+    data.sizes && Array.isArray(data.sizes.values) ? data.sizes.values : [];
+  const chartColumns =
+    data.sizes && data.sizes.columns ? data.sizes.columns : [];
+  const chartEntryLabels =
+    sizes.length > 0 ? sizes.map((size) => size.name) : [];
+  const chartEntries = sizes.length > 0 ? sizes : [];
 
-  const [showChart, setShowChart] = useState<boolean>(chartExists || false);
-  const [columns, setColumns] = useState<ColumnType[]>(chartColumns);
-  const [entryLabels, setEntryLabels] =
-    useState<EntryLabelType[]>(chartEntryLabels);
-  const [entries, setEntries] = useState<ProductSizeType[]>(chartEntries);
+  const chartExists = sizes.length > 0;
+  const [showChart, setShowChart] = useState<boolean>(chartExists);
+  const [columns, setColumns] = useState(chartColumns);
+  const [entryLabels, setEntryLabels] = useState(chartEntryLabels);
+  const [entries, setEntries] = useState(chartEntries);
   const [measurementInputs, setMeasurementInputs] = useState<
     Record<string, string>
   >({});
@@ -125,16 +121,33 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
 
     setLoading(true);
 
-    const updatedChart = {
+    const updatedChart: SizeChartType = {
       columns,
-      entryLabels: entryLabels,
-      sizes: entries,
+      values: entries.map((entry) => ({
+        name: entry.name,
+        measurements: entry.measurements,
+      })),
     };
 
+    console.log("Updated chart data:", updatedChart);
+
     try {
+      const getSizeOptions = (
+        columns: ColumnType[],
+        entryLabels: string[],
+        updatedChart: SizeChartType
+      ): SizeChartType => {
+        if (columns.length && entryLabels.length) {
+          return updatedChart;
+        }
+        return { columns: [], values: [] };
+      };
+
       const result = await UpdateProductAction({
         id: data.id,
-        sizes: columns.length && entryLabels.length ? updatedChart : null,
+        options: {
+          sizes: getSizeOptions(columns, entryLabels, updatedChart),
+        },
       });
 
       if (!(columns.length && entryLabels.length)) {
@@ -159,12 +172,14 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
 
   const generateNewSizes = () => {
     const newSizes = entryLabels.map((entryLabel) => {
-      const size = entryLabel.name;
+      const name = entryLabel;
       const measurements = Object.fromEntries(
-        columns.slice(1).map((col) => [col.name, { in: "0", cm: "0" }])
+        columns
+          .filter((col) => col.name.toLowerCase() !== "size")
+          .map((col) => [col.name, { inches: "0", centimeters: "0" }])
       );
 
-      return { size, measurements };
+      return { name, measurements };
     });
 
     setEntries(newSizes);
@@ -196,13 +211,8 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
       .map((inputValue: string) => inputValue.trim())
       .filter(Boolean);
 
-    const newEntryLabels = values.map((name, index) => ({
-      index: index + 1,
-      name: name.trim(),
-    }));
-
     setShowChart(false);
-    setEntryLabels(newEntryLabels);
+    setEntryLabels(values);
     setMeasurementInputs({});
     generateNewSizes();
   };
@@ -250,8 +260,8 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
 
           if (excludedColumns.includes(columnName.toUpperCase())) {
             measurements = {
-              in: updatedValue,
-              cm: updatedValue,
+              inches: updatedValue,
+              centimeters: updatedValue,
             };
           } else {
             const floatValue = parseFloat(updatedValue);
@@ -261,11 +271,11 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
             ).toFixed(1);
 
             measurements = {
-              in:
+              inches:
                 floatValue % 1 === 0
                   ? String(parseInt(updatedValue))
                   : updatedValue,
-              cm:
+              centimeters:
                 parseFloat(centimeters) % 1 === 0
                   ? String(parseInt(centimeters))
                   : centimeters,
@@ -325,13 +335,8 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                 >
-                  <ArrowLeftIcon
-                    className="fill-blue -ml-[2px]"
-                    size={20}
-                  />
-                  <span className="font-semibold text-sm text-blue">
-                    Sizes
-                  </span>
+                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                  <span className="font-semibold text-sm text-blue">Sizes</span>
                 </button>
                 <button
                   onClick={handleSave}
@@ -389,9 +394,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                       <input
                         onChange={handleEntryLabelsInputChange}
                         defaultValue={
-                          entryLabels.length
-                            ? entryLabels.map((label) => label.name).join(", ")
-                            : ""
+                          entryLabels.length ? entryLabels.join(", ") : ""
                         }
                         className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                         type="text"
@@ -414,7 +417,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                       <h2 className="font-semibold text-sm mb-4">Inches</h2>
                       <div className="border w-full max-w-[max-content] rounded overflow-y-hidden overflow-x-visible custom-x-scrollbar">
                         <table className="w-max">
-                          <thead className="h-10 border-b border-neutral-200 bg-gray">
+                          <thead className="h-10 border-b border-neutral-200 bg-neutral-100">
                             <tr>
                               {columns.map((column, index) => (
                                 <th
@@ -445,12 +448,12 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                                 }`}
                               >
                                 <td className="text-sm text-center border-r w-[100px] sticky left-0 bg-neutral-100">
-                                  {entry.size}
+                                  {entry.name}
                                 </td>
                                 {columns.slice(1).map((column, columnIndex) => (
                                   <td
                                     key={columnIndex}
-                                    className={`text-center w-[100px] ${
+                                    className={`text-center w-[132px] ${
                                       columnIndex === columns.length - 2
                                         ? ""
                                         : " border-r border-neutral-200"
@@ -469,11 +472,11 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                                             ]
                                           : entry.measurements[
                                               column.name as keyof typeof entry.measurements
-                                            ]?.in === "0"
+                                            ]?.inches === "0"
                                           ? ""
                                           : entry.measurements[
                                               column.name as keyof typeof entry.measurements
-                                            ]?.in || ""
+                                            ]?.inches || ""
                                       }
                                       onChange={handleMeasurementInputChange(
                                         entryIndex,
@@ -494,7 +497,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                       </h2>
                       <div className="border w-full max-w-[max-content] rounded overflow-y-hidden overflow-x-visible custom-x-scrollbar">
                         <table className="w-max bg-white">
-                          <thead className="h-10 border-b border-neutral-200 bg-gray">
+                          <thead className="h-10 border-b border-neutral-200 bg-neutral-100">
                             <tr>
                               {columns.map((column, index) => (
                                 <th
@@ -525,12 +528,12 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                                 }`}
                               >
                                 <td className="text-sm text-center border-r w-[100px] sticky left-0 bg-neutral-100">
-                                  {entry.size}
+                                  {entry.name}
                                 </td>
                                 {columns.slice(1).map((column, columnIndex) => (
                                   <td
                                     key={columnIndex}
-                                    className={`text-center w-[100px] ${
+                                    className={`text-center w-[132px] ${
                                       columnIndex === columns.length - 2
                                         ? ""
                                         : " border-r border-neutral-200"
@@ -539,7 +542,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                                     {
                                       entry.measurements[
                                         column.name as keyof typeof entry.measurements
-                                      ]?.cm
+                                      ]?.centimeters
                                     }
                                   </td>
                                 ))}
@@ -585,6 +588,247 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
           hideAlertMessage={hideAlertMessage}
           type={alertMessageType}
         />
+      )}
+    </>
+  );
+}
+
+
+
+*/
+
+"use client";
+
+import { useOverlayStore } from "@/zustand/admin/overlayStore";
+import { EditIcon } from "@/icons";
+import Overlay from "@/ui/Overlay";
+import { useState, useEffect, useCallback } from "react";
+import { HiPlus, HiMinus } from "react-icons/hi";
+
+export function SizeChartButton() {
+  const { showOverlay } = useOverlayStore();
+
+  const { pageName, overlayName } = useOverlayStore((state) => ({
+    pageName: state.pages.editProduct.name,
+    overlayName: state.pages.editProduct.overlays.sizes.name,
+  }));
+
+  return (
+    <button
+      onClick={() => showOverlay({ pageName, overlayName })}
+      type="button"
+      className="w-9 h-9 rounded-full absolute top-2 right-2 flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+    >
+      <EditIcon size={20} />
+    </button>
+  );
+}
+
+type TableRow = {
+  [key: string]: string;
+};
+
+type TableData = {
+  inches: TableRow[];
+  centimeters: TableRow[];
+};
+
+type TableElementType = {
+  data: TableRow[];
+  columns: string[];
+};
+
+type DataType = {
+  id: string;
+  sizes: TableData;
+};
+
+export function SizeChartOverlay({ data }: { data: DataType }) {
+  const [tableData, setTableData] = useState<TableData>({
+    inches: [],
+    centimeters: [],
+  });
+
+  useEffect(() => {
+    setTableData(data.sizes || { inches: [], centimeters: [] });
+  }, [data]);
+
+  const columns =
+    tableData.inches.length > 0 ? Object.keys(tableData.inches[0]) : [];
+
+  const addRow = useCallback(() => {
+    const newRow =
+      columns.length > 0
+        ? Object.fromEntries(columns.map((col) => [col, ""]))
+        : { Column1: "" };
+    setTableData((prevData) => ({
+      inches: [...prevData.inches, newRow],
+      centimeters: [...prevData.centimeters, newRow],
+    }));
+  }, [columns]);
+
+  const removeRow = useCallback(() => {
+    setTableData((prevData) => {
+      if (prevData.inches.length > 1) {
+        return {
+          inches: prevData.inches.slice(0, -1),
+          centimeters: prevData.centimeters.slice(0, -1),
+        };
+      }
+      return prevData;
+    });
+  }, []);
+
+  const addColumn = useCallback(() => {
+    const newColumnName = `Column${columns.length + 1}`;
+    setTableData((prevData) => ({
+      inches:
+        prevData.inches.length > 0
+          ? prevData.inches.map((row) => ({ ...row, [newColumnName]: "" }))
+          : [{ [newColumnName]: "" }],
+      centimeters:
+        prevData.centimeters.length > 0
+          ? prevData.centimeters.map((row) => ({ ...row, [newColumnName]: "" }))
+          : [{ [newColumnName]: "" }],
+    }));
+  }, [columns]);
+
+  const removeColumn = useCallback(() => {
+    if (columns.length > 2) {
+      const lastColumn = columns[columns.length - 1];
+      setTableData((prevData) => ({
+        inches: prevData.inches.map(({ [lastColumn]: _, ...rest }) => rest),
+        centimeters: prevData.centimeters.map(
+          ({ [lastColumn]: _, ...rest }) => rest
+        ),
+      }));
+    }
+  }, [columns]);
+
+  const Table: React.FC<TableElementType> = ({ data, columns }) => (
+    <div className="w-max max-w-full relative border overflow-y-hidden custom-x-scrollbar rounded-md bg-white">
+      <table className="table-fixed w-max text-left">
+        <thead className="font-semibold text-sm">
+          <tr>
+            {columns.map((column, index) => (
+              <td
+                key={index}
+                className={`w-28 max-w-28 py-2 px-4 text-center border-b border-l first:border-l-0 relative focus:before:content-[''] focus:before:absolute focus:before:top-[1px] focus:before:bottom-[1px] focus:before:left-[1px] focus:before:right-[1px] focus:before:border focus:before:border-black focus:before:rounded focus:cursor-text ${
+                  index === 0 ? "bg-lightgray" : ""
+                }`}
+                contentEditable="true"
+              >
+                {column}
+              </td>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, rowIndex) => (
+            <tr key={rowIndex} className="py-0">
+              {columns.map((column, colIndex) => (
+                <td
+                  key={colIndex}
+                  className={`w-28 max-w-28 py-2 px-4 text-center border-l first:border-l-0 relative focus:before:content-[''] focus:before:absolute focus:before:top-[1px] focus:before:bottom-[1px] focus:before:left-[1px] focus:before:right-[1px] focus:before:border focus:before:border-black focus:before:rounded focus:cursor-text ${
+                    rowIndex === data.length - 1 ? "" : "border-b"
+                  } ${colIndex === 0 ? "bg-lightgray" : ""}`}
+                  contentEditable="true"
+                >
+                  {row[column]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const { isOverlayVisible } = useOverlayStore((state) => ({
+    pageName: state.pages.editProduct.name,
+    overlayName: state.pages.editProduct.overlays.sizes.name,
+    isOverlayVisible: state.pages.editProduct.overlays.sizes.isVisible,
+  }));
+
+  useEffect(() => {
+    if (isOverlayVisible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "visible";
+    }
+
+    return () => {
+      if (!isOverlayVisible) {
+        document.body.style.overflow = "visible";
+      }
+    };
+  }, [isOverlayVisible]);
+
+  return (
+    <>
+      {isOverlayVisible && (
+        <Overlay>
+          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl overflow-hidden bg-white md:w-[500px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
+            <div className="p-8 border mx-auto">
+              <div className="mb-5 flex gap-5">
+                <div className="flex items-center gap-2">
+                  <div className="font-semibold text-sm">Rows</div>
+                  <div className="w-max flex border rounded-full overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={removeRow}
+                      className="h-6 w-9 grid place-items-center ease-in-out duration-300 transition hover:bg-neutral-200"
+                    >
+                      <HiMinus className="fill-stone-500" size={20} />
+                    </button>
+                    <div className="w-[1px] bg-gray-300"></div>
+                    <button
+                      type="button"
+                      onClick={addRow}
+                      className="h-6 w-9 grid place-items-center ease-in-out duration-300 transition hover:bg-neutral-200"
+                    >
+                      <HiPlus className="fill-gray" size={18} />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="font-semibold text-sm">Columns</div>
+                  <div className="w-max flex border rounded-full overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={removeColumn}
+                      className="h-6 w-9 grid place-items-center ease-in-out duration-300 transition hover:bg-neutral-200"
+                    >
+                      <HiMinus className="fill-gray" size={20} />
+                    </button>
+                    <div className="w-[1px] bg-gray-300"></div>
+                    <button
+                      type="button"
+                      onClick={addColumn}
+                      className="h-6 w-9 grid place-items-center ease-in-out duration-300 transition hover:bg-neutral-200"
+                    >
+                      <HiPlus className="fill-gray" size={18} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {tableData.inches.length > 0 ? (
+                <>
+                  <div className="mb-5">
+                    <h3 className="font-semibold mb-2">Inches</h3>
+                    <Table data={tableData.inches} columns={columns} />
+                  </div>
+                  <div className="mb-5">
+                    <h3 className="font-semibold mb-2">Centimeters</h3>
+                    <Table data={tableData.centimeters} columns={columns} />
+                  </div>
+                </>
+              ) : (
+                <p>No data available. Add a row to start.</p>
+              )}
+            </div>
+          </div>
+        </Overlay>
       )}
     </>
   );

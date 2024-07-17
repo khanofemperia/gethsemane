@@ -139,26 +139,22 @@ type ProductType = {
       name: string;
       image: string;
     }>;
-    sizes: Array<{
-      name: string;
-      measurements: Record<
-        string,
-        {
-          inches: string;
-          centimeters: string;
-        }
-      >;
-    }>;
-  };
-  sizeChart: {
-    columns: Array<{
-      index: number;
-      name: string;
-    }>;
-    measurements: Array<{
-      size: string;
-      values: Record<string, string>;
-    }>;
+    sizes: {
+      columns: Array<{
+        index: number;
+        name: string;
+      }>;
+      values: Array<{
+        name: string;
+        measurements: Record<
+          string,
+          {
+            inches: string;
+            centimeters: string;
+          }
+        >;
+      }>;
+    };
   };
   seo: {
     metaTitle: string;
