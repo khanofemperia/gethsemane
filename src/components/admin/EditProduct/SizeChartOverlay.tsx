@@ -604,6 +604,12 @@ import { EditIcon } from "@/icons";
 import Overlay from "@/ui/Overlay";
 import { useState, useEffect, useCallback } from "react";
 import { HiPlus, HiMinus } from "react-icons/hi";
+import SizesTable from "./SizesTable";
+import { clsx } from "clsx";
+import AlertMessage from "@/components/shared/AlertMessage";
+import Spinner from "@/ui/Spinners/White";
+import { ArrowLeftIcon } from "@/icons";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function SizeChartButton() {
   const { showOverlay } = useOverlayStore();
@@ -633,17 +639,19 @@ type TableData = {
   centimeters: TableRow[];
 };
 
-type TableElementType = {
-  data: TableRow[];
-  columns: string[];
-};
-
 type DataType = {
   id: string;
   sizes: TableData;
 };
 
 export function SizeChartOverlay({ data }: { data: DataType }) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
+    AlertMessageType.NEUTRAL
+  );
+
   const [tableData, setTableData] = useState<TableData>({
     inches: [],
     centimeters: [],
@@ -705,74 +713,141 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
     }
   }, [columns]);
 
-  const Table: React.FC<TableElementType> = ({ data, columns }) => (
-    <div className="w-max max-w-full relative border overflow-y-hidden custom-x-scrollbar rounded-md bg-white">
-      <table className="table-fixed w-max text-left">
-        <thead className="font-semibold text-sm">
-          <tr>
-            {columns.map((column, index) => (
-              <td
-                key={index}
-                className={`w-28 max-w-28 py-2 px-4 text-center border-b border-l first:border-l-0 relative focus:before:content-[''] focus:before:absolute focus:before:top-[1px] focus:before:bottom-[1px] focus:before:left-[1px] focus:before:right-[1px] focus:before:border focus:before:border-black focus:before:rounded focus:cursor-text ${
-                  index === 0 ? "bg-lightgray" : ""
-                }`}
-                contentEditable="true"
-              >
-                {column}
-              </td>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="py-0">
-              {columns.map((column, colIndex) => (
-                <td
-                  key={colIndex}
-                  className={`w-28 max-w-28 py-2 px-4 text-center border-l first:border-l-0 relative focus:before:content-[''] focus:before:absolute focus:before:top-[1px] focus:before:bottom-[1px] focus:before:left-[1px] focus:before:right-[1px] focus:before:border focus:before:border-black focus:before:rounded focus:cursor-text ${
-                    rowIndex === data.length - 1 ? "" : "border-b"
-                  } ${colIndex === 0 ? "bg-lightgray" : ""}`}
-                  contentEditable="true"
-                >
-                  {row[column]}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+  const updateInchesData = (updatedData: TableRow[]) => {
+    setTableData((prevData) => ({
+      ...prevData,
+      inches: updatedData,
+    }));
+  };
+
+  const updateCentimetersData = (updatedData: TableRow[]) => {
+    setTableData((prevData) => ({
+      ...prevData,
+      centimeters: updatedData,
+    }));
+  };
+
+  const updateColumns = (updatedColumns: string[]) => {
+    setTableData((prevData) => {
+      const updateRows = (rows: TableRow[]) =>
+        rows.map((row) => {
+          const newRow: TableRow = {};
+          updatedColumns.forEach((col) => {
+            newRow[col] = row[col] || "";
+          });
+          return newRow;
+        });
+
+      return {
+        inches: updateRows(prevData.inches),
+        centimeters: updateRows(prevData.centimeters),
+      };
+    });
+  };
+
+  const { hideOverlay } = useOverlayStore();
+
+  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
+    (state) => ({
+      pageName: state.pages.editProduct.name,
+      overlayName: state.pages.editProduct.overlays.sizes.name,
+      isOverlayVisible: state.pages.editProduct.overlays.sizes.isVisible,
+    })
   );
 
-  const { isOverlayVisible } = useOverlayStore((state) => ({
-    pageName: state.pages.editProduct.name,
-    overlayName: state.pages.editProduct.overlays.sizes.name,
-    isOverlayVisible: state.pages.editProduct.overlays.sizes.isVisible,
-  }));
-
   useEffect(() => {
-    if (isOverlayVisible) {
+    if (isOverlayVisible || showAlert) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "visible";
     }
 
     return () => {
-      if (!isOverlayVisible) {
+      if (!isOverlayVisible && !showAlert) {
         document.body.style.overflow = "visible";
       }
     };
-  }, [isOverlayVisible]);
+  }, [isOverlayVisible, showAlert]);
+
+  const hideAlertMessage = () => {
+    setShowAlert(false);
+    setAlertMessage("");
+    setAlertMessageType(AlertMessageType.NEUTRAL);
+  };
+
+  // const handleSave = () => {
+  //   // What do we console.log here?
+  //   // How do we get data from the table?
+  //   // How do we ensure both tables are correctly synched; if cell5/row3 in Inches table is filled, is cell5/row3 also filled in Centimeters table?
+  // };
+
+  const handleSave = () => {
+    console.log("Inches Table Data:", tableData.inches);
+    console.log("Centimeters Table Data:", tableData.centimeters);
+
+    // Check if the data is synchronized
+    const isSynchronized =
+      tableData.inches.length === tableData.centimeters.length &&
+      tableData.inches.every(
+        (row, index) =>
+          Object.keys(row).length ===
+          Object.keys(tableData.centimeters[index]).length
+      );
+
+    if (!isSynchronized) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage(
+        "Tables are not synchronized. Please ensure they have the same number of rows and columns."
+      );
+      setShowAlert(true);
+      return;
+    }
+
+    // Additional save logic here
+  };
 
   return (
     <>
       {isOverlayVisible && (
         <Overlay>
-          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl overflow-hidden bg-white md:w-[500px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
-            <div className="p-8 border mx-auto">
+          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl overflow-hidden bg-white md:w-max md:max-w-[740px] md:min-w-[516px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
+            <div className="hidden md:flex md:items-center md:justify-between py-2 pr-4 pl-2">
+              <button
+                onClick={() => {
+                  hideOverlay({ pageName, overlayName });
+                }}
+                type="button"
+                className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+              >
+                <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                <span className="font-semibold text-sm text-blue">Sizes</span>
+              </button>
+              <button
+                onClick={handleSave}
+                type="button"
+                disabled={loading}
+                className={clsx(
+                  "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  {
+                    "bg-opacity-50": loading,
+                    "active:bg-blue-dimmed": !loading,
+                  }
+                )}
+              >
+                {loading ? (
+                  <div className="flex gap-1 items-center justify-center w-full h-full">
+                    <Spinner />
+                    <span className="text-white">Saving</span>
+                  </div>
+                ) : (
+                  <span className="text-white">Save</span>
+                )}
+              </button>
+            </div>
+            <div className="p-5">
               <div className="mb-5 flex gap-5">
                 <div className="flex items-center gap-2">
-                  <div className="font-semibold text-sm">Rows</div>
+                  <span className="font-semibold text-sm">Rows</span>
                   <div className="w-max flex border rounded-full overflow-hidden">
                     <button
                       type="button"
@@ -781,7 +856,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                     >
                       <HiMinus className="fill-stone-500" size={20} />
                     </button>
-                    <div className="w-[1px] bg-gray-300"></div>
+                    <div className="w-[1px] bg-[#dcdfe4]"></div>
                     <button
                       type="button"
                       onClick={addRow}
@@ -792,7 +867,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="font-semibold text-sm">Columns</div>
+                  <span className="font-semibold text-sm">Columns</span>
                   <div className="w-max flex border rounded-full overflow-hidden">
                     <button
                       type="button"
@@ -801,7 +876,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                     >
                       <HiMinus className="fill-gray" size={20} />
                     </button>
-                    <div className="w-[1px] bg-gray-300"></div>
+                    <div className="w-[1px] bg-[#dcdfe4]"></div>
                     <button
                       type="button"
                       onClick={addColumn}
@@ -815,12 +890,26 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
               {tableData.inches.length > 0 ? (
                 <>
                   <div className="mb-5">
-                    <h3 className="font-semibold mb-2">Inches</h3>
-                    <Table data={tableData.inches} columns={columns} />
+                    <h2 className="font-semibold text-sm text-gray mb-2">
+                      Inches
+                    </h2>
+                    <SizesTable
+                      data={tableData.inches}
+                      columns={columns}
+                      onUpdate={updateInchesData}
+                      onColumnUpdate={updateColumns}
+                    />
                   </div>
                   <div className="mb-5">
-                    <h3 className="font-semibold mb-2">Centimeters</h3>
-                    <Table data={tableData.centimeters} columns={columns} />
+                    <h2 className="font-semibold text-sm text-gray mb-2">
+                      Centimeters
+                    </h2>
+                    <SizesTable
+                      data={tableData.centimeters}
+                      columns={columns}
+                      onUpdate={updateCentimetersData}
+                      onColumnUpdate={updateColumns}
+                    />
                   </div>
                 </>
               ) : (
@@ -829,6 +918,13 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
             </div>
           </div>
         </Overlay>
+      )}
+      {showAlert && (
+        <AlertMessage
+          message={alertMessage}
+          hideAlertMessage={hideAlertMessage}
+          type={alertMessageType}
+        />
       )}
     </>
   );
