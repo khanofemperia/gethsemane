@@ -344,93 +344,7 @@ export default async function EditProduct({
       <SizeChartOverlay
         data={{
           id,
-          // sizes: options.sizes,
-          sizes: {
-            inches: [
-              {
-                Size: "S",
-                US: "4",
-                Bust: "33.9-35.5",
-                Waist: "26-27.6",
-                Hips: "35.9-37.4",
-                Height: "5'5\"-5'7\"",
-              },
-              {
-                Size: "M",
-                US: "6",
-                Bust: "35.5-37",
-                Waist: "27.6-29.2",
-                Hips: "37.4-39",
-                Height: "5'7\"-5'9\"",
-              },
-              {
-                Size: "L",
-                US: "8/10",
-                Bust: "37.4-39.8",
-                Waist: "29.6-31.9",
-                Hips: "39.4-41.8",
-                Height: "5'9\"-5'11\"",
-              },
-              {
-                Size: "XL",
-                US: "12",
-                Bust: "39.8-42.2",
-                Waist: "31.9-34.3",
-                Hips: "41.8-44.1",
-                Height: "5'9\"-5'11\"",
-              },
-              {
-                Size: "XXL",
-                US: "14",
-                Bust: "42.2-44.5",
-                Waist: "34.3-36.6",
-                Hips: "44.1-46.5",
-                Height: "5'11\"-6'1\"",
-              },
-            ],
-            centimeters: [
-              {
-                Size: "S",
-                US: "4",
-                Bust: "86-90",
-                Waist: "66-70",
-                Hips: "91-95",
-                Height: "165-170",
-              },
-              {
-                Size: "M",
-                US: "6",
-                Bust: "90-94",
-                Waist: "70-74",
-                Hips: "95-99",
-                Height: "170-175",
-              },
-              {
-                Size: "L",
-                US: "8/10",
-                Bust: "95-101",
-                Waist: "75-81",
-                Hips: "100-106",
-                Height: "175-180",
-              },
-              {
-                Size: "XL",
-                US: "12",
-                Bust: "101-107",
-                Waist: "81-87",
-                Hips: "106-112",
-                Height: "175-180",
-              },
-              {
-                Size: "XXL",
-                US: "14",
-                Bust: "107-113",
-                Waist: "87-93",
-                Hips: "112-118",
-                Height: "180-185",
-              },
-            ],
-          },
+          sizes: options.sizes,
         }}
       />
       {/* <DescriptionOverlay data={{ id, description }} />
@@ -482,37 +396,110 @@ const exampleProduct: ProductType = {
       },
     ],
     sizes: {
-      columns: [
-        { index: 0, name: "Size" },
-        { index: 1, name: "Bust" },
-        { index: 2, name: "Length" },
-      ],
-      values: [
-        {
-          name: "S",
-          measurements: {
-            Bust: { inches: "29.92-33.86", centimeters: "76-86" },
-            Length: { inches: "11.42", centimeters: "29" },
+      inches: {
+        columns: [
+          { label: "Size", order: 1 },
+          { label: "US", order: 2 },
+          { label: "Bust", order: 3 },
+          { label: "Waist", order: 4 },
+          { label: "Hips", order: 5 },
+          { label: "Height", order: 6 },
+        ],
+        rows: [
+          {
+            Size: "S",
+            US: "4",
+            Bust: "33.9-35.5",
+            Waist: "26-27.6",
+            Hips: "35.9-37.4",
+            Height: "5'5\"-5'7\"",
           },
-        },
-        {
-          name: "M",
-          measurements: {
-            Bust: {
-              inches: "31.50-35.43",
-              centimeters: "80-90",
-            },
-            Length: { inches: "11.81", centimeters: "30" },
+          {
+            Size: "M",
+            US: "6",
+            Bust: "35.5-37",
+            Waist: "27.6-29.2",
+            Hips: "37.4-39",
+            Height: "5'7\"-5'9\"",
           },
-        },
-        {
-          name: "L",
-          measurements: {
-            Bust: { inches: "33.07-37.01", centimeters: "84-94" },
-            Length: { inches: "12.20", centimeters: "31" },
+          {
+            Size: "L",
+            US: "8/10",
+            Bust: "37.4-39.8",
+            Waist: "29.6-31.9",
+            Hips: "39.4-41.8",
+            Height: "5'9\"-5'11\"",
           },
-        },
-      ],
+          {
+            Size: "XL",
+            US: "12",
+            Bust: "39.8-42.2",
+            Waist: "31.9-34.3",
+            Hips: "41.8-44.1",
+            Height: "5'9\"-5'11\"",
+          },
+          {
+            Size: "XXL",
+            US: "14",
+            Bust: "42.2-44.5",
+            Waist: "34.3-36.6",
+            Hips: "44.1-46.5",
+            Height: "5'11\"-6'1\"",
+          },
+        ],
+      },
+      centimeters: {
+        columns: [
+          { label: "Size", order: 1 },
+          { label: "US", order: 2 },
+          { label: "Bust", order: 3 },
+          { label: "Waist", order: 4 },
+          { label: "Hips", order: 5 },
+          { label: "Height", order: 6 },
+        ],
+        rows: [
+          {
+            Size: "S",
+            US: "4",
+            Bust: "86-90",
+            Waist: "66-70",
+            Hips: "91-95",
+            Height: "165-170",
+          },
+          {
+            Size: "M",
+            US: "6",
+            Bust: "90-94",
+            Waist: "70-74",
+            Hips: "95-99",
+            Height: "170-175",
+          },
+          {
+            Size: "L",
+            US: "8/10",
+            Bust: "95-101",
+            Waist: "75-81",
+            Hips: "100-106",
+            Height: "175-180",
+          },
+          {
+            Size: "XL",
+            US: "12",
+            Bust: "101-107",
+            Waist: "81-87",
+            Hips: "106-112",
+            Height: "175-180",
+          },
+          {
+            Size: "XXL",
+            US: "14",
+            Bust: "107-113",
+            Waist: "87-93",
+            Hips: "112-118",
+            Height: "180-185",
+          },
+        ],
+      },
     },
   },
   seo: {

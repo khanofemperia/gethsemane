@@ -9,10 +9,10 @@ export default function SpinnerGray({
     <svg
       stroke="gray"
       fill="none"
-      stroke-width="2"
+      strokeWidth="2"
       viewBox="0 0 24 24"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="animate-spin text-center icon-md"
       height={size}
       width={size}

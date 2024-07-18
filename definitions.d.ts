@@ -7,11 +7,6 @@ type ColorType = {
   image: string;
 };
 
-type MeasurementType = {
-  in: string;
-  cm: string;
-};
-
 type DateRangeType = {
   startDate: string;
   endDate: string;
@@ -51,22 +46,6 @@ type CategoryType = {
   name: string;
   image: string;
   visibility: VisibilityType;
-};
-
-type SizeChartColumnType = {
-  index: number;
-  name: string;
-};
-
-type SizeType = {
-  size: string;
-  measurements: Record<string, MeasurementType>;
-};
-
-type SizeChartType = {
-  columns: SizeChartColumnType[];
-  entryLabels: SizeChartColumnType[];
-  sizes: SizeType[];
 };
 
 type UpsellType = {
@@ -115,6 +94,20 @@ type PageHeroType = {
 };
 
 /***************************************************************/
+type ColumnType = { label: string; order: number };
+type RowType = { [key: string]: string };
+
+type SizeChartType = {
+  inches: {
+    columns: ColumnType[];
+    rows: RowType[];
+  };
+  centimeters: {
+    columns: ColumnType[];
+    rows: RowType[];
+  };
+};
+
 type ProductType = {
   id: string;
   name: string;
@@ -139,22 +132,7 @@ type ProductType = {
       name: string;
       image: string;
     }>;
-    sizes: {
-      columns: Array<{
-        index: number;
-        name: string;
-      }>;
-      values: Array<{
-        name: string;
-        measurements: Record<
-          string,
-          {
-            inches: string;
-            centimeters: string;
-          }
-        >;
-      }>;
-    };
+    sizes: SizeChartType;
   };
   seo: {
     metaTitle: string;

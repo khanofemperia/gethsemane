@@ -86,8 +86,7 @@ export async function UpdateProductAction(
   data: {
     id: string;
     options?: Partial<ProductType["options"]>;
-    sizeChart?: SizeChartType;
-  } & Partial<Omit<ProductType, "options" | "sizeChart">>
+  } & Partial<Omit<ProductType, "options">>
 ) {
   try {
     const docRef = doc(database, "products", data.id);
@@ -97,13 +96,13 @@ export async function UpdateProductAction(
     const updatedProduct = {
       ...currentProduct,
       ...data,
-      options: {
-        ...currentProduct.options,
-        ...data.options,
-      },
       images: {
         ...currentProduct.images,
         gallery: data.images?.gallery ?? currentProduct.images.gallery,
+      },
+      options: {
+        ...currentProduct.options,
+        ...data.options,
       },
       updatedAt: currentTimestamp(),
     };

@@ -2,15 +2,15 @@
 
 import { useCallback } from "react";
 
-type TableRow = {
+type TableRowType = {
   [key: string]: string;
 };
 
 type SizesTableType = {
-  data: TableRow[];
+  data: TableRowType[];
   columns: string[];
-  onUpdate: (updatedData: TableRow[]) => void;
-  onColumnUpdate: (updatedColumns: string[]) => void;
+  onUpdate: (updatedData: TableRowType[]) => void;
+  onColumnUpdate: (updatedColumns: { label: string; order: number }[]) => void;
 };
 
 export default function SizesTable({
@@ -42,9 +42,10 @@ export default function SizesTable({
   };
 
   const handleColumnChange = (index: number, newValue: string) => {
-    const updatedColumns = columns.map((col, i) =>
-      i === index ? newValue : col
-    );
+    const updatedColumns = columns.map((col, i) => ({
+      label: i === index ? newValue : col,
+      order: i + 1,
+    }));
     onColumnUpdate(updatedColumns);
   };
 
