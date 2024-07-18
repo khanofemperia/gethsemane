@@ -171,99 +171,59 @@ export default async function EditProduct({
             </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
-            <div className="p-5 flex flex-col gap-5">
-              <div className="relative border rounded-xl p-5">
-                <div>
-                  <h3 className="text-xs text-gray mb-4">Sizes</h3>
-                  <div>
-                    {/* {options.sizes.length ? (
-                      <div className="w-full max-w-[508px] flex flex-wrap gap-2 *:h-9 *:min-w-14 *:px-4 *:rounded-full *:flex *:items-center *:justify-center *:bg-lightgray">
-                        {options.sizes.map((size, index) => (
-                          <span key={index}>{size.name}</span>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="italic text-gray">Nothing yet</p>
-                    )} */}
-                  </div>
+            <div className="flex flex-col gap-5 p-5">
+              <div className="relative border rounded-xl pl-5 pr-[10px] pt-2 pb-5">
+                <div className="w-full flex items-center justify-between">
+                  {options.sizes.inches.rows.length === 0 ? (
+                    <h3 className="text-xs text-gray">No sizes</h3>
+                  ) : (
+                    <h3 className="text-xs text-gray">Sizes</h3>
+                  )}
+                  <SizeChartButton />
                 </div>
-                <SizeChartButton />
+                <div className="flex flex-wrap gap-2">
+                  {(() => {
+                    if (
+                      options.sizes.inches.columns &&
+                      options.sizes.inches.rows
+                    ) {
+                      const firstColumnLabel =
+                        options.sizes.inches.columns.find(
+                          (column) => column.order === 1
+                        )?.label;
+
+                      return options.sizes.inches.rows.map((row, index) => (
+                        <div
+                          key={index}
+                          className="min-w-12 w-max h-7 px-4 text-sm font-medium select-none rounded-full border flex items-center justify-center"
+                        >
+                          {firstColumnLabel && row[firstColumnLabel]}
+                        </div>
+                      ));
+                    }
+                    return null;
+                  })()}
+                </div>
               </div>
-              <div className="relative border rounded-xl p-5">
-                <div>
-                  <h3 className="text-xs text-gray mb-4">Gallery</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {!images.gallery ||
-                    images.gallery.every(
-                      (image) => !isValidRemoteImage(image)
-                    ) ? (
-                      <p className="italic text-gray">Nothing yet</p>
-                    ) : (
-                      images.gallery.map(
-                        (image, index) =>
-                          isValidRemoteImage(image) && (
-                            <div
-                              key={index}
-                              className="max-w-[148px] lg:max-w-[210px] w-[calc(50%-4px)] border rounded-xl aspect-square flex items-center justify-center overflow-hidden"
-                            >
-                              <Image
-                                src={image}
-                                alt={name}
-                                width={210}
-                                height={210}
-                                priority
-                              />
-                            </div>
-                          )
-                      )
-                    )}
-                  </div>
-                </div>
-                <ImagesButton />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <p className="text-sm mb-4 md:max-w-[85%]">
-            Products that come in different sizes make it easy for people to
-            find what they're looking for. And with lots of colors available,
-            everyone can show off their style and personality.
-          </p>
-          <div className="w-full shadow rounded-xl bg-white">
-            <div className="w-full h-14 border-b flex items-center justify-between pl-5 pr-[10px]">
-              <h2 className="font-semibold text-xl">Options</h2>
-            </div>
-            <div className="p-5">
-              <div className="flex flex-col gap-5 *:border *:rounded-xl">
-                <div>
-                  <div className="w-full h-14 border-b flex items-center justify-between pl-5 pr-[10px]">
-                    <h3 className="text-sm font-semibold">Sizes</h3>
-                    <SizeChartButton />
-                  </div>
-                  <div className="p-5">
-                    {/* {variants.sizes.length ? (
-                      <div className="w-full max-w-[508px] flex flex-wrap gap-2 *:h-9 *:min-w-14 *:px-4 *:rounded-full *:flex *:items-center *:justify-center *:bg-lightgray">
-                        {sizes.entryLabels.map((size, index) => (
-                          <span key={index}>{size.name}</span>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="italic text-gray">Nothing yet</p>
-                    )} */}
-                  </div>
+              <div className="relative border rounded-xl pl-5 pr-[10px] pt-2 pb-5">
+                <div className="w-full flex items-center justify-between">
+                  {options.colors.length === 0 ||
+                  !options.colors.some((color) =>
+                    isValidRemoteImage(color.image)
+                  ) ? (
+                    <h3 className="text-xs text-gray">No colors</h3>
+                  ) : (
+                    <h3 className="text-xs text-gray">Colors</h3>
+                  )}
+                  <ColorsButton />
                 </div>
                 <div>
-                  <div className="w-full h-14 border-b flex items-center justify-between pl-5 pr-[10px]">
-                    <h3 className="text-sm font-semibold">Colors</h3>
-                    <ColorsButton />
-                  </div>
-                  {/* <div className="p-5 flex flex-wrap gap-2">
-                    {!colors ||
-                    !colors.some((color) => isValidRemoteImage(color.image)) ? (
-                      <p className="italic text-gray">Nothing yet</p>
-                    ) : (
-                      colors.map(
+                  {options.colors.length === 0 ||
+                  !options.colors.some((color) =>
+                    isValidRemoteImage(color.image)
+                  ) ? null : (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {options.colors.map(
                         (color, index) =>
                           isValidRemoteImage(color.image) && (
                             <div
@@ -280,15 +240,15 @@ export default async function EditProduct({
                                 />
                               </div>
                               <div className="w-full h-9 flex justify-center">
-                                <div className="w-max max-w-full px-3 font-medium flex items-center text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
+                                <div className="w-max max-w-full px-3 font-medium flex items-center text-sm text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
                                   {color.name}
                                 </div>
                               </div>
                             </div>
                           )
-                      )
-                    )}
-                  </div> */}
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -340,7 +300,7 @@ export default async function EditProduct({
       {/* <BasicDetailsOverlay data={{ id, category, name, slug, pricing }} /> */}
       {/* <MainImageOverlay data={{ id, images }} /> */}
       <ImagesOverlay data={{ id, images: images.gallery }} />
-      {/* <ColorsOverlay data={{ id, options }} /> */}
+      <ColorsOverlay data={{ id, colors: options.colors }} />
       <SizeChartOverlay
         data={{
           id,

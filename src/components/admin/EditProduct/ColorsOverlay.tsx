@@ -5,12 +5,7 @@ import { isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import {
-  ArrowLeftIcon,
-  CloseIcon,
-  EditIcon,
-  MinusIcon,
-} from "@/icons";
+import { ArrowLeftIcon, CloseIcon, EditIcon, MinusIcon } from "@/icons";
 import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
@@ -124,7 +119,7 @@ export function ColorsOverlay({ data }: { data: DataType }) {
     try {
       const result = await UpdateProductAction({
         id: data.id,
-        colors: colors.filter(({ name, image }) => name && image),
+        options: { colors: colors.filter(({ name, image }) => name && image) },
       });
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
