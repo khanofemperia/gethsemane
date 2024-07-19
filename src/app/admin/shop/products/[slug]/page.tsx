@@ -27,7 +27,7 @@ import {
   ColorsButton,
   ColorsOverlay,
 } from "@/components/admin/EditProduct/ColorsOverlay";
-import { DescriptionButton } from "@/components/admin/EditProduct/DescriptionOverlay";
+import { DescriptionButton, DescriptionOverlay } from "@/components/admin/EditProduct/DescriptionOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
 import { getProduct } from "@/lib/getData";
 
@@ -195,7 +195,7 @@ export default async function EditProduct({
                       return options.sizes.inches.rows.map((row, index) => (
                         <div
                           key={index}
-                          className="min-w-12 w-max h-7 px-4 text-sm font-medium select-none rounded-full border flex items-center justify-center"
+                          className="min-w-12 w-max h-7 px-4 text-sm font-medium select-none rounded-full bg-lightgray flex items-center justify-center"
                         >
                           {firstColumnLabel && row[firstColumnLabel]}
                         </div>
@@ -307,8 +307,8 @@ export default async function EditProduct({
           sizes: options.sizes,
         }}
       />
-      {/* <DescriptionOverlay data={{ id, description }} />
-      <VisibilityOverlay data={{ id, visibility }} /> */}
+      <DescriptionOverlay />
+      {/* <VisibilityOverlay data={{ id, visibility }} /> */}
     </>
   );
 }

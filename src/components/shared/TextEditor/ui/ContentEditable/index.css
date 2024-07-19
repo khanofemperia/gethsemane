@@ -1,0 +1,11 @@
+.ContentEditable__root {
+  border: 0;
+  display: block;
+  position: relative;
+  outline: 0;
+  padding: 32px 20px;
+  min-height: 400px;
+}
+.ContentEditable__root > :last-child {
+  margin-bottom: 0;
+}
