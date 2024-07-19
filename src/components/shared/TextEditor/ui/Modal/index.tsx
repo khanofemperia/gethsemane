@@ -1,3 +1,4 @@
+import { CloseIcon } from "@/icons";
 import "./index.css";
 
 import * as React from "react";
@@ -68,7 +69,7 @@ function PortalImpl({
           type="button"
           onClick={onClose}
         >
-          X
+          <CloseIcon size={20} />
         </button>
         <div className="Modal__content">{children}</div>
       </div>

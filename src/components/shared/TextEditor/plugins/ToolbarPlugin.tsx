@@ -1,4 +1,4 @@
-import { $createCodeNode, $isCodeNode } from "@lexical/code";
+import { $isCodeNode } from "@lexical/code";
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import {
   $isListNode,
@@ -7,7 +7,6 @@ import {
   INSERT_UNORDERED_LIST_COMMAND,
   ListNode,
 } from "@lexical/list";
-import { INSERT_EMBED_COMMAND } from "@lexical/react/LexicalAutoEmbedPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $isDecoratorBlockNode } from "@lexical/react/LexicalDecoratorBlockNode";
 import {
@@ -58,15 +57,12 @@ import { Dispatch, useCallback, useEffect, useState } from "react";
 import * as React from "react";
 
 import useModal from "../hooks/useModal";
-import DropDown, { DropDownItem } from "../ui/DropDown";
+import DropDown, { DropdownItem } from "../ui/Dropdown";
 import DropdownColorPicker from "../ui/DropdownColorPicker";
 import { getSelectedNode } from "../utils/getSelectedNode";
 import { sanitizeUrl } from "../utils/url";
-import { EmbedConfigs } from "./AutoEmbedPlugin";
 import {
-  INSERT_IMAGE_COMMAND,
   InsertImageDialog,
-  InsertImagePayload,
 } from "./ImagesPlugin";
 import { InsertTableDialog } from "./TablePlugin";
 
@@ -139,7 +135,6 @@ function dropDownActiveClass(active: boolean) {
 function BlockFormatDropDown({
   editor,
   blockType,
-  rootType,
   disabled = false,
 }: {
   blockType: keyof typeof blockTypeToBlockName;
@@ -206,62 +201,62 @@ function BlockFormatDropDown({
       buttonLabel={blockTypeToBlockName[blockType]}
       buttonAriaLabel="Formatting options for text style"
     >
-      <DropDownItem
+      <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "paragraph")}
         onClick={formatParagraph}
       >
         <i className="icon paragraph" />
         <span className="text">Normal</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "h1")}
         onClick={() => formatHeading("h1")}
       >
         <i className="icon h1" />
         <span className="text">Heading 1</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "h2")}
         onClick={() => formatHeading("h2")}
       >
         <i className="icon h2" />
         <span className="text">Heading 2</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "h3")}
         onClick={() => formatHeading("h3")}
       >
         <i className="icon h3" />
         <span className="text">Heading 3</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "bullet")}
         onClick={formatBulletList}
       >
         <i className="icon bullet-list" />
         <span className="text">Bullet List</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "number")}
         onClick={formatNumberedList}
       >
         <i className="icon numbered-list" />
         <span className="text">Numbered List</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "check")}
         onClick={formatCheckList}
       >
         <i className="icon check-list" />
         <span className="text">Check List</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "quote")}
         onClick={formatQuote}
       >
         <i className="icon quote" />
         <span className="text">Quote</span>
-      </DropDownItem>
+      </DropdownItem>
     </DropDown>
   );
 }
@@ -293,7 +288,7 @@ function ElementFormatDropdown({
       buttonClassName="toolbar-item spaced alignment"
       buttonAriaLabel="Formatting options for text alignment"
     >
-      <DropDownItem
+      <DropdownItem
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
         }}
@@ -301,8 +296,8 @@ function ElementFormatDropdown({
       >
         <i className="icon left-align" />
         <span className="text">Left Align</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
         }}
@@ -310,8 +305,8 @@ function ElementFormatDropdown({
       >
         <i className="icon center-align" />
         <span className="text">Center Align</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
         }}
@@ -319,8 +314,8 @@ function ElementFormatDropdown({
       >
         <i className="icon right-align" />
         <span className="text">Right Align</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
         }}
@@ -328,8 +323,8 @@ function ElementFormatDropdown({
       >
         <i className="icon justify-align" />
         <span className="text">Justify Align</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "start");
         }}
@@ -343,8 +338,8 @@ function ElementFormatDropdown({
           }`}
         />
         <span className="text">Start Align</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "end");
         }}
@@ -358,9 +353,9 @@ function ElementFormatDropdown({
           }`}
         />
         <span className="text">End Align</span>
-      </DropDownItem>
+      </DropdownItem>
       <Divider />
-      <DropDownItem
+      <DropdownItem
         onClick={() => {
           editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
         }}
@@ -368,8 +363,8 @@ function ElementFormatDropdown({
       >
         <i className={"icon " + (isRTL ? "indent" : "outdent")} />
         <span className="text">Outdent</span>
-      </DropDownItem>
-      <DropDownItem
+      </DropdownItem>
+      <DropdownItem
         onClick={() => {
           editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
         }}
@@ -377,7 +372,7 @@ function ElementFormatDropdown({
       >
         <i className={"icon " + (isRTL ? "outdent" : "indent")} />
         <span className="text">Indent</span>
-      </DropDownItem>
+      </DropdownItem>
     </DropDown>
   );
 }
@@ -398,7 +393,6 @@ export default function ToolbarPlugin({
   );
   const [fontColor, setFontColor] = useState<string>("#000");
   const [bgColor, setBgColor] = useState<string>("#fff");
-  const [fontFamily, setFontFamily] = useState<string>("Arial");
   const [elementFormat, setElementFormat] = useState<ElementFormatType>("left");
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
@@ -490,9 +484,7 @@ export default function ToolbarPlugin({
           "#fff"
         )
       );
-      setFontFamily(
-        $getSelectionStyleValueForProperty(selection, "font-family", "Arial")
-      );
+
       let matchingParent;
       if ($isLinkNode(parent)) {
         // If node is a link, we need to fetch the parent paragraph node to set format
@@ -674,23 +666,6 @@ export default function ToolbarPlugin({
     }
   }, [editor, isLink, setIsLinkEditMode]);
 
-  const onCodeLanguageSelect = useCallback(
-    (value: string) => {
-      activeEditor.update(() => {
-        if (selectedElementKey !== null) {
-          const node = $getNodeByKey(selectedElementKey);
-          if ($isCodeNode(node)) {
-            node.setLanguage(value);
-          }
-        }
-      });
-    },
-    [activeEditor, selectedElementKey]
-  );
-  const insertGifOnClick = (payload: InsertImagePayload) => {
-    activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
-  };
-
   return (
     <div className="toolbar">
       <button
@@ -813,7 +788,7 @@ export default function ToolbarPlugin({
           buttonAriaLabel="Formatting options for additional text styles"
           buttonIconClassName="icon dropdown-more"
         >
-          <DropDownItem
+          <DropdownItem
             onClick={() => {
               activeEditor.dispatchCommand(
                 FORMAT_TEXT_COMMAND,
@@ -826,8 +801,8 @@ export default function ToolbarPlugin({
           >
             <i className="icon strikethrough" />
             <span className="text">Strikethrough</span>
-          </DropDownItem>
-          <DropDownItem
+          </DropdownItem>
+          <DropdownItem
             onClick={() => {
               activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "subscript");
             }}
@@ -837,8 +812,8 @@ export default function ToolbarPlugin({
           >
             <i className="icon subscript" />
             <span className="text">Subscript</span>
-          </DropDownItem>
-          <DropDownItem
+          </DropdownItem>
+          <DropdownItem
             onClick={() => {
               activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "superscript");
             }}
@@ -848,8 +823,8 @@ export default function ToolbarPlugin({
           >
             <i className="icon superscript" />
             <span className="text">Superscript</span>
-          </DropDownItem>
-          <DropDownItem
+          </DropdownItem>
+          <DropdownItem
             onClick={clearFormatting}
             className="item"
             title="Clear text formatting"
@@ -857,7 +832,7 @@ export default function ToolbarPlugin({
           >
             <i className="icon clear" />
             <span className="text">Clear Formatting</span>
-          </DropDownItem>
+          </DropdownItem>
         </DropDown>
         <Divider />
         <DropDown
@@ -867,7 +842,7 @@ export default function ToolbarPlugin({
           buttonAriaLabel="Insert specialized editor node"
           buttonIconClassName="icon plus"
         >
-          <DropDownItem
+          <DropdownItem
             onClick={() => {
               showModal("Insert Image", (onClose) => (
                 <InsertImageDialog
@@ -880,8 +855,8 @@ export default function ToolbarPlugin({
           >
             <i className="icon image" />
             <span className="text">Image</span>
-          </DropDownItem>
-          <DropDownItem
+          </DropdownItem>
+          <DropdownItem
             onClick={() => {
               showModal("Insert Table", (onClose) => (
                 <InsertTableDialog
@@ -894,22 +869,7 @@ export default function ToolbarPlugin({
           >
             <i className="icon table" />
             <span className="text">Table</span>
-          </DropDownItem>
-          {EmbedConfigs.map((embedConfig) => (
-            <DropDownItem
-              key={embedConfig.type}
-              onClick={() => {
-                activeEditor.dispatchCommand(
-                  INSERT_EMBED_COMMAND,
-                  embedConfig.type
-                );
-              }}
-              className="item"
-            >
-              {embedConfig.icon}
-              <span className="text">{embedConfig.contentName}</span>
-            </DropDownItem>
-          ))}
+          </DropdownItem>
         </DropDown>
       </>
       <Divider />
@@ -919,7 +879,6 @@ export default function ToolbarPlugin({
         editor={editor}
         isRTL={isRTL}
       />
-
       {modal}
     </div>
   );

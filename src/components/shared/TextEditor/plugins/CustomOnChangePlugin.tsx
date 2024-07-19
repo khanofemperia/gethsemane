@@ -4,7 +4,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { $getRoot, $insertNodes } from "lexical";
 
-interface CustomOnChangePluginProps {
+type CustomOnChangePluginType = {
   value: string;
   onChange: (value: string) => void;
 }
@@ -12,7 +12,7 @@ interface CustomOnChangePluginProps {
 export default function CustomOnChangePlugin({
   value,
   onChange,
-}: CustomOnChangePluginProps) {
+}: CustomOnChangePluginType) {
   const [editor] = useLexicalComposerContext();
   const [isFirstRender, setIsFirstRender] = useState(true);
 

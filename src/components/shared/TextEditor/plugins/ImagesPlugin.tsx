@@ -23,14 +23,14 @@ import {
   $createImageNode,
   $isImageNode,
   ImageNode,
-  ImagePayload,
+  ImagePayloadType,
 } from "../nodes/ImageNode";
 import Button from "../ui/Button";
 import { DialogActions, DialogButtonsList } from "../ui/Dialog";
 import FileInput from "../ui/FileInput";
 import TextInput from "../ui/TextInput";
 
-export type InsertImagePayload = Readonly<ImagePayload>;
+export type InsertImagePayloadType = Readonly<ImagePayloadType>;
 
 // const getDOMSelection = (targetWindow: Window | null): Selection | null =>
 //   CAN_USE_DOM ? (targetWindow || window).getSelection() : null;
@@ -40,13 +40,13 @@ const getDOMSelection = (targetWindow: Window | null): Selection | null => {
   return typeof win.getSelection === "function" ? win.getSelection() : null;
 };
 
-export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
+export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayloadType> =
   createCommand("INSERT_IMAGE_COMMAND");
 
 export function InsertImageUriDialogBody({
   onClick,
 }: {
-  onClick: (payload: InsertImagePayload) => void;
+  onClick: (payload: InsertImagePayloadType) => void;
 }) {
   const [src, setSrc] = useState("");
   const [altText, setAltText] = useState("");
@@ -85,7 +85,7 @@ export function InsertImageUriDialogBody({
 export function InsertImageUploadedDialogBody({
   onClick,
 }: {
-  onClick: (payload: InsertImagePayload) => void;
+  onClick: (payload: InsertImagePayloadType) => void;
 }) {
   const [src, setSrc] = useState("");
   const [altText, setAltText] = useState("");
@@ -154,7 +154,7 @@ export function InsertImageDialog({
     };
   }, [activeEditor]);
 
-  const onClick = (payload: InsertImagePayload) => {
+  const onClick = (payload: InsertImagePayloadType) => {
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
     onClose();
   };
@@ -189,7 +189,7 @@ export default function ImagesPlugin({
     }
 
     return mergeRegister(
-      editor.registerCommand<InsertImagePayload>(
+      editor.registerCommand<InsertImagePayloadType>(
         INSERT_IMAGE_COMMAND,
         (payload) => {
           const imageNode = $createImageNode(payload);
@@ -314,7 +314,7 @@ function $getImageNodeInSelection(): ImageNode | null {
   return $isImageNode(node) ? node : null;
 }
 
-function getDragImageData(event: DragEvent): null | InsertImagePayload {
+function getDragImageData(event: DragEvent): null | InsertImagePayloadType {
   const dragData = event.dataTransfer?.getData("application/x-lexical-drag");
   if (!dragData) {
     return null;

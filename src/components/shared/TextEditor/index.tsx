@@ -4,22 +4,19 @@ import "./styles.css";
 
 import { memo, useMemo, useState } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import Nodes from "./nodes/TextEditorNodes";
-import Theme from "./Theme";
-import CustomOnChangePlugin from "./plugins/CustomOnChangePlugin";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
-import ClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
+import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
-import useLexicalEditable from "@lexical/react/useLexicalEditable";
-import { $generateHtmlFromNodes } from "@lexical/html";
 
-import AutoEmbedPlugin from "./plugins/AutoEmbedPlugin";
+import Nodes from "./nodes/TextEditorNodes";
+import theme from "./theme";
+import CustomOnChangePlugin from "./plugins/CustomOnChangePlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import ImagesPlugin from "./plugins/ImagesPlugin";
@@ -28,19 +25,17 @@ import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import TableCellActionMenuPlugin from "./plugins/TableActionMenuPlugin";
 import TableCellResizer from "./plugins/TableCellResizer";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import YouTubePlugin from "./plugins/YouTubePlugin";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
-import { EditorState } from "lexical";
 
-type TextEditorProps = {
+type TextEditorType = {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   name: string;
 };
 
-export const TextEditor: React.FC<TextEditorProps> = memo(function TextEditor({
+export const TextEditor: React.FC<TextEditorType> = memo(function TextEditor({
   value,
   onChange,
   placeholder,
@@ -53,7 +48,7 @@ export const TextEditor: React.FC<TextEditorProps> = memo(function TextEditor({
   const initialConfig = useMemo(
     () => ({
       namespace: name,
-      theme: Theme,
+      theme,
       onError: () => {},
       nodes: [...Nodes],
     }),
@@ -94,8 +89,6 @@ export const TextEditor: React.FC<TextEditorProps> = memo(function TextEditor({
             <TablePlugin />
             <TableCellResizer />
             <ImagesPlugin />
-            <YouTubePlugin />
-            <AutoEmbedPlugin />
             <ListMaxIndentLevelPlugin maxDepth={7} />
             <ClickableLinkPlugin />
             {floatingAnchorElem && (

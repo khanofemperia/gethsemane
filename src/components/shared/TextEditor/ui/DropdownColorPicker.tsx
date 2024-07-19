@@ -1,17 +1,8 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
+import * as React from "react";
+import ColorPicker from "./ColorPicker";
+import DropDown from "./Dropdown";
 
-import * as React from 'react';
-
-import ColorPicker from './ColorPicker';
-import DropDown from './DropDown';
-
-type Props = {
+type DropdownColorPickerType = {
   disabled?: boolean;
   buttonAriaLabel?: string;
   buttonClassName: string;
@@ -29,12 +20,13 @@ export default function DropdownColorPicker({
   color,
   onChange,
   ...rest
-}: Props) {
+}: DropdownColorPickerType) {
   return (
     <DropDown
       {...rest}
       disabled={disabled}
-      stopCloseOnClickSelf={stopCloseOnClickSelf}>
+      stopCloseOnClickSelf={stopCloseOnClickSelf}
+    >
       <ColorPicker color={color} onChange={onChange} />
     </DropDown>
   );

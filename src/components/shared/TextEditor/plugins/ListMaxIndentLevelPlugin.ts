@@ -1,5 +1,4 @@
 import type { ElementNode, RangeSelection } from "lexical";
-
 import { $getListDepth, $isListItemNode, $isListNode } from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {

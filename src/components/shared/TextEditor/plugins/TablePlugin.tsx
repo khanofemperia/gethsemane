@@ -2,7 +2,6 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import {
   $createTableNodeWithDimensions,
   INSERT_TABLE_COMMAND,
-  TableNode,
 } from "@lexical/table";
 import {
   $insertNodes,
@@ -21,22 +20,22 @@ import Button from "../ui/Button";
 import { DialogActions } from "../ui/Dialog";
 import TextInput from "../ui/TextInput";
 
-export type InsertTableCommandPayload = Readonly<{
+export type InsertTableCommandPayloadType = Readonly<{
   columns: string;
   rows: string;
   includeHeaders?: boolean;
 }>;
 
-export type CellContextShape = {
-  cellEditorConfig: null | CellEditorConfig;
+export type CellContextShapeType = {
+  cellEditorConfig: null | CellEditorConfigType;
   cellEditorPlugins: null | JSX.Element | Array<JSX.Element>;
   set: (
-    cellEditorConfig: null | CellEditorConfig,
+    cellEditorConfig: null | CellEditorConfigType,
     cellEditorPlugins: null | JSX.Element | Array<JSX.Element>
   ) => void;
 };
 
-export type CellEditorConfig = Readonly<{
+export type CellEditorConfigType = Readonly<{
   namespace: string;
   nodes?: ReadonlyArray<Klass<LexicalNode>>;
   onError: (error: Error, editor: LexicalEditor) => void;
@@ -44,10 +43,10 @@ export type CellEditorConfig = Readonly<{
   theme?: EditorThemeClasses;
 }>;
 
-export const INSERT_NEW_TABLE_COMMAND: LexicalCommand<InsertTableCommandPayload> =
+export const INSERT_NEW_TABLE_COMMAND: LexicalCommand<InsertTableCommandPayloadType> =
   createCommand("INSERT_NEW_TABLE_COMMAND");
 
-export const CellContext = createContext<CellContextShape>({
+export const CellContext = createContext<CellContextShapeType>({
   cellEditorConfig: null,
   cellEditorPlugins: null,
   set: () => {
@@ -57,7 +56,7 @@ export const CellContext = createContext<CellContextShape>({
 
 export function TableContext({ children }: { children: JSX.Element }) {
   const [contextValue, setContextValue] = useState<{
-    cellEditorConfig: null | CellEditorConfig;
+    cellEditorConfig: null | CellEditorConfigType;
     cellEditorPlugins: null | JSX.Element | Array<JSX.Element>;
   }>({
     cellEditorConfig: null,
@@ -142,7 +141,7 @@ export function TablePlugin({
   cellEditorConfig,
   children,
 }: {
-  cellEditorConfig: CellEditorConfig;
+  cellEditorConfig: CellEditorConfigType;
   children: JSX.Element | Array<JSX.Element>;
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
@@ -151,7 +150,7 @@ export function TablePlugin({
   useEffect(() => {
     cellContext.set(cellEditorConfig, children);
 
-    return editor.registerCommand<InsertTableCommandPayload>(
+    return editor.registerCommand<InsertTableCommandPayloadType>(
       INSERT_NEW_TABLE_COMMAND,
       ({ columns, rows, includeHeaders }) => {
         const tableNode = $createTableNodeWithDimensions(

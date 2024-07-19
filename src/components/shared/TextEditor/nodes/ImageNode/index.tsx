@@ -17,7 +17,7 @@ import { Suspense } from "react";
 
 const ImageComponent = React.lazy(() => import("../ImageComponent"));
 
-export interface ImagePayload {
+export type ImagePayloadType = {
   altText: string;
   caption?: LexicalEditor;
   height?: number;
@@ -39,7 +39,7 @@ function $convertImageElement(domNode: Node): null | DOMConversionOutput {
   return { node };
 }
 
-export type SerializedImageNode = Spread<
+export type SerializedImageNodeType = Spread<
   {
     altText: string;
     caption: SerializedEditor;
@@ -81,7 +81,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     );
   }
 
-  static importJSON(serializedNode: SerializedImageNode): ImageNode {
+  static importJSON(serializedNode: SerializedImageNodeType): ImageNode {
     const { altText, height, width, maxWidth, caption, src, showCaption } =
       serializedNode;
     const node = $createImageNode({
@@ -140,7 +140,7 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     this.__captionsEnabled = captionsEnabled || captionsEnabled === undefined;
   }
 
-  exportJSON(): SerializedImageNode {
+  exportJSON(): SerializedImageNodeType {
     return {
       altText: this.getAltText(),
       caption: this.__caption.toJSON(),
@@ -220,7 +220,7 @@ export function $createImageNode({
   showCaption,
   caption,
   key,
-}: ImagePayload): ImageNode {
+}: ImagePayloadType): ImageNode {
   return $applyNodeReplacement(
     new ImageNode(
       src,

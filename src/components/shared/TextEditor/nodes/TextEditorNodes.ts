@@ -10,9 +10,8 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 
 import { ImageNode } from "./ImageNode";
-import { YouTubeNode } from "./YouTubeNode";
 
-const PlaygroundNodes: Array<Klass<LexicalNode>> = [
+const TextEditorNodes: Array<Klass<LexicalNode>> = [
   HeadingNode,
   ListNode,
   ListItemNode,
@@ -27,8 +26,7 @@ const PlaygroundNodes: Array<Klass<LexicalNode>> = [
   LinkNode,
   OverflowNode,
   ImageNode,
-  YouTubeNode,
   MarkNode,
 ];
 
-export default PlaygroundNodes;
+export default TextEditorNodes;

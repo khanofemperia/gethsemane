@@ -1,7 +1,6 @@
 import type { ElementNode, LexicalEditor } from "lexical";
-
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import useLexicalEditable from "@lexical/react/useLexicalEditable";
+import { useLexicalEditable } from "@lexical/react/useLexicalEditable";
 import {
   $deleteTableColumn__EXPERIMENTAL,
   $deleteTableRow__EXPERIMENTAL,
@@ -135,7 +134,7 @@ function currentCellBackgroundColor(editor: LexicalEditor): null | string {
   });
 }
 
-type TableCellActionMenuProps = Readonly<{
+type TableCellActionMenuType = Readonly<{
   contextRef: { current: null | HTMLElement };
   onClose: () => void;
   setIsMenuOpen: (isOpen: boolean) => void;
@@ -154,7 +153,7 @@ function TableActionMenu({
   contextRef,
   cellMerge,
   showColorPickerModal,
-}: TableCellActionMenuProps) {
+}: TableCellActionMenuType) {
   const [editor] = useLexicalComposerContext();
   const dropDownRef = useRef<HTMLDivElement | null>(null);
   const [tableCellNode, updateTableCellNode] = useState(_tableCellNode);
@@ -374,9 +373,7 @@ function TableActionMenu({
   const toggleTableRowIsHeader = useCallback(() => {
     editor.update(() => {
       const tableNode = $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
-
       const tableRowIndex = $getTableRowIndexFromTableCellNode(tableCellNode);
-
       const tableRows = tableNode.getChildren();
 
       if (tableRowIndex >= tableRows.length || tableRowIndex < 0) {

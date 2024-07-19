@@ -8,7 +8,7 @@ import TextInput from "../TextInput";
 
 let skipAddingToHistoryStack = false;
 
-interface ColorPickerProps {
+type ColorPickerType =  {
   color: string;
   onChange?: (value: string, skipHistoryStack: boolean) => void;
 }
@@ -37,7 +37,7 @@ const HEIGHT = 150;
 export default function ColorPicker({
   color,
   onChange,
-}: Readonly<ColorPickerProps>): JSX.Element {
+}: Readonly<ColorPickerType>): JSX.Element {
   const [selfColor, setSelfColor] = useState(transformColor("hex", color));
   const [inputColor, setInputColor] = useState(color);
   const innerDivRef = useRef(null);
@@ -65,7 +65,7 @@ export default function ColorPicker({
     }
   };
 
-  const onMoveSaturation = ({ x, y }: Position) => {
+  const onMoveSaturation = ({ x, y }: PositionType) => {
     const newHsv = {
       ...selfColor.hsv,
       s: (x / WIDTH) * 100,
@@ -76,7 +76,7 @@ export default function ColorPicker({
     setInputColor(newColor.hex);
   };
 
-  const onMoveHue = ({ x }: Position) => {
+  const onMoveHue = ({ x }: PositionType) => {
     const newHsv = { ...selfColor.hsv, h: (x / WIDTH) * 360 };
     const newColor = transformColor("hsv", newHsv);
 
@@ -152,15 +152,15 @@ export default function ColorPicker({
   );
 }
 
-export interface Position {
+export type PositionType = {
   x: number;
   y: number;
 }
 
-interface MoveWrapperProps {
+type MoveWrapperType = {
   className?: string;
   style?: React.CSSProperties;
-  onChange: (position: Position) => void;
+  onChange: (position: PositionType) => void;
   children: JSX.Element;
 }
 
@@ -169,7 +169,7 @@ function MoveWrapper({
   style,
   onChange,
   children,
-}: MoveWrapperProps) {
+}: MoveWrapperType) {
   const divRef = useRef<HTMLDivElement>(null);
   const draggedRef = useRef(false);
 
@@ -240,7 +240,7 @@ interface HSV {
   s: number;
   v: number;
 }
-interface Color {
+interface ColorType {
   hex: string;
   hsv: HSV;
   rgb: RGB;
@@ -332,28 +332,28 @@ function rgb2hex({ b, g, r }: RGB): string {
   return "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
 }
 
-function transformColor<M extends keyof Color, C extends Color[M]>(
+function transformColor<M extends keyof ColorType, C extends ColorType[M]>(
   format: M,
   color: C
-): Color {
-  let hex: Color["hex"] = toHex("#121212");
-  let rgb: Color["rgb"] = hex2rgb(hex);
-  let hsv: Color["hsv"] = rgb2hsv(rgb);
+): ColorType {
+  let hex: ColorType["hex"] = toHex("#121212");
+  let rgb: ColorType["rgb"] = hex2rgb(hex);
+  let hsv: ColorType["hsv"] = rgb2hsv(rgb);
 
   if (format === "hex") {
-    const value = color as Color["hex"];
+    const value = color as ColorType["hex"];
 
     hex = toHex(value);
     rgb = hex2rgb(hex);
     hsv = rgb2hsv(rgb);
   } else if (format === "rgb") {
-    const value = color as Color["rgb"];
+    const value = color as ColorType["rgb"];
 
     rgb = value;
     hex = rgb2hex(rgb);
     hsv = rgb2hsv(rgb);
   } else if (format === "hsv") {
-    const value = color as Color["hsv"];
+    const value = color as ColorType["hsv"];
 
     hsv = value;
     rgb = hsv2rgb(hsv);
