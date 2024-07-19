@@ -8,6 +8,7 @@ import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
+import { TextEditor } from "@/components/shared/TextEditor";
 
 type DataType = {
   id: string;
@@ -69,12 +70,33 @@ export function DescriptionOverlay() {
     hideOverlay({ pageName, overlayName });
   };
 
-  const handleSave = async () => {};
+  const [description, setDescription] = useState<string>("");
+
+  const handleSave = async () => {
+    console.log(description);
+  };
 
   return (
     <>
       <Overlay>
-        <div className="w-[720px] h-[1200px] mx-auto my-14 rounded-xl bg-white"></div>
+        <div className="w-[720px] h-[1200px] mx-auto my-14 rounded-xl p-5 bg-white">
+          <button
+            onClick={handleSave}
+            type="button"
+            disabled={loading}
+            className={clsx(
+              "relative h-9 w-max px-4 mb-5 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue active:bg-blue-dimmed"
+            )}
+          >
+            <span className="text-white">Save</span>
+          </button>
+          <TextEditor
+            placeholder="Select Post"
+            name="post"
+            value={""}
+            onChange={(newValue: string) => setDescription(newValue)}
+          />
+        </div>
       </Overlay>
     </>
   );

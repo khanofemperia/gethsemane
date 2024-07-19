@@ -5,16 +5,25 @@
   text-align: right;
 }
 .PlaygroundEditorTheme__paragraph {
-  @apply leading-[26px] mb-6;
+  line-height: 26px;
+  margin-bottom: 6px;
 }
 .PlaygroundEditorTheme__quote {
-  @apply mb-6 py-5 px-3 border-l-4 bg-neutral-100 rounded-r-xl;
+  margin-bottom: 6px;
+  padding: 5px 3px;
+  border-left: 4px solid #e0e0e0;
+  background-color: #e0e0e0;
+  border-radius: 0 0.5rem 0.5rem 0;
 }
 .PlaygroundEditorTheme__h1 {
-  @apply font-bold mb-6 text-3xl;
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 1.875rem;
 }
 .PlaygroundEditorTheme__h2 {
-  @apply font-bold mb-6 text-2xl;
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 1.5rem;
 }
 .PlaygroundEditorTheme__h3 {
   font-size: 12px;
@@ -59,7 +68,7 @@
 }
 .PlaygroundEditorTheme__link {
   text-decoration: none;
-  @apply text-custom-blue;
+  color: #3d87f5;
 }
 .PlaygroundEditorTheme__link:hover {
   text-decoration: underline;
