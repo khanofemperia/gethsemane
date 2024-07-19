@@ -350,7 +350,7 @@ i.page-break,
   cursor: pointer;
 }
 .link-editor .link-input a {
-  color: rgb(33, 111, 219);
+  color: #0a5ddc;
   text-decoration: underline;
   white-space: nowrap;
   overflow: hidden;
@@ -578,7 +578,7 @@ i.page-break,
   transition: transform 0.2s;
 }
 .switch button[aria-checked="true"] {
-  background-color: rgb(24, 119, 242);
+  background-color: #0a5ddc;
 }
 .switch button[aria-checked="true"] span {
   transform: translateX(20px);
@@ -594,7 +594,7 @@ i.page-break,
   cursor: default;
 }
 .editor-shell .editor-image img.focused {
-  outline: 2px solid rgb(60, 132, 244);
+  outline: 2px solid #0a5ddc;
   user-select: none;
 }
 .editor-shell .editor-image img.focused.draggable {
@@ -665,7 +665,7 @@ i.page-break,
   width: 7px;
   height: 7px;
   position: absolute;
-  background-color: rgb(60, 132, 244);
+  background-color: #0a5ddc;
   border: 1px solid #fff;
 }
 .editor-shell .editor-image .image-resizer.image-resizer-n {
@@ -719,7 +719,7 @@ i.page-break,
   cursor: default;
 }
 .editor-shell .inline-editor-image img.focused {
-  outline: 2px solid rgb(60, 132, 244);
+  outline: 2px solid #0a5ddc;
 }
 .editor-shell .inline-editor-image img.focused.draggable {
   cursor: grab;

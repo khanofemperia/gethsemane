@@ -68,7 +68,7 @@
 }
 .TextEditorTheme__link {
   text-decoration: none;
-  color: #3d87f5;
+  color: #0a5ddc;
 }
 .TextEditorTheme__link:hover {
   text-decoration: underline;
@@ -356,9 +356,9 @@
   border-radius: 2px;
 }
 .TextEditorTheme__listItemChecked:before {
-  border: 1px solid rgb(61, 135, 245);
+  border: 1px solid #0a5ddc;
   border-radius: 2px;
-  background-color: #3d87f5;
+  background-color: #0a5ddc;
   background-repeat: no-repeat;
 }
 .TextEditorTheme__listItemChecked:after {
@@ -456,6 +456,6 @@
   line-height: 2px;
 }
 .TextEditorTheme__hr.selected {
-  outline: 2px solid rgb(60, 132, 244);
+  outline: 2px solid #0a5ddc;
   user-select: none;
 }
