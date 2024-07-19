@@ -82,34 +82,34 @@ export function ImagesOverlay({ data }: { data: DataType }) {
   };
 
   const handleSave = async () => {
-    setLoading(true);
-    try {
-      const filteredImages = images.filter((image) => image !== "");
+    // setLoading(true);
+    // try {
+    //   const filteredImages = images.filter((image) => image !== "");
 
-      if (filteredImages.length === 0) {
-        setAlertMessageType(AlertMessageType.ERROR);
-        setAlertMessage("No images added");
-        setShowAlert(true);
-        setImages(data?.images ?? []);
-      } else {
-        const result = await UpdateProductAction({
-          id: data.id,
-          images: filteredImages,
-        });
-        setAlertMessageType(result.type);
-        setAlertMessage(result.message);
-        setShowAlert(true);
-        setImages(filteredImages);
-      }
-    } catch (error) {
-      console.error("Error updating product", error);
-      setAlertMessageType(AlertMessageType.ERROR);
-      setAlertMessage("Failed to update product");
-      setShowAlert(true);
-    } finally {
-      setLoading(false);
-      onHideOverlay();
-    }
+    //   if (filteredImages.length === 0) {
+    //     setAlertMessageType(AlertMessageType.ERROR);
+    //     setAlertMessage("No images added");
+    //     setShowAlert(true);
+    //     setImages(data?.images ?? []);
+    //   } else {
+    //     const result = await UpdateProductAction({
+    //       id: data.id,
+    //       images: filteredImages,
+    //     });
+    //     setAlertMessageType(result.type);
+    //     setAlertMessage(result.message);
+    //     setShowAlert(true);
+    //     setImages(filteredImages);
+    //   }
+    // } catch (error) {
+    //   console.error("Error updating product", error);
+    //   setAlertMessageType(AlertMessageType.ERROR);
+    //   setAlertMessage("Failed to update product");
+    //   setShowAlert(true);
+    // } finally {
+    //   setLoading(false);
+    //   onHideOverlay();
+    // }
   };
 
   const addImage = () => {

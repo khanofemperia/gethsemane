@@ -29,17 +29,15 @@ import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
 
 type TextEditorType = {
+  name: string;
   value: string;
   onChange: (value: string) => void;
-  placeholder?: string;
-  name: string;
 };
 
 export const TextEditor: React.FC<TextEditorType> = memo(function TextEditor({
+  name,
   value,
   onChange,
-  placeholder,
-  name,
 }) {
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
   const [floatingAnchorElem, setFloatingAnchorElem] =
@@ -64,18 +62,16 @@ export const TextEditor: React.FC<TextEditorType> = memo(function TextEditor({
   return (
     <div>
       <LexicalComposer initialConfig={initialConfig}>
-        <div className="editor-shell relative border">
+        <div className="editor-shell relative border rounded-xl">
           <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
-          <div className="editor-container relative z-0 bg-white">
+          <div className="editor-container relative z-0">
             <RichTextPlugin
               contentEditable={
                 <div className="editor resize-none relative" ref={onRef}>
                   <ContentEditable />
                 </div>
               }
-              placeholder={
-                <Placeholder>{placeholder || "Start typing..."}</Placeholder>
-              }
+              placeholder={<Placeholder>Start typing...</Placeholder>}
               ErrorBoundary={LexicalErrorBoundary}
             />
             <AutoFocusPlugin />
