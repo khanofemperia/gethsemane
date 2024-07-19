@@ -28,7 +28,6 @@ import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import TableCellActionMenuPlugin from "./plugins/TableActionMenuPlugin";
 import TableCellResizer from "./plugins/TableCellResizer";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import TwitterPlugin from "./plugins/TwitterPlugin";
 import YouTubePlugin from "./plugins/YouTubePlugin";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
@@ -48,6 +47,8 @@ export const TextEditor: React.FC<TextEditorProps> = memo(function TextEditor({
   name,
 }) {
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLDivElement | null>(null);
 
   const initialConfig = useMemo(
     () => ({
@@ -59,26 +60,57 @@ export const TextEditor: React.FC<TextEditorProps> = memo(function TextEditor({
     [name]
   );
 
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
+    }
+  };
+
   return (
     <div>
       <LexicalComposer initialConfig={initialConfig}>
         <div className="editor-shell relative border">
           <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
-          <div className="relative">
+          <div className="editor-container relative z-0 bg-white">
             <RichTextPlugin
               contentEditable={
-                <div className="editor resize-none relative">
+                <div className="editor resize-none relative" ref={onRef}>
                   <ContentEditable />
                 </div>
               }
-              placeholder={<Placeholder>Start typing...</Placeholder>}
+              placeholder={
+                <Placeholder>{placeholder || "Start typing..."}</Placeholder>
+              }
               ErrorBoundary={LexicalErrorBoundary}
             />
-          </div>
-          <div className="editor-container rounded-xl relative z-0 bg-white">
             <AutoFocusPlugin />
             <HistoryPlugin />
             <CustomOnChangePlugin value={value} onChange={onChange} />
+            <CheckListPlugin />
+            <ListPlugin />
+            <LinkPlugin />
+            <AutoLinkPlugin />
+            <HashtagPlugin />
+            <TablePlugin />
+            <TableCellResizer />
+            <ImagesPlugin />
+            <YouTubePlugin />
+            <AutoEmbedPlugin />
+            <ListMaxIndentLevelPlugin maxDepth={7} />
+            <ClickableLinkPlugin />
+            {floatingAnchorElem && (
+              <>
+                <FloatingLinkEditorPlugin
+                  anchorElem={floatingAnchorElem}
+                  isLinkEditMode={isLinkEditMode}
+                  setIsLinkEditMode={setIsLinkEditMode}
+                />
+                <TableCellActionMenuPlugin
+                  anchorElem={floatingAnchorElem}
+                  cellMerge={true}
+                />
+              </>
+            )}
           </div>
         </div>
       </LexicalComposer>

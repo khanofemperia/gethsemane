@@ -15,23 +15,13 @@ import * as ReactDOM from "react-dom";
 import useModal from "../hooks/useModal";
 import Button from "../ui/Button";
 import { DialogActions } from "../ui/Dialog";
-import { INSERT_TWEET_COMMAND } from "./TwitterPlugin";
 import { INSERT_YOUTUBE_COMMAND } from "./YouTubePlugin";
 
 interface PlaygroundEmbedConfig extends EmbedConfig {
-  // Human readable name of the embeded content e.g. Tweet or Google Map.
   contentName: string;
-
-  // Icon for display.
   icon?: JSX.Element;
-
-  // An example of a matching url https://twitter.com/jack/status/20
   exampleUrl: string;
-
-  // For extra searching.
   keywords: Array<string>;
-
-  // Embed a Figma Project.
   description?: string;
 }
 
@@ -69,44 +59,7 @@ export const YoutubeEmbedConfig: PlaygroundEmbedConfig = {
   type: "youtube-video",
 };
 
-export const TwitterEmbedConfig: PlaygroundEmbedConfig = {
-  // e.g. Tweet or Google Map.
-  contentName: "Tweet",
-
-  exampleUrl: "https://twitter.com/jack/status/20",
-
-  // Icon for display.
-  icon: <i className="icon tweet" />,
-
-  // Create the Lexical embed node from the url data.
-  insertNode: (editor: LexicalEditor, result: EmbedMatchResult) => {
-    editor.dispatchCommand(INSERT_TWEET_COMMAND, result.id);
-  },
-
-  // For extra searching.
-  keywords: ["tweet", "twitter"],
-
-  // Determine if a given URL is a match and return url data.
-  parseUrl: (text: string) => {
-    const match =
-      /^https:\/\/(twitter|x)\.com\/(#!\/)?(\w+)\/status(es)*\/(\d+)/.exec(
-        text
-      );
-
-    if (match != null) {
-      return {
-        id: match[5],
-        url: match[1],
-      };
-    }
-
-    return null;
-  },
-
-  type: "tweet",
-};
-
-export const EmbedConfigs = [TwitterEmbedConfig, YoutubeEmbedConfig];
+export const EmbedConfigs = [YoutubeEmbedConfig];
 
 function AutoEmbedMenuItem({
   index,

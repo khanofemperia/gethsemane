@@ -168,8 +168,6 @@ export class ImageNode extends DecoratorNode<JSX.Element> {
     writable.__showCaption = showCaption;
   }
 
-  // View
-
   createDOM(config: EditorConfig): HTMLElement {
     const span = document.createElement("span");
     const theme = config.theme;
