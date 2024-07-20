@@ -9,10 +9,11 @@ import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { TextEditor } from "@/components/shared/TextEditor";
+import { UpdateProductAction } from "@/actions/products";
 
 type DataType = {
   id: string;
-  description: string | null;
+  description: string;
 };
 
 export function DescriptionButton() {
@@ -34,7 +35,7 @@ export function DescriptionButton() {
   );
 }
 
-export function DescriptionOverlay() {
+export function DescriptionOverlay({ data }: { data: DataType }) {
   const [description, setDescription] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState("");
@@ -79,7 +80,25 @@ export function DescriptionOverlay() {
   };
 
   const handleSave = async () => {
-    console.log(description);
+    setLoading(true);
+
+    try {
+      const result = await UpdateProductAction({
+        id: data.id,
+        description,
+      });
+      setAlertMessageType(result.type);
+      setAlertMessage(result.message);
+      setShowAlert(true);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to update product");
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
+      hideOverlay({ pageName, overlayName });
+    }
   };
 
   return (

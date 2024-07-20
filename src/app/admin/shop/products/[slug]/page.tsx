@@ -307,7 +307,7 @@ export default async function EditProduct({
           sizes: options.sizes,
         }}
       />
-      <DescriptionOverlay />
+      <DescriptionOverlay data={{id, description}} />
       {/* <VisibilityOverlay data={{ id, visibility }} /> */}
     </>
   );
