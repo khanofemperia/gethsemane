@@ -7,13 +7,7 @@ import type {
 
 import "./ImageNode/index.css";
 
-import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import { LexicalNestedComposer } from "@lexical/react/LexicalNestedComposer";
-import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { useLexicalNodeSelection } from "@lexical/react/useLexicalNodeSelection";
 import { mergeRegister } from "@lexical/utils";
 import {
@@ -35,10 +29,7 @@ import {
 import * as React from "react";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
-import LinkPlugin from "../plugins/LinkPlugin";
-import ContentEditable from "../ui/ContentEditable";
 import ImageResizer from "../ui/ImageResizer";
-import Placeholder from "../ui/Placeholder";
 import { $isImageNode } from "./ImageNode";
 
 const imageCache = new Set();
@@ -101,20 +92,15 @@ export default function ImageComponent({
   height,
   maxWidth,
   resizable,
-  showCaption,
-  caption,
-  captionsEnabled,
-}: {
+}:
+{
   altText: string;
-  caption: LexicalEditor;
   height: "inherit" | number;
   maxWidth: number;
   nodeKey: NodeKey;
   resizable: boolean;
-  showCaption: boolean;
   src: string;
   width: "inherit" | number;
-  captionsEnabled: boolean;
 }): JSX.Element {
   const imageRef = useRef<null | HTMLImageElement>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
@@ -150,16 +136,7 @@ export default function ImageComponent({
         $isNodeSelection(latestSelection) &&
         latestSelection.getNodes().length === 1
       ) {
-        if (showCaption) {
-          // Move focus into nested editor
-          $setSelection(null);
-          event.preventDefault();
-          caption.focus();
-          return true;
-        } else if (
-          buttonElem !== null &&
-          buttonElem !== document.activeElement
-        ) {
+        if (buttonElem !== null && buttonElem !== document.activeElement) {
           event.preventDefault();
           buttonElem.focus();
           return true;
@@ -167,15 +144,12 @@ export default function ImageComponent({
       }
       return false;
     },
-    [caption, isSelected, showCaption]
+    [isSelected]
   );
 
   const $onEscape = useCallback(
     (event: KeyboardEvent) => {
-      if (
-        activeEditorRef.current === caption ||
-        buttonRef.current === event.target
-      ) {
+      if (buttonRef.current === event.target) {
         $setSelection(null);
         editor.update(() => {
           setSelected(true);
@@ -188,7 +162,7 @@ export default function ImageComponent({
       }
       return false;
     },
-    [caption, editor, setSelected]
+    [editor, setSelected]
   );
 
   const onClick = useCallback(
@@ -312,15 +286,6 @@ export default function ImageComponent({
     setSelected,
   ]);
 
-  const setShowCaption = () => {
-    editor.update(() => {
-      const node = $getNodeByKey(nodeKey);
-      if ($isImageNode(node)) {
-        node.setShowCaption(true);
-      }
-    });
-  };
-
   const onResizeEnd = (
     nextWidth: "inherit" | number,
     nextHeight: "inherit" | number
@@ -362,38 +327,13 @@ export default function ImageComponent({
             maxWidth={maxWidth}
           />
         </div>
-        {showCaption && (
-          <div className="image-caption-container">
-            <LexicalNestedComposer initialEditor={caption}>
-              <AutoFocusPlugin />
-              <LinkPlugin />
-              <HashtagPlugin />
-              <HistoryPlugin />
-              <RichTextPlugin
-                contentEditable={
-                  <ContentEditable className="ImageNode__contentEditable" />
-                }
-                placeholder={
-                  <Placeholder className="ImageNode__placeholder">
-                    Enter a caption...
-                  </Placeholder>
-                }
-                ErrorBoundary={LexicalErrorBoundary}
-              />
-            </LexicalNestedComposer>
-          </div>
-        )}
-        {resizable && $isNodeSelection(selection) && isFocused && (
+        {resizable && (
           <ImageResizer
-            showCaption={showCaption}
-            setShowCaption={setShowCaption}
             editor={editor}
-            buttonRef={buttonRef}
             imageRef={imageRef}
             maxWidth={maxWidth}
-            onResizeStart={onResizeStart}
             onResizeEnd={onResizeEnd}
-            captionsEnabled={captionsEnabled}
+            onResizeStart={onResizeStart}
           />
         )}
       </>

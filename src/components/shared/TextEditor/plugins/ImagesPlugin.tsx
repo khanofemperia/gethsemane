@@ -32,9 +32,6 @@ import TextInput from "../ui/TextInput";
 
 export type InsertImagePayloadType = Readonly<ImagePayloadType>;
 
-// const getDOMSelection = (targetWindow: Window | null): Selection | null =>
-//   CAN_USE_DOM ? (targetWindow || window).getSelection() : null;
-
 const getDOMSelection = (targetWindow: Window | null): Selection | null => {
   const win = targetWindow || window;
   return typeof win.getSelection === "function" ? win.getSelection() : null;
@@ -176,11 +173,7 @@ export function InsertImageDialog({
   );
 }
 
-export default function ImagesPlugin({
-  captionsEnabled,
-}: {
-  captionsEnabled?: boolean;
-}): JSX.Element | null {
+export default function ImagesPlugin(): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
@@ -224,7 +217,7 @@ export default function ImagesPlugin({
         COMMAND_PRIORITY_HIGH
       )
     );
-  }, [captionsEnabled, editor]);
+  }, [editor]);
 
   return null;
 }
@@ -255,11 +248,9 @@ function $onDragStart(event: DragEvent): boolean {
     JSON.stringify({
       data: {
         altText: node.__altText,
-        caption: node.__caption,
         height: node.__height,
         key: node.getKey(),
         maxWidth: node.__maxWidth,
-        showCaption: node.__showCaption,
         src: node.__src,
         width: node.__width,
       },
@@ -346,22 +337,22 @@ function canDropImage(event: DragEvent): boolean {
 }
 
 function getDragSelection(event: DragEvent): Range | null | undefined {
-  let range;
-  const target = event.target as null | Element | Document;
-  const targetWindow =
-    target == null
-      ? null
-      : target.nodeType === 9
-      ? (target as Document).defaultView
-      : (target as Element).ownerDocument.defaultView;
+  let range: Range | null | undefined;
+  const target = event.target as Element | Document | null;
+  const targetWindow = target
+    ? target instanceof Document
+      ? target.defaultView
+      : target.ownerDocument?.defaultView
+    : null;
   const domSelection = getDOMSelection(targetWindow);
+
   if (document.caretRangeFromPoint) {
     range = document.caretRangeFromPoint(event.clientX, event.clientY);
-  } else if (event.rangeParent && domSelection !== null) {
-    domSelection.collapse(event.rangeParent, event.rangeOffset || 0);
+  } else if ("rangeParent" in event && domSelection !== null) {
+    const rangeParent = (event as any).rangeParent as Node;
+    const rangeOffset = ((event as any).rangeOffset as number) || 0;
+    domSelection.collapse(rangeParent, rangeOffset);
     range = domSelection.getRangeAt(0);
-  } else {
-    throw Error(`Cannot get the selection when dragging`);
   }
 
   return range;
