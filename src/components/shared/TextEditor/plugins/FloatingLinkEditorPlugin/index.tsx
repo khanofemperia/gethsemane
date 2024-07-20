@@ -194,7 +194,7 @@ function FloatingLinkEditor({
             if ($isAutoLinkNode(parent)) {
               const linkNode = $createLinkNode(parent.getURL(), {
                 rel: parent.__rel,
-                target: "_blank",
+                target: parent.__target,
                 title: parent.__title,
               });
               parent.replace(linkNode, true);

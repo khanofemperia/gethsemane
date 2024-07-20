@@ -36,7 +36,7 @@ export function DescriptionButton() {
 }
 
 export function DescriptionOverlay({ data }: { data: DataType }) {
-  const [description, setDescription] = useState<string>("");
+  const [description, setDescription] = useState<string>(data.description || "");
   const [loading, setLoading] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
