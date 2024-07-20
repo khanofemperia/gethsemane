@@ -36,7 +36,9 @@ export function DescriptionButton() {
 }
 
 export function DescriptionOverlay({ data }: { data: DataType }) {
-  const [description, setDescription] = useState<string>(data.description || "");
+  const [description, setDescription] = useState<string>(
+    data.description || ""
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -79,13 +81,29 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
     setAlertMessageType(AlertMessageType.NEUTRAL);
   };
 
+  const addTargetBlankToLinks = (html: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    doc.querySelectorAll("a").forEach((link) => {
+      if (!link.getAttribute("target")) {
+        link.setAttribute("target", "_blank");
+        link.setAttribute("rel", "noopener noreferrer");
+      }
+    });
+
+    return doc.body.innerHTML;
+  };
+
   const handleSave = async () => {
     setLoading(true);
 
     try {
+      const processedDescription = addTargetBlankToLinks(description);
+
       const result = await UpdateProductAction({
         id: data.id,
-        description,
+        description: processedDescription,
       });
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
