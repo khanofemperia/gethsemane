@@ -69,12 +69,8 @@ import { InsertTableDialog } from "./TablePlugin";
 const blockTypeToBlockName = {
   bullet: "Bulleted List",
   check: "Check List",
-  h1: "Heading 1",
   h2: "Heading 2",
   h3: "Heading 3",
-  h4: "Heading 4",
-  h5: "Heading 5",
-  h6: "Heading 6",
   number: "Numbered List",
   paragraph: "Normal",
   quote: "Quote",
@@ -207,13 +203,6 @@ function BlockFormatDropDown({
       >
         <i className="icon paragraph" />
         <span className="text">Normal</span>
-      </DropdownItem>
-      <DropdownItem
-        className={"item " + dropDownActiveClass(blockType === "h1")}
-        onClick={() => formatHeading("h1")}
-      >
-        <i className="icon h1" />
-        <span className="text">Heading 1</span>
       </DropdownItem>
       <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "h2")}
