@@ -267,21 +267,18 @@ export default async function EditProduct({
             </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
-            <div className="relative border rounded-xl pl-5 pr-[10px] pt-2 pb-5">
-              <div className="w-full flex items-center justify-between">
-                {options.sizes.inches.rows.length === 0 ? (
-                  <h3 className="text-xs text-gray">No description</h3>
-                ) : (
-                  <h3 className="text-xs text-gray">Overview</h3>
-                )}
-                <DescriptionButton />
-              </div>
-              <div className="w-[calc(100%-60px)] mt-1 border p-5 rounded-2xl">
-                <div
-                  className={`${styles.description} line-clamp-3`}
-                  dangerouslySetInnerHTML={{ __html: description || "" }}
-                />
-              </div>
+            <div className="w-full relative border rounded-xl p-5 flex items-center justify-between">
+              {options.sizes.inches.rows.length === 0 ? (
+                <h3 className="text-xs text-gray">No description</h3>
+              ) : (
+                <div className="w-[calc(100%-60px)] mt-1 border p-5 rounded-2xl">
+                  <div
+                    className={`${styles.description} line-clamp-3`}
+                    dangerouslySetInnerHTML={{ __html: description || "" }}
+                  />
+                </div>
+              )}
+              <DescriptionButton />
             </div>
           </div>
         </div>
@@ -295,13 +292,10 @@ export default async function EditProduct({
             </p>
           </div>
           <div className="w-full max-w-[400px] relative shadow rounded-xl bg-white">
-            <div className="relative border rounded-xl pl-5 pr-[10px] pt-2 pb-5">
+            <div className="relative border rounded-xl pl-5 pr-[10px] py-4">
               <div className="w-full flex items-center justify-between">
-                <h3 className="text-xs text-gray">Current status</h3>
-                <VisibilityButton />
-              </div>
-              <div className="mt-1">
                 <DataChip value={visibility as VisibilityType} />
+                <VisibilityButton />
               </div>
             </div>
           </div>
