@@ -14,7 +14,10 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 
 type DataType = {
   id: string;
-  mainImage: string;
+  images: {
+    main: string;
+    gallery: string[];
+  };
 };
 
 export function MainImageButton() {
@@ -43,8 +46,8 @@ export function MainImageOverlay({ data }: { data: DataType }) {
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
     AlertMessageType.NEUTRAL
   );
-  const [mainImage, setMainImage] = useState(data.mainImage);
-  
+  const [mainImage, setMainImage] = useState(data.images.main);
+
   const { hideOverlay } = useOverlayStore();
 
   const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
@@ -86,7 +89,10 @@ export function MainImageOverlay({ data }: { data: DataType }) {
     setLoading(true);
 
     try {
-      const result = await UpdateProductAction({ id: data.id, mainImage });
+      const result = await UpdateProductAction({
+        id: data.id,
+        images: { main: mainImage, gallery: data.images.gallery },
+      });
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
       setShowAlert(true);
@@ -118,7 +124,7 @@ export function MainImageOverlay({ data }: { data: DataType }) {
                     <button
                       onClick={() => {
                         hideOverlay({ pageName, overlayName });
-                        setMainImage(data.mainImage);
+                        setMainImage(data.images.main);
                       }}
                       type="button"
                       className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
@@ -131,7 +137,7 @@ export function MainImageOverlay({ data }: { data: DataType }) {
                   <button
                     onClick={() => {
                       hideOverlay({ pageName, overlayName });
-                      setMainImage(data.mainImage);
+                      setMainImage(data.images.main);
                     }}
                     type="button"
                     className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"

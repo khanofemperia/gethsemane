@@ -90,7 +90,7 @@ export function VisibilityOverlay({ data }: { data: DataType }) {
     try {
       const result = await UpdateProductAction({
         id: data.id,
-        visibility: selectedVisibility,
+        visibility: selectedVisibility as "DRAFT" | "PUBLISHED" | "HIDDEN",
       });
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
@@ -136,10 +136,7 @@ export function VisibilityOverlay({ data }: { data: DataType }) {
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                 >
-                  <ArrowLeftIcon
-                    className="fill-blue -ml-[2px]"
-                    size={20}
-                  />
+                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
                     Visibility
                   </span>

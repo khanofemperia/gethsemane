@@ -27,7 +27,10 @@ import {
   ColorsButton,
   ColorsOverlay,
 } from "@/components/admin/EditProduct/ColorsOverlay";
-import { DescriptionButton, DescriptionOverlay } from "@/components/admin/EditProduct/DescriptionOverlay";
+import {
+  DescriptionButton,
+  DescriptionOverlay,
+} from "@/components/admin/EditProduct/DescriptionOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
 import { getProduct } from "@/lib/getData";
 
@@ -255,51 +258,58 @@ export default async function EditProduct({
           </div>
         </div>
         <div>
-          <p className="text-sm mb-4 md:max-w-[85%]">
-            Tell your product's story! Describe the features and benefits that
-            make customers love it. Highlight what makes it unique and how it
-            solves problems or improves lives. Keep it clear and concise, using
-            descriptive language to engage the reader.
-          </p>
-          <div className="w-full shadow rounded-xl bg-white">
-            <div className="w-full h-14 border-b flex items-center justify-between pl-5 pr-[10px]">
-              <h2 className="font-semibold text-xl">Product description</h2>
-              <DescriptionButton />
-            </div>
-            <div className="p-5">
-              {!description ? (
-                <p className="italic text-gray">Nothing yet</p>
-              ) : (
-                <div className="bg-lightgray p-5 rounded-2xl">
-                  <div
-                    className={`${styles.description} line-clamp-5`}
-                    dangerouslySetInnerHTML={{ __html: description || "" }}
-                  />
-                </div>
-              )}
+          <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">Product description</h2>
+            <p className="text-sm md:max-w-[85%]">
+              Spotlight your product's strengths. What makes it a must-have? How
+              does it make life better? Why should people choose it? Make it
+              easy to understand and remember.
+            </p>
+          </div>
+          <div className="w-full relative shadow rounded-xl bg-white">
+            <div className="relative border rounded-xl pl-5 pr-[10px] pt-2 pb-5">
+              <div className="w-full flex items-center justify-between">
+                {options.sizes.inches.rows.length === 0 ? (
+                  <h3 className="text-xs text-gray">No description</h3>
+                ) : (
+                  <h3 className="text-xs text-gray">Overview</h3>
+                )}
+                <DescriptionButton />
+              </div>
+              <div className="w-[calc(100%-60px)] mt-1 border p-5 rounded-2xl">
+                <div
+                  className={`${styles.description} line-clamp-3`}
+                  dangerouslySetInnerHTML={{ __html: description || "" }}
+                />
+              </div>
             </div>
           </div>
         </div>
         <div>
-          <p className="text-sm mb-4 md:max-w-[85%]">
-            Choose whether the product is a work-in-progress (draft) or ready to
-            be seen (published), and decide if you want shoppers to see it or
-            keep it private (hidden).
-          </p>
-          <div className="w-full max-w-[400px] shadow rounded-xl bg-white">
-            <div className="w-full h-14 border-b flex items-center justify-between pl-5 pr-[10px]">
-              <h2 className="font-semibold text-xl">Visibility</h2>
-              <VisibilityButton />
-            </div>
-            <div className="p-5">
-              <DataChip value={visibility as VisibilityType} />
+          <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">Visibility</h2>
+            <p className="text-sm md:max-w-[85%]">
+              Choose whether the product is a work-in-progress (draft) or ready
+              to be seen (published), and decide if you want shoppers to see it
+              or keep it private (hidden).
+            </p>
+          </div>
+          <div className="w-full max-w-[400px] relative shadow rounded-xl bg-white">
+            <div className="relative border rounded-xl pl-5 pr-[10px] pt-2 pb-5">
+              <div className="w-full flex items-center justify-between">
+                <h3 className="text-xs text-gray">Current status</h3>
+                <VisibilityButton />
+              </div>
+              <div className="mt-1">
+                <DataChip value={visibility as VisibilityType} />
+              </div>
             </div>
           </div>
         </div>
       </div>
       {/* <BasicDetailsOverlay data={{ id, category, name, slug, pricing }} /> */}
-      {/* <MainImageOverlay data={{ id, images }} /> */}
-      <ImagesOverlay data={{ id, images: images.gallery }} />
+      <MainImageOverlay data={{ id, images }} />
+      <ImagesOverlay data={{ id, images }} />
       <ColorsOverlay data={{ id, colors: options.colors }} />
       <SizeChartOverlay
         data={{
@@ -307,8 +317,8 @@ export default async function EditProduct({
           sizes: options.sizes,
         }}
       />
-      <DescriptionOverlay data={{id, description}} />
-      {/* <VisibilityOverlay data={{ id, visibility }} /> */}
+      <DescriptionOverlay data={{ id, description }} />
+      <VisibilityOverlay data={{ id, visibility }} />
     </>
   );
 }

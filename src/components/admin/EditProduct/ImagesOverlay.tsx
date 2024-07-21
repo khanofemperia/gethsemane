@@ -15,7 +15,10 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 
 type DataType = {
   id: string;
-  images: string[] | null;
+  images: {
+    main: string;
+    gallery: string[];
+  };
 };
 
 export function ImagesButton() {
@@ -44,7 +47,7 @@ export function ImagesOverlay({ data }: { data: DataType }) {
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
     AlertMessageType.NEUTRAL
   );
-  const [images, setImages] = useState(data?.images ?? []);
+  const [images, setImages] = useState(data?.images.gallery ?? []);
 
   const { hideOverlay } = useOverlayStore();
 
@@ -82,34 +85,36 @@ export function ImagesOverlay({ data }: { data: DataType }) {
   };
 
   const handleSave = async () => {
-    // setLoading(true);
-    // try {
-    //   const filteredImages = images.filter((image) => image !== "");
-
-    //   if (filteredImages.length === 0) {
-    //     setAlertMessageType(AlertMessageType.ERROR);
-    //     setAlertMessage("No images added");
-    //     setShowAlert(true);
-    //     setImages(data?.images ?? []);
-    //   } else {
-    //     const result = await UpdateProductAction({
-    //       id: data.id,
-    //       images: filteredImages,
-    //     });
-    //     setAlertMessageType(result.type);
-    //     setAlertMessage(result.message);
-    //     setShowAlert(true);
-    //     setImages(filteredImages);
-    //   }
-    // } catch (error) {
-    //   console.error("Error updating product", error);
-    //   setAlertMessageType(AlertMessageType.ERROR);
-    //   setAlertMessage("Failed to update product");
-    //   setShowAlert(true);
-    // } finally {
-    //   setLoading(false);
-    //   onHideOverlay();
-    // }
+    setLoading(true);
+    try {
+      const filteredImages = images.filter((image) => image !== "");
+      if (filteredImages.length === 0) {
+        setAlertMessageType(AlertMessageType.ERROR);
+        setAlertMessage("No images added");
+        setShowAlert(true);
+        setImages(data?.images.gallery ?? []);
+      } else {
+        const result = await UpdateProductAction({
+          id: data.id,
+          images: {
+            main: data.images.main,
+            gallery: filteredImages,
+          },
+        });
+        setAlertMessageType(result.type);
+        setAlertMessage(result.message);
+        setShowAlert(true);
+        setImages(filteredImages);
+      }
+    } catch (error) {
+      console.error("Error updating product", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to update product");
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
+      onHideOverlay();
+    }
   };
 
   const addImage = () => {
@@ -147,7 +152,7 @@ export function ImagesOverlay({ data }: { data: DataType }) {
                   <button
                     onClick={() => {
                       hideOverlay({ pageName, overlayName });
-                      setImages(data?.images ?? []);
+                      setImages(data?.images.gallery ?? []);
                     }}
                     type="button"
                     className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
@@ -160,7 +165,7 @@ export function ImagesOverlay({ data }: { data: DataType }) {
                 <button
                   onClick={() => {
                     hideOverlay({ pageName, overlayName });
-                    setImages(data?.images ?? []);
+                    setImages(data?.images.gallery ?? []);
                   }}
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
