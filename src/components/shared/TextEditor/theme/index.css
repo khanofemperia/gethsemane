@@ -5,30 +5,29 @@
   text-align: right;
 }
 .TextEditorTheme__paragraph {
-  line-height: 26px;
-  margin-bottom: 6px;
+  line-height: 28px;
+  margin-bottom: 20px;
 }
 .TextEditorTheme__quote {
-  margin-bottom: 6px;
-  padding: 5px 3px;
-  border-left: 4px solid #e0e0e0;
-  background-color: #e0e0e0;
-  border-radius: 0 0.5rem 0.5rem 0;
-}
-.TextEditorTheme__h1 {
-  font-weight: bold;
-  margin-bottom: 6px;
-  font-size: 1.875rem;
+  line-height: 28px;
+  margin-bottom: 20px;
+  padding: 20px 18px;
+  border-left: 5px solid #c9c9c9;
+  background-color: #f0f0f0;
+  border-radius: 0 8px 8px 0;
 }
 .TextEditorTheme__h2 {
-  font-weight: bold;
-  margin-bottom: 6px;
-  font-size: 1.5rem;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 40px;
+  margin-bottom: 20px;
+  margin-top: 40px;
 }
 .TextEditorTheme__h3 {
-  font-size: 12px;
-  margin: 0;
-  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 32px;
+  margin-bottom: 20px;
 }
 .TextEditorTheme__indent {
   --lexical-indent-base-value: 40px;
@@ -311,16 +310,16 @@
   list-style-position: outside;
 }
 .TextEditorTheme__listItem {
-  margin-left: 2rem;
-  margin-right: 2rem;
-  margin-bottom: 1.5rem;
-  line-height: 26px;
+  margin-left: 40px;
+  margin-right: 40px;
+  line-height: 28px;
+  margin-bottom: 20px;
 }
 .TextEditorTheme__listItemChecked,
 .TextEditorTheme__listItemUnchecked {
   position: relative;
-  margin-left: 8px;
-  margin-right: 8px;
+  margin-left: 24px;
+  margin-right: 24px;
   padding-left: 24px;
   padding-right: 24px;
   list-style-type: none;
@@ -334,7 +333,7 @@
   content: "";
   width: 16px;
   height: 16px;
-  top: 2px;
+  top: 6px;
   left: 0;
   cursor: pointer;
   display: block;
@@ -368,11 +367,11 @@
   border-style: solid;
   position: absolute;
   display: block;
-  top: 6px;
-  width: 3px;
-  left: 7px;
+  top: 9px;
+  width: 5px;
+  left: 6px;
   right: 7px;
-  height: 6px;
+  height: 8px;
   transform: rotate(45deg);
   border-width: 0 2px 2px 0;
 }
