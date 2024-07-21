@@ -144,9 +144,10 @@ type ProductType = {
   updatedAt: string;
   sourceInfo: {
     platform: string;
-    url: string;
+    platformUrl: string;
+    store: string;
     storeId: string;
-    storeName: string;
     storeUrl: string;
+    productUrl: string;
   };
 };

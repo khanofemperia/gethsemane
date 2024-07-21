@@ -33,6 +33,8 @@ import {
 } from "@/components/admin/EditProduct/DescriptionOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
 import { getProduct } from "@/lib/getData";
+import Link from "next/link";
+import { CheckmarkIcon } from "@/icons";
 
 export default async function EditProduct({
   params,
@@ -55,6 +57,8 @@ export default async function EditProduct({
     images,
     options,
     description,
+    highlights,
+    sourceInfo,
     visibility,
   } = product as ProductType;
 
@@ -284,6 +288,117 @@ export default async function EditProduct({
         </div>
         <div>
           <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">Highlights</h2>
+            <p className="text-sm md:max-w-[85%]">...</p>
+          </div>
+          <div className="w-full relative shadow rounded-xl bg-white">
+            <div className="w-[calc(100%-60px)] p-5 pt-4">
+              <div>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: exampleProduct.highlights.headline || "",
+                  }}
+                />
+              </div>
+              <ul className="text-sm list-inside *:leading-[25px]">
+                {exampleProduct.highlights.keyPoints.map((highlight, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <CheckmarkIcon
+                      className="fill-green mt-[3px] -ml-[1px]"
+                      size={19}
+                    />
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <BasicDetailsButton />
+          </div>
+        </div>
+        <div>
+          <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">On-page SEO</h2>
+            <p className="text-sm md:max-w-[85%]">...</p>
+          </div>
+          <div className="w-full relative shadow rounded-xl bg-white">
+            <div className="w-[calc(100%-60px)]">
+              <div className="p-5">
+                <h3 className="text-xs text-gray mb-2">Meta title</h3>
+                <p className="font-medium">{exampleProduct.seo.metaTitle}</p>
+              </div>
+              <div className="p-5">
+                <h3 className="text-xs text-gray mb-2">Meta description</h3>
+                <p className="font-medium max-w-[540px]">
+                  {exampleProduct.seo.metaDescription}
+                </p>
+              </div>
+              <div className="p-5">
+                <h3 className="text-xs text-gray mb-2">Keywords</h3>
+                <p className="font-medium">
+                  {exampleProduct.seo.keywords.join(", ")}
+                </p>
+              </div>
+            </div>
+            <BasicDetailsButton />
+          </div>
+        </div>
+        <div>
+          <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">Product source</h2>
+            <p className="text-sm md:max-w-[85%]">...</p>
+          </div>
+          <div className="w-full relative shadow rounded-xl bg-white">
+            <div className="w-[calc(100%-60px)]">
+              <div>
+                {exampleProduct.sourceInfo.platform &&
+                exampleProduct.sourceInfo.platformUrl &&
+                exampleProduct.sourceInfo.store &&
+                exampleProduct.sourceInfo.storeId &&
+                exampleProduct.sourceInfo.storeUrl &&
+                exampleProduct.sourceInfo.productUrl ? (
+                  <>
+                    <div className="p-5">
+                      <h3 className="text-xs text-gray mb-2">Platform</h3>
+                      <Link
+                        href={exampleProduct.sourceInfo.platformUrl}
+                        target="_blank"
+                        className="font-medium text-blue active:underline hover:underline"
+                      >
+                        {exampleProduct.sourceInfo.platform}
+                      </Link>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="text-xs text-gray mb-2">Store</h3>
+                      <Link
+                        href={exampleProduct.sourceInfo.storeUrl}
+                        target="_blank"
+                        className="font-medium text-blue active:underline hover:underline"
+                      >
+                        {exampleProduct.sourceInfo.store} (
+                        {exampleProduct.sourceInfo.storeId})
+                      </Link>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="text-xs text-gray mb-2">Product</h3>
+                      <Link
+                        href={exampleProduct.sourceInfo.productUrl}
+                        target="_blank"
+                        className="font-medium text-blue active:underline hover:underline"
+                      >
+                        View on {exampleProduct.sourceInfo.platform}
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <p className="p-5 text-sm text-gray">No source info</p>
+                )}
+              </div>
+            </div>
+            <BasicDetailsButton />
+          </div>
+        </div>
+        <div>
+          <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Visibility</h2>
             <p className="text-sm md:max-w-[85%]">
               Choose whether the product is a work-in-progress (draft) or ready
@@ -325,8 +440,7 @@ const exampleProduct: ProductType = {
   description:
     "Elegant and versatile spaghetti strap tank top with sexy backless design and lace-up details. Perfect for summer parties and streetwear.",
   highlights: {
-    headline:
-      "Struggling with uncomfortable tops during summer? Say no more, our tank top guarantees comfort and style for every occasion!",
+    headline: `<div class="styles_description__PIV_Z line-clamp-3"><p class="TextEditorTheme__paragraph" dir="ltr" style="text-align: start;"><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">Struggling with uncomfortable tops during summer?</strong></b><span style="white-space: pre-wrap;"> Say no more, our top guarantees </span><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">comfort and style</strong></b><span style="white-space: pre-wrap;"> for every occasion!</span></p></div>`,
     keyPoints: [
       "Sexy backless design",
       "Lace-up details for adjustable fit",
@@ -484,9 +598,10 @@ const exampleProduct: ProductType = {
   updatedAt: "2024-04-07T08:39:08Z",
   sourceInfo: {
     platform: "AliExpress",
-    url: "https://www.aliexpress.us/item/3256805147723941.html",
+    platformUrl: "https://www.aliexpress.com/",
+    store: "Kayle Clothes Store",
     storeId: "2415022",
-    storeName: "Kayle Clothes Store",
-    storeUrl: "www.aliexpress.com/store/1101220990",
+    storeUrl: "https://www.aliexpress.com/store/1101220990",
+    productUrl: "https://www.aliexpress.us/item/3256805147723941.html",
   },
 };
