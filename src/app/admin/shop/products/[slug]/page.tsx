@@ -43,6 +43,10 @@ import {
   ProductSourceButton,
   ProductSourceOverlay,
 } from "@/components/admin/EditProduct/ProductSourceOverlay";
+import {
+  HighlightsButton,
+  HighlightsOverlay,
+} from "@/components/admin/EditProduct/HighlightsOverlay";
 
 export default async function EditProduct({
   params,
@@ -335,7 +339,7 @@ export default async function EditProduct({
                 ))}
               </ul>
             </div>
-            <BasicDetailsButton />
+            <HighlightsButton />
           </div>
         </div>
         <div>
@@ -455,6 +459,7 @@ export default async function EditProduct({
         }}
       />
       <DescriptionOverlay data={{ id, description }} />
+      <HighlightsOverlay data={{ id, highlights }} />
       <VisibilityOverlay data={{ id, visibility }} />
     </>
   );

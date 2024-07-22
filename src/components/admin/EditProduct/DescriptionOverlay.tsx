@@ -70,11 +70,6 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
     };
   }, [isOverlayVisible, showAlert]);
 
-  const onHideOverlay = () => {
-    setLoading(false);
-    hideOverlay({ pageName, overlayName });
-  };
-
   const hideAlertMessage = () => {
     setShowAlert(false);
     setAlertMessage("");
