@@ -39,7 +39,10 @@ import {
   OnPageSeoButton,
   OnPageSeoOverlay,
 } from "@/components/admin/EditProduct/OnPageSeoOverlay";
-import { ProductSourceButton, ProductSourceOverlay } from "@/components/admin/EditProduct/ProductSourceOverlay";
+import {
+  ProductSourceButton,
+  ProductSourceOverlay,
+} from "@/components/admin/EditProduct/ProductSourceOverlay";
 
 export default async function EditProduct({
   params,
@@ -398,8 +401,7 @@ export default async function EditProduct({
                         target="_blank"
                         className="font-medium text-blue active:underline hover:underline"
                       >
-                        {sourceInfo.store} (
-                        {sourceInfo.storeId})
+                        {sourceInfo.store} ({sourceInfo.storeId})
                       </Link>
                     </div>
                     <div className="p-5">
