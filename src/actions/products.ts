@@ -92,7 +92,7 @@ export async function UpdateProductAction(
     const docRef = doc(database, "products", data.id);
     const docSnap = await getDoc(docRef);
     const currentProduct = docSnap.data() as ProductType;
-  
+
     const updatedProduct = {
       ...currentProduct,
       ...data,

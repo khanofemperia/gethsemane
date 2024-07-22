@@ -328,15 +328,21 @@ export default async function EditProduct({
                 />
               </div>
               <ul className="text-sm list-inside *:leading-[25px]">
-                {highlights.keyPoints.map((highlight) => (
-                  <li key={highlight.index} className="flex items-start gap-2">
-                    <CheckmarkIcon
-                      className="fill-green mt-[3px] -ml-[1px]"
-                      size={19}
-                    />
-                    <span>{highlight.text}</span>
-                  </li>
-                ))}
+                {highlights.keyPoints
+                  .slice() 
+                  .sort((a, b) => a.index - b.index)
+                  .map((highlight) => (
+                    <li
+                      key={highlight.index}
+                      className="flex items-start gap-2"
+                    >
+                      <CheckmarkIcon
+                        className="fill-green mt-[3px] -ml-[1px]"
+                        size={19}
+                      />
+                      <span>{highlight.text}</span>
+                    </li>
+                  ))}
               </ul>
             </div>
             <HighlightsButton />

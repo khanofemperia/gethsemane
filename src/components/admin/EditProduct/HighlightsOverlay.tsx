@@ -55,15 +55,9 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
   );
   const [keyPoints, setKeyPoints] = useState<ItemType[]>([]);
 
-  const items = [
-    { text: "Sexy backless design", index: 1 },
-    { text: "Lace-up details for adjustable fit", index: 2 },
-    { text: "Party to street versatility", index: 3 },
-    { text: "Summer 2024 collection", index: 4 },
-  ];
-
   useEffect(() => {
-    const initialKeyPoints = items.map((item, index) => ({
+    data.highlights.keyPoints.sort((a, b) => a.index - b.index);
+    const initialKeyPoints = data.highlights.keyPoints.map((item) => ({
       id: Number(generateId()),
       name: item.text,
       order: item.index,
