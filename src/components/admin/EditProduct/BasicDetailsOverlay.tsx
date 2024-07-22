@@ -10,13 +10,18 @@ import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
+import { getCategories } from "@/lib/getData";
 
 type DataType = {
   id: string;
   category: string;
   name: string;
   slug: string;
-  price: string;
+  pricing: {
+    basePrice: number;
+    salePrice?: number;
+    discountPercentage?: number;
+  };
 };
 
 export function BasicDetailsButton() {
@@ -49,30 +54,30 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   const [selectedCategory, setSelectedCategory] = useState(data.category);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [formData, setFormData] = useState({
-    id: data.id,
     category: data.category,
     name: data.name,
     slug: data.slug,
-    price: data.price,
+    basePrice: data.pricing.basePrice,
+    salePrice: data.pricing.salePrice,
+    discountPercentage: data.pricing.discountPercentage,
   });
 
   const categoryRef = useRef(null);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    (async () => {
       try {
-        const response = await fetch("/api/categories");
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-        const data = await response.json();
-        setCategories(data);
+        const categories = (await getCategories()) as CategoryType[];
+        setCategories(categories);
       } catch (error) {
         console.error("Error fetching categories:", error);
+        setAlertMessageType(AlertMessageType.ERROR);
+        setAlertMessage(
+          "Couldn't get categories. Please refresh the page."
+        );
+        setShowAlert(true);
       }
-    };
-
-    fetchCategories();
+    })();
   }, []);
 
   const { hideOverlay } = useOverlayStore();
@@ -145,8 +150,20 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
 
     setLoading(true);
 
+    const updatedData = {
+      id: data.id,
+      category: formData.category,
+      name: formData.name,
+      slug: formData.slug,
+      pricing: {
+        basePrice: formData.basePrice,
+        salePrice: formData.salePrice,
+        discountPercentage: formData.discountPercentage,
+      },
+    };
+
     try {
-      const result = await UpdateProductAction(formData);
+      const result = await UpdateProductAction(updatedData);
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
       setShowAlert(true);
@@ -190,11 +207,12 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                         hideOverlay({ pageName, overlayName });
                         setSelectedCategory(data.category);
                         setFormData({
-                          id: data.id,
                           category: data.category,
                           name: data.name,
                           slug: data.slug,
-                          price: data.price,
+                          basePrice: data.pricing.basePrice,
+                          salePrice: data.pricing.salePrice,
+                          discountPercentage: data.pricing.discountPercentage,
                         });
                       }}
                       type="button"
@@ -210,20 +228,18 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                       hideOverlay({ pageName, overlayName });
                       setSelectedCategory(data.category);
                       setFormData({
-                        id: data.id,
                         category: data.category,
                         name: data.name,
                         slug: data.slug,
-                        price: data.price,
+                        basePrice: data.pricing.basePrice,
+                        salePrice: data.pricing.salePrice,
+                        discountPercentage: data.pricing.discountPercentage,
                       });
                     }}
                     type="button"
                     className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                   >
-                    <ArrowLeftIcon
-                      className="fill-blue -ml-[2px]"
-                      size={20}
-                    />
+                    <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                     <span className="font-semibold text-sm text-blue">
                       Basic details
                     </span>
@@ -326,20 +342,66 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="price" className="font-semibold text-sm">
-                      Price
-                    </label>
-                    <div className="w-full h-9 relative">
-                      <input
-                        type="text"
-                        name="price"
-                        placeholder="34.99"
-                        value={formData.price}
-                        onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
-                        required
-                      />
+                  <div className="w-full max-w-[300px]">
+                    <h2 className="font-semibold text-sm mb-2">Pricing</h2>
+                    <div className="flex flex-col gap-5 border rounded-md px-5 pt-4 pb-[22px]">
+                      <div className="flex flex-col gap-2">
+                        <label
+                          htmlFor="basePrice"
+                          className="font-semibold text-sm"
+                        >
+                          Base price
+                        </label>
+                        <div className="w-full h-9 relative">
+                          <input
+                            type="text"
+                            name="basePrice"
+                            placeholder="34.99"
+                            value={formData.basePrice}
+                            onChange={handleInputChange}
+                            className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label
+                          htmlFor="salePrice"
+                          className="font-semibold text-sm"
+                        >
+                          Sale price
+                        </label>
+                        <div className="w-full h-9 relative">
+                          <input
+                            type="text"
+                            name="salePrice"
+                            placeholder="34.99"
+                            value={formData.salePrice}
+                            onChange={handleInputChange}
+                            className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label
+                          htmlFor="discountPercentage"
+                          className="font-semibold text-sm"
+                        >
+                          Discount percentage
+                        </label>
+                        <div className="w-full h-9 relative">
+                          <input
+                            type="text"
+                            name="discountPercentage"
+                            placeholder="34.99"
+                            value={formData.discountPercentage}
+                            onChange={handleInputChange}
+                            className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                            required
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -40,31 +40,6 @@ export const useOverlayStore = createWithEqualityFn<OverlayStoreProps>(
           },
         },
       },
-      blog: {
-        name: "blog",
-        overlays: {
-          newArticle: {
-            name: "newArticle",
-            isVisible: false,
-          },
-          arrangeHomepageArticles: {
-            name: "arrangeHomepageArticles",
-            isVisible: false,
-          },
-          addHomepageArticles: {
-            name: "addHomepageArticles",
-            isVisible: false,
-          },
-          removeHomepageArticles: {
-            name: "removeHomepageArticles",
-            isVisible: false,
-          },
-          changeArticleIndex: {
-            name: "changeArticleIndex",
-            isVisible: false,
-          },
-        },
-      },
       editProduct: {
         name: "editProduct",
         overlays: {
@@ -92,33 +67,20 @@ export const useOverlayStore = createWithEqualityFn<OverlayStoreProps>(
             name: "description",
             isVisible: false,
           },
+          highlights: {
+            name: "highlights",
+            isVisible: false,
+          },
+          onPageSeo: {
+            name: "onPageSeo",
+            isVisible: false,
+          },
+          productSource: {
+            name: "productSource",
+            isVisible: false,
+          },
           visibility: {
             name: "visibility",
-            isVisible: false,
-          },
-        },
-      },
-      editArticle: {
-        name: "editArticle",
-        overlays: {
-          basicDetails: {
-            name: "basicDetails",
-            isVisible: false,
-          },
-          mainImage: {
-            name: "mainImage",
-            isVisible: false,
-          },
-          images: {
-            name: "images",
-            isVisible: false,
-          },
-          settings: {
-            name: "settings",
-            isVisible: false,
-          },
-          content: {
-            name: "content",
             isVisible: false,
           },
         },

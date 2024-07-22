@@ -35,6 +35,11 @@ import IDCopyButton from "@/components/shared/IDCopyButton";
 import { getProduct } from "@/lib/getData";
 import Link from "next/link";
 import { CheckmarkIcon } from "@/icons";
+import {
+  OnPageSeoButton,
+  OnPageSeoOverlay,
+} from "@/components/admin/EditProduct/OnPageSeoOverlay";
+import { ProductSourceButton, ProductSourceOverlay } from "@/components/admin/EditProduct/ProductSourceOverlay";
 
 export default async function EditProduct({
   params,
@@ -59,6 +64,7 @@ export default async function EditProduct({
     description,
     highlights,
     sourceInfo,
+    seo,
     visibility,
   } = product as ProductType;
 
@@ -87,9 +93,23 @@ export default async function EditProduct({
               </div>
               <div className="p-5">
                 <h3 className="text-xs text-gray mb-2">Price</h3>
-                <p className="font-medium">
-                  ${formatThousands(pricing.basePrice)}
-                </p>
+                {Number(pricing.salePrice) ? (
+                  <div className="flex items-center gap-[6px]">
+                    <span className="font-medium">
+                      ${formatThousands(Number(pricing.salePrice))}
+                    </span>
+                    <span className="text-xs text-gray line-through mt-[2px]">
+                      ${formatThousands(Number(pricing.basePrice))}
+                    </span>
+                    <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-3 py-1 px-[5px]">
+                      -{pricing.discountPercentage}%
+                    </span>
+                  </div>
+                ) : (
+                  <p className="font-medium">
+                    ${formatThousands(Number(pricing.basePrice))}
+                  </p>
+                )}
               </div>
               <div className="p-5">
                 <h3 className="text-xs text-gray mb-2">Slug</h3>
@@ -321,25 +341,29 @@ export default async function EditProduct({
             <p className="text-sm md:max-w-[85%]">...</p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
-            <div className="w-[calc(100%-60px)]">
-              <div className="p-5">
-                <h3 className="text-xs text-gray mb-2">Meta title</h3>
-                <p className="font-medium">{exampleProduct.seo.metaTitle}</p>
+            {seo.metaTitle && seo.metaDescription && seo.keywords.length ? (
+              <div className="w-[calc(100%-60px)]">
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Meta title</h3>
+                  <p className="font-medium">{seo.metaTitle}</p>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Meta description</h3>
+                  <p className="font-medium max-w-[540px]">
+                    {seo.metaDescription}
+                  </p>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Keywords</h3>
+                  <p className="font-medium">{seo.keywords.join(", ")}</p>
+                </div>
               </div>
-              <div className="p-5">
-                <h3 className="text-xs text-gray mb-2">Meta description</h3>
-                <p className="font-medium max-w-[540px]">
-                  {exampleProduct.seo.metaDescription}
-                </p>
+            ) : (
+              <div className="p-5 pb-3">
+                <h3 className="text-xs text-gray mb-2">No SEO details</h3>
               </div>
-              <div className="p-5">
-                <h3 className="text-xs text-gray mb-2">Keywords</h3>
-                <p className="font-medium">
-                  {exampleProduct.seo.keywords.join(", ")}
-                </p>
-              </div>
-            </div>
-            <BasicDetailsButton />
+            )}
+            <OnPageSeoButton />
           </div>
         </div>
         <div>
@@ -350,42 +374,42 @@ export default async function EditProduct({
           <div className="w-full relative shadow rounded-xl bg-white">
             <div className="w-[calc(100%-60px)]">
               <div>
-                {exampleProduct.sourceInfo.platform &&
-                exampleProduct.sourceInfo.platformUrl &&
-                exampleProduct.sourceInfo.store &&
-                exampleProduct.sourceInfo.storeId &&
-                exampleProduct.sourceInfo.storeUrl &&
-                exampleProduct.sourceInfo.productUrl ? (
+                {sourceInfo.platform &&
+                sourceInfo.platformUrl &&
+                sourceInfo.store &&
+                sourceInfo.storeId &&
+                sourceInfo.storeUrl &&
+                sourceInfo.productUrl ? (
                   <>
                     <div className="p-5">
                       <h3 className="text-xs text-gray mb-2">Platform</h3>
                       <Link
-                        href={exampleProduct.sourceInfo.platformUrl}
+                        href={sourceInfo.platformUrl}
                         target="_blank"
                         className="font-medium text-blue active:underline hover:underline"
                       >
-                        {exampleProduct.sourceInfo.platform}
+                        {sourceInfo.platform}
                       </Link>
                     </div>
                     <div className="p-5">
                       <h3 className="text-xs text-gray mb-2">Store</h3>
                       <Link
-                        href={exampleProduct.sourceInfo.storeUrl}
+                        href={sourceInfo.storeUrl}
                         target="_blank"
                         className="font-medium text-blue active:underline hover:underline"
                       >
-                        {exampleProduct.sourceInfo.store} (
-                        {exampleProduct.sourceInfo.storeId})
+                        {sourceInfo.store} (
+                        {sourceInfo.storeId})
                       </Link>
                     </div>
                     <div className="p-5">
                       <h3 className="text-xs text-gray mb-2">Product</h3>
                       <Link
-                        href={exampleProduct.sourceInfo.productUrl}
+                        href={sourceInfo.productUrl}
                         target="_blank"
                         className="font-medium text-blue active:underline hover:underline"
                       >
-                        View on {exampleProduct.sourceInfo.platform}
+                        View on {sourceInfo.platform}
                       </Link>
                     </div>
                   </>
@@ -394,7 +418,7 @@ export default async function EditProduct({
                 )}
               </div>
             </div>
-            <BasicDetailsButton />
+            <ProductSourceButton />
           </div>
         </div>
         <div>
@@ -416,7 +440,9 @@ export default async function EditProduct({
           </div>
         </div>
       </div>
-      {/* <BasicDetailsOverlay data={{ id, category, name, slug, pricing }} /> */}
+      <BasicDetailsOverlay data={{ id, category, name, slug, pricing }} />
+      <OnPageSeoOverlay data={{ id, seo }} />
+      <ProductSourceOverlay data={{ id, sourceInfo }} />
       <MainImageOverlay data={{ id, images }} />
       <ImagesOverlay data={{ id, images }} />
       <ColorsOverlay data={{ id, colors: options.colors }} />
