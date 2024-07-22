@@ -43,7 +43,7 @@ type FormDataType = {
   metaTitle: string;
   metaDescription: string;
   keywords: string;
-}
+};
 
 export function OnPageSeoOverlay({ data }: { data: DataType }) {
   const [loading, setLoading] = useState(false);
