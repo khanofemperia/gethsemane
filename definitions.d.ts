@@ -108,6 +108,8 @@ type SizeChartType = {
   };
 };
 
+type KeyPointsType = { index: number; text: string };
+
 type ProductType = {
   id: string;
   name: string;
@@ -116,7 +118,7 @@ type ProductType = {
   description: string;
   highlights: {
     headline: string;
-    keyPoints: string[];
+    keyPoints: KeyPointsType[];
   };
   pricing: {
     basePrice: number;

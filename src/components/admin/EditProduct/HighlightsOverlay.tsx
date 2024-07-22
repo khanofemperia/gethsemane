@@ -10,19 +10,22 @@ import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { ReactSortable } from "react-sortablejs";
 import { MdOutlineDragIndicator } from "react-icons/md";
+import { UpdateProductAction } from "@/actions/products";
+import { generateId } from "@/lib/utils";
 
 type DataType = {
   id: string;
   highlights: {
     headline: string;
-    keyPoints: string[];
+    keyPoints: KeyPointsType[];
   };
 };
 
-interface ItemType {
+type ItemType = {
   id: number;
   name: string;
-}
+  order: number;
+};
 
 export function HighlightsButton() {
   const { showOverlay } = useOverlayStore();
@@ -50,12 +53,23 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
     AlertMessageType.NEUTRAL
   );
-  const [keyPoints, setKeyPoints] = useState<ItemType[]>([
-    { id: 1, name: "Sexy backless design" },
-    { id: 2, name: "Lace-up details for adjustable fit" },
-    { id: 3, name: "Party to street versatility" },
-    { id: 4, name: "Summer 2024 collection" },
-  ]);
+  const [keyPoints, setKeyPoints] = useState<ItemType[]>([]);
+
+  const items = [
+    { text: "Sexy backless design", index: 1 },
+    { text: "Lace-up details for adjustable fit", index: 2 },
+    { text: "Party to street versatility", index: 3 },
+    { text: "Summer 2024 collection", index: 4 },
+  ];
+
+  useEffect(() => {
+    const initialKeyPoints = items.map((item, index) => ({
+      id: Number(generateId()),
+      name: item.text,
+      order: item.index,
+    }));
+    setKeyPoints(initialKeyPoints);
+  }, []);
 
   const { hideOverlay } = useOverlayStore();
 
@@ -87,19 +101,62 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
     setAlertMessageType(AlertMessageType.NEUTRAL);
   };
 
-  const handleSave = () => {};
+  const handleSave = async () => {
+    setLoading(true);
+
+    const sortedKeyPoints = [...keyPoints].sort((a, b) => a.order - b.order);
+    const updatedKeyPoints = sortedKeyPoints.map((item, index) => ({
+      text: item.name,
+      index: index + 1,
+    }));
+
+    const updatedData = {
+      id: data.id,
+      highlights: {
+        headline: "",
+        keyPoints: updatedKeyPoints,
+      },
+    };
+
+    try {
+      const result = await UpdateProductAction(updatedData);
+      setAlertMessageType(result.type);
+      setAlertMessage(result.message);
+      setShowAlert(true);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to update product");
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAdd = () => {
     const newKeyPoint = {
-      id: Date.now(), // Generates a unique ID
-      name: "New Key Point", // Default text or could be empty
+      id: Number(generateId()),
+      name: "New Key Point",
+      order: keyPoints.length + 1,
     };
     setKeyPoints((prevKeyPoints) => [...prevKeyPoints, newKeyPoint]);
   };
 
   const handleRemove = (id: number) => {
+    setKeyPoints((prevKeyPoints) => {
+      const filteredPoints = prevKeyPoints.filter((item) => item.id !== id);
+      return filteredPoints.map((item, index) => ({
+        ...item,
+        order: index + 1,
+      }));
+    });
+  };
+
+  const handleInputChange = (id: number, newValue: string) => {
     setKeyPoints((prevKeyPoints) =>
-      prevKeyPoints.filter((item) => item.id !== id)
+      prevKeyPoints.map((item) =>
+        item.id === id ? { ...item, name: newValue } : item
+      )
     );
   };
 
@@ -137,7 +194,8 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                   </span>
                 </button>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleSave}
                   disabled={loading}
                   className={clsx(
                     "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
@@ -165,7 +223,15 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                       <div className="pb-3">
                         <ReactSortable
                           list={keyPoints}
-                          setList={setKeyPoints}
+                          setList={(newState) => {
+                            const updatedState = newState.map(
+                              (item, index) => ({
+                                ...item,
+                                order: index + 1,
+                              })
+                            );
+                            setKeyPoints(updatedState);
+                          }}
                           handle=".handle"
                         >
                           {keyPoints.map((item) => (
@@ -183,6 +249,9 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                                 <input
                                   type="text"
                                   value={item.name}
+                                  onChange={(e) =>
+                                    handleInputChange(item.id, e.target.value)
+                                  }
                                   className="h-10 w-full text-sm bg-transparent"
                                 />
                               </div>

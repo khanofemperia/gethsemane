@@ -323,18 +323,18 @@ export default async function EditProduct({
               <div>
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: exampleProduct.highlights.headline || "",
+                    __html: highlights.headline || "",
                   }}
                 />
               </div>
               <ul className="text-sm list-inside *:leading-[25px]">
-                {exampleProduct.highlights.keyPoints.map((highlight, index) => (
-                  <li key={index} className="flex items-start gap-2">
+                {highlights.keyPoints.map((highlight) => (
+                  <li key={highlight.index} className="flex items-start gap-2">
                     <CheckmarkIcon
                       className="fill-green mt-[3px] -ml-[1px]"
                       size={19}
                     />
-                    <span>{highlight}</span>
+                    <span>{highlight.text}</span>
                   </li>
                 ))}
               </ul>
@@ -464,177 +464,3 @@ export default async function EditProduct({
     </>
   );
 }
-
-const exampleProduct: ProductType = {
-  id: "3256805147723941",
-  name: "Spaghetti Strap Tank Top Sexy Backless Bandage Skinny Crop Tops 2024 Summer Elegant Lace Up Party Streetwear Women Camis",
-  slug: "spaghetti-strap-tank-top-sexy-backless-bandage-skinny-crop-tops-2024",
-  category: "Women's Clothing",
-  description:
-    "Elegant and versatile spaghetti strap tank top with sexy backless design and lace-up details. Perfect for summer parties and streetwear.",
-  highlights: {
-    headline: `<div class="styles_description__PIV_Z line-clamp-3"><p class="TextEditorTheme__paragraph" dir="ltr" style="text-align: start;"><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">Struggling with uncomfortable tops during summer?</strong></b><span style="white-space: pre-wrap;"> Say no more, our top guarantees </span><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">comfort and style</strong></b><span style="white-space: pre-wrap;"> for every occasion!</span></p></div>`,
-    keyPoints: [
-      "Sexy backless design",
-      "Lace-up details for adjustable fit",
-      "Suitable for parties and streetwear",
-      "2024 Summer collection",
-    ],
-  },
-  pricing: {
-    basePrice: 9.07,
-    salePrice: 4.63,
-    discountPercentage: 49,
-  },
-  images: {
-    main: "https://ae01.alicdn.com/kf/S8d40f50a48814d10a1e84f2d5a27d834j/Spaghetti-Strap-Tank-Top-Sexy-Backless-Bandage-Skinny-Crop-Tops-2024-Summer-Elegant-Lace-Up-Party.jpg",
-    gallery: [
-      "https://ae01.alicdn.com/kf/S8d40f50a48814d10a1e84f2d5a27d834j/Spaghetti-Strap-Tank-Top-Sexy-Backless-Bandage-Skinny-Crop-Tops-2024-Summer-Elegant-Lace-Up-Party.jpg",
-      "https://ae01.alicdn.com/kf/S3e7f7f9a9d3f4b0e9f0b8f8f8f8f8f8fX/Spaghetti-Strap-Tank-Top-Sexy-Backless-Bandage-Skinny-Crop-Tops-2024-Summer-Elegant-Lace-Up-Party.jpg",
-    ],
-  },
-  options: {
-    colors: [
-      {
-        name: "Brown",
-        image:
-          "https://ae01.alicdn.com/kf/S8d40f50a48814d10a1e84f2d5a27d834j/Spaghetti-Strap-Tank-Top-Sexy-Backless-Bandage-Skinny-Crop-Tops-2024-Summer-Elegant-Lace-Up-Party.jpg",
-      },
-      {
-        name: "WHITE",
-        image:
-          "https://ae01.alicdn.com/kf/S3e7f7f9a9d3f4b0e9f0b8f8f8f8f8f8fX/Spaghetti-Strap-Tank-Top-Sexy-Backless-Bandage-Skinny-Crop-Tops-2024-Summer-Elegant-Lace-Up-Party.jpg",
-      },
-    ],
-    sizes: {
-      inches: {
-        columns: [
-          { label: "Size", order: 1 },
-          { label: "US", order: 2 },
-          { label: "Bust", order: 3 },
-          { label: "Waist", order: 4 },
-          { label: "Hips", order: 5 },
-          { label: "Height", order: 6 },
-        ],
-        rows: [
-          {
-            Size: "S",
-            US: "4",
-            Bust: "33.9-35.5",
-            Waist: "26-27.6",
-            Hips: "35.9-37.4",
-            Height: "5'5\"-5'7\"",
-          },
-          {
-            Size: "M",
-            US: "6",
-            Bust: "35.5-37",
-            Waist: "27.6-29.2",
-            Hips: "37.4-39",
-            Height: "5'7\"-5'9\"",
-          },
-          {
-            Size: "L",
-            US: "8/10",
-            Bust: "37.4-39.8",
-            Waist: "29.6-31.9",
-            Hips: "39.4-41.8",
-            Height: "5'9\"-5'11\"",
-          },
-          {
-            Size: "XL",
-            US: "12",
-            Bust: "39.8-42.2",
-            Waist: "31.9-34.3",
-            Hips: "41.8-44.1",
-            Height: "5'9\"-5'11\"",
-          },
-          {
-            Size: "XXL",
-            US: "14",
-            Bust: "42.2-44.5",
-            Waist: "34.3-36.6",
-            Hips: "44.1-46.5",
-            Height: "5'11\"-6'1\"",
-          },
-        ],
-      },
-      centimeters: {
-        columns: [
-          { label: "Size", order: 1 },
-          { label: "US", order: 2 },
-          { label: "Bust", order: 3 },
-          { label: "Waist", order: 4 },
-          { label: "Hips", order: 5 },
-          { label: "Height", order: 6 },
-        ],
-        rows: [
-          {
-            Size: "S",
-            US: "4",
-            Bust: "86-90",
-            Waist: "66-70",
-            Hips: "91-95",
-            Height: "165-170",
-          },
-          {
-            Size: "M",
-            US: "6",
-            Bust: "90-94",
-            Waist: "70-74",
-            Hips: "95-99",
-            Height: "170-175",
-          },
-          {
-            Size: "L",
-            US: "8/10",
-            Bust: "95-101",
-            Waist: "75-81",
-            Hips: "100-106",
-            Height: "175-180",
-          },
-          {
-            Size: "XL",
-            US: "12",
-            Bust: "101-107",
-            Waist: "81-87",
-            Hips: "106-112",
-            Height: "175-180",
-          },
-          {
-            Size: "XXL",
-            US: "14",
-            Bust: "107-113",
-            Waist: "87-93",
-            Hips: "112-118",
-            Height: "180-185",
-          },
-        ],
-      },
-    },
-  },
-  seo: {
-    metaTitle: "Sexy Backless Tank Top | Summer 2024 Collection",
-    metaDescription:
-      "Shop our elegant spaghetti strap tank top with sexy backless design. Perfect for summer parties and streetwear. Available in multiple colors and sizes.",
-    keywords: [
-      "tank top",
-      "backless",
-      "summer fashion",
-      "party wear",
-      "streetwear",
-      "women's clothing",
-    ],
-  },
-  visibility: "PUBLISHED",
-  createdAt: "2024-04-07T08:21:51Z",
-  updatedAt: "2024-04-07T08:39:08Z",
-  sourceInfo: {
-    platform: "AliExpress",
-    platformUrl: "https://www.aliexpress.com/",
-    store: "Kayle Clothes Store",
-    storeId: "2415022",
-    storeUrl: "https://www.aliexpress.com/store/1101220990",
-    productUrl: "https://www.aliexpress.us/item/3256805147723941.html",
-  },
-};
