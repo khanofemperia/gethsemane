@@ -316,7 +316,13 @@ export default async function EditProduct({
         <div>
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Highlights</h2>
-            <p className="text-sm md:max-w-[85%]">...</p>
+            <p className="text-sm md:max-w-[85%]">
+              Craft an irresistible message. Hook them with pain. Show you
+              understand their struggles. Alternatively, tap into their desires
+              and create a sense of possibility. Use active voice, strong verbs.
+              Paint a clear picture of the desired outcome. Make them feel the
+              satisfaction, see the results, crave your solution.
+            </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
             <div className="w-[calc(100%-60px)] p-5 pt-4">
@@ -329,7 +335,7 @@ export default async function EditProduct({
               </div>
               <ul className="text-sm list-inside *:leading-[25px]">
                 {highlights.keyPoints
-                  .slice() 
+                  .slice()
                   .sort((a, b) => a.index - b.index)
                   .map((highlight) => (
                     <li
@@ -351,7 +357,11 @@ export default async function EditProduct({
         <div>
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">On-page SEO</h2>
-            <p className="text-sm md:max-w-[85%]">...</p>
+            <p className="text-sm md:max-w-[85%]">
+              Integrate relevant keywords into the product details page to
+              improve on-page SEO. This ensures the content aligns with search
+              queries and helps search engines know what the page is about.
+            </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
             {seo.metaTitle && seo.metaDescription && seo.keywords.length ? (
