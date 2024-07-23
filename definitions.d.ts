@@ -110,6 +110,17 @@ type SizeChartType = {
 
 type KeyPointsType = { index: number; text: string };
 
+type averageOrderValueBoosterType = {
+  name: string;
+  promotionalMessage: string;
+  quantityBreaks?: Array<{
+    quantity: number;
+    discount: number;
+    pricePerItem: number;
+    totalPrice: number;
+  }>;
+};
+
 type ProductType = {
   id: string;
   name: string;
@@ -152,4 +163,11 @@ type ProductType = {
     storeUrl: string;
     productUrl: string;
   };
+  averageOrderValueBooster?: averageOrderValueBoosterType;
+  frequentlyBoughtTogether?: Array<{
+    id: string;
+    name: string;
+    price: number;
+  }>;
+  upsell?: string;
 };

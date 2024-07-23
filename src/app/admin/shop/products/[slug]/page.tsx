@@ -292,9 +292,9 @@ export default async function EditProduct({
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Product description</h2>
             <p className="text-sm md:max-w-[85%]">
-              Spotlight your product's strengths. What makes it a must-have? How
-              does it make life better? Why should people choose it? Make it
-              easy to understand and remember.
+              Spotlight your product's strengths. What makes it the
+              life-changing choice customers can't resist? Why is it the clear
+              winner? Keep it simple and unforgettable.
             </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
@@ -392,7 +392,10 @@ export default async function EditProduct({
         <div>
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Product source</h2>
-            <p className="text-sm md:max-w-[85%]">...</p>
+            <p className="text-sm md:max-w-[85%]">
+              Keep track of your suppliers! This helps with quality control,
+              fast reorders, and quicker problem resolution.
+            </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
             <div className="w-[calc(100%-60px)]">
