@@ -12,6 +12,7 @@ import { ReactSortable } from "react-sortablejs";
 import { MdOutlineDragIndicator } from "react-icons/md";
 import { UpdateProductAction } from "@/actions/products";
 import { generateId } from "@/lib/utils";
+import { TextEditor } from "@/components/shared/TextEditor";
 
 type DataType = {
   id: string;
@@ -53,6 +54,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
     AlertMessageType.NEUTRAL
   );
+  const [headline, setHeadline] = useState(data.highlights.headline);
   const [keyPoints, setKeyPoints] = useState<ItemType[]>([]);
 
   useEffect(() => {
@@ -211,6 +213,15 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
               </div>
               <div className="w-full h-full mt-[52px] md:mt-0 p-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div>
+                  <div className="mb-5">
+                    <h2 className="font-semibold text-sm mb-3">Headline</h2>
+                    <TextEditor
+                      isSimpleEditor={true}
+                      name="highlights"
+                      value={headline}
+                      onChange={(newValue: string) => setHeadline(newValue)}
+                    />
+                  </div>
                   <div>
                     <h2 className="font-semibold text-sm mb-3">Key points</h2>
                     <div className="rounded-md">

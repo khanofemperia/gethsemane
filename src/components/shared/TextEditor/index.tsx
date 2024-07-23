@@ -27,17 +27,20 @@ import TableCellResizer from "./plugins/TableCellResizer";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
+import clsx from "clsx";
 
 type TextEditorType = {
   name: string;
   value: string;
   onChange: (value: string) => void;
+  isSimpleEditor?: boolean;
 };
 
 export const TextEditor: React.FC<TextEditorType> = memo(function TextEditor({
   name,
   value,
   onChange,
+  isSimpleEditor = false,
 }) {
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false);
   const [floatingAnchorElem, setFloatingAnchorElem] =
@@ -63,12 +66,17 @@ export const TextEditor: React.FC<TextEditorType> = memo(function TextEditor({
     <div>
       <LexicalComposer initialConfig={initialConfig}>
         <div className="editor-shell relative border rounded-xl">
-          <ToolbarPlugin setIsLinkEditMode={setIsLinkEditMode} />
+          <ToolbarPlugin
+            setIsLinkEditMode={setIsLinkEditMode}
+            isSimpleEditor={isSimpleEditor}
+          />
           <div className="editor-container relative z-0">
             <RichTextPlugin
               contentEditable={
                 <div className="editor resize-none relative" ref={onRef}>
-                  <ContentEditable />
+                  <ContentEditable
+                    className={clsx({ "!min-h-32": isSimpleEditor })}
+                  />
                 </div>
               }
               placeholder={<Placeholder>Start typing...</Placeholder>}
