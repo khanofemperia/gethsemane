@@ -91,6 +91,11 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
     };
   }, [isOverlayVisible, showAlert]);
 
+  const onHideOverlay = () => {
+    setLoading(false);
+    hideOverlay({ pageName, overlayName });
+  };
+  
   const hideAlertMessage = () => {
     setShowAlert(false);
     setAlertMessage("");
@@ -109,7 +114,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
     const updatedData = {
       id: data.id,
       highlights: {
-        headline: "",
+        headline,
         keyPoints: updatedKeyPoints,
       },
     };
@@ -126,6 +131,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
       setShowAlert(true);
     } finally {
       setLoading(false);
+      onHideOverlay();
     }
   };
 
@@ -244,7 +250,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                               key={item.id}
                               className="flex items-center justify-between gap-2 mb-2 h-10"
                             >
-                              <div className="w-full h-full flex items-center overflow-hidden rounded-full bg-lightgray">
+                              <div className="w-full h-full flex items-center overflow-hidden rounded-full transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed">
                                 <div className="handle cursor-move h-10 w-12 flex items-center pl-3">
                                   <MdOutlineDragIndicator
                                     size={22}
@@ -262,9 +268,9 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                               </div>
                               <button
                                 onClick={() => handleRemove(item.id)}
-                                className="h-8 min-w-8 max-w-8 rounded-full flex items-center justify-center transition duration-300 ease-in-out bg-red/15 active:bg-red/25 lg:hover:bg-red/25"
+                                className="h-6 min-w-6 max-w-6 rounded-full flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
                               >
-                                <CloseIcon className="fill-red" size={18} />
+                                <CloseIcon className="fill-gray" size={16} />
                               </button>
                             </div>
                           ))}
@@ -272,7 +278,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                       </div>
                       <button
                         onClick={handleAdd}
-                        className="h-9 px-6 mx-auto font-medium border border-blue/20 text-blue rounded flex items-center justify-center transition duration-300 ease-in-out hover:bg-blue/10"
+                        className="h-9 px-6 mx-auto font-medium border text-blue rounded flex items-center justify-center transition duration-300 ease-in-out hover:bg-blue/10"
                       >
                         Add
                       </button>
