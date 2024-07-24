@@ -201,10 +201,10 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                     type="submit"
                     disabled={loading}
                     className={clsx(
-                      "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                      "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                       {
                         "bg-opacity-50": loading,
-                        "active:bg-blue-dimmed": !loading,
+                        "active:bg-neutral-700/85": !loading,
                       }
                     )}
                   >
@@ -220,7 +220,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                 </div>
                 <div className="w-full h-full mt-[52px] md:mt-0 p-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="platform" className="font-semibold text-sm">
+                    <label htmlFor="platform" className="text-xs text-gray">
                       Platform
                     </label>
                     <div className="w-full h-9 relative">
@@ -230,7 +230,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                         value={formData.platform}
                         onChange={handleInputChange}
                         placeholder="AliExpress"
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>
@@ -238,7 +238,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="platformUrl"
-                      className="font-semibold text-sm"
+                      className="text-xs text-gray"
                     >
                       Platform URL
                     </label>
@@ -249,13 +249,13 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                         value={formData.platformUrl}
                         onChange={handleInputChange}
                         placeholder="https://www.aliexpress.com/"
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="store" className="font-semibold text-sm">
+                    <label htmlFor="store" className="text-xs text-gray">
                       Store
                     </label>
                     <div className="w-full h-9 relative">
@@ -265,13 +265,13 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                         value={formData.store}
                         onChange={handleInputChange}
                         placeholder="Women's Sleepwear Store"
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="storeId" className="font-semibold text-sm">
+                    <label htmlFor="storeId" className="text-xs text-gray">
                       Store ID
                     </label>
                     <div className="w-full h-9 relative">
@@ -281,13 +281,13 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                         value={formData.storeId}
                         onChange={handleInputChange}
                         placeholder="3286105"
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="storeUrl" className="font-semibold text-sm">
+                    <label htmlFor="storeUrl" className="text-xs text-gray">
                       Store URL
                     </label>
                     <div className="w-full h-9 relative">
@@ -297,7 +297,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                         value={formData.storeUrl}
                         onChange={handleInputChange}
                         placeholder="https://www.aliexpress.com/store/4839201765"
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>
@@ -305,7 +305,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="productUrl"
-                      className="font-semibold text-sm"
+                      className="text-xs text-gray"
                     >
                       Product URL
                     </label>
@@ -316,7 +316,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                         value={formData.productUrl}
                         onChange={handleInputChange}
                         placeholder="https://www.aliexpress.com/item/7584936210472938.html"
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>

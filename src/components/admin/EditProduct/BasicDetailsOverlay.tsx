@@ -248,10 +248,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                     type="submit"
                     disabled={loading}
                     className={clsx(
-                      "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                      "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                       {
                         "bg-opacity-50": loading,
-                        "active:bg-blue-dimmed": !loading,
+                        "active:bg-neutral-700/85": !loading,
                       }
                     )}
                   >
@@ -267,7 +267,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                 </div>
                 <div className="w-full h-full mt-[52px] md:mt-0 p-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                   <div className="flex flex-col gap-2">
-                    <h2 className="font-semibold text-sm">Category</h2>
+                    <h2 className="text-xs text-gray">Category</h2>
                     <div ref={categoryRef} className="w-full h-9 relative">
                       <button
                         onClick={() =>
@@ -311,7 +311,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="name" className="font-semibold text-sm">
+                    <label htmlFor="name" className="text-xs text-gray">
                       Name
                     </label>
                     <div className="w-full h-9 relative">
@@ -321,13 +321,13 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                         placeholder="Denim Mini Skirt"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="slug" className="font-semibold text-sm">
+                    <label htmlFor="slug" className="text-xs text-gray">
                       Slug
                     </label>
                     <div className="w-full h-9 relative">
@@ -337,18 +337,18 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                         placeholder="denim-mini-skirt"
                         value={formData.slug}
                         onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>
                   </div>
                   <div className="w-full max-w-[300px]">
-                    <h2 className="font-semibold text-sm mb-2">Pricing</h2>
-                    <div className="flex flex-col gap-5 border rounded-md px-5 pt-4 pb-[22px]">
+                    <h2 className="text-xs text-gray">Pricing</h2>
+                    <div className="mt-2 flex flex-col gap-5 border rounded-md px-5 pt-4 pb-[22px]">
                       <div className="flex flex-col gap-2">
                         <label
                           htmlFor="basePrice"
-                          className="font-semibold text-sm"
+                          className="text-xs text-gray"
                         >
                           Base price
                         </label>
@@ -359,7 +359,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                             placeholder="34.99"
                             value={formData.basePrice}
                             onChange={handleInputChange}
-                            className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                            className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                             required
                           />
                         </div>
@@ -367,7 +367,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                       <div className="flex flex-col gap-2">
                         <label
                           htmlFor="salePrice"
-                          className="font-semibold text-sm"
+                          className="text-xs text-gray"
                         >
                           Sale price
                         </label>
@@ -378,7 +378,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                             placeholder="34.99"
                             value={formData.salePrice}
                             onChange={handleInputChange}
-                            className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                            className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                             required
                           />
                         </div>
@@ -386,7 +386,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                       <div className="flex flex-col gap-2">
                         <label
                           htmlFor="discountPercentage"
-                          className="font-semibold text-sm"
+                          className="text-xs text-gray"
                         >
                           Discount percentage
                         </label>
@@ -397,7 +397,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                             placeholder="34.99"
                             value={formData.discountPercentage}
                             onChange={handleInputChange}
-                            className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                            className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                             required
                           />
                         </div>
@@ -411,10 +411,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                   type="submit"
                   disabled={loading}
                   className={clsx(
-                    "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700/85": !loading,
                     }
                   )}
                 >

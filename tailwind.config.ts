@@ -17,7 +17,9 @@ const customColors = {
     DEFAULT: "#0a5ddc",
     dimmed: "#084db5",
   },
-  gray: "#6c6c6c",
+  gray: {
+    DEFAULT: "#6c6c6c",
+  },
   black: "#262626",
   lightgray: {
     DEFAULT: "#f0f0f0",

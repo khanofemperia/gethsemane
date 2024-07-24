@@ -257,10 +257,10 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                 type="button"
                 disabled={loading}
                 className={clsx(
-                  "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-blue-dimmed": !loading,
+                    "active:bg-neutral-700/85": !loading,
                   }
                 )}
               >
@@ -320,7 +320,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
               {tableData.inches.rows.length > 0 ? (
                 <>
                   <div className="mb-5">
-                    <h2 className="font-semibold text-sm text-gray mb-2">
+                    <h2 className="text-xs text-gray mb-2">
                       Inches
                     </h2>
                     <SizesTable
@@ -331,7 +331,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                     />
                   </div>
                   <div className="mb-5">
-                    <h2 className="font-semibold text-sm text-gray mb-2">
+                    <h2 className="text-xs text-gray mb-2">
                       Centimeters
                     </h2>
                     <SizesTable

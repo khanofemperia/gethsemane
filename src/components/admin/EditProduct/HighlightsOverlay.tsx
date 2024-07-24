@@ -200,10 +200,10 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700/85": !loading,
                     }
                   )}
                 >
@@ -220,7 +220,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
               <div className="w-full h-full mt-[52px] md:mt-0 p-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div>
                   <div className="mb-5">
-                    <h2 className="font-semibold text-sm mb-3">Headline</h2>
+                    <h2 className="text-xs text-gray mb-3">Headline</h2>
                     <TextEditor
                       isSimpleEditor={true}
                       name="highlights"
@@ -229,7 +229,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                     />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-sm mb-3">Key points</h2>
+                    <h2 className="text-xs text-gray mb-3">Key points</h2>
                     <div className="rounded-md">
                       <div className="pb-3">
                         <ReactSortable
