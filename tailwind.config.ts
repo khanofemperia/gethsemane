@@ -25,7 +25,7 @@ const customColors = {
     DEFAULT: "#f0f0f0",
     dimmed: "#e5e5e5",
   },
-  "glass-black": "#00000033",
+  "glass-black": "#00000033", // used by Overlay.tsx
 };
 
 const config: Config = {

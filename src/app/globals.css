@@ -20,7 +20,7 @@
 
   .body-scrollbar::-webkit-scrollbar-thumb,
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply rounded-full border-[2px] border-solid border-white transition duration-300 ease-in-out bg-[#bbbbbb] hover:bg-neutral-400;
+    @apply rounded-full border-[2px] border-solid border-white transition duration-300 ease-in-out bg-neutral-300 hover:bg-[#bebebe];
   }
 
   .custom-x-scrollbar::-webkit-scrollbar {
@@ -28,7 +28,7 @@
   }
 
   .custom-x-scrollbar::-webkit-scrollbar-thumb {
-    @apply rounded-full border-[2px] border-solid border-white transition duration-300 ease-in-out bg-[#bbbbbb] hover:bg-neutral-400;
+    @apply rounded-full border-[2px] border-solid border-white transition duration-300 ease-in-out bg-neutral-300 hover:bg-[#bebebe];
   }
 
   .invisible-scrollbar {
