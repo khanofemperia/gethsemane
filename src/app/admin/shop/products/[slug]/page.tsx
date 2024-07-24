@@ -31,7 +31,6 @@ import {
   DescriptionButton,
   DescriptionOverlay,
 } from "@/components/admin/EditProduct/DescriptionOverlay";
-import IDCopyButton from "@/components/shared/IDCopyButton";
 import { getProduct } from "@/lib/getData";
 import Link from "next/link";
 import { CheckmarkIcon } from "@/icons";
@@ -76,11 +75,11 @@ export default async function EditProduct({
     visibility,
   } = product as ProductType;
 
-  const hasBasicDetails = !category && name && pricing.basePrice && slug && id;
+  const hasBasicDetails = category && name && pricing.basePrice && slug && id;
   const hasOnPageSeo =
-    !seo.metaTitle && seo.metaDescription && seo.keywords.length;
+    seo.metaTitle && seo.metaDescription && seo.keywords.length;
   const hasSourceInfo =
-    !sourceInfo.platform &&
+    sourceInfo.platform &&
     sourceInfo.platformUrl &&
     sourceInfo.store &&
     sourceInfo.storeId &&
@@ -167,31 +166,38 @@ export default async function EditProduct({
           <div className="w-full relative shadow rounded-xl bg-white">
             <div className="p-5 flex flex-col gap-5">
               <div className="relative border rounded-xl">
-                <div className="w-full flex items-center justify-between p-5 pr-2">
-                  {!!images.main || !isValidRemoteImage(images.main) ? (
-                    <span className="text-xs text-gray">No main image</span>
-                  ) : (
-                    <span className="text-xs text-gray">Main</span>
-                  )}
-                  <MainImageButton />
-                </div>
-                {!images.main && isValidRemoteImage(images.main) && (
-                  <div className="p-5 pt-0">
-                    <div className="w-full max-w-[280px] rounded-xl aspect-square flex items-center justify-center overflow-hidden">
-                      <Image
-                        src={images.main}
-                        alt={name}
-                        width={280}
-                        height={280}
-                        priority
-                      />
+                <div>
+                  {!images.main || !isValidRemoteImage(images.main) ? (
+                    <div className="w-full flex items-center justify-between p-5 pr-2">
+                      <span className="text-xs text-gray">No main image</span>
+                      <MainImageButton />
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <div className="w-full flex items-center justify-between pl-5 pr-2 py-2">
+                      <span className="text-xs text-gray">Main</span>
+                      <MainImageButton />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  {images.main && isValidRemoteImage(images.main) && (
+                    <div className="p-5 pt-0">
+                      <div className="w-full max-w-[280px] rounded-xl aspect-square flex items-center justify-center overflow-hidden">
+                        <Image
+                          src={images.main}
+                          alt={name}
+                          width={280}
+                          height={280}
+                          priority
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="relative border rounded-xl">
                 <div>
-                  {!(images.gallery.length === 0) ||
+                  {images.gallery.length === 0 ||
                   images.gallery.every(
                     (image) => !isValidRemoteImage(image)
                   ) ? (
@@ -207,30 +213,30 @@ export default async function EditProduct({
                   )}
                 </div>
                 <div>
-                  {!(images.gallery.length > 0) && (
-                    // && images.gallery.every(
-                    //     (image) => !isValidRemoteImage(image)
-                    //   )
-                    <div className="flex flex-wrap gap-2 p-5 pt-0">
-                      {images.gallery.map(
-                        (image, index) =>
-                          isValidRemoteImage(image) && (
-                            <div
-                              key={index}
-                              className="max-w-[148px] lg:max-w-[210px] w-[calc(50%-4px)] border rounded-xl aspect-square flex items-center justify-center overflow-hidden"
-                            >
-                              <Image
-                                src={image}
-                                alt={name}
-                                width={210}
-                                height={210}
-                                priority
-                              />
-                            </div>
-                          )
-                      )}
-                    </div>
-                  )}
+                  {images.gallery.length > 0 &&
+                    images.gallery.every((image) =>
+                      isValidRemoteImage(image)
+                    ) && (
+                      <div className="flex flex-wrap gap-2 p-5 pt-0">
+                        {images.gallery.map(
+                          (image, index) =>
+                            isValidRemoteImage(image) && (
+                              <div
+                                key={index}
+                                className="max-w-[148px] lg:max-w-[210px] w-[calc(50%-4px)] border rounded-xl aspect-square flex items-center justify-center overflow-hidden"
+                              >
+                                <Image
+                                  src={image}
+                                  alt={name}
+                                  width={210}
+                                  height={210}
+                                  priority
+                                />
+                              </div>
+                            )
+                        )}
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
@@ -249,7 +255,7 @@ export default async function EditProduct({
             <div className="flex flex-col gap-5 p-5">
               <div className="relative border rounded-xl">
                 <div>
-                  {!(options.sizes.inches.rows.length === 0) ? (
+                  {options.sizes.inches.rows.length === 0 ? (
                     <div className="w-full flex items-center justify-between p-5 pr-2">
                       <span className="text-xs text-gray">No sizes</span>
                       <SizeChartButton />
@@ -264,7 +270,7 @@ export default async function EditProduct({
                 <div>
                   {(() => {
                     if (
-                      !options.sizes.inches.columns &&
+                      options.sizes.inches.columns &&
                       options.sizes.inches.rows
                     ) {
                       const firstColumnLabel =
@@ -291,7 +297,7 @@ export default async function EditProduct({
               </div>
               <div className="relative border rounded-xl">
                 <div>
-                  {!(options.colors.length === 0) ||
+                  {options.colors.length === 0 ||
                   !options.colors.some((color) =>
                     isValidRemoteImage(color.image)
                   ) ? (
@@ -307,37 +313,37 @@ export default async function EditProduct({
                   )}
                 </div>
                 <div>
-                  {!(options.colors.length === 0) ||
-                  !options.colors.some((color) =>
-                    isValidRemoteImage(color.image)
-                  ) ? null : (
-                    <div className="flex flex-wrap gap-2 p-5 pt-0">
-                      {options.colors.map(
-                        (color, index) =>
-                          isValidRemoteImage(color.image) && (
-                            <div
-                              key={index}
-                              className="max-w-[148px] lg:max-w-[210px] w-[calc(50%-4px)] rounded-xl border flex flex-col items-center justify-center overflow-hidden"
-                            >
-                              <div className="w-full aspect-square overflow-hidden">
-                                <Image
-                                  src={color.image}
-                                  alt={color.name}
-                                  width={210}
-                                  height={210}
-                                  priority
-                                />
-                              </div>
-                              <div className="w-full h-9 flex justify-center">
-                                <div className="w-max max-w-full px-3 font-medium flex items-center text-sm text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
-                                  {color.name}
+                  {options.colors.length > 0 &&
+                    options.colors.some((color) =>
+                      isValidRemoteImage(color.image)
+                    ) && (
+                      <div className="flex flex-wrap gap-2 p-5 pt-0">
+                        {options.colors.map(
+                          (color, index) =>
+                            isValidRemoteImage(color.image) && (
+                              <div
+                                key={index}
+                                className="max-w-[148px] lg:max-w-[210px] w-[calc(50%-4px)] rounded-xl border flex flex-col items-center justify-center overflow-hidden"
+                              >
+                                <div className="w-full aspect-square overflow-hidden">
+                                  <Image
+                                    src={color.image}
+                                    alt={color.name}
+                                    width={210}
+                                    height={210}
+                                    priority
+                                  />
+                                </div>
+                                <div className="w-full h-9 flex justify-center">
+                                  <div className="w-max max-w-full px-3 font-medium flex items-center text-sm text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
+                                    {color.name}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          )
-                      )}
-                    </div>
-                  )}
+                            )
+                        )}
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
@@ -353,7 +359,7 @@ export default async function EditProduct({
             </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
-            {description ? (
+            {!description ? (
               <div className="w-full flex items-center justify-between p-5 pr-2">
                 <span className="text-xs text-gray">Nothing here</span>
                 <DescriptionButton />
@@ -383,7 +389,7 @@ export default async function EditProduct({
             </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
-            {!!(highlights.headline && highlights.keyPoints.length > 0) ? (
+            {!(highlights.headline && highlights.keyPoints.length > 0) ? (
               <div className="w-full flex items-center justify-between p-5 pr-2">
                 <span className="text-xs text-gray">Nothing here</span>
                 <HighlightsButton />
