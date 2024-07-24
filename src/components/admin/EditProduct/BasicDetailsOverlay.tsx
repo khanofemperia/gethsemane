@@ -24,7 +24,7 @@ type DataType = {
   };
 };
 
-export function BasicDetailsButton() {
+export function BasicDetailsButton({ className }: { className: string }) {
   const { showOverlay } = useOverlayStore();
 
   const { pageName, overlayName } = useOverlayStore((state) => ({
@@ -36,7 +36,7 @@ export function BasicDetailsButton() {
     <button
       onClick={() => showOverlay({ pageName, overlayName })}
       type="button"
-      className="w-9 h-9 rounded-full absolute top-2 right-2 flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+      className={`w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${className}`}
     >
       <EditIcon size={20} />
     </button>
@@ -72,9 +72,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
       } catch (error) {
         console.error("Error fetching categories:", error);
         setAlertMessageType(AlertMessageType.ERROR);
-        setAlertMessage(
-          "Couldn't get categories. Please refresh the page."
-        );
+        setAlertMessage("Couldn't get categories. Please refresh the page.");
         setShowAlert(true);
       }
     })();

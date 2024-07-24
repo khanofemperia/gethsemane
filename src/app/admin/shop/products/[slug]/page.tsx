@@ -47,6 +47,7 @@ import {
   HighlightsButton,
   HighlightsOverlay,
 } from "@/components/admin/EditProduct/HighlightsOverlay";
+import clsx from "clsx";
 
 export default async function EditProduct({
   params,
@@ -75,6 +76,17 @@ export default async function EditProduct({
     visibility,
   } = product as ProductType;
 
+  const hasBasicDetails = !category && name && pricing.basePrice && slug && id;
+  const hasOnPageSeo =
+    !seo.metaTitle && seo.metaDescription && seo.keywords.length;
+  const hasSourceInfo =
+    !sourceInfo.platform &&
+    sourceInfo.platformUrl &&
+    sourceInfo.store &&
+    sourceInfo.storeId &&
+    sourceInfo.storeUrl &&
+    sourceInfo.productUrl;
+
   return (
     <>
       <div className="max-w-[768px] flex flex-col gap-10 px-5">
@@ -88,44 +100,59 @@ export default async function EditProduct({
               feel they're getting a good deal.
             </p>
           </div>
-          <div className="w-full relative shadow rounded-xl bg-white">
-            <div className="w-[calc(100%-60px)]">
-              <div className="p-5">
-                <h3 className="text-xs text-gray mb-2">Category</h3>
-                <p className="font-medium">{category}</p>
-              </div>
-              <div className="p-5">
-                <h3 className="text-xs text-gray mb-2">Name</h3>
-                <p className="font-medium max-w-[540px]">{name}</p>
-              </div>
-              <div className="p-5">
-                <h3 className="text-xs text-gray mb-2">Price</h3>
-                {Number(pricing.salePrice) ? (
-                  <div className="flex items-center gap-[6px]">
-                    <span className="font-medium">
-                      ${formatThousands(Number(pricing.salePrice))}
-                    </span>
-                    <span className="text-xs text-gray line-through mt-[2px]">
+          <div
+            className={clsx(
+              "w-full relative flex items-center justify-between shadow rounded-xl bg-white",
+              {
+                "p-5 pr-2": !hasBasicDetails,
+              }
+            )}
+          >
+            {hasBasicDetails ? (
+              <div className="w-[calc(100%-60px)]">
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Category</h3>
+                  <p className="font-medium">{category}</p>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Name</h3>
+                  <p className="font-medium max-w-[540px]">{name}</p>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Price</h3>
+                  {Number(pricing.salePrice) ? (
+                    <div className="flex items-center gap-[6px]">
+                      <span className="font-medium">
+                        ${formatThousands(Number(pricing.salePrice))}
+                      </span>
+                      <span className="text-xs text-gray line-through mt-[2px]">
+                        ${formatThousands(Number(pricing.basePrice))}
+                      </span>
+                      <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-3 py-1 px-[5px]">
+                        -{pricing.discountPercentage}%
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="font-medium">
                       ${formatThousands(Number(pricing.basePrice))}
-                    </span>
-                    <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-3 py-1 px-[5px]">
-                      -{pricing.discountPercentage}%
-                    </span>
-                  </div>
-                ) : (
+                    </p>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Slug</h3>
                   <p className="font-medium">
-                    ${formatThousands(Number(pricing.basePrice))}
+                    {slug}-{id}
                   </p>
-                )}
+                </div>
               </div>
-              <div className="p-5">
-                <h3 className="text-xs text-gray mb-2">Slug</h3>
-                <p className="font-medium">
-                  {slug}-{id}
-                </p>
-              </div>
-            </div>
-            <BasicDetailsButton />
+            ) : (
+              <span className="text-xs text-gray">Nothing here</span>
+            )}
+            <BasicDetailsButton
+              className={clsx({
+                "absolute top-2 right-2": hasBasicDetails,
+              })}
+            />
           </div>
         </div>
         <div>
@@ -139,38 +166,53 @@ export default async function EditProduct({
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
             <div className="p-5 flex flex-col gap-5">
-              <div className="relative border rounded-xl p-5">
-                <div>
-                  <h3 className="text-xs text-gray mb-4">Main</h3>
-                  <div>
-                    {!images.main || !isValidRemoteImage(images.main) ? (
-                      <p className="italic text-gray">Nothing yet</p>
-                    ) : (
-                      <div className="w-full max-w-[280px] rounded-xl aspect-square flex items-center justify-center overflow-hidden">
-                        <Image
-                          src={images.main}
-                          alt={name}
-                          width={280}
-                          height={280}
-                          priority
-                        />
-                      </div>
-                    )}
-                  </div>
+              <div className="relative border rounded-xl">
+                <div className="w-full flex items-center justify-between p-5 pr-2">
+                  {!!images.main || !isValidRemoteImage(images.main) ? (
+                    <span className="text-xs text-gray">No main image</span>
+                  ) : (
+                    <span className="text-xs text-gray">Main</span>
+                  )}
+                  <MainImageButton />
                 </div>
-                <MainImageButton />
+                {!images.main && isValidRemoteImage(images.main) && (
+                  <div className="p-5 pt-0">
+                    <div className="w-full max-w-[280px] rounded-xl aspect-square flex items-center justify-center overflow-hidden">
+                      <Image
+                        src={images.main}
+                        alt={name}
+                        width={280}
+                        height={280}
+                        priority
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="relative border rounded-xl p-5">
+              <div className="relative border rounded-xl">
                 <div>
-                  <h3 className="text-xs text-gray mb-4">Gallery</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {!images.gallery ||
-                    images.gallery.every(
-                      (image) => !isValidRemoteImage(image)
-                    ) ? (
-                      <p className="italic text-gray">Nothing yet</p>
-                    ) : (
-                      images.gallery.map(
+                  {!(images.gallery.length === 0) ||
+                  images.gallery.every(
+                    (image) => !isValidRemoteImage(image)
+                  ) ? (
+                    <div className="w-full flex items-center justify-between p-5 pr-2">
+                      <span className="text-xs text-gray">No gallery</span>
+                      <ImagesButton />
+                    </div>
+                  ) : (
+                    <div className="w-full flex items-center justify-between pl-5 pr-2 py-2">
+                      <span className="text-xs text-gray">Gallery</span>
+                      <ImagesButton />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  {!(images.gallery.length > 0) && (
+                    // && images.gallery.every(
+                    //     (image) => !isValidRemoteImage(image)
+                    //   )
+                    <div className="flex flex-wrap gap-2 p-5 pt-0">
+                      {images.gallery.map(
                         (image, index) =>
                           isValidRemoteImage(image) && (
                             <div
@@ -186,11 +228,10 @@ export default async function EditProduct({
                               />
                             </div>
                           )
-                      )
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <ImagesButton />
               </div>
             </div>
           </div>
@@ -206,19 +247,24 @@ export default async function EditProduct({
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
             <div className="flex flex-col gap-5 p-5">
-              <div className="relative border rounded-xl pl-5 pr-[10px] pt-2 pb-5">
-                <div className="w-full flex items-center justify-between">
-                  {options.sizes.inches.rows.length === 0 ? (
-                    <h3 className="text-xs text-gray">No sizes</h3>
+              <div className="relative border rounded-xl">
+                <div>
+                  {!(options.sizes.inches.rows.length === 0) ? (
+                    <div className="w-full flex items-center justify-between p-5 pr-2">
+                      <span className="text-xs text-gray">No sizes</span>
+                      <SizeChartButton />
+                    </div>
                   ) : (
-                    <h3 className="text-xs text-gray">Sizes</h3>
+                    <div className="w-full flex items-center justify-between pl-5 pr-2 py-2">
+                      <span className="text-xs text-gray">Sizes</span>
+                      <SizeChartButton />
+                    </div>
                   )}
-                  <SizeChartButton />
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div>
                   {(() => {
                     if (
-                      options.sizes.inches.columns &&
+                      !options.sizes.inches.columns &&
                       options.sizes.inches.rows
                     ) {
                       const firstColumnLabel =
@@ -226,37 +272,46 @@ export default async function EditProduct({
                           (column) => column.order === 1
                         )?.label;
 
-                      return options.sizes.inches.rows.map((row, index) => (
-                        <div
-                          key={index}
-                          className="min-w-12 w-max h-7 px-4 text-sm font-medium select-none rounded-full bg-lightgray flex items-center justify-center"
-                        >
-                          {firstColumnLabel && row[firstColumnLabel]}
+                      return (
+                        <div className="flex flex-wrap gap-2 p-5 pt-0">
+                          {options.sizes.inches.rows.map((row, index) => (
+                            <div
+                              key={index}
+                              className="min-w-12 w-max h-7 px-4 text-sm font-medium select-none rounded-full bg-lightgray flex items-center justify-center"
+                            >
+                              {firstColumnLabel && row[firstColumnLabel]}
+                            </div>
+                          ))}
                         </div>
-                      ));
+                      );
                     }
                     return null;
                   })()}
                 </div>
               </div>
-              <div className="relative border rounded-xl pl-5 pr-[10px] pt-2 pb-5">
-                <div className="w-full flex items-center justify-between">
-                  {options.colors.length === 0 ||
+              <div className="relative border rounded-xl">
+                <div>
+                  {!(options.colors.length === 0) ||
                   !options.colors.some((color) =>
                     isValidRemoteImage(color.image)
                   ) ? (
-                    <h3 className="text-xs text-gray">No colors</h3>
+                    <div className="w-full flex items-center justify-between p-5 pr-2">
+                      <span className="text-xs text-gray">No colors</span>
+                      <ColorsButton />
+                    </div>
                   ) : (
-                    <h3 className="text-xs text-gray">Colors</h3>
+                    <div className="w-full flex items-center justify-between pl-5 pr-2 py-2">
+                      <span className="text-xs text-gray">Colors</span>
+                      <ColorsButton />
+                    </div>
                   )}
-                  <ColorsButton />
                 </div>
                 <div>
-                  {options.colors.length === 0 ||
+                  {!(options.colors.length === 0) ||
                   !options.colors.some((color) =>
                     isValidRemoteImage(color.image)
                   ) ? null : (
-                    <div className="flex flex-wrap gap-2 mt-2">
+                    <div className="flex flex-wrap gap-2 p-5 pt-0">
                       {options.colors.map(
                         (color, index) =>
                           isValidRemoteImage(color.image) && (
@@ -298,19 +353,22 @@ export default async function EditProduct({
             </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
-            <div className="w-full relative border rounded-xl p-5 flex items-center justify-between">
-              {options.sizes.inches.rows.length === 0 ? (
-                <h3 className="text-xs text-gray">No description</h3>
-              ) : (
-                <div className="w-[calc(100%-60px)] mt-1 border p-5 rounded-2xl">
+            {description ? (
+              <div className="w-full flex items-center justify-between p-5 pr-2">
+                <span className="text-xs text-gray">Nothing here</span>
+                <DescriptionButton />
+              </div>
+            ) : (
+              <div className="w-full relative border rounded-xl p-5 flex items-center justify-between">
+                <div className="w-[calc(100%-60px)] mt-1 border rounded-2xl p-5">
                   <div
                     className={`${styles.description} line-clamp-3`}
-                    dangerouslySetInnerHTML={{ __html: description || "" }}
+                    dangerouslySetInnerHTML={{ __html: description }}
                   />
                 </div>
-              )}
-              <DescriptionButton />
-            </div>
+                <DescriptionButton className="absolute top-2 right-2" />
+              </div>
+            )}
           </div>
         </div>
         <div>
@@ -325,33 +383,42 @@ export default async function EditProduct({
             </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
-            <div className="w-[calc(100%-60px)] p-5 pt-4">
-              <div>
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: highlights.headline || "",
-                  }}
-                />
+            {!!(highlights.headline && highlights.keyPoints.length > 0) ? (
+              <div className="w-full flex items-center justify-between p-5 pr-2">
+                <span className="text-xs text-gray">Nothing here</span>
+                <HighlightsButton />
               </div>
-              <ul className="text-sm list-inside *:leading-[25px]">
-                {highlights.keyPoints
-                  .slice()
-                  .sort((a, b) => a.index - b.index)
-                  .map((highlight) => (
-                    <li
-                      key={highlight.index}
-                      className="flex items-start gap-2"
-                    >
-                      <CheckmarkIcon
-                        className="fill-green mt-[3px] -ml-[1px]"
-                        size={19}
-                      />
-                      <span>{highlight.text}</span>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-            <HighlightsButton />
+            ) : (
+              <>
+                <div className="w-[calc(100%-60px)] p-5 pt-4">
+                  <div>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: highlights.headline || "",
+                      }}
+                    />
+                  </div>
+                  <ul className="text-sm list-inside *:leading-[25px]">
+                    {highlights.keyPoints
+                      .slice()
+                      .sort((a, b) => a.index - b.index)
+                      .map((highlight) => (
+                        <li
+                          key={highlight.index}
+                          className="flex items-start gap-2"
+                        >
+                          <CheckmarkIcon
+                            className="fill-green mt-[3px] -ml-[1px]"
+                            size={19}
+                          />
+                          <span>{highlight.text}</span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+                <HighlightsButton className="absolute top-2 right-2" />
+              </>
+            )}
           </div>
         </div>
         <div>
@@ -363,8 +430,15 @@ export default async function EditProduct({
               queries and helps search engines know what the page is about.
             </p>
           </div>
-          <div className="w-full relative shadow rounded-xl bg-white">
-            {seo.metaTitle && seo.metaDescription && seo.keywords.length ? (
+          <div
+            className={clsx(
+              "w-full relative flex items-center justify-between shadow rounded-xl bg-white",
+              {
+                "p-5 pr-2": !hasOnPageSeo,
+              }
+            )}
+          >
+            {hasOnPageSeo ? (
               <div className="w-[calc(100%-60px)]">
                 <div className="p-5">
                   <h3 className="text-xs text-gray mb-2">Meta title</h3>
@@ -382,11 +456,13 @@ export default async function EditProduct({
                 </div>
               </div>
             ) : (
-              <div className="p-5 pb-3">
-                <h3 className="text-xs text-gray mb-2">No SEO details</h3>
-              </div>
+              <span className="text-xs text-gray">Nothing here</span>
             )}
-            <OnPageSeoButton />
+            <OnPageSeoButton
+              className={clsx({
+                "absolute top-2 right-2": hasOnPageSeo,
+              })}
+            />
           </div>
         </div>
         <div>
@@ -397,53 +473,55 @@ export default async function EditProduct({
               fast reorders, and quicker problem resolution.
             </p>
           </div>
-          <div className="w-full relative shadow rounded-xl bg-white">
-            <div className="w-[calc(100%-60px)]">
-              <div>
-                {sourceInfo.platform &&
-                sourceInfo.platformUrl &&
-                sourceInfo.store &&
-                sourceInfo.storeId &&
-                sourceInfo.storeUrl &&
-                sourceInfo.productUrl ? (
-                  <>
-                    <div className="p-5">
-                      <h3 className="text-xs text-gray mb-2">Platform</h3>
-                      <Link
-                        href={sourceInfo.platformUrl}
-                        target="_blank"
-                        className="font-medium text-blue active:underline hover:underline"
-                      >
-                        {sourceInfo.platform}
-                      </Link>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="text-xs text-gray mb-2">Store</h3>
-                      <Link
-                        href={sourceInfo.storeUrl}
-                        target="_blank"
-                        className="font-medium text-blue active:underline hover:underline"
-                      >
-                        {sourceInfo.store} ({sourceInfo.storeId})
-                      </Link>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="text-xs text-gray mb-2">Product</h3>
-                      <Link
-                        href={sourceInfo.productUrl}
-                        target="_blank"
-                        className="font-medium text-blue active:underline hover:underline"
-                      >
-                        View on {sourceInfo.platform}
-                      </Link>
-                    </div>
-                  </>
-                ) : (
-                  <p className="p-5 text-sm text-gray">No source info</p>
-                )}
+          <div
+            className={clsx(
+              "w-full relative flex items-center justify-between shadow rounded-xl bg-white",
+              {
+                "p-5 pr-2": !hasSourceInfo,
+              }
+            )}
+          >
+            {hasSourceInfo ? (
+              <div className="w-[calc(100%-60px)]">
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Platform</h3>
+                  <Link
+                    href={sourceInfo.platformUrl}
+                    target="_blank"
+                    className="font-medium text-blue active:underline hover:underline"
+                  >
+                    {sourceInfo.platform}
+                  </Link>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Store</h3>
+                  <Link
+                    href={sourceInfo.storeUrl}
+                    target="_blank"
+                    className="font-medium text-blue active:underline hover:underline"
+                  >
+                    {sourceInfo.store} ({sourceInfo.storeId})
+                  </Link>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-xs text-gray mb-2">Product</h3>
+                  <Link
+                    href={sourceInfo.productUrl}
+                    target="_blank"
+                    className="font-medium text-blue active:underline hover:underline"
+                  >
+                    View on {sourceInfo.platform}
+                  </Link>
+                </div>
               </div>
-            </div>
-            <ProductSourceButton />
+            ) : (
+              <span className="text-xs text-gray">Nothing here</span>
+            )}
+            <ProductSourceButton
+              className={clsx({
+                "absolute top-2 right-2": hasSourceInfo,
+              })}
+            />
           </div>
         </div>
         <div>

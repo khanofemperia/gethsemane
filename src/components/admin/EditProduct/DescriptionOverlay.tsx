@@ -16,7 +16,7 @@ type DataType = {
   description: string;
 };
 
-export function DescriptionButton() {
+export function DescriptionButton({ className }: { className?: string }) {
   const { showOverlay } = useOverlayStore();
 
   const { pageName, overlayName } = useOverlayStore((state) => ({
@@ -28,7 +28,7 @@ export function DescriptionButton() {
     <button
       onClick={() => showOverlay({ pageName, overlayName })}
       type="button"
-      className="w-9 h-9 rounded-full absolute top-2 right-2 flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+      className={`w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${className}`}
     >
       <EditIcon size={20} />
     </button>
