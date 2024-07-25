@@ -241,7 +241,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                           className="flex items-center justify-between gap-2 mb-2 h-10"
                         >
                           <div className="w-full h-full flex items-center overflow-hidden rounded-full transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed hover:bg-lightgray-dimmed">
-                            <div className="handle cursor-move h-10 w-12 flex items-center pl-3">
+                            <div className="handle cursor-grab h-10 w-12 flex items-center pl-3">
                               <MdOutlineDragIndicator
                                 size={22}
                                 className="fill-gray"
@@ -253,7 +253,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                               onChange={(e) =>
                                 handleInputChange(item.id, e.target.value)
                               }
-                              className="h-10 w-full pr-4 text-sm bg-transparent"
+                              className="h-10 w-full pr-4 bg-transparent"
                             />
                           </div>
                           <button

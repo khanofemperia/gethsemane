@@ -154,7 +154,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
               <div className="w-full h-[calc(100vh-188px)] md:h-auto">
                 <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
                   <div className="relative flex justify-center items-center w-full h-7">
-                    <h2 className="font-semibold text-lg">Product Source</h2>
+                    <h2 className="font-semibold text-lg">Product source</h2>
                     <button
                       onClick={() => {
                         hideOverlay({ pageName, overlayName });
@@ -236,10 +236,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="platformUrl"
-                      className="text-xs text-gray"
-                    >
+                    <label htmlFor="platformUrl" className="text-xs text-gray">
                       Platform URL
                     </label>
                     <div className="w-full h-9 relative">
@@ -303,10 +300,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="productUrl"
-                      className="text-xs text-gray"
-                    >
+                    <label htmlFor="productUrl" className="text-xs text-gray">
                       Product URL
                     </label>
                     <div className="w-full h-9 relative">
@@ -322,6 +316,28 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={clsx(
+                    "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
+                    {
+                      "bg-opacity-50": loading,
+                      "active:bg-neutral-700/85": !loading,
+                    }
+                  )}
+                >
+                  {loading ? (
+                    <div className="flex gap-1 items-center justify-center w-full h-full">
+                      <Spinner />
+                      <span className="text-white">Saving</span>
+                    </div>
+                  ) : (
+                    <span className="text-white">Save</span>
+                  )}
+                </button>
               </div>
             </form>
           </div>

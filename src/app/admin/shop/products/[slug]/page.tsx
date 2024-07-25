@@ -368,7 +368,7 @@ export default async function EditProduct({
               <div className="w-full relative border rounded-xl p-5 flex items-center justify-between">
                 <div className="w-[calc(100%-60px)] mt-1 border rounded-2xl p-5">
                   <div
-                    className="line-clamp-3"
+                    className="line-clamp-3 [&>:last-child]:mb-0"
                     dangerouslySetInnerHTML={{ __html: description }}
                   />
                 </div>
@@ -399,25 +399,27 @@ export default async function EditProduct({
                 <div className="w-[calc(100%-60px)] p-5 pt-4">
                   <div>
                     <div
-                      className="line-clamp-3"
+                      className="line-clamp-3 [&>:last-child]:mb-0"
                       dangerouslySetInnerHTML={{
                         __html: highlights.headline || "",
                       }}
                     />
                   </div>
-                  <ul className="text-sm list-inside *:leading-[25px]">
+                  <ul className="mt-5 pb-2 text-sms list-inside *:leading-[25px]">
                     {highlights.keyPoints
                       .slice()
                       .sort((a, b) => a.index - b.index)
                       .map((highlight) => (
                         <li
                           key={highlight.index}
-                          className="flex items-start gap-2"
+                          className="flex items-start gap-2 mb-2 last:mb-0"
                         >
-                          <CheckmarkIcon
-                            className="fill-green mt-[3px] -ml-[1px]"
-                            size={19}
-                          />
+                          <div className="w-5 min-w-5 h-5 -ml-[1px] flex items-center justify-center">
+                            <CheckmarkIcon
+                              className="fill-green mt-[3px] -ml-[1px]"
+                              size={19}
+                            />
+                          </div>
                           <span>{highlight.text}</span>
                         </li>
                       ))}
