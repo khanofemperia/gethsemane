@@ -66,10 +66,12 @@ export const TextEditor: React.FC<TextEditorType> = memo(function TextEditor({
     <div>
       <LexicalComposer initialConfig={initialConfig}>
         <div className="editor-shell relative border rounded-xl">
-          <ToolbarPlugin
-            setIsLinkEditMode={setIsLinkEditMode}
-            isSimpleEditor={isSimpleEditor}
-          />
+          <div className="w-[calc(100%-2px)] mx-auto sticky top-0 z-10">
+            <ToolbarPlugin
+              setIsLinkEditMode={setIsLinkEditMode}
+              isSimpleEditor={isSimpleEditor}
+            />
+          </div>
           <div className="editor-container relative z-0">
             <RichTextPlugin
               contentEditable={

@@ -4,9 +4,8 @@ import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect, useRef } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
+import { ArrowLeftIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
-import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { TextEditor } from "@/components/shared/TextEditor";
 import { UpdateProductAction } from "@/actions/products";
@@ -122,76 +121,36 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
   return (
     <>
       {isOverlayVisible && (
-        <Overlay ref={overlayRef}>
-          <div className="w-[640px] mx-auto mt-20 mb-[calc(50vh)] rounded-xl bg-white">
-            <div className="w-full h-[calc(100vh-188px)] md:h-auto">
-              <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
-                <div className="relative flex justify-center items-center w-full h-7">
-                  <h2 className="font-semibold text-lg">Product description</h2>
-                  <button
-                    onClick={() => {
-                      hideOverlay({ pageName, overlayName });
-                    }}
-                    type="button"
-                    className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
-                  >
-                    <CloseIcon size={18} />
-                  </button>
-                </div>
-              </div>
-              <div className="hidden md:flex md:items-center md:justify-between py-2 pr-4 pl-2">
-                <button
-                  onClick={() => {
-                    hideOverlay({ pageName, overlayName });
-                  }}
-                  type="button"
-                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
-                >
-                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
-                  <span className="font-semibold text-sm text-blue">
-                    Product description
-                  </span>
-                </button>
-                <button
-                  onClick={handleSave}
-                  type="button"
-                  disabled={loading}
-                  className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
-                    {
-                      "bg-opacity-50": loading,
-                      "active:bg-neutral-700": !loading,
-                    }
-                  )}
-                >
-                  {loading ? (
-                    <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
-                      <span className="text-white">Saving</span>
-                    </div>
-                  ) : (
-                    <span className="text-white">Save</span>
-                  )}
-                </button>
-              </div>
-              <div className="w-full px-5 pt-5 pb-10">
-                <TextEditor
-                  name="product-description"
-                  value={description}
-                  onChange={(newValue: string) => setDescription(newValue)}
-                />
-              </div>
-            </div>
-            <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
+        <div
+          ref={overlayRef}
+          className="px-5 md:px-0 fixed top-0 bottom-0 left-0 right-0 z-50 transition duration-300 ease-in-out bg-glass-black backdrop-blur-sm overflow-x-hidden overflow-y-visible custom-scrollbar"
+        >
+          <div className="bg-white max-w-[640px] rounded-2xl shadow mx-auto mt-20 mb-[50vh] relative">
+            <div className="flex items-center justify-between py-2 pr-4 pl-2">
+              <button
+                onClick={() => {
+                  hideOverlay({ pageName, overlayName });
+                }}
+                type="button"
+                className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+              >
+                <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                <span className="md:hidden font-semibold text-sm text-blue">
+                  Description
+                </span>
+                <span className="hidden md:block font-semibold text-sm text-blue">
+                  Product description
+                </span>
+              </button>
               <button
                 onClick={handleSave}
                 type="button"
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
+                  "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-neutral-700/85": !loading,
+                    "active:bg-neutral-700": !loading,
                   }
                 )}
               >
@@ -205,8 +164,15 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
                 )}
               </button>
             </div>
+            <div className="w-full px-5 pt-5 pb-10">
+              <TextEditor
+                name="product-description"
+                value={description}
+                onChange={(newValue: string) => setDescription(newValue)}
+              />
+            </div>
           </div>
-        </Overlay>
+        </div>
       )}
       {showAlert && (
         <AlertMessage

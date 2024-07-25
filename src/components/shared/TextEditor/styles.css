@@ -873,14 +873,9 @@ i.chevron-down {
   text-align: right;
 }
 .toolbar {
-  border-bottom: 1px solid black;
   display: flex;
-  border-top-left-radius: 0.75rem;
-  border-top-right-radius: 0.75rem;
+  border-radius: 16px;
   overflow: auto;
-  position: sticky;
-  top: 0;
-  z-index: 2;
   padding: 0.25rem;
   padding-bottom: 2px;
   background-color: white;
@@ -897,10 +892,10 @@ i.chevron-down {
   transition-property: background-color;
   transition-duration: 300ms;
   transition-timing-function: ease-in-out;
-  background-color: #bbbbbb;
+  background-color: #d4d4d4;
 }
 .toolbar::-webkit-scrollbar-thumb:hover {
-  background-color: #a3a3a3;
+  background-color: #bebebe;
 }
 button.toolbar-item {
   display: flex;

@@ -6,7 +6,6 @@ import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
-import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { ReactSortable } from "react-sortablejs";
 import { MdOutlineDragIndicator } from "react-icons/md";
@@ -172,133 +171,33 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
   return (
     <>
       {isOverlayVisible && (
-        <Overlay ref={overlayRef}>
-          <div className="w-[520px] mx-auto mt-20 mb-[calc(50vh)] rounded-xl bg-white">
-            <div className="w-full h-[calc(100vh-188px)] md:h-auto">
-              <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
-                <div className="relative flex justify-center items-center w-full h-7">
-                  <h2 className="font-semibold text-lg">Highlights</h2>
-                  <button
-                    onClick={() => {
-                      hideOverlay({ pageName, overlayName });
-                    }}
-                    type="button"
-                    className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
-                  >
-                    <CloseIcon size={18} />
-                  </button>
-                </div>
-              </div>
-              <div className="hidden md:flex md:items-center md:justify-between py-2 pr-4 pl-2">
-                <button
-                  onClick={() => {
-                    hideOverlay({ pageName, overlayName });
-                  }}
-                  type="button"
-                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
-                >
-                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
-                  <span className="font-semibold text-sm text-blue">
-                    Highlights
-                  </span>
-                </button>
-                <button
-                  onClick={handleSave}
-                  type="button"
-                  disabled={loading}
-                  className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
-                    {
-                      "bg-opacity-50": loading,
-                      "active:bg-neutral-700": !loading,
-                    }
-                  )}
-                >
-                  {loading ? (
-                    <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
-                      <span className="text-white">Saving</span>
-                    </div>
-                  ) : (
-                    <span className="text-white">Save</span>
-                  )}
-                </button>
-              </div>
-              <div className="w-full px-5 pt-5 pb-10">
-                <div className="mb-5">
-                  <TextEditor
-                    isSimpleEditor={true}
-                    name="highlights"
-                    value={headline}
-                    onChange={(newValue: string) => setHeadline(newValue)}
-                  />
-                </div>
-                <div>
-                  <h2 className="text-xs text-gray mb-3">Key points</h2>
-                  <div className="rounded-md">
-                    <div className="pb-3">
-                      <ReactSortable
-                        list={keyPoints}
-                        setList={(newState) => {
-                          const updatedState = newState.map((item, index) => ({
-                            ...item,
-                            order: index + 1,
-                          }));
-                          setKeyPoints(updatedState);
-                        }}
-                        handle=".handle"
-                      >
-                        {keyPoints.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex items-center justify-between gap-2 mb-2 h-10"
-                          >
-                            <div className="w-full h-full flex items-center overflow-hidden rounded-full transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed">
-                              <div className="handle cursor-move h-10 w-12 flex items-center pl-3">
-                                <MdOutlineDragIndicator
-                                  size={22}
-                                  className="fill-gray"
-                                />
-                              </div>
-                              <input
-                                type="text"
-                                value={item.name}
-                                onChange={(e) =>
-                                  handleInputChange(item.id, e.target.value)
-                                }
-                                className="h-10 w-full text-sm bg-transparent"
-                              />
-                            </div>
-                            <button
-                              onClick={() => handleRemove(item.id)}
-                              className="h-6 min-w-6 max-w-6 rounded-full flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
-                            >
-                              <CloseIcon className="fill-gray" size={16} />
-                            </button>
-                          </div>
-                        ))}
-                      </ReactSortable>
-                    </div>
-                    <button
-                      onClick={handleAdd}
-                      className="h-9 px-6 mx-auto font-medium border text-blue rounded flex items-center justify-center transition duration-300 ease-in-out hover:bg-blue/10"
-                    >
-                      Add
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
+        <div
+          ref={overlayRef}
+          className="px-5 md:px-0 fixed top-0 bottom-0 left-0 right-0 z-50 transition duration-300 ease-in-out bg-glass-black backdrop-blur-sm overflow-x-hidden overflow-y-visible custom-scrollbar"
+        >
+          <div className="bg-white max-w-[520px] rounded-2xl shadow mx-auto mt-20 mb-[50vh] relative">
+            <div className="flex items-center justify-between py-2 pr-4 pl-2">
+              <button
+                onClick={() => {
+                  hideOverlay({ pageName, overlayName });
+                }}
+                type="button"
+                className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+              >
+                <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                <span className="font-semibold text-sm text-blue">
+                  Highlights
+                </span>
+              </button>
               <button
                 onClick={handleSave}
                 type="button"
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
+                  "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-neutral-700/85": !loading,
+                    "active:bg-neutral-700": !loading,
                   }
                 )}
               >
@@ -312,8 +211,72 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                 )}
               </button>
             </div>
+            <div className="w-full px-5 pt-5 pb-10">
+              <div className="mb-5">
+                <TextEditor
+                  isSimpleEditor={true}
+                  name="highlights"
+                  value={headline}
+                  onChange={(newValue: string) => setHeadline(newValue)}
+                />
+              </div>
+              <div>
+                <h2 className="text-xs text-gray mb-3">Key points</h2>
+                <div className="rounded-md">
+                  <div className="pb-3">
+                    <ReactSortable
+                      list={keyPoints}
+                      setList={(newState) => {
+                        const updatedState = newState.map((item, index) => ({
+                          ...item,
+                          order: index + 1,
+                        }));
+                        setKeyPoints(updatedState);
+                      }}
+                      handle=".handle"
+                    >
+                      {keyPoints.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center justify-between gap-2 mb-2 h-10"
+                        >
+                          <div className="w-full h-full flex items-center overflow-hidden rounded-full transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed hover:bg-lightgray-dimmed">
+                            <div className="handle cursor-move h-10 w-12 flex items-center pl-3">
+                              <MdOutlineDragIndicator
+                                size={22}
+                                className="fill-gray"
+                              />
+                            </div>
+                            <input
+                              type="text"
+                              value={item.name}
+                              onChange={(e) =>
+                                handleInputChange(item.id, e.target.value)
+                              }
+                              className="h-10 w-full pr-4 text-sm bg-transparent"
+                            />
+                          </div>
+                          <button
+                            onClick={() => handleRemove(item.id)}
+                            className="h-6 min-w-6 max-w-6 rounded-full flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
+                          >
+                            <CloseIcon className="fill-gray" size={16} />
+                          </button>
+                        </div>
+                      ))}
+                    </ReactSortable>
+                  </div>
+                  <button
+                    onClick={handleAdd}
+                    className="h-9 px-6 mx-auto font-medium border text-blue rounded flex items-center justify-center transition duration-300 ease-in-out hover:bg-blue/10"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </Overlay>
+        </div>
       )}
       {showAlert && (
         <AlertMessage
