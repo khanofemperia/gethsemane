@@ -368,7 +368,7 @@ export default async function EditProduct({
               <div className="w-full relative border rounded-xl p-5 flex items-center justify-between">
                 <div className="w-[calc(100%-60px)] mt-1 border rounded-2xl p-5">
                   <div
-                    className={`${styles.description} line-clamp-3`}
+                    className="line-clamp-3"
                     dangerouslySetInnerHTML={{ __html: description }}
                   />
                 </div>
@@ -399,6 +399,7 @@ export default async function EditProduct({
                 <div className="w-[calc(100%-60px)] p-5 pt-4">
                   <div>
                     <div
+                      className="line-clamp-3"
                       dangerouslySetInnerHTML={{
                         __html: highlights.headline || "",
                       }}

@@ -58,6 +58,12 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
   useEffect(() => {
     if (isOverlayVisible || showAlert) {
       document.body.style.overflow = "hidden";
+
+      requestAnimationFrame(() => {
+        if (overlayRef.current) {
+          overlayRef.current.scrollTo(0, 0);
+        }
+      });
     } else {
       document.body.style.overflow = "visible";
     }
@@ -68,16 +74,6 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
       }
     };
   }, [isOverlayVisible, showAlert]);
-
-  useEffect(() => {
-    if (isOverlayVisible) {
-      requestAnimationFrame(() => {
-        if (overlayRef.current) {
-          overlayRef.current.scrollTo(0, 0);
-        }
-      });
-    }
-  }, [isOverlayVisible]);
 
   const hideAlertMessage = () => {
     setShowAlert(false);

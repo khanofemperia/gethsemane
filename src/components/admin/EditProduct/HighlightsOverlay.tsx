@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
@@ -56,6 +56,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
   );
   const [headline, setHeadline] = useState(data.highlights.headline);
   const [keyPoints, setKeyPoints] = useState<ItemType[]>([]);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     data.highlights.keyPoints.sort((a, b) => a.index - b.index);
@@ -80,6 +81,12 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
   useEffect(() => {
     if (isOverlayVisible || showAlert) {
       document.body.style.overflow = "hidden";
+
+      requestAnimationFrame(() => {
+        if (overlayRef.current) {
+          overlayRef.current.scrollTo(0, 0);
+        }
+      });
     } else {
       document.body.style.overflow = "visible";
     }
@@ -165,8 +172,8 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
   return (
     <>
       {isOverlayVisible && (
-        <Overlay>
-          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl overflow-hidden bg-white md:w-[520px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
+        <Overlay ref={overlayRef}>
+          <div className="w-[520px] mx-auto mt-20 mb-[calc(50vh)] rounded-xl bg-white">
             <div className="w-full h-[calc(100vh-188px)] md:h-auto">
               <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
                 <div className="relative flex justify-center items-center w-full h-7">
@@ -196,14 +203,14 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                   </span>
                 </button>
                 <button
-                  type="button"
                   onClick={handleSave}
+                  type="button"
                   disabled={loading}
                   className={clsx(
                     "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-neutral-700/85": !loading,
+                      "active:bg-neutral-700": !loading,
                     }
                   )}
                 >
@@ -217,75 +224,93 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                   )}
                 </button>
               </div>
-              <div className="w-full h-full mt-[52px] md:mt-0 p-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
+              <div className="w-full px-5 pt-5 pb-10">
+                <div className="mb-5">
+                  <TextEditor
+                    isSimpleEditor={true}
+                    name="highlights"
+                    value={headline}
+                    onChange={(newValue: string) => setHeadline(newValue)}
+                  />
+                </div>
                 <div>
-                  <div className="mb-5">
-                    <h2 className="text-xs text-gray mb-3">Headline</h2>
-                    <TextEditor
-                      isSimpleEditor={true}
-                      name="highlights"
-                      value={headline}
-                      onChange={(newValue: string) => setHeadline(newValue)}
-                    />
-                  </div>
-                  <div>
-                    <h2 className="text-xs text-gray mb-3">Key points</h2>
-                    <div className="rounded-md">
-                      <div className="pb-3">
-                        <ReactSortable
-                          list={keyPoints}
-                          setList={(newState) => {
-                            const updatedState = newState.map(
-                              (item, index) => ({
-                                ...item,
-                                order: index + 1,
-                              })
-                            );
-                            setKeyPoints(updatedState);
-                          }}
-                          handle=".handle"
-                        >
-                          {keyPoints.map((item) => (
-                            <div
-                              key={item.id}
-                              className="flex items-center justify-between gap-2 mb-2 h-10"
-                            >
-                              <div className="w-full h-full flex items-center overflow-hidden rounded-full transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed">
-                                <div className="handle cursor-move h-10 w-12 flex items-center pl-3">
-                                  <MdOutlineDragIndicator
-                                    size={22}
-                                    className="fill-gray"
-                                  />
-                                </div>
-                                <input
-                                  type="text"
-                                  value={item.name}
-                                  onChange={(e) =>
-                                    handleInputChange(item.id, e.target.value)
-                                  }
-                                  className="h-10 w-full text-sm bg-transparent"
+                  <h2 className="text-xs text-gray mb-3">Key points</h2>
+                  <div className="rounded-md">
+                    <div className="pb-3">
+                      <ReactSortable
+                        list={keyPoints}
+                        setList={(newState) => {
+                          const updatedState = newState.map((item, index) => ({
+                            ...item,
+                            order: index + 1,
+                          }));
+                          setKeyPoints(updatedState);
+                        }}
+                        handle=".handle"
+                      >
+                        {keyPoints.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between gap-2 mb-2 h-10"
+                          >
+                            <div className="w-full h-full flex items-center overflow-hidden rounded-full transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed">
+                              <div className="handle cursor-move h-10 w-12 flex items-center pl-3">
+                                <MdOutlineDragIndicator
+                                  size={22}
+                                  className="fill-gray"
                                 />
                               </div>
-                              <button
-                                onClick={() => handleRemove(item.id)}
-                                className="h-6 min-w-6 max-w-6 rounded-full flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
-                              >
-                                <CloseIcon className="fill-gray" size={16} />
-                              </button>
+                              <input
+                                type="text"
+                                value={item.name}
+                                onChange={(e) =>
+                                  handleInputChange(item.id, e.target.value)
+                                }
+                                className="h-10 w-full text-sm bg-transparent"
+                              />
                             </div>
-                          ))}
-                        </ReactSortable>
-                      </div>
-                      <button
-                        onClick={handleAdd}
-                        className="h-9 px-6 mx-auto font-medium border text-blue rounded flex items-center justify-center transition duration-300 ease-in-out hover:bg-blue/10"
-                      >
-                        Add
-                      </button>
+                            <button
+                              onClick={() => handleRemove(item.id)}
+                              className="h-6 min-w-6 max-w-6 rounded-full flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
+                            >
+                              <CloseIcon className="fill-gray" size={16} />
+                            </button>
+                          </div>
+                        ))}
+                      </ReactSortable>
                     </div>
+                    <button
+                      onClick={handleAdd}
+                      className="h-9 px-6 mx-auto font-medium border text-blue rounded flex items-center justify-center transition duration-300 ease-in-out hover:bg-blue/10"
+                    >
+                      Add
+                    </button>
                   </div>
                 </div>
               </div>
+            </div>
+            <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
+              <button
+                onClick={handleSave}
+                type="button"
+                disabled={loading}
+                className={clsx(
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
+                  {
+                    "bg-opacity-50": loading,
+                    "active:bg-neutral-700/85": !loading,
+                  }
+                )}
+              >
+                {loading ? (
+                  <div className="flex gap-1 items-center justify-center w-full h-full">
+                    <Spinner />
+                    <span className="text-white">Saving</span>
+                  </div>
+                ) : (
+                  <span className="text-white">Save</span>
+                )}
+              </button>
             </div>
           </div>
         </Overlay>
