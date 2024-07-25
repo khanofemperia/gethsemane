@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
@@ -43,6 +43,7 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
     AlertMessageType.NEUTRAL
   );
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   const { hideOverlay } = useOverlayStore();
 
@@ -67,6 +68,16 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
       }
     };
   }, [isOverlayVisible, showAlert]);
+
+  useEffect(() => {
+    if (isOverlayVisible) {
+      requestAnimationFrame(() => {
+        if (overlayRef.current) {
+          overlayRef.current.scrollTo(0, 0);
+        }
+      });
+    }
+  }, [isOverlayVisible]);
 
   const hideAlertMessage = () => {
     setShowAlert(false);
@@ -115,7 +126,7 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
   return (
     <>
       {isOverlayVisible && (
-        <Overlay>
+        <Overlay ref={overlayRef}>
           <div className="w-[640px] mx-auto mt-20 mb-[calc(50vh)] rounded-xl bg-white">
             <div className="w-full h-[calc(100vh-188px)] md:h-auto">
               <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
