@@ -535,6 +535,25 @@ export default async function EditProduct({
         </div>
         <div>
           <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">Boost AOV</h2>
+            <p className="text-sm md:max-w-[85%]">...</p>
+          </div>
+          <div className="w-full relative shadow rounded-xl bg-white">
+            <div className="w-full relative flex items-center justify-between">
+              <div className="w-[calc(100%-60px)] rounded-2xl p-5">
+                <div className="w-[300px] rounded-xl p-5 border border-[#ffe2bc] bg-amber-100">
+                  <p className="mb-2 text-xs text-[#c45500]">
+                    Frequently Bought Together
+                  </p>
+                  <p className="font-medium text-[#c45500]">$56.99</p>
+                </div>
+              </div>
+              <DescriptionButton className="absolute top-2 right-2" />
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Visibility</h2>
             <p className="text-sm md:max-w-[85%]">
               Choose whether the product is a work-in-progress (draft) or ready
