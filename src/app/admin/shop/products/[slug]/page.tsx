@@ -536,17 +536,23 @@ export default async function EditProduct({
         <div>
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Boost AOV</h2>
-            {/* <p className="text-sm md:max-w-[85%]">...</p> */}
+            <p className="text-sm md:max-w-[85%]">...</p>
           </div>
-          <div className="w-full relative shadow rounded-xl bg-white">
+          <div className="w-full max-w-[400px] relative shadow rounded-xl bg-white">
             <div className="w-full relative flex items-center justify-between">
               <div className="w-[calc(100%-60px)] rounded-2xl p-5">
-                <div className="w-[300px] rounded-xl p-5 border border-[#ffe2bc] bg-amber-100">
-                  <h3 className="mb-4 font-semibold text-xs">Upsell</h3>
-                  <p className="mb-1 font-bold text-[#c45500]">$109.99 (+90.91%)</p>
-                  <p className="text-xs text-[#c45500]">
-                    Customer spends $99.99 more
-                  </p>
+                <div className="w-max max-w-full rounded-xl overflow-hidden border border-[#ffdcac] bg-amber-100">
+                  <div className="h-10 text-center text-sm font-semibold flex items-center justify-center bg-[#ffdcac]">
+                    Upsell
+                  </div>
+                  <div className="p-5 pr-12">
+                    <p className="mb-1 font-bold text-[#c45500]">
+                      $109.99 (+90.91%)
+                    </p>
+                    <p className="text-xs text-[#c45500]">
+                      Customer spends $99.99 more
+                    </p>
+                  </div>
                 </div>
               </div>
               <DescriptionButton className="absolute top-2 right-2" />
