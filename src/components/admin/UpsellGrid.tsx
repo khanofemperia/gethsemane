@@ -188,7 +188,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
               </div>
             </div>
             <div className="w-full flex flex-wrap justify-start">
-              {gridData.map(({ id, price, salePrice, mainImage }, index) => (
+              {gridData.map(({ id, pricing, mainImage }, index) => (
                 <Link
                   key={index}
                   href={`/admin/shop/upsells/${id}`}
@@ -209,10 +209,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                     <div className="flex items-center justify-center absolute bottom-0 w-full">
                       <div className="flex gap-[6px] items-center justify-center text-sm w-max">
                         <span className="font-bold">
-                          ${formatThousands(salePrice)}
-                        </span>
-                        <span className="text-gray line-through">
-                          ${formatThousands(price)}
+                          ${formatThousands(pricing.basePrice)}
                         </span>
                       </div>
                     </div>

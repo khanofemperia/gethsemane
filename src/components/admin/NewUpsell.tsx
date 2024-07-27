@@ -71,8 +71,7 @@ export function NewUpsellOverlay() {
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [formData, setFormData] = useState({
-    price: "",
-    salePrice: "",
+    basePrice: "",
     mainImage: "",
   });
 
@@ -139,8 +138,7 @@ export function NewUpsellOverlay() {
     setLoading(false);
     hideOverlay({ pageName, overlayName });
     setFormData({
-      price: "",
-      salePrice: "",
+      basePrice: "",
       mainImage: "",
     });
   };
@@ -175,10 +173,7 @@ export function NewUpsellOverlay() {
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                 >
-                  <ArrowLeftIcon
-                    className="fill-blue -ml-[2px]"
-                    size={20}
-                  />
+                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
                     New upsell
                   </span>
@@ -206,31 +201,15 @@ export function NewUpsellOverlay() {
               </div>
               <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="price" className="font-semibold text-sm">
-                    Price
+                  <label htmlFor="basePrice" className="font-semibold text-sm">
+                    Base price
                   </label>
                   <div className="w-full h-9 relative">
                     <input
                       type="text"
-                      name="price"
+                      name="basePrice"
                       placeholder="137.99"
-                      value={formData.price}
-                      onChange={handleInputChange}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="salePrice" className="font-semibold text-sm">
-                    Sale price
-                  </label>
-                  <div className="w-full h-9 relative">
-                    <input
-                      type="text"
-                      name="salePrice"
-                      placeholder="55.99"
-                      value={formData.salePrice}
+                      value={formData.basePrice}
                       onChange={handleInputChange}
                       className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                       required

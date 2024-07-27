@@ -31,10 +31,13 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 type ProductType = {
   index: number;
   id: string;
+  slug: string;
   name: string;
   mainImage: string;
-  basePrice: number;
-  salePrice: number;
+  pricing: {
+    basePrice: number;
+    salePrice?: number;
+  };
 };
 
 export function ProductsButton() {
@@ -402,13 +405,7 @@ export function ProductsOverlay({
                               </thead>
                               <tbody className="*:h-[98px] *:border-b">
                                 {tableData.map(
-                                  ({
-                                    id,
-                                    index,
-                                    mainImage,
-                                    name,
-                                    basePrice,
-                                  }) => (
+                                  ({ id, index, mainImage, name, pricing }) => (
                                     <tr
                                       key={id}
                                       className="h-[98px] max-h-[98px]"
@@ -431,7 +428,9 @@ export function ProductsOverlay({
                                         <p className="line-clamp-3">{name}</p>
                                       </td>
                                       <td className="px-3 max-w-[100px] min-w-[100px] border-r">
-                                        <p>${formatThousands(basePrice)}</p>
+                                        <p>
+                                          ${formatThousands(pricing.basePrice)}
+                                        </p>
                                       </td>
                                       {/* <td className="px-3 max-w-[116px] min-w-[116px] border-r">
                                         {visibility.toUpperCase() ===

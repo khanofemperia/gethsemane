@@ -7,17 +7,8 @@ import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
 type CreateUpsellType = {
-  price: string;
-  salePrice: string;
+  basePrice: string;
   mainImage: string;
-};
-
-type EditUpsell = {
-  id: string;
-  price?: string;
-  salePrice?: string;
-  mainImage?: string;
-  visibility?: string;
 };
 
 export async function CreateUpsellAction(data: CreateUpsellType) {
@@ -26,9 +17,13 @@ export async function CreateUpsellAction(data: CreateUpsellType) {
     const currentTime = currentTimestamp();
 
     const upsell = {
-      price: data.price,
-      salePrice: data.salePrice,
+      pricing: {
+        basePrice: data.basePrice,
+        salePrice: 0,
+        discountPercentage: 0,
+      },
       mainImage: data.mainImage,
+      products: [],
       visibility: "DRAFT",
       updatedAt: currentTime,
       createdAt: currentTime,
@@ -37,14 +32,21 @@ export async function CreateUpsellAction(data: CreateUpsellType) {
     await setDoc(documentRef, upsell);
     revalidatePath("/admin/shop/upsells");
 
-    return { type: AlertMessageType.SUCCESS, message: "Upsell created successfully" };
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Upsell created successfully",
+    };
   } catch (error) {
     console.error("Error creating upsell:", error);
     return { type: AlertMessageType.ERROR, message: "Failed to create upsell" };
   }
 }
 
-export async function UpdateUpsellAction(data: EditUpsell) {
+export async function UpdateUpsellAction(
+  data: {
+    id: string;
+  } & Partial<ProductType>
+) {
   try {
     const docRef = doc(database, "upsells", data.id);
     const docSnap = await getDoc(docRef);
@@ -59,7 +61,10 @@ export async function UpdateUpsellAction(data: EditUpsell) {
     await setDoc(docRef, updatedUpsell);
     revalidatePath("/admin/shop/upsells/[id]", "page");
 
-    return { type: AlertMessageType.SUCCESS, message: "Upsell updated successfully" };
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Upsell updated successfully",
+    };
   } catch (error) {
     console.error("Error updating upsell:", error);
     return { type: AlertMessageType.ERROR, message: "Failed to update upsell" };

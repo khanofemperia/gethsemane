@@ -14,9 +14,11 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 
 type DataType = {
   id: string;
-  price: string;
-  salePrice: string;
   mainImage: string;
+  pricing: {
+    basePrice: number;
+    salePrice?: number;
+  };
 };
 
 export function BasicDetailsButton() {
@@ -47,9 +49,9 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   );
   const [formData, setFormData] = useState({
     id: data.id,
-    price: data.price,
-    salePrice: data.salePrice,
     mainImage: data.mainImage,
+    basePrice: data.pricing.basePrice,
+    salePrice: data.pricing.salePrice || 0,
   });
 
   const { hideOverlay } = useOverlayStore();
@@ -93,7 +95,16 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     setLoading(true);
 
     try {
-      const result = await UpdateUpsellAction(formData);
+      const updatedUpsell = {
+        id: data.id,
+        mainImage: formData.mainImage,
+        pricing: {
+          basePrice: formData.basePrice,
+          salePrice: formData.salePrice,
+        },
+      };
+
+      const result = await UpdateUpsellAction(updatedUpsell);
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
       setShowAlert(true);
@@ -141,10 +152,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                     type="button"
                     className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                   >
-                    <ArrowLeftIcon
-                      className="fill-blue -ml-[2px]"
-                      size={20}
-                    />
+                    <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                     <span className="font-semibold text-sm text-blue">
                       Basic details
                     </span>
@@ -172,15 +180,18 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                 </div>
                 <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="price" className="font-semibold text-sm">
-                      Price
+                    <label
+                      htmlFor="basePrice"
+                      className="font-semibold text-sm"
+                    >
+                      Base price
                     </label>
                     <div className="w-full h-9 relative">
                       <input
                         type="text"
-                        name="price"
+                        name="basePrice"
                         placeholder="137.99"
-                        value={formData.price}
+                        value={formData.basePrice}
                         onChange={handleInputChange}
                         className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
                         required

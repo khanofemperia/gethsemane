@@ -84,21 +84,26 @@ type PageHeroType = {
 };
 
 /***************************************************************/
+type PricingType = {
+  basePrice: number;
+  salePrice?: number;
+  discountPercentage?: number;
+};
+
 type UpsellType = {
   id: string;
-  price: string;
-  salePrice: string;
   mainImage: string;
   visibility: VisibilityType;
   createdAt: string;
   updatedAt: string;
+  pricing: PricingType;
   products: Array<{
     index: number;
     id: string;
+    slug: string;
     name: string;
     mainImage: string;
-    basePrice: number;
-    salePrice: number;
+    pricing: PricingType;
   }>;
 };
 
@@ -178,4 +183,5 @@ type ProductType = {
     name: string;
     price: number;
   }>;
+  upsell?: string;
 };

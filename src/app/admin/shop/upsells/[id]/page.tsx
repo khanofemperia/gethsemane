@@ -26,10 +26,8 @@ export default async function EditUpsell({
     notFound();
   }
 
-  const { id, price, salePrice, mainImage, visibility, products } =
+  const { id, pricing, mainImage, visibility, products } =
     upsell as UpsellType;
-
-  console.log(products);
 
   return (
     <>
@@ -51,12 +49,7 @@ export default async function EditUpsell({
               <div>
                 <h3 className="text-sm font-semibold mb-2">Pricing</h3>
                 <div className="w-max max-w-full h-9 px-4 rounded-full bg-lightgray flex gap-[6px] items-center text-nowrap overflow-x-visible overflow-y-hidden invisible-scrollbar">
-                  <span className="font-bold">
-                    ${formatThousands(salePrice)}
-                  </span>
-                  <span className="text-gray line-through">
-                    ${formatThousands(price)}
-                  </span>
+                  <span className="font-bold">${formatThousands(pricing.basePrice)}</span>
                 </div>
               </div>
               <div>
@@ -91,11 +84,10 @@ export default async function EditUpsell({
               {products.length > 0 ? (
                 products
                   .slice(0, 3)
-                  .map(({ index, id, mainImage, name, basePrice }) => (
+                  .map(({ index, id, slug, mainImage, name, pricing }) => (
                     <Link
                       key={index}
-                      // href={`/admin/shop/products/${slug}-${id}`}
-                      href={`#`}
+                      href={`/admin/shop/products/${slug}-${id}`}
                       className="aspect-square w-1/2 min-[425px]:w-[calc(100%/3)] md:w-[229px] pt-2 pb-[6px] px-5 select-none transition duration-200 ease-in-out active:bg-blue-100 lg:hover:bg-blue-100"
                     >
                       <div className="relative w-full h-full">
@@ -110,7 +102,7 @@ export default async function EditUpsell({
                         </div>
                         <div className="flex items-center justify-center absolute bottom-0 text-sm w-full">
                           <span className="font-bold">
-                            ${formatThousands(price)}
+                            ${formatThousands(pricing.basePrice)}
                           </span>
                         </div>
                       </div>
@@ -139,7 +131,7 @@ export default async function EditUpsell({
           </div>
         </div>
       </div>
-      <BasicDetailsOverlay data={{ id, price, salePrice, mainImage }} />
+      <BasicDetailsOverlay data={{ id, pricing, mainImage }} />
       <VisibilityOverlay data={{ id, visibility }} />
       <ProductsOverlay data={{ id, products }} />
     </>
