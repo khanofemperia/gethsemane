@@ -18,6 +18,7 @@ type DataType = {
   pricing: {
     basePrice: number;
     salePrice?: number;
+    discountPercentage?: number;
   };
 };
 
@@ -52,6 +53,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     mainImage: data.mainImage,
     basePrice: data.pricing.basePrice,
     salePrice: data.pricing.salePrice || 0,
+    discountPercentage: data.pricing.discountPercentage,
   });
 
   const { hideOverlay } = useOverlayStore();
@@ -101,6 +103,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
         pricing: {
           basePrice: formData.basePrice,
           salePrice: formData.salePrice,
+          discountPercentage: formData.discountPercentage,
         },
       };
 
@@ -150,7 +153,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                   <button
                     onClick={onHideOverlay}
                     type="button"
-                    className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                    className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                   >
                     <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                     <span className="font-semibold text-sm text-blue">
@@ -161,10 +164,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                     type="submit"
                     disabled={loading}
                     className={clsx(
-                      "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                      "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                       {
                         "bg-opacity-50": loading,
-                        "active:bg-blue-dimmed": !loading,
+                        "active:bg-neutral-700/85": !loading,
                       }
                     )}
                   >
@@ -180,48 +183,58 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                 </div>
                 <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                   <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="basePrice"
-                      className="font-semibold text-sm"
-                    >
+                    <label htmlFor="basePrice" className="text-xs text-gray">
                       Base price
                     </label>
                     <div className="w-full h-9 relative">
                       <input
                         type="text"
                         name="basePrice"
-                        placeholder="137.99"
+                        placeholder="34.99"
                         value={formData.basePrice}
                         onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="salePrice"
-                      className="font-semibold text-sm"
-                    >
+                    <label htmlFor="salePrice" className="text-xs text-gray">
                       Sale price
                     </label>
                     <div className="w-full h-9 relative">
                       <input
                         type="text"
                         name="salePrice"
-                        placeholder="55.99"
+                        placeholder="34.99"
                         value={formData.salePrice}
                         onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                         required
                       />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <label
-                      htmlFor="mainImage"
-                      className="font-semibold text-sm"
+                      htmlFor="discountPercentage"
+                      className="text-xs text-gray"
                     >
+                      Discount percentage
+                    </label>
+                    <div className="w-full h-9 relative">
+                      <input
+                        type="text"
+                        name="discountPercentage"
+                        placeholder="34.99"
+                        value={formData.discountPercentage}
+                        onChange={handleInputChange}
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="mainImage" className="text-xs text-gray">
                       Main image
                     </label>
                     <div>
@@ -245,7 +258,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                             placeholder="Paste image URL"
                             value={formData.mainImage}
                             onChange={handleInputChange}
-                            className="h-full w-full px-3 text-gray"
+                            className="h-full w-full px-3 text-sm text-gray"
                           />
                         </div>
                       </div>
@@ -258,10 +271,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                   type="submit"
                   disabled={loading}
                   className={clsx(
-                    "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700/85": !loading,
                     }
                   )}
                 >
