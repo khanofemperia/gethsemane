@@ -348,7 +348,7 @@ export default async function EditCollection({
             </div>
           </div>
         </div>
-        <div>
+        {/* <div>
           <p className="text-sm mb-4 md:max-w-[85%]">
             Curate a selection that feels complete, with products that
             complement each other. Mix styles, colors, sizes, and prices so
@@ -394,13 +394,13 @@ export default async function EditCollection({
               )}
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <CampaignDurationOverlay data={{ id, campaignDuration }} />
       <BasicDetailsOverlay data={{ id, title, slug, collectionType }} />
       {bannerImages && <BannerImagesOverlay data={{ id, bannerImages }} />}
       <VisibilityOverlay data={{ id, visibility }} />
-      <ProductListOverlay data={{ id, products }} />
+      {/* <ProductListOverlay data={{ id, products }} /> */}
     </>
   );
 }

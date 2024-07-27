@@ -12,19 +12,24 @@ import {
 } from "@/components/admin/EditUpsell/VisibilityOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
 import { getUpsell } from "@/lib/getData";
+import Link from "next/link";
+import { ProductsButton, ProductsOverlay } from "@/components/admin/EditUpsell/ProductsOverlay";
 
 export default async function EditUpsell({
   params,
 }: {
   params: { id: string };
 }) {
-  const upsell = await getUpsell({ id: params.id }) as UpsellType;
+  const upsell = (await getUpsell({ id: params.id })) as UpsellType;
 
   if (!upsell) {
     notFound();
   }
 
-  const { id, price, salePrice, mainImage, visibility } = upsell as UpsellType;
+  const { id, price, salePrice, mainImage, visibility, products } =
+    upsell as UpsellType;
+
+  console.log(products);
 
   return (
     <>
@@ -71,6 +76,54 @@ export default async function EditUpsell({
         </div>
         <div>
           <p className="text-sm mb-4 md:max-w-[85%]">
+            Curate a selection that feels complete, with products that
+            complement each other. Mix styles, colors, sizes, and prices so
+            everyone finds something they love.
+          </p>
+          <div className="w-full shadow rounded-xl bg-white">
+            <div className="w-full h-14 border-b flex items-center justify-between pl-5 pr-[10px]">
+              <h2 className="font-semibold text-xl">
+                {products.length ? `Products (${products.length})` : "Products"}
+              </h2>
+              <ProductsButton />
+            </div>
+            <div className="p-5 flex flex-wrap justify-start">
+              {products.length > 0 ? (
+                products
+                  .slice(0, 3)
+                  .map(({ index, id, mainImage, name, basePrice }) => (
+                    <Link
+                      key={index}
+                      // href={`/admin/shop/products/${slug}-${id}`}
+                      href={`#`}
+                      className="aspect-square w-1/2 min-[425px]:w-[calc(100%/3)] md:w-[229px] pt-2 pb-[6px] px-5 select-none transition duration-200 ease-in-out active:bg-blue-100 lg:hover:bg-blue-100"
+                    >
+                      <div className="relative w-full h-full">
+                        <div className="aspect-square w-full overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
+                          <Image
+                            src={mainImage}
+                            alt={name}
+                            width={216}
+                            height={216}
+                            priority
+                          />
+                        </div>
+                        <div className="flex items-center justify-center absolute bottom-0 text-sm w-full">
+                          <span className="font-bold">
+                            ${formatThousands(price)}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))
+              ) : (
+                <p className="italic text-gray">Nothing yet</p>
+              )}
+            </div>
+          </div>
+        </div>
+        <div>
+          <p className="text-sm mb-4 md:max-w-[85%]">
             Choose whether the upsell is a work-in-progress (draft) or ready to
             be seen (published), and decide if you want shoppers to see it or
             keep it private (hidden).
@@ -88,6 +141,7 @@ export default async function EditUpsell({
       </div>
       <BasicDetailsOverlay data={{ id, price, salePrice, mainImage }} />
       <VisibilityOverlay data={{ id, visibility }} />
+      <ProductsOverlay data={{ id, products }} />
     </>
   );
 }

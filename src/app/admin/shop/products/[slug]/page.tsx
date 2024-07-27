@@ -593,6 +593,7 @@ export default async function EditProduct({
       <DescriptionOverlay data={{ id, description }} />
       <HighlightsOverlay data={{ id, highlights }} />
       <VisibilityOverlay data={{ id, visibility }} />
+      <VisibilityOverlay data={{ id, visibility }} />
     </>
   );
 }

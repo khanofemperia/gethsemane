@@ -48,16 +48,6 @@ type CategoryType = {
   visibility: VisibilityType;
 };
 
-type UpsellType = {
-  id: string;
-  price: string;
-  salePrice: string;
-  mainImage: string;
-  visibility: VisibilityType;
-  createdAt: string;
-  updatedAt: string;
-};
-
 type CollectionType = {
   id: string;
   index: number;
@@ -91,6 +81,25 @@ type PageHeroType = {
   title: string;
   destinationUrl: string;
   visibility: VisibilityType;
+};
+
+/***************************************************************/
+type UpsellType = {
+  id: string;
+  price: string;
+  salePrice: string;
+  mainImage: string;
+  visibility: VisibilityType;
+  createdAt: string;
+  updatedAt: string;
+  products: Array<{
+    index: number;
+    id: string;
+    name: string;
+    mainImage: string;
+    basePrice: number;
+    salePrice: number;
+  }>;
 };
 
 /***************************************************************/
@@ -169,5 +178,4 @@ type ProductType = {
     name: string;
     price: number;
   }>;
-  upsell?: string;
 };

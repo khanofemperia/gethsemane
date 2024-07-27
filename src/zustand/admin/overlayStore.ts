@@ -79,6 +79,10 @@ export const useOverlayStore = createWithEqualityFn<OverlayStoreProps>(
             name: "productSource",
             isVisible: false,
           },
+          boostAov: {
+            name: "boostAov",
+            isVisible: false,
+          },
           visibility: {
             name: "visibility",
             isVisible: false,
@@ -108,6 +112,10 @@ export const useOverlayStore = createWithEqualityFn<OverlayStoreProps>(
         overlays: {
           basicDetails: {
             name: "basicDetails",
+            isVisible: false,
+          },
+          products: {
+            name: "products",
             isVisible: false,
           },
           visibility: {
