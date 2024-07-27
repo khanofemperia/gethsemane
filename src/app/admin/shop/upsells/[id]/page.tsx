@@ -84,7 +84,7 @@ export default async function EditUpsell({
               {products.length > 0 ? (
                 products
                   .slice(0, 3)
-                  .map(({ index, id, slug, mainImage, name, pricing }) => (
+                  .map(({ index, id, slug, mainImage, name, basePrice }) => (
                     <Link
                       key={index}
                       href={`/admin/shop/products/${slug}-${id}`}
@@ -102,7 +102,7 @@ export default async function EditUpsell({
                         </div>
                         <div className="flex items-center justify-center absolute bottom-0 text-sm w-full">
                           <span className="font-bold">
-                            ${formatThousands(pricing.basePrice)}
+                            ${formatThousands(basePrice)}
                           </span>
                         </div>
                       </div>

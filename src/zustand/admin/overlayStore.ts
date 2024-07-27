@@ -122,6 +122,18 @@ export const useOverlayStore = createWithEqualityFn<OverlayStoreProps>(
             name: "visibility",
             isVisible: false,
           },
+          addProduct: {
+            name: "addProduct",
+            isVisible: false,
+          },
+          removeProduct: {
+            name: "removeProduct",
+            isVisible: false,
+          },
+          changeProductIndex: {
+            name: "changeProductIndex",
+            isVisible: false,
+          },
         },
       },
       storefront: {

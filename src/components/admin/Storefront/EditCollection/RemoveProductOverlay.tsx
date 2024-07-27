@@ -98,7 +98,7 @@ export function RemoveProductOverlay({
           <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] overflow-hidden md:overflow-visible rounded-t-3xl bg-white md:w-[360px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
             <div className="p-5 w-full h-full">
               <h2 className="font-semibold mb-6">
-                Removing product from this collection, confirm?
+                Confirm removal of the product?
               </h2>
               <div className="w-full flex gap-2 justify-end">
                 <button
@@ -115,8 +115,7 @@ export function RemoveProductOverlay({
                     "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-red",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-red-dimmed lg:hover:bg-red-dimmed":
-                        !loading,
+                      "active:bg-red-dimmed lg:hover:bg-red-dimmed": !loading,
                     }
                   )}
                 >

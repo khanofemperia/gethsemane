@@ -103,7 +103,7 @@ type UpsellType = {
     slug: string;
     name: string;
     mainImage: string;
-    pricing: PricingType;
+    basePrice: number;
   }>;
 };
 

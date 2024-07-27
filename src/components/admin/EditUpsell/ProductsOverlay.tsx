@@ -14,7 +14,7 @@ import {
 } from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
-import { AddProductAction } from "@/actions/collections";
+import { AddProductAction } from "@/actions/upsells";
 import Image from "next/image";
 import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
 import Link from "next/link";
@@ -34,10 +34,7 @@ type ProductType = {
   slug: string;
   name: string;
   mainImage: string;
-  pricing: {
-    basePrice: number;
-    salePrice?: number;
-  };
+  basePrice: number;
 };
 
 export function ProductsButton() {
@@ -139,7 +136,7 @@ export function ProductsOverlay({
 
     try {
       const result = await AddProductAction({
-        collectionId: data.id,
+        upsellId: data.id,
         productId,
       });
       setAlertMessageType(result.type);
@@ -304,7 +301,7 @@ export function ProductsOverlay({
                   <button
                     onClick={onHideOverlay}
                     type="button"
-                    className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                    className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                   >
                     <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                     <span className="font-semibold text-sm text-blue">
@@ -396,16 +393,21 @@ export function ProductsOverlay({
                               <thead className="border-y bg-neutral-100">
                                 <tr className="h-10 *:font-semibold *:text-gray">
                                   <td className="text-center border-r">#</td>
-                                  <td className="pl-3 border-r">Main image</td>
+                                  <td className="pl-3 border-r">Image</td>
                                   <td className="pl-3 border-r">Name</td>
-                                  <td className="pl-3 border-r">Price</td>
-                                  {/* <td className="pl-3 border-r">Visibility</td> */}
+                                  <td className="pl-3 border-r">Base price</td>
                                   <td className="pl-3"></td>
                                 </tr>
                               </thead>
                               <tbody className="*:h-[98px] *:border-b">
                                 {tableData.map(
-                                  ({ id, index, mainImage, name, pricing }) => (
+                                  ({
+                                    id,
+                                    index,
+                                    mainImage,
+                                    name,
+                                    basePrice,
+                                  }) => (
                                     <tr
                                       key={id}
                                       className="h-[98px] max-h-[98px]"
@@ -428,26 +430,8 @@ export function ProductsOverlay({
                                         <p className="line-clamp-3">{name}</p>
                                       </td>
                                       <td className="px-3 max-w-[100px] min-w-[100px] border-r">
-                                        <p>
-                                          ${formatThousands(pricing.basePrice)}
-                                        </p>
+                                        <p>${formatThousands(basePrice)}</p>
                                       </td>
-                                      {/* <td className="px-3 max-w-[116px] min-w-[116px] border-r">
-                                        {visibility.toUpperCase() ===
-                                        PUBLISHED ? (
-                                          <p className="px-3 rounded-full h-6 w-max flex gap-1 items-center bg-green/10 border border-green/15 text-green">
-                                            {capitalizeFirstLetter(
-                                              visibility.toLowerCase()
-                                            )}
-                                          </p>
-                                        ) : (
-                                          <p className="px-3 rounded-full h-6 w-max flex gap-1 items-center bg-lightgray border border-[#6c6c6c]/15 text-gray">
-                                            {capitalizeFirstLetter(
-                                              visibility.toLowerCase()
-                                            )}
-                                          </p>
-                                        )}
-                                      </td> */}
                                       <td className="px-3 max-w-[140px] min-w-[140px]">
                                         <div className="flex items-center justify-center">
                                           <Link
@@ -457,7 +441,7 @@ export function ProductsOverlay({
                                             <EditIcon size={20} />
                                           </Link>
                                           <ChangeProductIndexButton
-                                            collectionId={data.id}
+                                            upsellId={data.id}
                                             product={{
                                               id,
                                               name,
@@ -520,7 +504,7 @@ export function ProductsOverlay({
                   <div className="w-full flex flex-col gap-4 items-center mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-[90px]">
                     <div className="flex flex-col gap-2 items-center">
                       <h2 className="font-semibold text-lg">
-                        Collection is empty
+                        No products found
                       </h2>
                       <p className="text-sm text-center">
                         Enter ID below for your first product
@@ -565,7 +549,7 @@ export function ProductsOverlay({
           type={alertMessageType}
         />
       )}
-      <RemoveProductOverlay collectionId={data.id} />
+      <RemoveProductOverlay upsellId={data.id} />
       <ChangeProductIndexOverlay />
     </>
   );

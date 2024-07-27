@@ -7,15 +7,15 @@ import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, ChangeIndexIcon, CloseIcon } from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
-import { ChangeProductIndexAction } from "@/actions/collections";
-import { useChangeProductIndexStore } from "@/zustand/admin/collections/changeProductIndexStore";
+import { ChangeProductIndexAction } from "@/actions/upsells";
+import { useChangeProductIndexStore } from "@/zustand/admin/upsells/changeProductIndexStore";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function ChangeProductIndexButton({
-  collectionId,
+  upsellId,
   product,
 }: {
-  collectionId: string;
+  upsellId: string;
   product: {
     id: string;
     name: string;
@@ -28,10 +28,10 @@ export function ChangeProductIndexButton({
   );
 
   const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.storefront.name,
-    overlayName: state.pages.storefront.overlays.changeProductIndex.name,
+    pageName: state.pages.editUpsell.name,
+    overlayName: state.pages.editUpsell.overlays.changeProductIndex.name,
     isOverlayVisible:
-      state.pages.storefront.overlays.changeProductIndex.isVisible,
+      state.pages.editUpsell.overlays.changeProductIndex.isVisible,
   }));
 
   const handleClick = () => {
@@ -39,7 +39,7 @@ export function ChangeProductIndexButton({
       id: product.id,
       index: String(product.index),
       name: product.name,
-      collectionId,
+      upsellId,
     });
     showOverlay({ pageName, overlayName });
   };
@@ -73,10 +73,10 @@ export function ChangeProductIndexOverlay() {
 
   const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
     (state) => ({
-      pageName: state.pages.storefront.name,
-      overlayName: state.pages.storefront.overlays.changeProductIndex.name,
+      pageName: state.pages.editUpsell.name,
+      overlayName: state.pages.editUpsell.overlays.changeProductIndex.name,
       isOverlayVisible:
-        state.pages.storefront.overlays.changeProductIndex.isVisible,
+        state.pages.editUpsell.overlays.changeProductIndex.isVisible,
     })
   );
 
@@ -95,7 +95,7 @@ export function ChangeProductIndexOverlay() {
     setLoading(true);
     try {
       const result = await ChangeProductIndexAction({
-        collectionId: selectedProduct.collectionId,
+        upsellId: selectedProduct.upsellId,
         product: {
           id: selectedProduct.id,
           index: Number(selectedProduct.index),

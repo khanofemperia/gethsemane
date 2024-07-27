@@ -269,7 +269,7 @@ export async function AddProductAction(data: {
 
     collectionProducts.sort((a, b) => a.index - b.index);
 
-    // Update the index for existing products
+    // Update the indexes of existing products
     const updatedProducts = collectionProducts.map((product, index) => {
       product.index = index + 2;
       return { ...product };
