@@ -35,8 +35,8 @@ export default function IDCopyButton({ id }: { id: string }) {
       type="button"
       onClick={() => handleCopyId(id)}
     >
-      <TbCopy className="text-blue" size={18} />
-      <span className="text-sm font-semibold text-blue">
+      <TbCopy className="text-gray" size={18} />
+      <span className="text-sm font-semibold text-gray">
         {isCopied ? "ID Copied!" : "Copy ID to Clipboard"}
       </span>
     </button>
