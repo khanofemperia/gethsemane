@@ -89,7 +89,7 @@ export function NewUpsellOverlay() {
   });
   const [productId, setProductId] = useState<string>("");
   const [products, setProducts] = useState<ProductType[]>([]);
-  const [basePrice, setBasePrice] = useState(0);
+  const [basePrice, setBasePrice] = useState<number>(0);
 
   const { hideOverlay } = useOverlayStore();
 
@@ -116,11 +116,23 @@ export function NewUpsellOverlay() {
   }, [isOverlayVisible, showAlert]);
 
   useEffect(() => {
-    const totalBasePrice = products.reduce(
-      (total, product) => total + product.basePrice,
-      0
-    );
-    setBasePrice(totalBasePrice);
+    const totalBasePrice = products.reduce((total, product) => {
+      const price =
+        typeof product.basePrice === "number"
+          ? product.basePrice
+          : parseFloat(product.basePrice);
+      return isNaN(price) ? total : total + price;
+    }, 0);
+
+    // Round down to the nearest .99
+    const roundedTotal = Math.floor(totalBasePrice) + 0.99;
+
+    // Format to two decimal places
+    const formattedTotal = Number(roundedTotal.toFixed(2));
+
+    console.log(formattedTotal); // This will now correctly end in .99
+
+    setBasePrice(formattedTotal);
   }, [products]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
