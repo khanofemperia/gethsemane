@@ -89,6 +89,7 @@ export function NewUpsellOverlay() {
   });
   const [productId, setProductId] = useState<string>("");
   const [products, setProducts] = useState<ProductType[]>([]);
+  const [basePrice, setBasePrice] = useState(0);
 
   const { hideOverlay } = useOverlayStore();
 
@@ -113,6 +114,14 @@ export function NewUpsellOverlay() {
       }
     };
   }, [isOverlayVisible, showAlert]);
+
+  useEffect(() => {
+    const totalBasePrice = products.reduce(
+      (total, product) => total + product.basePrice,
+      0
+    );
+    setBasePrice(totalBasePrice);
+  }, [products]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -317,7 +326,11 @@ export function NewUpsellOverlay() {
                           }
                         )}
                       >
-                        {loadingProduct ? <GraySpinner /> : <PlusIcon size={22} />}
+                        {loadingProduct ? (
+                          <GraySpinner />
+                        ) : (
+                          <PlusIcon size={22} />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -369,19 +382,9 @@ export function NewUpsellOverlay() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="basePrice" className="font-semibold text-sm">
-                    Base price
-                  </label>
-                  <div className="w-full h-9 relative">
-                    <input
-                      type="text"
-                      name="basePrice"
-                      placeholder="137.99"
-                      value={formData.basePrice}
-                      onChange={handleInputChange}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
-                      required
-                    />
+                  <span className="font-semibold text-sm">Base price</span>
+                  <div className="w-full h-9 px-3 flex items-center rounded-md transition duration-300 ease-in-out border">
+                    {basePrice}
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -452,4 +455,3 @@ export function NewUpsellOverlay() {
     </>
   );
 }
-
