@@ -125,12 +125,11 @@ export function NewUpsellOverlay() {
     }, 0);
 
     // Round down to the nearest .99
-    const roundedTotal = Math.floor(totalBasePrice) + 0.99;
+    const roundedTotal =
+      totalBasePrice === 0 ? 0 : Math.floor(totalBasePrice) + 0.99;
 
     // Format to two decimal places
     const formattedTotal = Number(roundedTotal.toFixed(2));
-
-    console.log(formattedTotal); // This will now correctly end in .99
 
     setBasePrice(formattedTotal);
   }, [products]);
@@ -348,7 +347,7 @@ export function NewUpsellOverlay() {
                   </div>
                   <div className="w-full max-w-[383px] border rounded-md overflow-hidden">
                     {products.length > 0 ? (
-                      <div className="p-5 flex flex-wrap justify-start">
+                      <div className="p-5 flex gap-5 flex-wrap justify-start">
                         {products
                           .slice(0, 3)
                           .map(
@@ -360,14 +359,12 @@ export function NewUpsellOverlay() {
                               name,
                               basePrice,
                             }) => (
-                              <Link
+                              <div
                                 key={index}
-                                href={`/admin/shop/products/${slug}-${id}`}
-                                target="_blank"
-                                className="aspect-square w-1/2 pt-2 pb-[6px] px-5 select-none transition duration-200 ease-in-out active:bg-blue-100 lg:hover:bg-blue-100"
+                                className="group w-[calc(50%-10px)] cursor-pointer"
                               >
-                                <div className="relative w-full h-full">
-                                  <div className="aspect-square w-full overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
+                                <div className="relative">
+                                  <div className="w-full aspect-square overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
                                     <Image
                                       src={mainImage}
                                       alt={name}
@@ -376,13 +373,14 @@ export function NewUpsellOverlay() {
                                       priority
                                     />
                                   </div>
-                                  <div className="flex items-center justify-center absolute bottom-0 text-sm w-full">
-                                    <span className="font-bold">
-                                      ${formatThousands(basePrice)}
-                                    </span>
-                                  </div>
+                                  <div className="w-full h-full absolute top-0 bottom-0 left-0 right-0 ease-in-out duration-300 transition group-hover:bg-black/30"></div>
                                 </div>
-                              </Link>
+                                <div className="mt-[6px] flex items-center justify-center text-sm w-full">
+                                  <span className="font-bold">
+                                    ${formatThousands(basePrice)}
+                                  </span>
+                                </div>
+                              </div>
                             )
                           )}
                       </div>
