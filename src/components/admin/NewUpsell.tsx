@@ -2,16 +2,28 @@
 
 import { CreateUpsellAction } from "@/actions/upsells";
 import AlertMessage from "@/components/shared/AlertMessage";
-import { isValidRemoteImage } from "@/lib/utils";
+import { formatThousands, isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import Spinner from "@/ui/Spinners/White";
+import GraySpinner from "@/ui/Spinners/Gray";
+import WhiteSpinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { useNavbarMenuStore } from "@/zustand/admin/navbarMenuStore";
-import { ArrowLeftIcon, CloseIcon } from "@/icons";
+import { ArrowLeftIcon, CloseIcon, PlusIcon } from "@/icons";
 import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
+import { getProduct } from "@/lib/getData";
+import Link from "next/link";
+
+type ProductType = {
+  index: number;
+  id: string;
+  slug: string;
+  name: string;
+  mainImage: string;
+  basePrice: number;
+};
 
 export function NewUpsellMenuButton() {
   const { showOverlay } = useOverlayStore();
@@ -64,7 +76,8 @@ export function NewUpsellEmptyGridButton() {
 }
 
 export function NewUpsellOverlay() {
-  const [loading, setLoading] = useState(false);
+  const [loadingProduct, setLoadingProduct] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
     AlertMessageType.NEUTRAL
   );
@@ -74,6 +87,8 @@ export function NewUpsellOverlay() {
     basePrice: "",
     mainImage: "",
   });
+  const [productId, setProductId] = useState<string>("");
+  const [products, setProducts] = useState<ProductType[]>([]);
 
   const { hideOverlay } = useOverlayStore();
 
@@ -103,8 +118,8 @@ export function NewUpsellOverlay() {
     const { name, value } = event.target;
 
     if (
-      (name === "price" || name === "salePrice") &&
-      !/^\d*\.?\d*$/.test(value)
+      (name === "basePrice" && !/^\d*\.?\d*$/.test(value)) ||
+      (name === "salePrice" && !/^\d*\.?\d*$/.test(value))
     ) {
       return;
     }
@@ -116,7 +131,7 @@ export function NewUpsellOverlay() {
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    setLoadingSave(true);
 
     try {
       const result = await CreateUpsellAction(formData);
@@ -129,13 +144,13 @@ export function NewUpsellOverlay() {
       setAlertMessage("Failed to create upsell");
       setShowAlert(true);
     } finally {
-      setLoading(false);
+      setLoadingSave(false);
       onHideOverlay();
     }
   };
 
   const onHideOverlay = () => {
-    setLoading(false);
+    setLoadingSave(false);
     hideOverlay({ pageName, overlayName });
     setFormData({
       basePrice: "",
@@ -147,6 +162,85 @@ export function NewUpsellOverlay() {
     setShowAlert(false);
     setAlertMessage("");
     setAlertMessageType(AlertMessageType.NEUTRAL);
+  };
+
+  const addProduct = async (productId: string) => {
+    const trimmedProductId = productId.trim();
+
+    if (!trimmedProductId) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Product ID cannot be empty");
+      setShowAlert(true);
+      return;
+    } else if (!/^\d{5}$/.test(trimmedProductId)) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Product ID must be a 5-digit number");
+      setShowAlert(true);
+      return;
+    }
+
+    if (products.some((product) => product.id === trimmedProductId)) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Product already added");
+      setShowAlert(true);
+      return;
+    }
+
+    setLoadingProduct(true);
+
+    try {
+      const product = await getProduct({
+        id: trimmedProductId,
+        fields: ["id", "name", "slug", "images", "pricing"],
+      });
+
+      if (product) {
+        const newProduct = {
+          index: products.length,
+          id: product.id,
+          slug: product.slug,
+          name: product.name,
+          mainImage: product.images?.main ?? "",
+          basePrice: product.pricing?.basePrice ?? 0,
+        };
+
+        setProducts((prevProducts) => [
+          ...prevProducts,
+          newProduct as ProductType,
+        ]);
+        setProductId(""); // Clear input field after adding
+      } else {
+        setAlertMessageType(AlertMessageType.ERROR);
+        setAlertMessage("Product not found");
+        setShowAlert(true);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to add product");
+      setShowAlert(true);
+    } finally {
+      setLoadingProduct(false);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      addProduct(productId);
+    }
+  };
+
+  const handleProductIdInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    if (/^\d*$/.test(value)) {
+      setProductId(value);
+    }
+  };
+
+  const handleButtonClick = () => {
+    addProduct(productId);
   };
 
   return (
@@ -180,18 +274,18 @@ export function NewUpsellOverlay() {
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={loading}
+                  disabled={loadingSave}
                   className={clsx(
                     "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                     {
-                      "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "bg-opacity-50": loadingSave,
+                      "active:bg-blue-dimmed": !loadingSave,
                     }
                   )}
                 >
-                  {loading ? (
+                  {loadingSave ? (
                     <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
+                      <WhiteSpinner />
                       <span className="text-white">Saving</span>
                     </div>
                   ) : (
@@ -200,6 +294,80 @@ export function NewUpsellOverlay() {
                 </button>
               </div>
               <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
+                <div className="flex flex-col gap-2">
+                  <span className="font-semibold text-sm">Products</span>
+                  <div className="w-full min-[588px]:w-56 h-9 rounded-full overflow-hidden flex items-center border shadow-sm">
+                    <input
+                      type="text"
+                      value={productId}
+                      onChange={handleProductIdInputChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Paste ID (#12345)"
+                      className="h-full w-full pl-4 bg-transparent"
+                    />
+                    <div className="h-full flex items-center justify-center">
+                      <button
+                        onClick={handleButtonClick}
+                        disabled={loadingProduct}
+                        className={clsx(
+                          "w-11 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out",
+                          {
+                            "active:bg-lightgray lg:hover:bg-lightgray":
+                              !loadingProduct,
+                          }
+                        )}
+                      >
+                        {loadingProduct ? <GraySpinner /> : <PlusIcon size={22} />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="w-full max-w-[383px] border rounded-md overflow-hidden">
+                    {products.length > 0 ? (
+                      <div className="p-5 flex flex-wrap justify-start">
+                        {products
+                          .slice(0, 3)
+                          .map(
+                            ({
+                              index,
+                              id,
+                              slug,
+                              mainImage,
+                              name,
+                              basePrice,
+                            }) => (
+                              <Link
+                                key={index}
+                                href={`/admin/shop/products/${slug}-${id}`}
+                                target="_blank"
+                                className="aspect-square w-1/2 pt-2 pb-[6px] px-5 select-none transition duration-200 ease-in-out active:bg-blue-100 lg:hover:bg-blue-100"
+                              >
+                                <div className="relative w-full h-full">
+                                  <div className="aspect-square w-full overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
+                                    <Image
+                                      src={mainImage}
+                                      alt={name}
+                                      width={216}
+                                      height={216}
+                                      priority
+                                    />
+                                  </div>
+                                  <div className="flex items-center justify-center absolute bottom-0 text-sm w-full">
+                                    <span className="font-bold">
+                                      ${formatThousands(basePrice)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </Link>
+                            )
+                          )}
+                      </div>
+                    ) : (
+                      <span className="p-5 block text-xs text-gray">
+                        No products yet
+                      </span>
+                    )}
+                  </div>
+                </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="basePrice" className="font-semibold text-sm">
                     Base price
@@ -252,18 +420,18 @@ export function NewUpsellOverlay() {
             <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
               <button
                 onClick={handleSave}
-                disabled={loading}
+                disabled={loadingSave}
                 className={clsx(
                   "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
                   {
-                    "bg-opacity-50": loading,
-                    "active:bg-blue-dimmed": !loading,
+                    "bg-opacity-50": loadingSave,
+                    "active:bg-blue-dimmed": !loadingSave,
                   }
                 )}
               >
-                {loading ? (
+                {loadingSave ? (
                   <div className="flex gap-1 items-center justify-center w-full h-full">
-                    <Spinner />
+                    <WhiteSpinner />
                     <span className="text-white">Saving</span>
                   </div>
                 ) : (
@@ -284,3 +452,4 @@ export function NewUpsellOverlay() {
     </>
   );
 }
+
