@@ -8,7 +8,7 @@ import GraySpinner from "@/ui/Spinners/Gray";
 import WhiteSpinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { useNavbarMenuStore } from "@/zustand/admin/navbarMenuStore";
-import { ArrowLeftIcon, CloseIcon, PlusIcon } from "@/icons";
+import { ArrowLeftIcon, CloseIcon, MinusIcon, PlusIcon } from "@/icons";
 import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
@@ -244,6 +244,12 @@ export function NewUpsellOverlay() {
     }
   };
 
+  const removeProduct = (productId: string) => {
+    setProducts((prevProducts) =>
+      prevProducts.filter((product) => product.id !== productId)
+    );
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       addProduct(productId);
@@ -373,7 +379,17 @@ export function NewUpsellOverlay() {
                                       priority
                                     />
                                   </div>
-                                  <div className="w-full h-full absolute top-0 bottom-0 left-0 right-0 ease-in-out duration-300 transition group-hover:bg-black/30"></div>
+                                  <div className="w-full h-full absolute top-0 bottom-0 left-0 right-0 ease-in-out duration-300 transition group-hover:bg-black/30">
+                                    <button
+                                      onClick={() => removeProduct(id)}
+                                      className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
+                                    >
+                                      <MinusIcon
+                                        className="fill-white"
+                                        size={20}
+                                      />
+                                    </button>
+                                  </div>
                                 </div>
                                 <div className="mt-[6px] flex items-center justify-center text-sm w-full">
                                   <span className="font-bold">
