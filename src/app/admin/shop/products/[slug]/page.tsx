@@ -353,9 +353,9 @@ export default async function EditProduct({
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Product description</h2>
             <p className="text-sm md:max-w-[85%]">
-              Spotlight your product's strengths. What makes it the
-              life-changing choice customers can't resist? Why is it the clear
-              winner? Keep it simple and unforgettable.
+              Tell people why your product is great. What problem does it solve
+              brilliantly? Explain how it makes life more enjoyable. Keep it
+              simple and exciting.
             </p>
           </div>
           <div className="w-full relative shadow rounded-xl bg-white">
@@ -434,9 +434,8 @@ export default async function EditProduct({
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">On-page SEO</h2>
             <p className="text-sm md:max-w-[85%]">
-              Integrate relevant keywords into the product details page to
-              improve on-page SEO. This ensures the content aligns with search
-              queries and helps search engines know what the page is about.
+              Use keywords that fit your product. This helps search engines
+              understand your page and show it to the right people.
             </p>
           </div>
           <div
@@ -478,8 +477,8 @@ export default async function EditProduct({
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Product source</h2>
             <p className="text-sm md:max-w-[85%]">
-              Keep track of your suppliers! This helps with quality control,
-              fast reorders, and quicker problem resolution.
+              Keep track of where you get your products. It helps you reorder
+              fast and fix problems quickly.
             </p>
           </div>
           <div

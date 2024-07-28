@@ -39,10 +39,10 @@ export default async function EditUpsell({
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Basic details</h2>
             <p className="text-sm md:max-w-[85%]">
-              Show customers how stuff goes together, and they'll buy more. They
-              want a shirt? Display the full outfit - pants, shoes, accessories.
-              Soon, we're seeing 2-4 item purchases per sale. It's upselling,
-              with a friendly touch.
+              Show customers how stuff goes together, and they'll buy more. If
+              they want a shirt, display the full outfit—pants, shoes,
+              accessories. Before you know it, they'll be adding 2-4 items to
+              their cart. It's upselling, but in a friendly way.
             </p>
           </div>
           <div
