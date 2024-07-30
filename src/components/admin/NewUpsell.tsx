@@ -83,13 +83,12 @@ export function NewUpsellOverlay() {
   );
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [formData, setFormData] = useState({
-    basePrice: "",
-    mainImage: "",
-  });
+  const [mainImage, setMainImage] = useState("");
   const [productId, setProductId] = useState<string>("");
   const [products, setProducts] = useState<ProductType[]>([]);
   const [basePrice, setBasePrice] = useState<number>(0);
+  const [salePrice, setSalePrice] = useState<number>(0);
+  const [discountPercentage, setDiscountPercentage] = useState<string>("");
 
   const { hideOverlay } = useOverlayStore();
 
@@ -134,27 +133,68 @@ export function NewUpsellOverlay() {
     setBasePrice(formattedTotal);
   }, [products]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+  useEffect(() => {
+    calculateSalePrice(discountPercentage);
+  }, [basePrice]);
 
-    if (
-      (name === "basePrice" && !/^\d*\.?\d*$/.test(value)) ||
-      (name === "salePrice" && !/^\d*\.?\d*$/.test(value))
-    ) {
-      return;
+  const handleDiscountPercentageChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    if (value === "" || /^[0-9]+$/.test(value)) {
+      setDiscountPercentage(value);
+      calculateSalePrice(value);
     }
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
   };
 
   const handleSave = async () => {
     setLoadingSave(true);
 
+    const upsellData = {
+      mainImage,
+      pricing: {
+        basePrice: basePrice,
+        salePrice: salePrice > 0 ? salePrice : 0,
+        discountPercentage:
+          discountPercentage !== "" ? parseInt(discountPercentage, 10) : 0,
+      },
+      products: products.map(
+        ({ index, id, slug, name, mainImage, basePrice }) => ({
+          index,
+          id,
+          slug,
+          name,
+          mainImage,
+          basePrice,
+        })
+      ),
+    };
+
+    if (!upsellData.mainImage) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Main image is missing");
+      setShowAlert(true);
+      setLoadingSave(false);
+      return;
+    }
+
+    if (upsellData.products.length === 0) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("At least one product is required");
+      setShowAlert(true);
+      setLoadingSave(false);
+      return;
+    }
+
+    if (upsellData.pricing.basePrice <= 0) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Base price must be greater than zero");
+      setShowAlert(true);
+      setLoadingSave(false);
+      return;
+    }
     try {
-      const result = await CreateUpsellAction(formData);
+      const result = await CreateUpsellAction(upsellData);
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
       setShowAlert(true);
@@ -169,19 +209,43 @@ export function NewUpsellOverlay() {
     }
   };
 
-  const onHideOverlay = () => {
-    setLoadingSave(false);
-    hideOverlay({ pageName, overlayName });
-    setFormData({
-      basePrice: "",
-      mainImage: "",
-    });
+  const handleProductIdInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    if (/^\d*$/.test(value)) {
+      setProductId(value);
+    }
   };
 
-  const hideAlertMessage = () => {
-    setShowAlert(false);
-    setAlertMessage("");
-    setAlertMessageType(AlertMessageType.NEUTRAL);
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      addProduct(productId);
+    }
+  };
+
+  const handleButtonClick = () => {
+    addProduct(productId);
+  };
+
+  const calculateSalePrice = (discount: string) => {
+    if (discount === "") {
+      setSalePrice(0);
+    } else {
+      const discountValue = parseInt(discount, 10);
+      if (discountValue >= 0 && discountValue <= 100) {
+        const rawSalePrice = basePrice * (1 - discountValue / 100);
+
+        // Round down to the nearest .99
+        const roundedSalePrice =
+          rawSalePrice === 0 ? 0 : Math.floor(rawSalePrice) + 0.99;
+
+        // Format to two decimal places
+        const formattedSalePrice = Number(roundedSalePrice.toFixed(2));
+
+        setSalePrice(formattedSalePrice);
+      }
+    }
   };
 
   const addProduct = async (productId: string) => {
@@ -216,7 +280,7 @@ export function NewUpsellOverlay() {
 
       if (product) {
         const newProduct = {
-          index: products.length,
+          index: products.length + 1,
           id: product.id,
           slug: product.slug,
           name: product.name,
@@ -245,28 +309,38 @@ export function NewUpsellOverlay() {
   };
 
   const removeProduct = (productId: string) => {
-    setProducts((prevProducts) =>
-      prevProducts.filter((product) => product.id !== productId)
-    );
+    setProducts((prevProducts) => {
+      const updatedProducts = prevProducts
+        .filter((product) => product.id !== productId)
+        .map((product, newIndex) => ({
+          ...product,
+          index: newIndex + 1, // Adjust index to start from 1
+        }));
+
+      if (updatedProducts.length === 0) {
+        setDiscountPercentage("");
+      }
+
+      return updatedProducts;
+    });
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      addProduct(productId);
-    }
+  const onHideOverlay = () => {
+    hideOverlay({ pageName, overlayName });
+    setProductId("");
+    setProducts([]);
+    setMainImage("");
+    setDiscountPercentage("");
+    setBasePrice(0);
+    setSalePrice(0);
+    setAlertMessage("");
+    setShowAlert(false);
   };
 
-  const handleProductIdInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = event.target.value;
-    if (/^\d*$/.test(value)) {
-      setProductId(value);
-    }
-  };
-
-  const handleButtonClick = () => {
-    addProduct(productId);
+  const hideAlertMessage = () => {
+    setShowAlert(false);
+    setAlertMessage("");
+    setAlertMessageType(AlertMessageType.NEUTRAL);
   };
 
   return (
@@ -302,10 +376,10 @@ export function NewUpsellOverlay() {
                   onClick={handleSave}
                   disabled={loadingSave}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loadingSave,
-                      "active:bg-blue-dimmed": !loadingSave,
+                      "active:bg-neutral-700/85": !loadingSave,
                     }
                   )}
                 >
@@ -319,10 +393,10 @@ export function NewUpsellOverlay() {
                   )}
                 </button>
               </div>
-              <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
-                <div className="flex flex-col gap-2">
-                  <span className="font-semibold text-sm">Products</span>
-                  <div className="w-full min-[588px]:w-56 h-9 rounded-full overflow-hidden flex items-center border shadow-sm">
+              <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-8 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
+                <div className="flex flex-col gap-3">
+                  <h2 className="text-xs text-gray">Products</h2>
+                  <div className="w-full min-[588px]:w-56 h-9 mb-1 rounded-full overflow-hidden flex items-center border shadow-sm">
                     <input
                       type="text"
                       value={productId}
@@ -351,9 +425,9 @@ export function NewUpsellOverlay() {
                       </button>
                     </div>
                   </div>
-                  <div className="w-full max-w-[383px] border rounded-md overflow-hidden">
-                    {products.length > 0 ? (
-                      <div className="p-5 flex gap-5 flex-wrap justify-start">
+                  <div className="w-full max-w-[383px] overflow-hidden">
+                    {products.length > 0 && (
+                      <div className="border rounded-md p-5 pb-4 flex gap-5 flex-wrap justify-start">
                         {products
                           .slice(0, 3)
                           .map(
@@ -391,8 +465,8 @@ export function NewUpsellOverlay() {
                                     </button>
                                   </div>
                                 </div>
-                                <div className="mt-[6px] flex items-center justify-center text-sm w-full">
-                                  <span className="font-bold">
+                                <div className="mt-[6px] flex items-center justify-center w-full">
+                                  <span className="font-semibold text-sm">
                                     ${formatThousands(basePrice)}
                                   </span>
                                 </div>
@@ -400,44 +474,60 @@ export function NewUpsellOverlay() {
                             )
                           )}
                       </div>
-                    ) : (
-                      <span className="p-5 block text-xs text-gray">
-                        No products yet
-                      </span>
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <span className="font-semibold text-sm">Base price</span>
-                  <div className="w-full h-9 px-3 flex items-center rounded-md transition duration-300 ease-in-out border">
-                    {basePrice}
+                <div className="flex flex-col gap-4">
+                  <div className="flex gap-5">
+                    <div>
+                      <h2 className="mb-2 text-xs text-gray">Base price</h2>
+                      <div className="font-medium">
+                        {basePrice > 0 ? `$${basePrice}` : "--"}
+                      </div>
+                    </div>
+                    <div>
+                      <h2 className="mb-2 text-xs text-gray">Sale price</h2>
+                      <div className="font-medium">
+                        {salePrice > 0 ? `$${salePrice.toFixed(2)}` : "--"}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <h2 className="text-xs text-gray">Discount percentage</h2>
+                    <div className="w-full h-9 relative">
+                      <input
+                        type="text"
+                        name="discountPercentage"
+                        placeholder="0"
+                        value={discountPercentage}
+                        onChange={handleDiscountPercentageChange}
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="mainImage" className="font-semibold text-sm">
-                    Main image
-                  </label>
+                <div className="flex flex-col gap-4">
+                  <h2 className="text-xs text-gray">Main image</h2>
                   <div>
                     <div className="w-full max-w-[383px] border rounded-md overflow-hidden">
                       <div className="w-full aspect-square flex items-center justify-center overflow-hidden">
-                        {formData.mainImage &&
-                          isValidRemoteImage(formData.mainImage) && (
-                            <Image
-                              src={formData.mainImage}
-                              alt="Upsell"
-                              width={383}
-                              height={383}
-                              priority
-                            />
-                          )}
+                        {mainImage && isValidRemoteImage(mainImage) && (
+                          <Image
+                            src={mainImage}
+                            alt="Upsell"
+                            width={383}
+                            height={383}
+                            priority
+                          />
+                        )}
                       </div>
                       <div className="w-full h-9 border-t overflow-hidden">
                         <input
                           type="text"
                           name="mainImage"
                           placeholder="Paste image URL"
-                          value={formData.mainImage}
-                          onChange={handleInputChange}
+                          value={mainImage}
+                          onChange={(e) => setMainImage(e.target.value)}
                           className="h-full w-full px-3 text-gray"
                         />
                       </div>
@@ -451,10 +541,10 @@ export function NewUpsellOverlay() {
                 onClick={handleSave}
                 disabled={loadingSave}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loadingSave,
-                    "active:bg-blue-dimmed": !loadingSave,
+                    "active:bg-neutral-700/85": !loadingSave,
                   }
                 )}
               >

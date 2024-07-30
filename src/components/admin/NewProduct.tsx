@@ -256,10 +256,10 @@ export function NewProductOverlay() {
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700/85": !loading,
                     }
                   )}
                 >
@@ -275,7 +275,7 @@ export function NewProductOverlay() {
               </div>
               <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-semibold text-sm">Category</h2>
+                  <h2 className="text-xs text-gray">Category</h2>
                   <div ref={categoryRef} className="w-full h-9 relative">
                     <button
                       onClick={handleCategoryDropdownClick}
@@ -315,7 +315,7 @@ export function NewProductOverlay() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="name" className="font-semibold text-sm">
+                  <label htmlFor="name" className="text-xs text-gray">
                     Name
                   </label>
                   <div className="w-full h-9 relative">
@@ -331,7 +331,7 @@ export function NewProductOverlay() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="slug" className="font-semibold text-sm">
+                  <label htmlFor="slug" className="text-xs text-gray">
                     Slug
                   </label>
                   <div className="w-full h-9 relative">
@@ -347,7 +347,7 @@ export function NewProductOverlay() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="basePrice" className="font-semibold text-sm">
+                  <label htmlFor="basePrice" className="text-xs text-gray">
                     Base price
                   </label>
                   <div className="w-full h-9 relative">
@@ -363,7 +363,7 @@ export function NewProductOverlay() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="mainImage" className="font-semibold text-sm">
+                  <label htmlFor="mainImage" className="text-xs text-gray">
                     Main image
                   </label>
                   <div>
@@ -400,10 +400,10 @@ export function NewProductOverlay() {
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-blue-dimmed": !loading,
+                    "active:bg-neutral-700/85": !loading,
                   }
                 )}
               >

@@ -6,24 +6,13 @@ import { generateId, currentTimestamp } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-type CreateUpsellType = {
-  basePrice: string;
-  mainImage: string;
-};
-
-export async function CreateUpsellAction(data: CreateUpsellType) {
+export async function CreateUpsellAction(data: Partial<UpsellType>) {
   try {
     const documentRef = doc(database, "upsells", generateId());
     const currentTime = currentTimestamp();
 
     const upsell = {
-      pricing: {
-        basePrice: data.basePrice,
-        salePrice: 0,
-        discountPercentage: 0,
-      },
-      mainImage: data.mainImage,
-      products: [],
+      ...data,
       visibility: "DRAFT",
       updatedAt: currentTime,
       createdAt: currentTime,
