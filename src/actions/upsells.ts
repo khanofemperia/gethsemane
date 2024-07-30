@@ -119,8 +119,17 @@ export async function AddProductAction(data: {
     // Add the new product at the beginning of the array
     updatedProducts.unshift(newProduct);
 
+    // Calculate new base price
+    const totalBasePrice = updatedProducts.reduce(
+      (total, product) => total + product.basePrice,
+      0
+    );
+    const roundedBasePrice = Math.floor(totalBasePrice) + 0.99;
+    const formattedBasePrice = Number(roundedBasePrice.toFixed(2));
+
     await updateDoc(upsellRef, {
       products: updatedProducts,
+      "pricing.basePrice": formattedBasePrice,
       updatedAt: currentTimestamp(),
     });
 
@@ -164,6 +173,13 @@ export async function RemoveProductAction(data: {
 
     const upsellData = upsellSnapshot.data() as UpsellType;
 
+    if (upsellData.products.length === 1) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Cannot remove the last product from the upsell",
+      };
+    }
+
     const updatedProducts = upsellData.products.filter(
       (product) => product.id !== productId
     );
@@ -172,8 +188,17 @@ export async function RemoveProductAction(data: {
       product.index = index + 1;
     });
 
+    // Calculate new base price
+    const totalBasePrice = updatedProducts.reduce(
+      (total, product) => total + product.basePrice,
+      0
+    );
+    const roundedBasePrice = Math.floor(totalBasePrice) + 0.99;
+    const formattedBasePrice = Number(roundedBasePrice.toFixed(2));
+
     await updateDoc(upsellRef, {
       products: updatedProducts,
+      "pricing.basePrice": formattedBasePrice,
       updatedAt: currentTimestamp(),
     });
 

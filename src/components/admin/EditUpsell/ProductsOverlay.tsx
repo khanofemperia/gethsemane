@@ -61,12 +61,6 @@ export function ProductsOverlay({
 }: {
   data: { id: string; products: ProductType[] };
 }) {
-  const PUBLISHED = "PUBLISHED";
-  const DRAFT = "DRAFT";
-  const HIDDEN = "HIDDEN";
-  const INACTIVE = "INACTIVE";
-  const ALL = "ALL";
-
   const [loading, setLoading] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -74,7 +68,6 @@ export function ProductsOverlay({
     AlertMessageType.NEUTRAL
   );
   const [productId, setProductId] = useState("");
-  const [filter, setFilter] = useState<string>(ALL);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageJumpValue, setPageJumpValue] = useState("1");
   const [isPageInRange, setIsPageInRange] = useState(true);
@@ -106,7 +99,6 @@ export function ProductsOverlay({
   const onHideOverlay = () => {
     setLoading(false);
     hideOverlay({ pageName, overlayName });
-    setFilter(ALL);
     setPageJumpValue("1");
     setCurrentPage(1);
     setIsPageInRange(true);
@@ -169,42 +161,6 @@ export function ProductsOverlay({
     }
   };
 
-  const getFilteredProducts = (filter: string) => {
-    // if (filter === PUBLISHED) {
-    //   return data.products.filter(
-    //     (product) => product.visibility.toUpperCase() === PUBLISHED
-    //   );
-    // } else if (filter === INACTIVE) {
-    //   return data.products.filter(
-    //     (product) =>
-    //       product.visibility.toUpperCase() === HIDDEN ||
-    //       product.visibility.toUpperCase() === DRAFT
-    //   );
-    // }
-    return data.products;
-  };
-
-  const filteredProducts = getFilteredProducts(filter);
-
-  const handleFilterChange = (newFilter: string) => {
-    const newFilteredProducts = getFilteredProducts(newFilter);
-
-    if (newFilteredProducts.length === 0) {
-      setAlertMessageType(AlertMessageType.NEUTRAL);
-      setAlertMessage(
-        `${capitalizeFirstLetter(
-          newFilter.toLowerCase()
-        )} filter has no products`
-      );
-      setShowAlert(true);
-    } else {
-      setFilter(newFilter);
-      setPageJumpValue("1");
-      setCurrentPage(1);
-      setIsPageInRange(true);
-    }
-  };
-
   const pagination = (
     data: ProductType[],
     currentPage: number,
@@ -223,7 +179,7 @@ export function ProductsOverlay({
 
   const rowsPerPage = 2;
   const { paginatedArray: tableData, totalPages } = pagination(
-    filteredProducts,
+    data.products,
     currentPage,
     rowsPerPage
   );
@@ -311,54 +267,7 @@ export function ProductsOverlay({
                 </div>
                 {tableData.length > 0 ? (
                   <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-2 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
-                    <div className="w-full flex flex-col min-[588px]:flex-row gap-2 items-center justify-between">
-                      <div className="max-w-full flex flex-nowrap rounded-full bg-lightgray overflow-x-visible overflow-y-hidden invisible-scrollbar *:min-w-max *:h-9 *:rounded-full *:flex *:items-center *:justify-center *:font-semibold *:text-sm *:ease-in-out *:duration-300 *:transition">
-                        <button
-                          onClick={() => handleFilterChange(ALL)}
-                          className={`px-3 pl-[14px] h-9 hover:bg-lightgray-dimmed rounded-full ${
-                            filter === ALL
-                              ? "text-blue"
-                              : "text-gray hover:text-black"
-                          }`}
-                        >
-                          View all ({data.products.length})
-                        </button>
-                        {/* <button
-                          onClick={() => handleFilterChange(PUBLISHED)}
-                          className={`px-3 h-9 hover:bg-lightgray-dimmed rounded-full ${
-                            filter === PUBLISHED
-                              ? "text-blue"
-                              : "text-gray hover:text-black"
-                          }`}
-                        >
-                          Published (
-                          {
-                            data.products.filter(
-                              (product) =>
-                                product.visibility.toUpperCase() === PUBLISHED
-                            ).length
-                          }
-                          )
-                        </button>
-                        <button
-                          onClick={() => handleFilterChange(INACTIVE)}
-                          className={`px-3 pr-[14px] h-9 hover:bg-lightgray-dimmed rounded-full ${
-                            filter === INACTIVE
-                              ? "text-blue"
-                              : "text-gray hover:text-black"
-                          }`}
-                        >
-                          Inactive (
-                          {
-                            data.products.filter(
-                              (product) =>
-                                product.visibility.toUpperCase() === HIDDEN ||
-                                product.visibility.toUpperCase() === DRAFT
-                            ).length
-                          }
-                          )
-                        </button> */}
-                      </div>
+                    <div className="w-full flex flex-col min-[588px]:flex-row gap-2 items-center justify-end">
                       <div className="w-full min-[588px]:w-56 h-9 rounded-full overflow-hidden flex items-center border shadow-sm">
                         <input
                           type="text"
@@ -460,7 +369,7 @@ export function ProductsOverlay({
                         </div>
                       </div>
                     )}
-                    {filteredProducts.length > rowsPerPage && (
+                    {data.products.length > rowsPerPage && (
                       <div className="mt-2">
                         <div className="w-max mx-auto flex gap-1 h-9">
                           <button
