@@ -89,7 +89,7 @@ export async function AddProductAction(data: {
       slug: productSnapshot.data()?.slug || "",
       name: productSnapshot.data()?.name || "",
       mainImage: productSnapshot.data()?.images.main || "",
-      basePrice: productSnapshot.data()?.pricing.basePrice || 0,
+      basePrice: Number(productSnapshot.data()?.pricing.basePrice) || 0,
     };
 
     const upsellData = upsellSnapshot.data() as UpsellType;
@@ -111,10 +111,11 @@ export async function AddProductAction(data: {
     upsellProducts.sort((a, b) => a.index - b.index);
 
     // Update the indexes of existing products
-    const updatedProducts = upsellProducts.map((product, index) => {
-      product.index = index + 2;
-      return { ...product };
-    });
+    const updatedProducts = upsellProducts.map((product, index) => ({
+      ...product,
+      index: index + 2,
+      basePrice: Number(product.basePrice),
+    }));
 
     // Add the new product at the beginning of the array
     updatedProducts.unshift(newProduct);
@@ -124,12 +125,21 @@ export async function AddProductAction(data: {
       (total, product) => total + product.basePrice,
       0
     );
-    const roundedBasePrice = Math.floor(totalBasePrice) + 0.99;
+    const roundedBasePrice =
+      totalBasePrice === 0 ? 0 : Math.floor(totalBasePrice) + 0.99;
     const formattedBasePrice = Number(roundedBasePrice.toFixed(2));
+
+    // Calculate new sale price
+    const discountPercentage = upsellData.pricing.discountPercentage || 0;
+    const rawSalePrice = formattedBasePrice * (1 - discountPercentage / 100);
+    const roundedSalePrice =
+      rawSalePrice === 0 ? 0 : Math.floor(rawSalePrice) + 0.99;
+    const salePrice = Number(roundedSalePrice.toFixed(2));
 
     await updateDoc(upsellRef, {
       products: updatedProducts,
       "pricing.basePrice": formattedBasePrice,
+      "pricing.salePrice": salePrice,
       updatedAt: currentTimestamp(),
     });
 
@@ -180,25 +190,34 @@ export async function RemoveProductAction(data: {
       };
     }
 
-    const updatedProducts = upsellData.products.filter(
-      (product) => product.id !== productId
-    );
-
-    updatedProducts.forEach((product, index) => {
-      product.index = index + 1;
-    });
+    const updatedProducts = upsellData.products
+      .filter((product) => product.id !== productId)
+      .map((product, index) => ({
+        ...product,
+        index: index + 1,
+        basePrice: Number(product.basePrice),
+      }));
 
     // Calculate new base price
     const totalBasePrice = updatedProducts.reduce(
       (total, product) => total + product.basePrice,
       0
     );
-    const roundedBasePrice = Math.floor(totalBasePrice) + 0.99;
+    const roundedBasePrice =
+      totalBasePrice === 0 ? 0 : Math.floor(totalBasePrice) + 0.99;
     const formattedBasePrice = Number(roundedBasePrice.toFixed(2));
+
+    // Calculate new sale price
+    const discountPercentage = upsellData.pricing.discountPercentage || 0;
+    const rawSalePrice = formattedBasePrice * (1 - discountPercentage / 100);
+    const roundedSalePrice =
+      rawSalePrice === 0 ? 0 : Math.floor(rawSalePrice) + 0.99;
+    const salePrice = Number(roundedSalePrice.toFixed(2));
 
     await updateDoc(upsellRef, {
       products: updatedProducts,
       "pricing.basePrice": formattedBasePrice,
+      "pricing.salePrice": salePrice,
       updatedAt: currentTimestamp(),
     });
 

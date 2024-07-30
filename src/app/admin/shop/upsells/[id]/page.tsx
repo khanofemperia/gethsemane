@@ -32,6 +32,8 @@ export default async function EditUpsell({
 
   const { id, pricing, mainImage, visibility, products } = upsell as UpsellType;
 
+  console.log(upsell);
+
   return (
     <>
       <div className="max-w-[768px] flex flex-col gap-10 px-5">
