@@ -14,7 +14,6 @@ import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { getProduct } from "@/lib/getData";
-import Link from "next/link";
 
 type ProductType = {
   index: number;

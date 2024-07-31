@@ -188,7 +188,7 @@ export default async function EditUpsell({
           </div>
         </div>
       </div>
-      <BasicDetailsOverlay data={{ id, pricing, mainImage }} />
+      <BasicDetailsOverlay data={{ id, pricing, mainImage, products }} />
       <VisibilityOverlay data={{ id, visibility }} />
       <ProductsOverlay data={{ id, products }} />
     </>

@@ -1,16 +1,34 @@
 "use client";
 
-import AlertMessage from "@/components/shared/AlertMessage";
-import { isValidRemoteImage } from "@/lib/utils";
-import { FormEvent, useState, useEffect } from "react";
-import Spinner from "@/ui/Spinners/White";
-import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
-import clsx from "clsx";
-import Overlay from "@/ui/Overlay";
 import { UpdateUpsellAction } from "@/actions/upsells";
+import AlertMessage from "@/components/shared/AlertMessage";
+import { formatThousands, isValidRemoteImage } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import GraySpinner from "@/ui/Spinners/Gray";
+import WhiteSpinner from "@/ui/Spinners/White";
+import { useOverlayStore } from "@/zustand/admin/overlayStore";
+import { useNavbarMenuStore } from "@/zustand/admin/navbarMenuStore";
+import {
+  ArrowLeftIcon,
+  CloseIcon,
+  EditIcon,
+  MinusIcon,
+  PlusIcon,
+} from "@/icons";
+import clsx from "clsx";
 import Image from "next/image";
+import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
+import { getProduct } from "@/lib/getData";
+
+type ProductType = {
+  index: number;
+  id: string;
+  slug: string;
+  name: string;
+  mainImage: string;
+  basePrice: number;
+};
 
 type DataType = {
   id: string;
@@ -20,6 +38,7 @@ type DataType = {
     salePrice?: number;
     discountPercentage?: number;
   };
+  products: ProductType[];
 };
 
 export function BasicDetailsButton({ className }: { className: string }) {
@@ -42,19 +61,27 @@ export function BasicDetailsButton({ className }: { className: string }) {
 }
 
 export function BasicDetailsOverlay({ data }: { data: DataType }) {
-  const [loading, setLoading] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
+  const [loadingProduct, setLoadingProduct] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
     AlertMessageType.NEUTRAL
   );
-  const [formData, setFormData] = useState({
-    id: data.id,
-    mainImage: data.mainImage,
-    basePrice: data.pricing.basePrice,
-    salePrice: data.pricing.salePrice || 0,
-    discountPercentage: data.pricing.discountPercentage,
-  });
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [mainImage, setMainImage] = useState(data.mainImage || "");
+  const [productId, setProductId] = useState<string>("");
+  const [products, setProducts] = useState<ProductType[]>(data.products || []);
+  const [basePrice, setBasePrice] = useState<number>(
+    data.pricing.basePrice || 0
+  );
+  const [salePrice, setSalePrice] = useState<number>(
+    data.pricing.salePrice || 0
+  );
+  const [discountPercentage, setDiscountPercentage] = useState<string>(
+    data.pricing.discountPercentage
+      ? data.pricing.discountPercentage.toString()
+      : ""
+  );
 
   const { hideOverlay } = useOverlayStore();
 
@@ -80,9 +107,264 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     };
   }, [isOverlayVisible, showAlert]);
 
+  useEffect(() => {
+    const totalBasePrice = products.reduce((total, product) => {
+      const price =
+        typeof product.basePrice === "number"
+          ? product.basePrice
+          : parseFloat(product.basePrice);
+      return isNaN(price) ? total : total + price;
+    }, 0);
+
+    // Round down to the nearest .99
+    const roundedTotal =
+      totalBasePrice === 0 ? 0 : Math.floor(totalBasePrice) + 0.99;
+
+    // Format to two decimal places
+    const formattedTotal = Number(roundedTotal.toFixed(2));
+
+    setBasePrice(formattedTotal);
+  }, [products]);
+
+  useEffect(() => {
+    calculateSalePrice(discountPercentage);
+  }, [basePrice]);
+
+  const handleDiscountPercentageChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    if (value === "" || /^[0-9]+$/.test(value)) {
+      setDiscountPercentage(value);
+      calculateSalePrice(value);
+    }
+  };
+
+  const handleSave = async () => {
+    setLoadingSave(true);
+
+    const upsellData = {
+      id: data.id,
+      mainImage,
+      pricing: {
+        basePrice: basePrice,
+        salePrice: salePrice > 0 ? salePrice : 0,
+        discountPercentage:
+          discountPercentage !== "" ? parseInt(discountPercentage, 10) : 0,
+      },
+      products: products.map(
+        ({ index, id, slug, name, mainImage, basePrice }) => ({
+          index,
+          id,
+          slug,
+          name,
+          mainImage,
+          basePrice,
+        })
+      ),
+    };
+
+    if (!upsellData.mainImage) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Main image is missing");
+      setShowAlert(true);
+      setLoadingSave(false);
+      return;
+    }
+
+    if (upsellData.products.length === 0) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("At least one product is required");
+      setShowAlert(true);
+      setLoadingSave(false);
+      return;
+    }
+
+    if (upsellData.pricing.basePrice <= 0) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Base price must be greater than zero");
+      setShowAlert(true);
+      setLoadingSave(false);
+      return;
+    }
+
+    let resultType = "";
+
+    try {
+      const result = await UpdateUpsellAction(upsellData);
+      resultType = result.type;
+
+      setAlertMessageType(result.type);
+      setAlertMessage(result.message);
+      setShowAlert(true);
+    } catch (error) {
+      console.error("Error creating upsell:", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to create upsell");
+      setShowAlert(true);
+    } finally {
+      setLoadingSave(false);
+
+      if (resultType === AlertMessageType.SUCCESS) {
+        hideOverlay({ pageName, overlayName });
+        setAlertMessage("");
+        setShowAlert(false);
+        return;
+      }
+
+      hideOverlay({ pageName, overlayName });
+      setAlertMessage("");
+      setShowAlert(false);
+      setMainImage(data.mainImage || "");
+      setProductId("");
+      setProducts(data.products || []);
+      setBasePrice(data.pricing.basePrice || 0);
+      setSalePrice(data.pricing.salePrice || 0);
+      setDiscountPercentage(
+        data.pricing.discountPercentage
+          ? data.pricing.discountPercentage.toString()
+          : ""
+      );
+    }
+  };
+
+  const handleProductIdInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    if (/^\d*$/.test(value)) {
+      setProductId(value);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      addProduct(productId);
+    }
+  };
+
+  const handleButtonClick = () => {
+    addProduct(productId);
+  };
+
+  const calculateSalePrice = (discount: string) => {
+    if (discount === "") {
+      setSalePrice(0);
+    } else {
+      const discountValue = parseInt(discount, 10);
+      if (discountValue >= 0 && discountValue <= 100) {
+        const rawSalePrice = basePrice * (1 - discountValue / 100);
+
+        // Round down to the nearest .99
+        const roundedSalePrice =
+          rawSalePrice === 0 ? 0 : Math.floor(rawSalePrice) + 0.99;
+
+        // Format to two decimal places
+        const formattedSalePrice = Number(roundedSalePrice.toFixed(2));
+
+        setSalePrice(formattedSalePrice);
+      }
+    }
+  };
+
+  const addProduct = async (productId: string) => {
+    const trimmedProductId = productId.trim();
+
+    if (!trimmedProductId) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Product ID cannot be empty");
+      setShowAlert(true);
+      return;
+    } else if (!/^\d{5}$/.test(trimmedProductId)) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Product ID must be a 5-digit number");
+      setShowAlert(true);
+      return;
+    }
+
+    if (products.some((product) => product.id === trimmedProductId)) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Product already added");
+      setShowAlert(true);
+      return;
+    }
+
+    setLoadingProduct(true);
+
+    try {
+      const product = await getProduct({
+        id: trimmedProductId,
+        fields: ["id", "name", "slug", "images", "pricing"],
+      });
+
+      if (product) {
+        const newProduct = {
+          index: products.length + 1,
+          id: product.id,
+          slug: product.slug,
+          name: product.name,
+          mainImage: product.images?.main ?? "",
+          basePrice: product.pricing?.basePrice ?? 0,
+        };
+
+        setProducts((prevProducts) => [
+          ...prevProducts,
+          newProduct as ProductType,
+        ]);
+        setProductId(""); // Clear input field after adding
+      } else {
+        setAlertMessageType(AlertMessageType.ERROR);
+        setAlertMessage("Product not found");
+        setShowAlert(true);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to add product");
+      setShowAlert(true);
+    } finally {
+      setLoadingProduct(false);
+    }
+  };
+
+  const removeProduct = (productId: string) => {
+    setProducts((prevProducts) => {
+      if (prevProducts.length === 1) {
+        setAlertMessageType(AlertMessageType.ERROR);
+        setAlertMessage("At least one product is required");
+        setShowAlert(true);
+        return prevProducts;
+      }
+
+      const updatedProducts = prevProducts
+        .filter((product) => product.id !== productId)
+        .map((product, newIndex) => ({
+          ...product,
+          index: newIndex + 1,
+        }));
+
+      if (updatedProducts.length === 0) {
+        setDiscountPercentage("");
+      }
+
+      return updatedProducts;
+    });
+  };
+
   const onHideOverlay = () => {
-    setLoading(false);
     hideOverlay({ pageName, overlayName });
+    setAlertMessage("");
+    setShowAlert(false);
+    setMainImage(data.mainImage || "");
+    setProductId("");
+    setProducts(data.products || []);
+    setBasePrice(data.pricing.basePrice || 0);
+    setSalePrice(data.pricing.salePrice || 0);
+    setDiscountPercentage(
+      data.pricing.discountPercentage
+        ? data.pricing.discountPercentage.toString()
+        : ""
+    );
   };
 
   const hideAlertMessage = () => {
@@ -91,196 +373,49 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     setAlertMessageType(AlertMessageType.NEUTRAL);
   };
 
-  const handleSave = async (event: FormEvent) => {
-    event.preventDefault();
-
-    setLoading(true);
-
-    try {
-      const updatedUpsell = {
-        id: data.id,
-        mainImage: formData.mainImage,
-        pricing: {
-          basePrice: formData.basePrice,
-          salePrice: formData.salePrice,
-          discountPercentage: formData.discountPercentage,
-        },
-      };
-
-      const result = await UpdateUpsellAction(updatedUpsell);
-      setAlertMessageType(result.type);
-      setAlertMessage(result.message);
-      setShowAlert(true);
-    } catch (error) {
-      console.error("Error updating upsell:", error);
-      setAlertMessageType(AlertMessageType.ERROR);
-      setAlertMessage("Failed to update upsell");
-      setShowAlert(true);
-    } finally {
-      setLoading(false);
-      onHideOverlay();
-    }
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
   return (
     <>
       {isOverlayVisible && (
         <Overlay>
-          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl overflow-hidden bg-white md:w-[500px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
-            <form onSubmit={handleSave}>
-              <div className="w-full h-[calc(100vh-188px)] md:h-auto">
-                <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
-                  <div className="relative flex justify-center items-center w-full h-7">
-                    <h2 className="font-semibold text-lg">Basic details</h2>
-                    <button
-                      onClick={onHideOverlay}
-                      type="button"
-                      className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
-                    >
-                      <CloseIcon size={18} />
-                    </button>
-                  </div>
-                </div>
-                <div className="hidden md:flex md:items-center md:justify-between py-2 pr-4 pl-2">
+          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl overflow-hidden bg-white md:w-[500px] md:rounded-2xl md:shadow-lg md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
+            <div className="w-full h-[calc(100vh-188px)] md:h-auto">
+              <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
+                <div className="relative flex justify-center items-center w-full h-7">
+                  <h2 className="font-semibold text-lg">New upsell</h2>
                   <button
                     onClick={onHideOverlay}
                     type="button"
-                    className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+                    className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
                   >
-                    <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
-                    <span className="font-semibold text-sm text-blue">
-                      Basic details
-                    </span>
+                    <CloseIcon size={18} />
                   </button>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className={clsx(
-                      "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
-                      {
-                        "bg-opacity-50": loading,
-                        "active:bg-neutral-700/85": !loading,
-                      }
-                    )}
-                  >
-                    {loading ? (
-                      <div className="flex gap-1 items-center justify-center w-full h-full">
-                        <Spinner />
-                        <span className="text-white">Saving</span>
-                      </div>
-                    ) : (
-                      <span className="text-white">Save</span>
-                    )}
-                  </button>
-                </div>
-                <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="basePrice" className="text-xs text-gray">
-                      Base price
-                    </label>
-                    <div className="w-full h-9 relative">
-                      <input
-                        type="text"
-                        name="basePrice"
-                        placeholder="34.99"
-                        value={formData.basePrice}
-                        onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="salePrice" className="text-xs text-gray">
-                      Sale price
-                    </label>
-                    <div className="w-full h-9 relative">
-                      <input
-                        type="text"
-                        name="salePrice"
-                        placeholder="34.99"
-                        value={formData.salePrice}
-                        onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="discountPercentage"
-                      className="text-xs text-gray"
-                    >
-                      Discount percentage
-                    </label>
-                    <div className="w-full h-9 relative">
-                      <input
-                        type="text"
-                        name="discountPercentage"
-                        placeholder="34.99"
-                        value={formData.discountPercentage}
-                        onChange={handleInputChange}
-                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="mainImage" className="text-xs text-gray">
-                      Main image
-                    </label>
-                    <div>
-                      <div className="w-full max-w-[383px] border rounded-md overflow-hidden">
-                        <div className="w-full aspect-square flex items-center justify-center overflow-hidden">
-                          {formData.mainImage &&
-                            isValidRemoteImage(formData.mainImage) && (
-                              <Image
-                                src={formData.mainImage}
-                                alt="Upsell"
-                                width={383}
-                                height={383}
-                                priority
-                              />
-                            )}
-                        </div>
-                        <div className="w-full h-9 border-t overflow-hidden">
-                          <input
-                            type="text"
-                            name="mainImage"
-                            placeholder="Paste image URL"
-                            value={formData.mainImage}
-                            onChange={handleInputChange}
-                            className="h-full w-full px-3 text-sm text-gray"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
-              <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
+              <div className="hidden md:flex md:items-center md:justify-between py-2 pr-4 pl-2">
                 <button
-                  type="submit"
-                  disabled={loading}
+                  onClick={onHideOverlay}
+                  type="button"
+                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                >
+                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                  <span className="font-semibold text-sm text-blue">
+                    New upsell
+                  </span>
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={loadingSave}
                   className={clsx(
-                    "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
-                      "bg-opacity-50": loading,
-                      "active:bg-neutral-700/85": !loading,
+                      "bg-opacity-50": loadingSave,
+                      "active:bg-neutral-700/85": !loadingSave,
                     }
                   )}
                 >
-                  {loading ? (
+                  {loadingSave ? (
                     <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
+                      <WhiteSpinner />
                       <span className="text-white">Saving</span>
                     </div>
                   ) : (
@@ -288,7 +423,171 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                   )}
                 </button>
               </div>
-            </form>
+              <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-8 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
+                <div className="flex flex-col gap-3">
+                  <h2 className="text-xs text-gray">Products</h2>
+                  <div className="w-full min-[588px]:w-56 h-9 mb-1 rounded-full overflow-hidden flex items-center border shadow-sm">
+                    <input
+                      type="text"
+                      value={productId}
+                      onChange={handleProductIdInputChange}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Paste ID (#12345)"
+                      className="h-full w-full pl-4 bg-transparent"
+                    />
+                    <div className="h-full flex items-center justify-center">
+                      <button
+                        onClick={handleButtonClick}
+                        disabled={loadingProduct}
+                        className={clsx(
+                          "w-11 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out",
+                          {
+                            "active:bg-lightgray lg:hover:bg-lightgray":
+                              !loadingProduct,
+                          }
+                        )}
+                      >
+                        {loadingProduct ? (
+                          <GraySpinner />
+                        ) : (
+                          <PlusIcon size={22} />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="w-full max-w-[383px] overflow-hidden">
+                    {products.length > 0 && (
+                      <div className="border rounded-md p-5 pb-4 flex gap-5 flex-wrap justify-start">
+                        {products
+                          .slice(0, 3)
+                          .map(
+                            ({
+                              index,
+                              id,
+                              slug,
+                              mainImage,
+                              name,
+                              basePrice,
+                            }) => (
+                              <div
+                                key={index}
+                                className="group w-[calc(50%-10px)] cursor-pointer"
+                              >
+                                <div className="relative">
+                                  <div className="w-full aspect-square overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
+                                    <Image
+                                      src={mainImage}
+                                      alt={name}
+                                      width={216}
+                                      height={216}
+                                      priority
+                                    />
+                                  </div>
+                                  <div className="w-full h-full absolute top-0 bottom-0 left-0 right-0 ease-in-out duration-300 transition group-hover:bg-black/30">
+                                    <button
+                                      onClick={() => removeProduct(id)}
+                                      className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
+                                    >
+                                      <MinusIcon
+                                        className="fill-white"
+                                        size={20}
+                                      />
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="mt-[6px] flex items-center justify-center w-full">
+                                  <span className="font-semibold text-sm">
+                                    ${formatThousands(basePrice)}
+                                  </span>
+                                </div>
+                              </div>
+                            )
+                          )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-4">
+                  <div className="flex gap-5">
+                    <div>
+                      <h2 className="mb-2 text-xs text-gray">Base price</h2>
+                      <div className="font-medium">
+                        {basePrice > 0 ? `$${basePrice}` : "--"}
+                      </div>
+                    </div>
+                    <div>
+                      <h2 className="mb-2 text-xs text-gray">Sale price</h2>
+                      <div className="font-medium">
+                        {salePrice > 0 ? `$${salePrice.toFixed(2)}` : "--"}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <h2 className="text-xs text-gray">Discount percentage</h2>
+                    <div className="w-full h-9 relative">
+                      <input
+                        type="text"
+                        name="discountPercentage"
+                        placeholder="0"
+                        value={discountPercentage}
+                        onChange={handleDiscountPercentageChange}
+                        className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-4">
+                  <h2 className="text-xs text-gray">Main image</h2>
+                  <div>
+                    <div className="w-full max-w-[383px] border rounded-md overflow-hidden">
+                      <div className="w-full aspect-square flex items-center justify-center overflow-hidden">
+                        {mainImage && isValidRemoteImage(mainImage) && (
+                          <Image
+                            src={mainImage}
+                            alt="Upsell"
+                            width={383}
+                            height={383}
+                            priority
+                          />
+                        )}
+                      </div>
+                      <div className="w-full h-9 border-t overflow-hidden">
+                        <input
+                          type="text"
+                          name="mainImage"
+                          placeholder="Paste image URL"
+                          value={mainImage}
+                          onChange={(e) => setMainImage(e.target.value)}
+                          className="h-full w-full px-3 text-gray"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
+              <button
+                onClick={handleSave}
+                disabled={loadingSave}
+                className={clsx(
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
+                  {
+                    "bg-opacity-50": loadingSave,
+                    "active:bg-neutral-700/85": !loadingSave,
+                  }
+                )}
+              >
+                {loadingSave ? (
+                  <div className="flex gap-1 items-center justify-center w-full h-full">
+                    <WhiteSpinner />
+                    <span className="text-white">Saving</span>
+                  </div>
+                ) : (
+                  <span className="text-white">Save</span>
+                )}
+              </button>
+            </div>
           </div>
         </Overlay>
       )}
