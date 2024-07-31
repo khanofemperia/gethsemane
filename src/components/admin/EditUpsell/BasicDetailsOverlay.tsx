@@ -185,8 +185,12 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
       return;
     }
 
+    let resultType = "";
+
     try {
       const result = await UpdateUpsellAction(upsellData);
+      resultType = result.type;
+
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
       setShowAlert(true);
@@ -197,7 +201,13 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
       setShowAlert(true);
     } finally {
       setLoadingSave(false);
-      onHideOverlay();
+
+      if (resultType !== AlertMessageType.SUCCESS) {
+        onHideOverlay();
+      }
+      hideOverlay({ pageName, overlayName });
+      setAlertMessage("");
+      setShowAlert(false);
     }
   };
 
@@ -340,6 +350,12 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     hideOverlay({ pageName, overlayName });
     setAlertMessage("");
     setShowAlert(false);
+    setProductId("");
+    setMainImage(data.mainImage || "");
+    setProducts(data.products || []);
+    setBasePrice(data.pricing.basePrice || 0);
+    setSalePrice(data.pricing.salePrice || 0);
+    setDiscountPercentage(data.pricing.discountPercentage?.toString() || "");
   };
 
   const hideAlertMessage = () => {
