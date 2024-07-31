@@ -14,9 +14,9 @@ import {
 } from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
-import { AddProductAction } from "@/actions/upsells";
+import { AddProductAction, UpdateProductNameAction } from "@/actions/upsells";
 import Image from "next/image";
-import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
+import { formatThousands } from "@/lib/utils";
 import Link from "next/link";
 import {
   RemoveProductButton,
@@ -61,7 +61,9 @@ export function ProductsOverlay({
 }: {
   data: { id: string; products: ProductType[] };
 }) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingAddProduct, setLoadingAddProduct] = useState<boolean>(false);
+  const [loadingUpdateProductName, setLoadingUpdateProductName] =
+    useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
@@ -71,6 +73,8 @@ export function ProductsOverlay({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageJumpValue, setPageJumpValue] = useState("1");
   const [isPageInRange, setIsPageInRange] = useState(true);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState<string>("");
 
   const { hideOverlay } = useOverlayStore();
 
@@ -97,7 +101,7 @@ export function ProductsOverlay({
   }, [isOverlayVisible, showAlert]);
 
   const onHideOverlay = () => {
-    setLoading(false);
+    setLoadingAddProduct(false);
     hideOverlay({ pageName, overlayName });
     setPageJumpValue("1");
     setCurrentPage(1);
@@ -124,7 +128,7 @@ export function ProductsOverlay({
       return;
     }
 
-    setLoading(true);
+    setLoadingAddProduct(true);
 
     try {
       const result = await AddProductAction({
@@ -141,10 +145,37 @@ export function ProductsOverlay({
       setAlertMessage("Failed to add product");
       setShowAlert(true);
     } finally {
-      setLoading(false);
+      setLoadingAddProduct(false);
       setPageJumpValue("1");
       setCurrentPage(1);
       setIsPageInRange(true);
+    }
+  };
+
+  const handleSaveName = async (productId: string, currentName: string) => {
+    setLoadingUpdateProductName(true);
+
+    const nameToSave =
+      editingProductId === productId ? editingName : currentName;
+
+    try {
+      const result = await UpdateProductNameAction({
+        upsellId: data.id,
+        productId,
+        name: nameToSave,
+      });
+
+      setAlertMessageType(result.type);
+      setAlertMessage(result.message);
+    } catch (error) {
+      console.error("Error updating product name:", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to update product name");
+    } finally {
+      setLoadingUpdateProductName(false);
+      setEditingProductId(null);
+      setEditingName("");
+      setShowAlert(true);
     }
   };
 
@@ -277,21 +308,23 @@ export function ProductsOverlay({
                           placeholder="Paste ID (#12345)"
                           className="h-full w-full pl-4 bg-transparent"
                         />
-                        <div className="h-full flex items-center justify-center">
-                          <button
-                            onClick={addProduct}
-                            disabled={loading}
-                            className={clsx(
-                              "w-11 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out",
-                              {
-                                "active:bg-lightgray lg:hover:bg-lightgray":
-                                  !loading,
-                              }
-                            )}
-                          >
-                            {loading ? <Spinner /> : <PlusIcon size={22} />}
-                          </button>
-                        </div>
+                        <button
+                          onClick={addProduct}
+                          disabled={loadingAddProduct}
+                          className={clsx(
+                            "w-11 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out",
+                            {
+                              "active:bg-lightgray lg:hover:bg-lightgray":
+                                !loadingAddProduct,
+                            }
+                          )}
+                        >
+                          {loadingAddProduct ? (
+                            <Spinner />
+                          ) : (
+                            <PlusIcon size={22} />
+                          )}
+                        </button>
                       </div>
                     </div>
                     {tableData.length > 0 && (
@@ -336,7 +369,37 @@ export function ProductsOverlay({
                                         </div>
                                       </td>
                                       <td className="px-3 max-w-[200px] min-w-[200px] border-r">
-                                        <p className="line-clamp-3">{name}</p>
+                                        <div className="w-[calc(100%-12px)] h-9 rounded-full overflow-hidden flex items-center border shadow-sm">
+                                          <input
+                                            type="text"
+                                            value={
+                                              editingProductId === id
+                                                ? editingName
+                                                : name
+                                            }
+                                            onChange={(e) =>
+                                              setEditingName(e.target.value)
+                                            }
+                                            onFocus={() => {
+                                              setEditingProductId(id);
+                                              setEditingName(name);
+                                            }}
+                                            placeholder="Classic T-Shirt"
+                                            className="h-full w-full pl-4 bg-transparent"
+                                          />
+                                          <button
+                                            onClick={() =>
+                                              handleSaveName(id, name)
+                                            }
+                                            className="px-3 h-9 rounded-full text-blue flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+                                          >
+                                            {loadingUpdateProductName ? (
+                                              <Spinner />
+                                            ) : (
+                                              <span>Save</span>
+                                            )}
+                                          </button>
+                                        </div>
                                       </td>
                                       <td className="px-3 max-w-[100px] min-w-[100px] border-r">
                                         <p>${formatThousands(basePrice)}</p>
@@ -431,16 +494,20 @@ export function ProductsOverlay({
                       <div className="h-full flex items-center justify-center">
                         <button
                           onClick={addProduct}
-                          disabled={loading}
+                          disabled={loadingAddProduct}
                           className={clsx(
                             "w-11 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out",
                             {
                               "active:bg-lightgray lg:hover:bg-lightgray":
-                                !loading,
+                                !loadingAddProduct,
                             }
                           )}
                         >
-                          {loading ? <Spinner /> : <PlusIcon size={22} />}
+                          {loadingAddProduct ? (
+                            <Spinner />
+                          ) : (
+                            <PlusIcon size={22} />
+                          )}
                         </button>
                       </div>
                     </div>

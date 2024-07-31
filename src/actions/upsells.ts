@@ -236,6 +236,50 @@ export async function RemoveProductAction(data: {
   }
 }
 
+export async function UpdateProductNameAction(data: {
+  upsellId: string;
+  productId: string;
+  name: string;
+}) {
+  try {
+    const { upsellId, productId, name } = data;
+
+    const upsellRef = doc(database, "upsells", upsellId);
+    const upsellSnapshot = await getDoc(upsellRef);
+
+    if (!upsellSnapshot.exists()) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Upsell not found",
+      };
+    }
+
+    const upsellData = upsellSnapshot.data() as UpsellType;
+
+    const updatedProducts = upsellData.products.map((product) =>
+      product.id === productId ? { ...product, name: name } : product
+    );
+
+    await updateDoc(upsellRef, {
+      products: updatedProducts,
+      updatedAt: currentTimestamp(),
+    });
+
+    revalidatePath("/admin/shop/upsells/[slug]", "page");
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Product name updated successfully",
+    };
+  } catch (error) {
+    console.error("Error updating product name:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to update product name",
+    };
+  }
+}
+
 export async function ChangeProductIndexAction(data: {
   upsellId: string;
   product: {
