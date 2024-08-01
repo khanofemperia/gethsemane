@@ -12,11 +12,6 @@ import {
 } from "@/components/admin/EditUpsell/VisibilityOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
 import { getUpsell } from "@/lib/getData";
-import Link from "next/link";
-import {
-  ProductsButton,
-  ProductsOverlay,
-} from "@/components/admin/EditUpsell/ProductsOverlay";
 import clsx from "clsx";
 
 export default async function EditUpsell({
@@ -107,72 +102,6 @@ export default async function EditUpsell({
         </div>
         <div>
           <div className="mb-6">
-            <h2 className="font-semibold text-xl mb-3">
-              Products {products.length ? `(${products.length})` : null}
-            </h2>
-            <p className="text-sm md:max-w-[85%]">
-              Curate a selection that feels complete, with products that
-              complement each other. Mix styles, colors, sizes, and prices so
-              everyone finds something they love.
-            </p>
-          </div>
-          <div
-            className={clsx(
-              "w-full relative flex items-center justify-between shadow rounded-xl bg-white",
-              {
-                "p-5 pr-2": !(products.length > 0),
-              }
-            )}
-          >
-            {products.length > 0 ? (
-              <div className="w-[calc(100%-60px)]">
-                <div className="p-5 flex flex-wrap justify-start">
-                  {products.length > 0 ? (
-                    products
-                      .slice(0, 3)
-                      .map(
-                        ({ index, id, slug, mainImage, name, basePrice }) => (
-                          <Link
-                            key={index}
-                            href={`/admin/shop/products/${slug}-${id}`}
-                            className="aspect-square w-1/2 min-[425px]:w-[calc(100%/3)] md:w-[229px] pt-2 pb-[6px] px-5 select-none transition duration-200 ease-in-out active:bg-blue-100 lg:hover:bg-blue-100"
-                          >
-                            <div className="relative w-full h-full">
-                              <div className="aspect-square w-full overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
-                                <Image
-                                  src={mainImage}
-                                  alt={name}
-                                  width={216}
-                                  height={216}
-                                  priority
-                                />
-                              </div>
-                              <div className="flex items-center justify-center absolute bottom-0 text-sm w-full">
-                                <span className="font-bold">
-                                  ${formatThousands(basePrice)}
-                                </span>
-                              </div>
-                            </div>
-                          </Link>
-                        )
-                      )
-                  ) : (
-                    <p className="italic text-gray">Nothing yet</p>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <span className="text-xs text-gray">Nothing here</span>
-            )}
-            <ProductsButton
-              className={clsx({
-                "absolute top-2 right-2": products.length > 0,
-              })}
-            />
-          </div>
-        </div>
-        <div>
-          <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Visibility</h2>
             <p className="text-sm md:max-w-[85%]">
               Choose whether the upsell is a work-in-progress (draft) or ready
@@ -191,7 +120,6 @@ export default async function EditUpsell({
         </div>
       </div>
       <BasicDetailsOverlay data={{ id, pricing, mainImage, products }} />
-      <ProductsOverlay data={{ id, products }} />
       <VisibilityOverlay data={{ id, visibility }} />
     </>
   );
