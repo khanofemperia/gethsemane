@@ -137,11 +137,11 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
   };
 
   return (
-    <div className="mx-auto flex flex-wrap justify-start px-5 md:px-0 md:w-[762px] lg:w-[1016px]">
+    <div className="mx-auto flex flex-wrap justify-start px-5 min-[1068px]:px-0 md:w-[762px] lg:w-[1016px]">
       {upsells.length > 0 ? (
         <>
           <div className="w-full flex flex-col gap-3">
-            <div className="w-full px-5 flex flex-col min-[588px]:flex-row gap-2 items-center justify-between">
+            <div className="w-full flex flex-col min-[588px]:flex-row gap-2 items-center justify-between">
               <div className="max-w-full flex flex-nowrap rounded-full bg-[#efefef] overflow-x-visible overflow-y-hidden invisible-scrollbar *:min-w-max *:h-9 *:rounded-full *:flex *:items-center *:justify-center *:font-semibold *:text-sm *:ease-in-out *:duration-300 *:transition">
                 <button
                   onClick={() => handleFilterChange(ALL)}
@@ -187,32 +187,43 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                 </button>
               </div>
             </div>
-            <div className="w-full flex flex-wrap justify-start">
+            <div className="w-full flex flex-wrap gap-5 justify-start">
               {gridData.map(({ id, pricing, mainImage }, index) => (
                 <Link
                   key={index}
                   href={`/admin/shop/upsells/${id}`}
-                  className="aspect-square w-1/2 min-[425px]:w-[calc(100%/3)] md:w-[254px] pt-2 pb-[6px] px-5 select-none transition duration-200 ease-in-out active:bg-blue-100 lg:hover:bg-blue-100"
+                  className="group aspect-square w-[calc(50%-10px)] min-[560px]:w-[calc(33.33%-14px)] lg:w-[calc(25%-15px)] select-none"
                 >
-                  <div className="relative w-full h-full">
-                    <div className="aspect-square w-full overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
-                      {mainImage && (
-                        <Image
-                          src={mainImage}
-                          alt="Upsell"
-                          width={216}
-                          height={216}
-                          priority
-                        />
-                      )}
+                  <div className="relative">
+                    <div className="w-full aspect-square overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
+                      <Image
+                        src={mainImage}
+                        alt="Upsell"
+                        width={250}
+                        height={250}
+                        priority
+                      />
                     </div>
-                    <div className="flex items-center justify-center absolute bottom-0 w-full">
-                      <div className="flex gap-[6px] items-center justify-center text-sm w-max">
-                        <span className="font-bold">
-                          ${formatThousands(pricing.basePrice)}
+                    <div className="w-full h-full absolute top-0 bottom-0 left-0 right-0 ease-in-out duration-300 transition group-hover:bg-black/20"></div>
+                  </div>
+                  <div className="flex items-center justify-center mt-2">
+                    {Number(pricing.salePrice) ? (
+                      <div className="flex items-center gap-[6px]">
+                        <span className="font-medium">
+                          ${formatThousands(Number(pricing.salePrice))}
+                        </span>
+                        <span className="text-xs text-gray line-through mt-[2px]">
+                          ${formatThousands(Number(pricing.basePrice))}
+                        </span>
+                        <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                          -{pricing.discountPercentage}%
                         </span>
                       </div>
-                    </div>
+                    ) : (
+                      <p className="font-medium">
+                        ${formatThousands(Number(pricing.basePrice))}
+                      </p>
+                    )}
                   </div>
                 </Link>
               ))}

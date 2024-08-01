@@ -334,7 +334,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     });
   };
 
-  const handleProductMainImageChange = (
+  const handleProductNameChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     productId: string
   ) => {
@@ -487,7 +487,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                                   placeholder="Custom name"
                                   value={name}
                                   onChange={(event) =>
-                                    handleProductMainImageChange(event, id)
+                                    handleProductNameChange(event, id)
                                   }
                                   className="h-full w-full px-3 text-sm text-gray"
                                 />
