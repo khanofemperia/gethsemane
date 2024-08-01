@@ -169,6 +169,16 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
       return;
     }
 
+    if (!isValidRemoteImage(upsellData.mainImage)) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage(
+        "Invalid main image URL. Try an image from Pinterest or your Firebase Storage."
+      );
+      setShowAlert(true);
+      setLoadingSave(false);
+      return;
+    }
+
     if (upsellData.products.length === 0) {
       setAlertMessageType(AlertMessageType.ERROR);
       setAlertMessage("At least one product is required");

@@ -3,7 +3,7 @@ import {
   BasicDetailsOverlay,
 } from "@/components/admin/EditUpsell/BasicDetailsOverlay";
 import DataChip from "@/ui/DataChip";
-import { formatThousands } from "@/lib/utils";
+import { formatThousands, isValidRemoteImage } from "@/lib/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
@@ -79,13 +79,15 @@ export default async function EditUpsell({
                   <div className="p-5">
                     <h3 className="text-xs text-gray mb-2">Main image</h3>
                     <div className="w-full max-w-[280px] rounded-xl aspect-square flex items-center justify-center overflow-hidden">
-                      <Image
-                        src={mainImage}
-                        alt="Upsell"
-                        width={280}
-                        height={280}
-                        priority
-                      />
+                      {isValidRemoteImage(mainImage) && (
+                        <Image
+                          src={mainImage}
+                          alt="Upsell"
+                          width={280}
+                          height={280}
+                          priority
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -189,8 +191,8 @@ export default async function EditUpsell({
         </div>
       </div>
       <BasicDetailsOverlay data={{ id, pricing, mainImage, products }} />
-      <VisibilityOverlay data={{ id, visibility }} />
       <ProductsOverlay data={{ id, products }} />
+      <VisibilityOverlay data={{ id, visibility }} />
     </>
   );
 }

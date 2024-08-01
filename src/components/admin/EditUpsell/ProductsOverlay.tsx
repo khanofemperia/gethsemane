@@ -2,26 +2,12 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
-import Spinner from "@/ui/Spinners/Gray";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import {
-  ArrowLeftIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  CloseIcon,
-  EditIcon,
-  PlusIcon,
-} from "@/icons";
-import clsx from "clsx";
+import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import Overlay from "@/ui/Overlay";
-import { AddProductAction, UpdateProductNameAction } from "@/actions/upsells";
 import Image from "next/image";
 import { formatThousands } from "@/lib/utils";
 import Link from "next/link";
-import {
-  RemoveProductButton,
-  RemoveProductOverlay,
-} from "./RemoveProductOverlay";
 import {
   ChangeProductIndexButton,
   ChangeProductIndexOverlay,
@@ -61,20 +47,11 @@ export function ProductsOverlay({
 }: {
   data: { id: string; products: ProductType[] };
 }) {
-  const [loadingAddProduct, setLoadingAddProduct] = useState<boolean>(false);
-  const [loadingUpdateProductName, setLoadingUpdateProductName] =
-    useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
     AlertMessageType.NEUTRAL
   );
-  const [productId, setProductId] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageJumpValue, setPageJumpValue] = useState("1");
-  const [isPageInRange, setIsPageInRange] = useState(true);
-  const [editingProductId, setEditingProductId] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState<string>("");
 
   const { hideOverlay } = useOverlayStore();
 
@@ -101,168 +78,13 @@ export function ProductsOverlay({
   }, [isOverlayVisible, showAlert]);
 
   const onHideOverlay = () => {
-    setLoadingAddProduct(false);
     hideOverlay({ pageName, overlayName });
-    setPageJumpValue("1");
-    setCurrentPage(1);
-    setIsPageInRange(true);
-    setProductId("");
   };
 
   const hideAlertMessage = () => {
     setShowAlert(false);
     setAlertMessage("");
     setAlertMessageType(AlertMessageType.NEUTRAL);
-  };
-
-  const addProduct = async () => {
-    if (!productId.trim()) {
-      setAlertMessageType(AlertMessageType.ERROR);
-      setAlertMessage("Product ID cannot be empty");
-      setShowAlert(true);
-      return;
-    } else if (!/^\d{5}$/.test(productId.trim())) {
-      setAlertMessageType(AlertMessageType.ERROR);
-      setAlertMessage("Product ID must be a 5-digit number");
-      setShowAlert(true);
-      return;
-    }
-
-    setLoadingAddProduct(true);
-
-    try {
-      const result = await AddProductAction({
-        upsellId: data.id,
-        productId,
-      });
-      setAlertMessageType(result.type);
-      setAlertMessage(result.message);
-      setShowAlert(true);
-      setProductId("");
-    } catch (error) {
-      console.error("Error adding product:", error);
-      setAlertMessageType(AlertMessageType.ERROR);
-      setAlertMessage("Failed to add product");
-      setShowAlert(true);
-    } finally {
-      setLoadingAddProduct(false);
-      setPageJumpValue("1");
-      setCurrentPage(1);
-      setIsPageInRange(true);
-    }
-  };
-
-  const handleSaveName = async (productId: string, currentName: string) => {
-    setLoadingUpdateProductName(true);
-
-    const nameToSave =
-      editingProductId === productId ? editingName : currentName;
-
-    try {
-      const result = await UpdateProductNameAction({
-        upsellId: data.id,
-        productId,
-        name: nameToSave,
-      });
-
-      setAlertMessageType(result.type);
-      setAlertMessage(result.message);
-    } catch (error) {
-      console.error("Error updating product name:", error);
-      setAlertMessageType(AlertMessageType.ERROR);
-      setAlertMessage("Failed to update product name");
-    } finally {
-      setLoadingUpdateProductName(false);
-      setEditingProductId(null);
-      setEditingName("");
-      setShowAlert(true);
-    }
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (/^\d*$/.test(value)) {
-      setProductId(value);
-    }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      addProduct();
-    }
-  };
-
-  const pagination = (
-    data: ProductType[],
-    currentPage: number,
-    rowsPerPage: number
-  ) => {
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    const paginatedArray = data.slice(startIndex, endIndex);
-    const totalPages = Math.ceil(data.length / rowsPerPage);
-
-    return {
-      paginatedArray,
-      totalPages,
-    };
-  };
-
-  const rowsPerPage = 2;
-  const { paginatedArray: tableData, totalPages } = pagination(
-    data.products,
-    currentPage,
-    rowsPerPage
-  );
-
-  const handlePrevious = () => {
-    setCurrentPage((prevPage) => {
-      const value = Math.max(prevPage - 1, 1);
-      setPageJumpValue(String(value));
-
-      return value;
-    });
-    setIsPageInRange(true);
-  };
-
-  const handleNext = () => {
-    setCurrentPage((prevPage) => {
-      const value = Math.min(prevPage + 1, totalPages);
-      setPageJumpValue(String(value));
-
-      return value;
-    });
-    setIsPageInRange(true);
-  };
-
-  const jumpToLastPage = () => {
-    setPageJumpValue(String(totalPages));
-    setCurrentPage(totalPages);
-    setIsPageInRange(true);
-  };
-
-  const jumpToPage = () => {
-    const page = parseInt(pageJumpValue, 10);
-
-    if (!isNaN(page) && page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-      setIsPageInRange(true);
-    } else {
-      setIsPageInRange(false);
-    }
-  };
-
-  const pageJumpEnterKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      jumpToPage();
-    }
-  };
-
-  const pageJumpInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (/^\d*$/.test(value)) {
-      setPageJumpValue(value);
-    }
   };
 
   return (
@@ -276,7 +98,7 @@ export function ProductsOverlay({
                   <div className="relative flex justify-center items-center w-full h-7">
                     <h2 className="font-semibold text-lg">Products</h2>
                     <button
-                      onClick={onHideOverlay}
+                      onClick={() => hideOverlay({ pageName, overlayName })}
                       type="button"
                       className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
                     >
@@ -286,7 +108,7 @@ export function ProductsOverlay({
                 </div>
                 <div className="hidden md:flex md:items-center md:justify-between py-2 pr-4 pl-2">
                   <button
-                    onClick={onHideOverlay}
+                    onClick={() => hideOverlay({ pageName, overlayName })}
                     type="button"
                     className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                   >
@@ -296,223 +118,71 @@ export function ProductsOverlay({
                     </span>
                   </button>
                 </div>
-                {tableData.length > 0 ? (
-                  <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-2 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
-                    <div className="w-full flex flex-col min-[588px]:flex-row gap-2 items-center justify-end">
-                      <div className="w-full min-[588px]:w-56 h-9 rounded-full overflow-hidden flex items-center border shadow-sm">
-                        <input
-                          type="text"
-                          value={productId}
-                          onChange={handleInputChange}
-                          onKeyDown={handleKeyDown}
-                          placeholder="Paste ID (#12345)"
-                          className="h-full w-full pl-4 bg-transparent"
-                        />
-                        <button
-                          onClick={addProduct}
-                          disabled={loadingAddProduct}
-                          className={clsx(
-                            "w-11 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out",
-                            {
-                              "active:bg-lightgray lg:hover:bg-lightgray":
-                                !loadingAddProduct,
-                            }
-                          )}
-                        >
-                          {loadingAddProduct ? (
-                            <Spinner />
-                          ) : (
-                            <PlusIcon size={22} />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                    {tableData.length > 0 && (
-                      <div className="w-full h-full py-3 border rounded-xl bg-white">
-                        <div className="h-full">
-                          <div className="h-full overflow-auto custom-x-scrollbar">
-                            <table className="w-full text-sm">
-                              <thead className="border-y bg-neutral-100">
-                                <tr className="h-10 *:font-semibold *:text-gray">
-                                  <td className="text-center border-r">#</td>
-                                  <td className="pl-3 border-r">Image</td>
-                                  <td className="pl-3 border-r">Name</td>
-                                  <td className="pl-3 border-r">Base price</td>
-                                  <td className="pl-3"></td>
+                <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-2 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
+                  <div className="w-full h-full py-3 border rounded-xl bg-white">
+                    <div className="h-full">
+                      <div className="h-full overflow-auto custom-x-scrollbar">
+                        <table className="w-full text-sm">
+                          <thead className="border-y bg-neutral-100">
+                            <tr className="h-10 *:font-semibold *:text-gray">
+                              <td className="text-center border-r">#</td>
+                              <td className="pl-3 border-r">Image</td>
+                              <td className="pl-3 border-r">Name</td>
+                              <td className="pl-3 border-r">Base price</td>
+                              <td className="pl-3"></td>
+                            </tr>
+                          </thead>
+                          <tbody className="*:h-[98px] *:border-b">
+                            {data.products.map(
+                              ({ id, index, mainImage, name, basePrice }) => (
+                                <tr key={id} className="h-[98px] max-h-[98px]">
+                                  <td className="max-w-14 min-w-14 text-center font-medium border-r">
+                                    {index}
+                                  </td>
+                                  <td className="p-3 max-w-[120px] min-w-[120px] border-r">
+                                    <div className="aspect-square w-full overflow-hidden flex items-center justify-center bg-white">
+                                      <Image
+                                        src={mainImage}
+                                        alt={name}
+                                        width={216}
+                                        height={216}
+                                        priority
+                                      />
+                                    </div>
+                                  </td>
+                                  <td className="px-3 max-w-[200px] min-w-[200px] border-r">
+                                    <p className="line-clamp-2">{name}</p>
+                                  </td>
+                                  <td className="px-3 max-w-[100px] min-w-[100px] border-r">
+                                    <p>${formatThousands(basePrice)}</p>
+                                  </td>
+                                  <td className="px-3 max-w-[140px] min-w-[140px]">
+                                    <div className="flex items-center justify-center">
+                                      <Link
+                                        href={`#`}
+                                        className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray lg:hover:bg-lightgray"
+                                      >
+                                        <EditIcon size={20} />
+                                      </Link>
+                                      <ChangeProductIndexButton
+                                        upsellId={data.id}
+                                        product={{
+                                          id,
+                                          name,
+                                          index,
+                                        }}
+                                      />
+                                    </div>
+                                  </td>
                                 </tr>
-                              </thead>
-                              <tbody className="*:h-[98px] *:border-b">
-                                {tableData.map(
-                                  ({
-                                    id,
-                                    index,
-                                    mainImage,
-                                    name,
-                                    basePrice,
-                                  }) => (
-                                    <tr
-                                      key={id}
-                                      className="h-[98px] max-h-[98px]"
-                                    >
-                                      <td className="max-w-14 min-w-14 text-center font-medium border-r">
-                                        {index}
-                                      </td>
-                                      <td className="p-3 max-w-[120px] min-w-[120px] border-r">
-                                        <div className="aspect-square w-full overflow-hidden flex items-center justify-center bg-white">
-                                          <Image
-                                            src={mainImage}
-                                            alt={name}
-                                            width={216}
-                                            height={216}
-                                            priority
-                                          />
-                                        </div>
-                                      </td>
-                                      <td className="px-3 max-w-[200px] min-w-[200px] border-r">
-                                        <div className="w-[calc(100%-12px)] h-9 rounded-full overflow-hidden flex items-center border shadow-sm">
-                                          <input
-                                            type="text"
-                                            value={
-                                              editingProductId === id
-                                                ? editingName
-                                                : name
-                                            }
-                                            onChange={(e) =>
-                                              setEditingName(e.target.value)
-                                            }
-                                            onFocus={() => {
-                                              setEditingProductId(id);
-                                              setEditingName(name);
-                                            }}
-                                            placeholder="Classic T-Shirt"
-                                            className="h-full w-full pl-4 bg-transparent"
-                                          />
-                                          <button
-                                            onClick={() =>
-                                              handleSaveName(id, name)
-                                            }
-                                            className="px-3 h-9 rounded-full text-blue flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
-                                          >
-                                            {loadingUpdateProductName ? (
-                                              <Spinner />
-                                            ) : (
-                                              <span>Save</span>
-                                            )}
-                                          </button>
-                                        </div>
-                                      </td>
-                                      <td className="px-3 max-w-[100px] min-w-[100px] border-r">
-                                        <p>${formatThousands(basePrice)}</p>
-                                      </td>
-                                      <td className="px-3 max-w-[140px] min-w-[140px]">
-                                        <div className="flex items-center justify-center">
-                                          <Link
-                                            href={`#`}
-                                            className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray lg:hover:bg-lightgray"
-                                          >
-                                            <EditIcon size={20} />
-                                          </Link>
-                                          <ChangeProductIndexButton
-                                            upsellId={data.id}
-                                            product={{
-                                              id,
-                                              name,
-                                              index,
-                                            }}
-                                          />
-                                          <RemoveProductButton id={id} />
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  )
-                                )}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    {data.products.length > rowsPerPage && (
-                      <div className="mt-2">
-                        <div className="w-max mx-auto flex gap-1 h-9">
-                          <button
-                            onClick={handlePrevious}
-                            className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
-                          >
-                            <ChevronLeftIcon className="-ml-[2px]" size={24} />
-                          </button>
-                          <input
-                            value={pageJumpValue}
-                            onChange={pageJumpInputChange}
-                            onKeyDown={pageJumpEnterKey}
-                            type="text"
-                            className={clsx(
-                              "min-w-[36px] max-w-[36px] h-9 px-1 text-center border cursor-text outline-none rounded-full bg-white",
-                              {
-                                "border-red": !isPageInRange,
-                              }
+                              )
                             )}
-                          />
-                          <div className="flex items-center justify-center px-1 cursor-context-menu">
-                            of
-                          </div>
-                          <button
-                            onClick={jumpToLastPage}
-                            className="w-9 h-9 flex items-center justify-center border rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
-                          >
-                            {totalPages}
-                          </button>
-                          <button
-                            onClick={handleNext}
-                            className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition bg-white active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed "
-                          >
-                            <ChevronRightIcon className="-mr-[2px]" size={24} />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="w-full flex flex-col gap-4 items-center mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-[90px]">
-                    <div className="flex flex-col gap-2 items-center">
-                      <h2 className="font-semibold text-lg">
-                        No products found
-                      </h2>
-                      <p className="text-sm text-center">
-                        Enter ID below for your first product
-                      </p>
-                    </div>
-                    <div className="w-full min-[588px]:w-56 h-9 rounded-full overflow-hidden flex items-center border shadow-sm">
-                      <input
-                        type="text"
-                        value={productId}
-                        onChange={handleInputChange}
-                        onKeyDown={handleKeyDown}
-                        placeholder="Paste ID (#12345)"
-                        className="h-full w-full pl-4 bg-transparent"
-                      />
-                      <div className="h-full flex items-center justify-center">
-                        <button
-                          onClick={addProduct}
-                          disabled={loadingAddProduct}
-                          className={clsx(
-                            "w-11 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out",
-                            {
-                              "active:bg-lightgray lg:hover:bg-lightgray":
-                                !loadingAddProduct,
-                            }
-                          )}
-                        >
-                          {loadingAddProduct ? (
-                            <Spinner />
-                          ) : (
-                            <PlusIcon size={22} />
-                          )}
-                        </button>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
@@ -525,7 +195,6 @@ export function ProductsOverlay({
           type={alertMessageType}
         />
       )}
-      <RemoveProductOverlay upsellId={data.id} />
       <ChangeProductIndexOverlay />
     </>
   );
