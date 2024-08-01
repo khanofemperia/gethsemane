@@ -61,7 +61,7 @@ export default async function EditUpsell({
                         <span className="text-xs text-gray line-through mt-[2px]">
                           ${formatThousands(Number(pricing.basePrice))}
                         </span>
-                        <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-3 py-1 px-[5px]">
+                        <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
                           -{pricing.discountPercentage}%
                         </span>
                       </div>
