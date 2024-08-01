@@ -232,22 +232,21 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   };
 
   const calculateSalePrice = (discount: string) => {
-    if (discount === "") {
+    const discountValue = parseInt(discount, 10);
+
+    if (isNaN(discountValue) || discountValue === 0) {
       setSalePrice(0);
-    } else {
-      const discountValue = parseInt(discount, 10);
-      if (discountValue >= 0 && discountValue <= 100) {
-        const rawSalePrice = basePrice * (1 - discountValue / 100);
+    } else if (discountValue >= 0 && discountValue <= 100) {
+      const rawSalePrice = basePrice * (1 - discountValue / 100);
 
-        // Round down to the nearest .99
-        const roundedSalePrice =
-          rawSalePrice === 0 ? 0 : Math.floor(rawSalePrice) + 0.99;
+      // Round down to the nearest .99
+      const roundedSalePrice =
+        rawSalePrice === 0 ? 0 : Math.floor(rawSalePrice) + 0.99;
 
-        // Format to two decimal places
-        const formattedSalePrice = Number(roundedSalePrice.toFixed(2));
+      // Format to two decimal places
+      const formattedSalePrice = Number(roundedSalePrice.toFixed(2));
 
-        setSalePrice(formattedSalePrice);
-      }
+      setSalePrice(formattedSalePrice);
     }
   };
 
