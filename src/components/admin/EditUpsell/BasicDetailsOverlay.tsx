@@ -19,6 +19,8 @@ import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { getProduct } from "@/lib/getData";
+import { MdOutlineDragIndicator } from "react-icons/md";
+import { ReactSortable } from "react-sortablejs";
 
 type ProductType = {
   index: number;
@@ -150,8 +152,8 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
           discountPercentage !== "" ? parseInt(discountPercentage, 10) : 0,
       },
       products: products.map(
-        ({ index, id, slug, name, mainImage, basePrice }) => ({
-          index,
+        ({ id, slug, name, mainImage, basePrice }, index) => ({
+          index: index + 1,
           id,
           slug,
           name,
@@ -195,12 +197,8 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
       return;
     }
 
-    let resultType = "";
-
     try {
       const result = await UpdateUpsellAction(upsellData);
-      resultType = result.type;
-
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
       setShowAlert(true);
@@ -211,13 +209,6 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
       setShowAlert(true);
     } finally {
       setLoadingSave(false);
-
-      if (resultType !== AlertMessageType.SUCCESS) {
-        onHideOverlay();
-      }
-      hideOverlay({ pageName, overlayName });
-      setAlertMessage("");
-      setShowAlert(false);
     }
   };
 
@@ -458,58 +449,59 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                   </div>
                   <div className="w-full max-w-[383px] overflow-hidden">
                     {products.length > 0 && (
-                      <div className="border rounded-md p-5 pb-4 flex gap-5 flex-wrap justify-start">
-                        {products.map(
-                          ({ id, index, mainImage, name, basePrice }) => (
-                            <div
-                              key={index}
-                              className="w-[calc(50%-10px)] cursor-context-menu"
-                            >
-                              <div className="w-full border rounded-md overflow-hidden">
-                                <div className="w-full aspect-square relative">
-                                  <div className="w-full h-full flex items-center justify-center overflow-hidden">
-                                    {mainImage &&
-                                      isValidRemoteImage(mainImage) && (
-                                        <Image
-                                          src={mainImage}
-                                          alt="Upsell"
-                                          width={200}
-                                          height={200}
-                                          priority
-                                        />
-                                      )}
-                                  </div>
-                                  <button
-                                    onClick={() => removeProduct(id)}
-                                    className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
-                                  >
-                                    <MinusIcon
-                                      className="fill-white"
-                                      size={20}
-                                    />
-                                  </button>
+                      <ReactSortable
+                        list={products}
+                        setList={setProducts}
+                        className="border rounded-md p-5 pb-4 flex gap-5 flex-wrap justify-start"
+                        animation={150}
+                        ghostClass="opacity-50"
+                      >
+                        {products.map(({ id, mainImage, name, basePrice }) => (
+                          <div
+                            key={id}
+                            className="w-[calc(50%-10px)] cursor-move"
+                          >
+                            <div className="w-full border rounded-md overflow-hidden">
+                              <div className="w-full aspect-square relative">
+                                <div className="w-full h-full flex items-center justify-center overflow-hidden">
+                                  {mainImage &&
+                                    isValidRemoteImage(mainImage) && (
+                                      <Image
+                                        src={mainImage}
+                                        alt="Upsell"
+                                        width={200}
+                                        height={200}
+                                        priority
+                                      />
+                                    )}
                                 </div>
-                                <div className="w-full h-9 border-t overflow-hidden">
-                                  <input
-                                    type="text"
-                                    placeholder="Custom name"
-                                    value={name}
-                                    onChange={(event) =>
-                                      handleProductMainImageChange(event, id)
-                                    }
-                                    className="h-full w-full px-3 text-sm text-gray"
-                                  />
-                                </div>
+                                <button
+                                  onClick={() => removeProduct(id)}
+                                  className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
+                                >
+                                  <MinusIcon className="fill-white" size={20} />
+                                </button>
                               </div>
-                              <div className="mt-[6px] flex items-center justify-center w-full">
-                                <span className="font-semibold text-sm">
-                                  ${formatThousands(basePrice)}
-                                </span>
+                              <div className="w-full h-9 border-t overflow-hidden">
+                                <input
+                                  type="text"
+                                  placeholder="Custom name"
+                                  value={name}
+                                  onChange={(event) =>
+                                    handleProductMainImageChange(event, id)
+                                  }
+                                  className="h-full w-full px-3 text-sm text-gray"
+                                />
                               </div>
                             </div>
-                          )
-                        )}
-                      </div>
+                            <div className="mt-[6px] flex items-center justify-center w-full">
+                              <span className="font-semibold text-sm">
+                                ${formatThousands(basePrice)}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </ReactSortable>
                     )}
                   </div>
                 </div>
