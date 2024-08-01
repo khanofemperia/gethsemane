@@ -327,9 +327,14 @@ export async function getUpsell({
 
   const data = snapshot.data();
 
-  const upsell = {
+  const sortedProducts = data.products
+    ? [...data.products].sort((a, b) => a.index - b.index)
+    : [];
+
+  const upsell: Partial<UpsellType> = {
     id: snapshot.id,
     ...data,
+    products: sortedProducts,
   };
 
   return upsell;
