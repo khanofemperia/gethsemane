@@ -6,7 +6,6 @@ import DataChip from "@/ui/DataChip";
 import { formatThousands, isValidRemoteImage } from "@/lib/utils";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import styles from "./styles.module.css";
 import {
   MainImageButton,
   MainImageOverlay,
@@ -31,7 +30,7 @@ import {
   DescriptionButton,
   DescriptionOverlay,
 } from "@/components/admin/EditProduct/DescriptionOverlay";
-import { getProduct } from "@/lib/getData";
+import { getProduct, getUpsell } from "@/lib/getData";
 import Link from "next/link";
 import { CheckmarkIcon } from "@/icons";
 import {
@@ -47,6 +46,10 @@ import {
   HighlightsOverlay,
 } from "@/components/admin/EditProduct/HighlightsOverlay";
 import clsx from "clsx";
+import {
+  BoostAovButton,
+  BoostAovOverlay,
+} from "@/components/admin/EditProduct/BoostAovOverlay ";
 
 export default async function EditProduct({
   params,
@@ -73,7 +76,35 @@ export default async function EditProduct({
     sourceInfo,
     seo,
     visibility,
+    upsell: upsellId,
   } = product as ProductType;
+
+  const upsell = upsellId
+    ? ((await getUpsell({ id: upsellId })) as UpsellType)
+    : null;
+
+  function calculateUpsell(
+    currentProduct: PricingType,
+    upsell: UpsellType | null
+  ) {
+    if (!upsell) return null;
+
+    // Use sale price if available, otherwise use base price
+    const originalPrice =
+      Number(currentProduct.salePrice) || Number(currentProduct.basePrice);
+    const upsellPrice =
+      Number(upsell.pricing.salePrice) || Number(upsell.pricing.basePrice);
+
+    const additionalSpend = upsellPrice - originalPrice;
+    const percentageIncrease = (additionalSpend / originalPrice) * 100;
+
+    return {
+      additionalSpend: additionalSpend.toFixed(2),
+      percentageIncrease: percentageIncrease.toFixed(0),
+    };
+  }
+
+  const upsellDetails = upsell ? calculateUpsell(pricing, upsell) : null;
 
   const hasBasicDetails = category && name && pricing.basePrice && slug && id;
   const hasOnPageSeo =
@@ -85,6 +116,8 @@ export default async function EditProduct({
     sourceInfo.storeId &&
     sourceInfo.storeUrl &&
     sourceInfo.productUrl;
+
+  console.log(upsell);
 
   return (
     <>
@@ -537,25 +570,51 @@ export default async function EditProduct({
             <h2 className="font-semibold text-xl mb-3">Boost AOV</h2>
             <p className="text-sm md:max-w-[85%]">...</p>
           </div>
-          <div className="w-full max-w-[400px] relative shadow rounded-xl bg-white">
-            <div className="w-full relative flex items-center justify-between">
-              <div className="w-[calc(100%-60px)] rounded-2xl p-5">
-                <div className="w-max max-w-full rounded-xl overflow-hidden border border-[#ffdcac] bg-amber-100">
-                  <div className="h-10 text-center text-sm font-semibold flex items-center justify-center bg-[#ffdcac]">
-                    Upsell
-                  </div>
-                  <div className="p-5 pr-12">
-                    <p className="mb-1 font-bold text-[#c45500]">
-                      $109.99 (+90.91%)
-                    </p>
-                    <p className="text-xs text-[#c45500]">
-                      Customer spends $99.99 more
-                    </p>
-                  </div>
+          <div
+            className={clsx(
+              "w-full max-w-[400px] relative flex items-center justify-between shadow rounded-xl bg-white",
+              {
+                "p-5 pr-2": upsell !== null,
+              }
+            )}
+          >
+            {upsell && upsellDetails ? (
+              <div className="w-max max-w-full rounded-xl overflow-hidden border border-[#ffd69d] bg-[#fef0b8]">
+                <div className="bg-[#ffd69d] rounded-xl">
+                  <Link
+                    href={`/admin/shop/upsells/${upsell.id}`}
+                    target="_blank"
+                    className="group w-60 select-none"
+                  >
+                    <div className="w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-white">
+                      <Image
+                        src={upsell.mainImage}
+                        alt="Upsell"
+                        width={250}
+                        height={250}
+                        priority
+                      />
+                    </div>
+                  </Link>
+                </div>
+                <div className="p-5 pr-12">
+                  <p className="mb-1 font-bold text-[#c45500]">
+                    ${upsell.pricing.salePrice || upsell.pricing.basePrice} (
+                    {upsellDetails.percentageIncrease}%)
+                  </p>
+                  <p className="text-xs text-[#c45500]">
+                    Customer spends ${upsellDetails.additionalSpend} more
+                  </p>
                 </div>
               </div>
-              <DescriptionButton className="absolute top-2 right-2" />
-            </div>
+            ) : (
+              <span className="text-xs text-gray">Nothing here</span>
+            )}
+            <BoostAovButton
+              className={clsx({
+                "absolute top-2 right-2": upsell !== null,
+              })}
+            />
           </div>
         </div>
         <div>
@@ -592,7 +651,7 @@ export default async function EditProduct({
       <DescriptionOverlay data={{ id, description }} />
       <HighlightsOverlay data={{ id, highlights }} />
       <VisibilityOverlay data={{ id, visibility }} />
-      <VisibilityOverlay data={{ id, visibility }} />
+      <BoostAovOverlay data={{ id, upsell, upsellDetails }} />
     </>
   );
 }

@@ -177,11 +177,11 @@ type ProductType = {
     storeUrl: string;
     productUrl: string;
   };
+  upsell: string;
   averageOrderValueBooster?: averageOrderValueBoosterType;
   frequentlyBoughtTogether?: Array<{
     id: string;
     name: string;
     price: number;
   }>;
-  upsell?: string;
 };

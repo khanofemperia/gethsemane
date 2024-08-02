@@ -1,27 +1,27 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { isValidRemoteImage } from "@/lib/utils";
-import { useState, useEffect } from "react";
-import Spinner from "@/ui/Spinners/White";
+import { FormEvent, useState, useEffect } from "react";
+import Spinner from "@/ui/Spinners/Gray";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, CloseIcon, EditIcon, MinusIcon } from "@/icons";
+import { ArrowLeftIcon, CloseIcon, EditIcon, PlusIcon } from "@/icons";
 import clsx from "clsx";
-import Image from "next/image";
 import Overlay from "@/ui/Overlay";
-import { HiOutlinePlus } from "react-icons/hi2";
-import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
+import Link from "next/link";
+import Image from "next/image";
+import { SetUpsellAction } from "@/actions/products";
 
 type DataType = {
   id: string;
-  images: {
-    main: string;
-    gallery: string[];
-  };
+  upsell: UpsellType | null;
+  upsellDetails: {
+    additionalSpend: string;
+    percentageIncrease: string;
+  } | null;
 };
 
-export function BoostAovButton() {
+export function BoostAovButton({ className }: { className: string }) {
   const { showOverlay } = useOverlayStore();
 
   const { pageName, overlayName } = useOverlayStore((state) => ({
@@ -33,7 +33,7 @@ export function BoostAovButton() {
     <button
       onClick={() => showOverlay({ pageName, overlayName })}
       type="button"
-      className="w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+      className={`w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${className}`}
     >
       <EditIcon size={20} />
     </button>
@@ -42,12 +42,14 @@ export function BoostAovButton() {
 
 export function BoostAovOverlay({ data }: { data: DataType }) {
   const [loading, setLoading] = useState(false);
+  const [upsellId, setUpsellId] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
     AlertMessageType.NEUTRAL
   );
-  const [images, setImages] = useState(data?.images.gallery ?? []);
+
+  const { upsell, upsellDetails } = data;
 
   const { hideOverlay } = useOverlayStore();
 
@@ -73,71 +75,59 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
     };
   }, [isOverlayVisible, showAlert]);
 
-  const onHideOverlay = () => {
-    setLoading(false);
-    hideOverlay({ pageName, overlayName });
-  };
-
   const hideAlertMessage = () => {
     setShowAlert(false);
     setAlertMessage("");
     setAlertMessageType(AlertMessageType.NEUTRAL);
   };
 
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      const filteredImages = images.filter((image) => image !== "");
-      if (filteredImages.length === 0) {
-        setAlertMessageType(AlertMessageType.ERROR);
-        setAlertMessage("No images added");
-        setShowAlert(true);
-        setImages(data?.images.gallery ?? []);
-      } else {
-        const result = await UpdateProductAction({
-          id: data.id,
-          images: {
-            main: data.images.main,
-            gallery: filteredImages,
-          },
-        });
-        setAlertMessageType(result.type);
-        setAlertMessage(result.message);
-        setShowAlert(true);
-        setImages(filteredImages);
-      }
-    } catch (error) {
-      console.error("Error updating product", error);
-      setAlertMessageType(AlertMessageType.ERROR);
-      setAlertMessage("Failed to update product");
-      setShowAlert(true);
-    } finally {
-      setLoading(false);
-      onHideOverlay();
+  const handleSave = async (event: FormEvent) => {};
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setUpsellId(value);
     }
   };
 
-  const addImage = () => {
-    const newEmptyImageBox = "";
-    const updatedImages = [...images, newEmptyImageBox];
-    setImages(updatedImages);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      addUpsell();
+    }
   };
 
-  const removeImage = (indexToRemove: number) => {
-    const updatedImages = images.filter((_, index) => index !== indexToRemove);
-    setImages(updatedImages);
-  };
+  const addUpsell = async () => {
+    if (!upsellId.trim()) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Upsell ID cannot be empty");
+      setShowAlert(true);
+      return;
+    } else if (!/^\d{5}$/.test(upsellId.trim())) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Upsell ID must be a 5-digit number");
+      setShowAlert(true);
+      return;
+    }
 
-  const handleImageInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const { value } = event.target;
+    setLoading(true);
 
-    const updatedImageList = [...images];
-    updatedImageList[index] = value;
-
-    setImages(updatedImageList);
+    try {
+      const result = await SetUpsellAction({
+        productId: data.id,
+        upsellId,
+      });
+      setAlertMessageType(result.type);
+      setAlertMessage(result.message);
+      setShowAlert(true);
+      setUpsellId("");
+    } catch (error) {
+      console.error("Error setting upsell:", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to set upsell");
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -148,11 +138,10 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
             <div className="w-full h-[calc(100vh-188px)] md:h-auto">
               <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
                 <div className="relative flex justify-center items-center w-full h-7">
-                  <h2 className="font-semibold text-lg">Images</h2>
+                  <h2 className="font-semibold text-lg">Basic AOV</h2>
                   <button
                     onClick={() => {
                       hideOverlay({ pageName, overlayName });
-                      setImages(data?.images.gallery ?? []);
                     }}
                     type="button"
                     className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
@@ -161,114 +150,87 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
                   </button>
                 </div>
               </div>
-              <div className="hidden md:flex md:items-center md:justify-between py-2 pr-4 pl-2">
+              <div className="hidden md:flex md:items-center md:justify-start py-2 pr-4 pl-2">
                 <button
                   onClick={() => {
                     hideOverlay({ pageName, overlayName });
-                    setImages(data?.images.gallery ?? []);
                   }}
                   type="button"
-                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
                   <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
-                    Images
+                    Boost AOV
                   </span>
                 </button>
-                <button
-                  onClick={handleSave}
-                  type="button"
-                  disabled={loading}
-                  className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
-                    {
-                      "bg-opacity-50": loading,
-                      "active:bg-neutral-700/85": !loading,
-                    }
-                  )}
-                >
-                  {loading ? (
-                    <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
-                      <span className="text-white">Saving</span>
-                    </div>
-                  ) : (
-                    <span className="text-white">Save</span>
-                  )}
-                </button>
               </div>
-              <div className="w-full h-full mt-[52px] md:mt-0 p-5 pb-28 md:pb-10 flex flex-wrap gap-2 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
-                <button
-                  onClick={addImage}
-                  type="button"
-                  className="transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed h-max w-[calc(50%-4px)] min-[425px]:w-[calc(33.333333%-6px)] rounded-md overflow-hidden"
-                >
-                  <div className="w-full aspect-square pt-9 flex flex-col items-center justify-center">
-                    <HiOutlinePlus size={40} />
-                  </div>
-                  <div className="w-full h-9"></div>
-                </button>
-                {images.map((image, index) => (
-                  <div
-                    key={index}
-                    className="h-max w-[calc(50%-4px)] min-[425px]:w-[calc(33.333333%-6px)] border rounded-md overflow-hidden"
-                  >
-                    <div className="w-full aspect-square relative overflow-hidden">
-                      <div className="w-full h-full flex items-center justify-center">
-                        {image && isValidRemoteImage(image) && (
+              <div className="w-full h-full mt-[52px] md:mt-0 p-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
+                {upsell && upsellDetails ? (
+                  <div className="w-max max-w-full mx-auto rounded-xl overflow-hidden border border-[#ffd69d] bg-[#fef0b8]">
+                    <div className="bg-[#ffd69d] rounded-xl">
+                      <Link
+                        href={`/admin/shop/upsells/${upsell.id}`}
+                        target="_blank"
+                        className="group w-60 select-none"
+                      >
+                        <div className="w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-white">
                           <Image
-                            src={image}
-                            alt=""
-                            width={400}
-                            height={400}
+                            src={upsell.mainImage}
+                            alt="Upsell"
+                            width={250}
+                            height={250}
                             priority
                           />
-                        )}
-                      </div>
-                      <button
-                        onClick={() => removeImage(index)}
-                        className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
-                      >
-                        <MinusIcon className="fill-white" size={20} />
-                      </button>
+                        </div>
+                      </Link>
                     </div>
-                    <div className="w-full h-9 border-t">
-                      <input
-                        type="text"
-                        className="w-full h-full px-3 text-sm text-gray"
-                        placeholder="Image URL"
-                        value={images[index] || ""}
-                        onChange={(event) =>
-                          handleImageInputChange(event, index)
-                        }
-                      />
+                    <div className="p-5 pr-12">
+                      <p className="mb-1 font-bold text-[#c45500]">
+                        ${upsell.pricing.salePrice || upsell.pricing.basePrice}{" "}
+                        ({upsellDetails.percentageIncrease}%)
+                      </p>
+                      <p className="text-xs text-[#c45500]">
+                        Customer spends ${upsellDetails.additionalSpend} more
+                      </p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
-              <button
-                onClick={handleSave}
-                type="button"
-                disabled={loading}
-                className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
-                  {
-                    "bg-opacity-50": loading,
-                    "active:bg-neutral-700/85": !loading,
-                  }
-                )}
-              >
-                {loading ? (
-                  <div className="flex gap-1 items-center justify-center w-full h-full">
-                    <Spinner />
-                    <span className="text-white">Saving</span>
                   </div>
                 ) : (
-                  <span className="text-white">Save</span>
+                  <div className="w-full flex flex-col gap-4 items-center mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-[70px]">
+                    <div className="flex flex-col gap-2 items-center">
+                      <h2 className="font-semibold text-lg">No upsell</h2>
+                      <p className="text-sm text-center">
+                        Enter ID below to set one
+                      </p>
+                    </div>
+                    <div className="w-full min-[588px]:w-56 h-9 rounded-full overflow-hidden flex items-center border shadow-sm">
+                      <input
+                        type="text"
+                        value={upsellId}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Paste ID (#12345)"
+                        className="h-full w-full pl-4 bg-transparent"
+                      />
+                      <div className="h-full flex items-center justify-center">
+                        <button
+                          type="button"
+                          onClick={addUpsell}
+                          disabled={loading}
+                          className={clsx(
+                            "w-11 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out",
+                            {
+                              "active:bg-lightgray lg:hover:bg-lightgray":
+                                !loading,
+                            }
+                          )}
+                        >
+                          {loading ? <Spinner /> : <PlusIcon size={22} />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </button>
+              </div>
             </div>
           </div>
         </Overlay>

@@ -63,6 +63,7 @@ export async function CreateProductAction(data: CreateProductType) {
         storeName: "",
         storeUrl: "",
       },
+      upsell: "",
     };
 
     await setDoc(documentRef, product);
@@ -115,6 +116,41 @@ export async function UpdateProductAction(
     return {
       type: AlertMessageType.ERROR,
       message: "Failed to update product",
+    };
+  }
+}
+
+export async function SetUpsellAction(data: {
+  productId: string;
+  upsellId: string;
+}) {
+  try {
+    const upsellDocRef = doc(database, "upsells", data.upsellId);
+    const upsellDocSnap = await getDoc(upsellDocRef);
+
+    if (!upsellDocSnap.exists()) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Upsell not found",
+      };
+    }
+
+    const productDocRef = doc(database, "products", data.productId);
+    await updateDoc(productDocRef, {
+      upsell: data.upsellId,
+    });
+
+    revalidatePath("/admin/shop/products/[slug]", "page");
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Upsell set to product successfully",
+    };
+  } catch (error) {
+    console.error("Error setting upsell to product:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to set upsell to product",
     };
   }
 }
