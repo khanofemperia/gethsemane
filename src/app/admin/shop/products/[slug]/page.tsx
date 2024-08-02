@@ -568,14 +568,7 @@ export default async function EditProduct({
             <h2 className="font-semibold text-xl mb-3">Boost AOV</h2>
             <p className="text-sm md:max-w-[85%]">...</p>
           </div>
-          <div
-            className={clsx(
-              "w-full max-w-[400px] relative flex items-center justify-between shadow rounded-xl bg-white",
-              {
-                "p-5 pr-2": upsell !== null,
-              }
-            )}
-          >
+          <div className="w-full max-w-[400px] relative p-5 pr-2 flex items-center justify-between shadow rounded-xl bg-white">
             {upsell && upsellDetails ? (
               <div className="w-max max-w-full rounded-xl overflow-hidden border border-[#ffd69d] bg-[#fef0b8]">
                 <div className="rounded-xl p-2 pb-0">

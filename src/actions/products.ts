@@ -154,3 +154,25 @@ export async function SetUpsellAction(data: {
     };
   }
 }
+
+export async function RemoveUpsellAction(data: { productId: string }) {
+  try {
+    const productDocRef = doc(database, "products", data.productId);
+    await updateDoc(productDocRef, {
+      upsell: "",
+    });
+
+    revalidatePath("/admin/shop/products/[slug]", "page");
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Upsell removed successfully",
+    };
+  } catch (error) {
+    console.error("Error removing upsell from product:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to remove upsell from product",
+    };
+  }
+}

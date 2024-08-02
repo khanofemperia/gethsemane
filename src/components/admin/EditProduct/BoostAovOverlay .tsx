@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { FormEvent, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Spinner from "@/ui/Spinners/Gray";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import {
@@ -16,7 +16,7 @@ import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import Link from "next/link";
 import Image from "next/image";
-import { SetUpsellAction } from "@/actions/products";
+import { RemoveUpsellAction, SetUpsellAction } from "@/actions/products";
 
 type DataType = {
   id: string;
@@ -134,6 +134,26 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
     }
   };
 
+  const removeUpsell = async () => {
+    setLoading(true);
+
+    try {
+      const result = await RemoveUpsellAction({
+        productId: data.id,
+      });
+      setAlertMessageType(result.type);
+      setAlertMessage(result.message);
+      setShowAlert(true);
+    } catch (error) {
+      console.error("Error removing upsell:", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to remove upsell");
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       {isOverlayVisible && (
@@ -185,7 +205,7 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
                           </div>
                         </div>
                         <button
-                          // onClick={() => removeUpsell(id)}
+                          onClick={removeUpsell}
                           className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
                         >
                           <MinusIcon className="fill-white" size={20} />
