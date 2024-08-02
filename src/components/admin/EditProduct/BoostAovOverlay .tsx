@@ -87,8 +87,6 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
     setAlertMessageType(AlertMessageType.NEUTRAL);
   };
 
-  const handleSave = async (event: FormEvent) => {};
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
@@ -187,7 +185,7 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
                           </div>
                         </div>
                         <button
-                          // onClick={() => removeProduct(id)}
+                          // onClick={() => removeUpsell(id)}
                           className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
                         >
                           <MinusIcon className="fill-white" size={20} />

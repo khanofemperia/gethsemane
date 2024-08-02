@@ -117,8 +117,6 @@ export default async function EditProduct({
     sourceInfo.storeUrl &&
     sourceInfo.productUrl;
 
-  console.log(upsell);
-
   return (
     <>
       <div className="max-w-[768px] flex flex-col gap-10 px-5">
@@ -584,9 +582,9 @@ export default async function EditProduct({
                   <Link
                     href={`/admin/shop/upsells/${upsell.id}`}
                     target="_blank"
-                    className="block w-60 select-none"
+                    className="group relative block w-60 rounded-lg overflow-hidden select-none"
                   >
-                    <div className="w-full aspect-square rounded-lg overflow-hidden flex items-center justify-center">
+                    <div className="w-full aspect-square flex items-center justify-center">
                       <Image
                         src={upsell.mainImage}
                         alt="Upsell"
@@ -595,6 +593,7 @@ export default async function EditProduct({
                         priority
                       />
                     </div>
+                    <div className="absolute top-0 bottom-0 left-0 right-0 group-hover:bg-black/20"></div>
                   </Link>
                 </div>
                 <div className="p-5 pt-4 pr-12">
