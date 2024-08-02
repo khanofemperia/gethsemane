@@ -580,24 +580,24 @@ export default async function EditProduct({
           >
             {upsell && upsellDetails ? (
               <div className="w-max max-w-full rounded-xl overflow-hidden border border-[#ffd69d] bg-[#fef0b8]">
-                <div className="bg-[#ffd69d] rounded-xl">
+                <div className="rounded-xl p-2 pb-0">
                   <Link
                     href={`/admin/shop/upsells/${upsell.id}`}
                     target="_blank"
-                    className="group w-60 select-none"
+                    className="block w-60 select-none"
                   >
-                    <div className="w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-white">
+                    <div className="w-full aspect-square rounded-lg overflow-hidden flex items-center justify-center">
                       <Image
                         src={upsell.mainImage}
                         alt="Upsell"
-                        width={250}
-                        height={250}
+                        width={240}
+                        height={240}
                         priority
                       />
                     </div>
                   </Link>
                 </div>
-                <div className="p-5 pr-12">
+                <div className="p-5 pt-4 pr-12">
                   <p className="mb-1 font-bold text-[#c45500]">
                     ${upsell.pricing.salePrice || upsell.pricing.basePrice} (
                     {upsellDetails.percentageIncrease}%)

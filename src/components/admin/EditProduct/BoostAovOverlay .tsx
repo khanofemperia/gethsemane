@@ -4,7 +4,13 @@ import AlertMessage from "@/components/shared/AlertMessage";
 import { FormEvent, useState, useEffect } from "react";
 import Spinner from "@/ui/Spinners/Gray";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, CloseIcon, EditIcon, PlusIcon } from "@/icons";
+import {
+  ArrowLeftIcon,
+  CloseIcon,
+  EditIcon,
+  MinusIcon,
+  PlusIcon,
+} from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
@@ -166,25 +172,29 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
               </div>
               <div className="w-full h-full mt-[52px] md:mt-0 p-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 {upsell && upsellDetails ? (
-                  <div className="w-max max-w-full mx-auto rounded-xl overflow-hidden border border-[#ffd69d] bg-[#fef0b8]">
-                    <div className="bg-[#ffd69d] rounded-xl">
-                      <Link
-                        href={`/admin/shop/upsells/${upsell.id}`}
-                        target="_blank"
-                        className="group w-60 select-none"
-                      >
-                        <div className="w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center bg-white">
-                          <Image
-                            src={upsell.mainImage}
-                            alt="Upsell"
-                            width={250}
-                            height={250}
-                            priority
-                          />
+                  <div className="mx-auto w-max max-w-full rounded-xl overflow-hidden border border-[#ffd69d] bg-[#fef0b8]">
+                    <div className="rounded-xl p-2 pb-0">
+                      <div className="relative">
+                        <div className="w-60 select-none">
+                          <div className="w-full aspect-square rounded-lg overflow-hidden flex items-center justify-center">
+                            <Image
+                              src={upsell.mainImage}
+                              alt="Upsell"
+                              width={240}
+                              height={240}
+                              priority
+                            />
+                          </div>
                         </div>
-                      </Link>
+                        <button
+                          // onClick={() => removeProduct(id)}
+                          className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
+                        >
+                          <MinusIcon className="fill-white" size={20} />
+                        </button>
+                      </div>
                     </div>
-                    <div className="p-5 pr-12">
+                    <div className="p-5 pt-4 pr-12">
                       <p className="mb-1 font-bold text-[#c45500]">
                         ${upsell.pricing.salePrice || upsell.pricing.basePrice}{" "}
                         ({upsellDetails.percentageIncrease}%)
