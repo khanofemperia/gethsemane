@@ -48,6 +48,7 @@ export async function UpdateUpsellAction(
     };
 
     await setDoc(docRef, updatedUpsell);
+    
     revalidatePath("/admin/shop/upsells/[id]", "page");
 
     return {
