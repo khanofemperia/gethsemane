@@ -79,8 +79,8 @@ export const useOverlayStore = createWithEqualityFn<OverlayStoreProps>(
             name: "productSource",
             isVisible: false,
           },
-          boostAov: {
-            name: "boostAov",
+          upsell: {
+            name: "upsell",
             isVisible: false,
           },
           visibility: {

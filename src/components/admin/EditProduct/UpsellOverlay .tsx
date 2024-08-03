@@ -2,7 +2,8 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
-import Spinner from "@/ui/Spinners/Gray";
+import GraySpinner from "@/ui/Spinners/Gray";
+import WhiteSpinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import {
   ArrowLeftIcon,
@@ -27,12 +28,12 @@ type DataType = {
   } | null;
 };
 
-export function BoostAovButton({ className }: { className: string }) {
+export function UpsellButton({ className }: { className: string }) {
   const { showOverlay } = useOverlayStore();
 
   const { pageName, overlayName } = useOverlayStore((state) => ({
     pageName: state.pages.editProduct.name,
-    overlayName: state.pages.editProduct.overlays.boostAov.name,
+    overlayName: state.pages.editProduct.overlays.upsell.name,
   }));
 
   return (
@@ -46,7 +47,7 @@ export function BoostAovButton({ className }: { className: string }) {
   );
 }
 
-export function BoostAovOverlay({ data }: { data: DataType }) {
+export function UpsellOverlay({ data }: { data: DataType }) {
   const [loading, setLoading] = useState(false);
   const [upsellId, setUpsellId] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
@@ -62,8 +63,8 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
   const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
     (state) => ({
       pageName: state.pages.editProduct.name,
-      overlayName: state.pages.editProduct.overlays.boostAov.name,
-      isOverlayVisible: state.pages.editProduct.overlays.boostAov.isVisible,
+      overlayName: state.pages.editProduct.overlays.upsell.name,
+      isOverlayVisible: state.pages.editProduct.overlays.upsell.isVisible,
     })
   );
 
@@ -162,7 +163,7 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
             <div className="w-full h-[calc(100vh-188px)] md:h-auto">
               <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
                 <div className="relative flex justify-center items-center w-full h-7">
-                  <h2 className="font-semibold text-lg">Basic AOV</h2>
+                  <h2 className="font-semibold text-lg">Upsell</h2>
                   <button
                     onClick={() => {
                       hideOverlay({ pageName, overlayName });
@@ -184,7 +185,7 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
                 >
                   <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
-                    Boost AOV
+                    Upsell
                   </span>
                 </button>
               </div>
@@ -208,7 +209,11 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
                           onClick={removeUpsell}
                           className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
                         >
-                          <MinusIcon className="fill-white" size={20} />
+                          {loading ? (
+                            <WhiteSpinner />
+                          ) : (
+                            <MinusIcon className="fill-white" size={20} />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -252,7 +257,7 @@ export function BoostAovOverlay({ data }: { data: DataType }) {
                             }
                           )}
                         >
-                          {loading ? <Spinner /> : <PlusIcon size={22} />}
+                          {loading ? <GraySpinner /> : <PlusIcon size={22} />}
                         </button>
                       </div>
                     </div>

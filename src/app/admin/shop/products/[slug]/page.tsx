@@ -47,9 +47,9 @@ import {
 } from "@/components/admin/EditProduct/HighlightsOverlay";
 import clsx from "clsx";
 import {
-  BoostAovButton,
-  BoostAovOverlay,
-} from "@/components/admin/EditProduct/BoostAovOverlay ";
+  UpsellButton,
+  UpsellOverlay,
+} from "@/components/admin/EditProduct/UpsellOverlay ";
 
 export default async function EditProduct({
   params,
@@ -565,7 +565,7 @@ export default async function EditProduct({
         </div>
         <div>
           <div className="mb-6">
-            <h2 className="font-semibold text-xl mb-3">Boost AOV</h2>
+            <h2 className="font-semibold text-xl mb-3">Upsell</h2>
             <p className="text-sm md:max-w-[85%]">...</p>
           </div>
           <div className="w-full max-w-[400px] relative p-5 pr-2 flex items-center justify-between shadow rounded-xl bg-white">
@@ -602,7 +602,7 @@ export default async function EditProduct({
             ) : (
               <span className="text-xs text-gray">Nothing here</span>
             )}
-            <BoostAovButton
+            <UpsellButton
               className={clsx({
                 "absolute top-2 right-2": upsell !== null,
               })}
@@ -643,7 +643,7 @@ export default async function EditProduct({
       <DescriptionOverlay data={{ id, description }} />
       <HighlightsOverlay data={{ id, highlights }} />
       <VisibilityOverlay data={{ id, visibility }} />
-      <BoostAovOverlay data={{ id, upsell, upsellDetails }} />
+      <UpsellOverlay data={{ id, upsell, upsellDetails }} />
     </>
   );
 }
