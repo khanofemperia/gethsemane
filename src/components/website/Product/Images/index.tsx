@@ -5,19 +5,24 @@ import { useState } from "react";
 import styles from "./styles.module.css";
 
 type ProductImagesType = {
-  images: string[];
+  images: {
+    main: string;
+    gallery: string[];
+  };
   productName: string;
 };
 
 export default function Images({ images, productName }: ProductImagesType) {
   const [hoveredImage, setHoveredImage] = useState("");
 
+  const productImages = [images.main, ...(images.gallery ?? [])];
+
   return (
     <div className="flex w-full select-none">
       <div
         className={`${styles.custom_scrollbar} apply-scrollbar min-w-[62px] max-w-[62px] max-h-[380px] overflow-x-hidden overflow-y-visible flex flex-col gap-2 mr-2`}
       >
-        {images.map((image, index) => (
+        {productImages.map((image, index) => (
           <div
             onMouseEnter={() => setHoveredImage(image)}
             key={index}
@@ -37,7 +42,7 @@ export default function Images({ images, productName }: ProductImagesType) {
       <div className="w-full max-w-[580px] h-full flex flex-col gap-5">
         <div className="w-full aspect-square relative flex items-center justify-center bg-lightgray overflow-hidden rounded-3xl [box-shadow:0px_1.6px_3.6px_rgb(0,_0,_0,_0.4),_0px_0px_2.9px_rgb(0,_0,_0,_0.1)]">
           <Image
-            src={hoveredImage || images[0]}
+            src={hoveredImage || productImages[0]}
             alt={productName}
             width={510}
             height={510}

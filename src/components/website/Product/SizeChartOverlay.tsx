@@ -6,61 +6,72 @@ import { productInternationalSizes } from "@/lib/utils";
 import { useEffect } from "react";
 import Overlay from "@/ui/Overlay";
 
-type ColorType = {
+type OptionsOverlayType = {
+  id: string;
   name: string;
-  image: string;
+  pricing: {
+    basePrice: number;
+    salePrice?: number;
+    discountPercentage?: number;
+  };
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  options: {
+    colors: Array<{
+      name: string;
+      image: string;
+    }>;
+    sizes: SizeChartType;
+  };
 };
 
-type SizeChartTableType = {
+type SizeChartTableProps = {
   sizeChart: SizeChartType;
-  unit: "in" | "cm";
+  unit: "inches" | "centimeters";
 };
 
-function SizeChartTable({ sizeChart, unit }: SizeChartTableType) {
+function SizeChartTable({ sizeChart, unit }: SizeChartTableProps) {
+  const chartData = sizeChart[unit === "inches" ? "inches" : "centimeters"];
+
   return (
     <div className="border w-full max-w-[max-content] rounded overflow-y-hidden overflow-x-visible custom-x-scrollbar">
       <table className="w-max bg-white">
         <thead className="h-10 border-b">
           <tr>
-            {sizeChart.columns.map((column, index) => (
+            {chartData.columns.map((column, index) => (
               <th
                 key={index}
                 className={`px-5 text-nowrap text-sm ${
-                  index === sizeChart.columns.length - 1 ? "" : "border-r"
+                  index === chartData.columns.length - 1 ? "" : "border-r"
                 } ${index === 0 ? "sticky left-0 bg-neutral-100" : ""}`}
               >
-                {column.name}
+                {column.label}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {sizeChart.sizes.map((entry, entryIndex) => (
+          {chartData.rows.map((row, rowIndex) => (
             <tr
-              key={entryIndex}
+              key={rowIndex}
               className={`h-10 ${
-                entryIndex === sizeChart.sizes.length - 1 ? "" : "border-b"
+                rowIndex === chartData.rows.length - 1 ? "" : "border-b"
               }`}
             >
-              <td className="text-sm text-center border-r w-[100px] sticky left-0 bg-neutral-100">
-                {entry.size}
-              </td>
-              {sizeChart.columns.slice(1).map((column, columnIndex) => (
+              {chartData.columns.map((column, columnIndex) => (
                 <td
                   key={columnIndex}
                   className={`text-center w-[100px] ${
-                    columnIndex === sizeChart.columns.length - 2
+                    columnIndex === 0
+                      ? "sticky left-0 bg-neutral-100"
+                      : columnIndex === chartData.columns.length - 1
                       ? ""
                       : "border-r"
                   }`}
                 >
-                  {unit === "in"
-                    ? entry.measurements[
-                        column.name as keyof typeof entry.measurements
-                      ]?.in
-                    : entry.measurements[
-                        column.name as keyof typeof entry.measurements
-                      ]?.cm}
+                  {row[column.label]}
                 </td>
               ))}
             </tr>
@@ -74,14 +85,7 @@ function SizeChartTable({ sizeChart, unit }: SizeChartTableType) {
 export default function OptionsOverlay({
   productInfo,
 }: {
-  productInfo: {
-    id: string;
-    name: string;
-    price: string;
-    images: string[];
-    colors: ColorType[] | null;
-    sizeChart: SizeChartType | null;
-  };
+  productInfo: OptionsOverlayType;
 }) {
   const { hideOverlay } = useOverlayStore();
 
@@ -107,7 +111,7 @@ export default function OptionsOverlay({
 
   return (
     <>
-      {isOverlayVisible && productInfo.sizeChart && (
+      {isOverlayVisible && productInfo.options.sizes && (
         <Overlay>
           <div className="size-chart-container w-full h-[calc(100%-60px)] rounded-t-2xl absolute bottom-0 overflow-hidden bg-white">
             <div className="flex items-center justify-center pt-5 pb-2">
@@ -129,11 +133,17 @@ export default function OptionsOverlay({
               <div className="w-full max-w-[620px] mx-auto flex flex-col gap-6 mt-6">
                 <div>
                   <h3 className="font-semibold mb-4">Inches</h3>
-                  <SizeChartTable sizeChart={productInfo.sizeChart} unit="in" />
+                  <SizeChartTable
+                    sizeChart={productInfo.options.sizes}
+                    unit="inches"
+                  />
                 </div>
                 <div>
                   <h3 className="font-semibold mb-4">Centimeters</h3>
-                  <SizeChartTable sizeChart={productInfo.sizeChart} unit="cm" />
+                  <SizeChartTable
+                    sizeChart={productInfo.options.sizes}
+                    unit="centimeters"
+                  />
                 </div>
                 <div>
                   <h3 className="font-semibold mb-4">

@@ -9,304 +9,9 @@ import { cookies } from "next/headers";
 import config from "@/lib/config";
 import SizeChartOverlay from "@/components/website/Product/SizeChartOverlay";
 import styles from "./styles.module.css";
+import { getProduct } from "@/lib/getData";
 
-type UpsellType = {
-  id: string;
-  mainImage: string;
-  price: number;
-  discount: DiscountType;
-  items: UpsellItemType[];
-} | null;
-
-type ProductType = {
-  id: string;
-  category: string;
-  name: string;
-  slug: string;
-  price: string;
-  mainImage: string;
-  images: string[] | null;
-  colors: ImageType[] | null;
-  sizes: SizeChartType | null;
-  upsell: UpsellType;
-  description: string | null;
-  highlights: HighlightsType;
-  visibility: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-function getProduct(): ProductType {
-  return {
-    id: "05550",
-    category: "Tops",
-    name: "Elegant Semi-Sheer Solid Color Blouse - Durable, Easy-Care, & Versatile for All Seasons",
-    slug: "elegant-semi-sheer-solid-color-blouse",
-    price: "49.99",
-    mainImage:
-      "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/fbf522c1b1d84378bd9bda770affaa9a.jpg?imageView2/2/w/800/q/70/format/webp",
-    images: [
-      "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/5be9317ac12c41ae2b663a11b8ab6f9b.jpg?imageView2/2/w/800/q/70/format/webp",
-      "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/4ffde039b5cf007db0ac509219dbcc67.jpg?imageView2/2/w/800/q/70/format/webp",
-    ],
-    colors: [
-      {
-        name: "White",
-        image:
-          "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/4ffde039b5cf007db0ac509219dbcc67.jpg?imageView2/2/w/800/q/70/format/webp",
-      },
-      {
-        name: "Black",
-        image:
-          "https://img.kwcdn.com/product/fancy/b6d66280-c933-4ffa-b117-4365e6667030.jpg?imageView2/2/w/800/q/70/format/webp",
-      },
-      {
-        name: "Blue",
-        image:
-          "https://img.kwcdn.com/product/fancy/f9258448-8eb0-46ca-905e-3d636a6a3f9b.jpg?imageView2/2/w/800/q/70/format/webp",
-      },
-      {
-        name: "Yellow",
-        image:
-          "https://img.kwcdn.com/product/fancy/2c8bb570-d2b0-41dd-a2e5-2f7633b4a2da.jpg?imageView2/2/w/800/q/70/format/webp",
-      },
-      {
-        name: "Rose",
-        image:
-          "https://img.kwcdn.com/product/fancy/2dface62-6da5-412c-a5c6-f6cfa8b40376.jpg?imageView2/2/w/800/q/70/format/webp",
-      },
-    ],
-    sizes: {
-      columns: [
-        {
-          index: 1,
-          name: "Size",
-        },
-        {
-          index: 2,
-          name: "US",
-        },
-        {
-          index: 3,
-          name: "Bust size",
-        },
-        {
-          index: 4,
-          name: "Clothing length",
-        },
-        {
-          index: 5,
-          name: "Sleeve length",
-        },
-        {
-          index: 6,
-          name: "Hem",
-        },
-      ],
-      sizes: [
-        {
-          size: "S",
-          measurements: {
-            "Bust size": {
-              in: "34.7",
-              cm: "88.1",
-            },
-            US: {
-              in: "4",
-              cm: "4",
-            },
-            "Clothing length": {
-              in: "25.6",
-              cm: "65",
-            },
-            "Sleeve length": {
-              in: "11",
-              cm: "27.9",
-            },
-            Hem: {
-              in: "41.8",
-              cm: "106.2",
-            },
-          },
-        },
-        {
-          size: "M",
-          measurements: {
-            "Bust size": {
-              in: "36.2",
-              cm: "91.9",
-            },
-            "Sleeve length": {
-              in: "11.3",
-              cm: "28.7",
-            },
-            Hem: {
-              in: "43.3",
-              cm: "110",
-            },
-            US: {
-              in: "6",
-              cm: "6",
-            },
-            "Clothing length": {
-              in: "26",
-              cm: "66",
-            },
-          },
-        },
-        {
-          size: "L",
-          measurements: {
-            "Bust size": {
-              in: "38.6",
-              cm: "98",
-            },
-            US: {
-              in: "8/10",
-              cm: "8/10",
-            },
-            "Clothing length": {
-              in: "26.6",
-              cm: "67.6",
-            },
-            "Sleeve length": {
-              in: "11.8",
-              cm: "30",
-            },
-            Hem: {
-              in: "45.7",
-              cm: "116.1",
-            },
-          },
-        },
-        {
-          size: "XL",
-          measurements: {
-            "Bust size": {
-              in: "41",
-              cm: "104.1",
-            },
-            US: {
-              in: "12",
-              cm: "12",
-            },
-            "Clothing length": {
-              in: "27.2",
-              cm: "69.1",
-            },
-            "Sleeve length": {
-              in: "12.3",
-              cm: "31.2",
-            },
-            Hem: {
-              in: "48.1",
-              cm: "122.2",
-            },
-          },
-        },
-        {
-          size: "XXL",
-          measurements: {
-            "Bust size": {
-              in: "43.3",
-              cm: "110",
-            },
-            US: {
-              in: "14",
-              cm: "14",
-            },
-            "Clothing length": {
-              in: "27.8",
-              cm: "70.6",
-            },
-            "Sleeve length": {
-              in: "12.8",
-              cm: "32.5",
-            },
-            Hem: {
-              in: "50.4",
-              cm: "128",
-            },
-          },
-        },
-      ],
-      entryLabels: [
-        {
-          index: 1,
-          name: "S",
-        },
-        {
-          index: 2,
-          name: "M",
-        },
-        {
-          index: 3,
-          name: "L",
-        },
-        {
-          index: 4,
-          name: "XL",
-        },
-        {
-          index: 5,
-          name: "XXL",
-        },
-      ],
-    },
-    upsell: {
-      id: "72704",
-      mainImage:
-        "https:i.pinimg.com/564x/ab/d7/1b/abd71b557fc77916f1570da50c0325a8.jpg",
-      price: 137.99,
-      discount: {
-        percentage: 42,
-        savings: 100.0,
-      },
-      items: [
-        {
-          id: "",
-          name: "Shorts",
-          salePrice: 67.99,
-          price: 79.99,
-        },
-        {
-          id: "",
-          name: "Backpack",
-          salePrice: 41.99,
-          price: 59.99,
-        },
-        {
-          id: "",
-          name: "Sneakers",
-          salePrice: 29.99,
-          price: 69.99,
-        },
-        {
-          id: "",
-          name: "Hoodie",
-          salePrice: 79.99,
-          price: 109.99,
-        },
-      ],
-    },
-    highlights: {
-      headline:
-        "<p><b>Struggling with uncomfortable shorts during workouts?</b> Say no more, our shorts guarantee <b><i>comfort and style</i></b> for every activity!</p>",
-      keyPoints: [
-        "Quick-dry fabric for cool comfort.",
-        "Double layer design for better movement.",
-        "Zipper pocket to secure your phone.",
-        "Ideal for running, gym, and casual wear.",
-      ],
-    },
-    description: null,
-    visibility: "PUBLISHED",
-    createdAt: "2024-04-07 08:21:51",
-    updatedAt: "2024-04-07 08:39:08",
-  };
-}
-
-type ProductInCartProps = {
+type ProductInCartType = {
   id: string;
   color: string;
   size: string;
@@ -352,9 +57,9 @@ export default async function ProductDetails({
     return <div>404 - page not found</div>;
   }
 
-  const product = getProduct();
-  const { id, name, price, description, colors, sizes } = product;
-  const images = [product.mainImage, ...(product.images ?? [])];
+  const productId = params.slug.split("-").pop() as string;
+  const product = (await getProduct({ id: productId })) as ProductType;
+  const { id, name, pricing, images, options } = product;
 
   const existingCart = await getCart();
   const isInCart = existingCart?.products.some(
@@ -365,7 +70,7 @@ export default async function ProductDetails({
 
   if (isInCart) {
     productInCart = existingCart.products.find(
-      (p: ProductInCartProps) => p.id === id
+      (p: ProductInCartType) => p.id === id
     );
   }
 
@@ -490,10 +195,9 @@ export default async function ProductDetails({
                       productInfo={{
                         id,
                         name,
-                        price,
+                        pricing,
                         images,
-                        colors,
-                        sizeChart: sizes,
+                        options,
                       }}
                     />
                   </div>
@@ -730,10 +434,9 @@ export default async function ProductDetails({
                         productInfo={{
                           id,
                           name,
-                          price,
+                          pricing,
                           images,
-                          colors,
-                          sizeChart: sizes,
+                          options,
                         }}
                       />
                     </div>
@@ -915,10 +618,9 @@ export default async function ProductDetails({
             productInfo={{
               id,
               name,
-              price,
+              pricing,
               images,
-              colors,
-              sizeChart: sizes,
+              options,
             }}
           />
         }
@@ -927,10 +629,9 @@ export default async function ProductDetails({
         productInfo={{
           id,
           name,
-          price,
+          pricing,
           images,
-          colors,
-          sizeChart: sizes,
+          options,
         }}
       />
     </>

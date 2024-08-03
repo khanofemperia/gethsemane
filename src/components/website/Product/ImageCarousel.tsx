@@ -7,7 +7,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 type ImageCarouselType = {
-  images: string[];
+  images: {
+    main: string;
+    gallery: string[];
+  };
   productName: string;
 };
 
@@ -27,10 +30,12 @@ export default function ImageCarousel({
     arrows: false,
   };
 
+  const productImages = [images.main, ...(images.gallery ?? [])];
+
   return (
     <div className="relative select-none">
       <Slider {...settings}>
-        {images.map((image, index) => (
+        {productImages.map((image, index) => (
           <div
             className="w-full aspect-square flex items-center justify-center overflow-hidden"
             key={index}
@@ -46,7 +51,7 @@ export default function ImageCarousel({
         ))}
       </Slider>
       <div className="flex items-center justify-center absolute bottom-5 right-[14px] bg-black/80 text-sm text-white px-3 h-6 rounded-full transition duration-300 ease-in-out">
-        {currentIndex + 1}/{images.length}
+        {currentIndex + 1}/{productImages.length}
       </div>
     </div>
   );

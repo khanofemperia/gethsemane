@@ -79,7 +79,7 @@ function sanitizeOptions(
  * @example
  * const product = await getProduct({
  *   id: "12345",
- *   fields: ['id', 'name', 'price'],
+ *   fields: ['id', 'name', 'pricing'],
  * });
  */
 export async function getProduct(
@@ -125,7 +125,7 @@ export async function getProduct(
  *
  * @example
  * const products = await getProducts({
- *   fields: ['id', 'name', 'basePrice'],
+ *   fields: ['id', 'name', 'pricing'],
  *   visibility: 'PUBLISHED'
  * });
  */
