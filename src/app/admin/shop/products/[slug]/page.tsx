@@ -566,7 +566,11 @@ export default async function EditProduct({
         <div>
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Upsell</h2>
-            <p className="text-sm md:max-w-[85%]">Boost sales by showing customers items that go well with what they're buying. This helps them get everything they need in one go. It saves time and makes shopping easier.</p>
+            <p className="text-sm md:max-w-[85%]">
+              Boost sales by showing customers items that go well with what
+              they're buying. This helps them get everything they need in one
+              go. It saves time and makes shopping easier.
+            </p>
           </div>
           <div className="w-full max-w-[400px] relative p-5 pr-2 flex items-center justify-between shadow rounded-xl bg-white">
             {upsell && upsellDetails ? (
@@ -577,7 +581,7 @@ export default async function EditProduct({
                     target="_blank"
                     className="group relative block w-60 rounded-lg overflow-hidden select-none"
                   >
-                    <div className="w-full aspect-square flex items-center justify-center">
+                    <div className="w-full aspect-square flex items-center justify-center bg-white">
                       <Image
                         src={upsell.mainImage}
                         alt="Upsell"

@@ -195,7 +195,7 @@ export function UpsellOverlay({ data }: { data: DataType }) {
                     <div className="rounded-xl p-2 pb-0">
                       <div className="relative">
                         <div className="w-60 select-none">
-                          <div className="w-full aspect-square rounded-lg overflow-hidden flex items-center justify-center">
+                          <div className="w-full aspect-square rounded-lg overflow-hidden flex items-center justify-center bg-white">
                             <Image
                               src={upsell.mainImage}
                               alt="Upsell"
