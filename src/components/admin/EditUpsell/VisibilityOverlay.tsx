@@ -90,7 +90,7 @@ export function VisibilityOverlay({ data }: { data: DataType }) {
     try {
       const result = await UpdateUpsellAction({
         id: data.id,
-        visibility: selectedVisibility,
+        visibility: selectedVisibility as VisibilityType,
       });
       setAlertMessageType(result.type);
       setAlertMessage(result.message);

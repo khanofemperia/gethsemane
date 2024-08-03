@@ -127,13 +127,11 @@ export function FeaturedProducts({
                 {
                   id,
                   name,
-                  mainImage,
-                  price,
+                  pricing,
                   slug,
                   images,
                   description,
-                  colors,
-                  sizes,
+                  options,
                 }: ProductType,
                 index
               ) => (
@@ -146,7 +144,7 @@ export function FeaturedProducts({
                     className="w-full aspect-square rounded-xl flex items-center justify-center overflow-hidden"
                   >
                     <Image
-                      src={mainImage}
+                      src={images.main}
                       alt={name}
                       width={1000}
                       height={1000}
@@ -159,13 +157,15 @@ export function FeaturedProducts({
                   >
                     <p className="text-sm line-clamp-1">{name}</p>
                     <div className="flex items-start justify-between w-full">
-                      <span className="font-semibold w-max h-5">${price}</span>
-                      <QuickviewButton
+                      <span className="font-semibold w-max h-5">
+                        ${pricing.basePrice}
+                      </span>
+                      {/* <QuickviewButton
                         onClick={(event) => event.stopPropagation()}
                         product={{
                           id,
                           name,
-                          price,
+                          prici,
                           mainImage,
                           images,
                           description,
@@ -173,7 +173,7 @@ export function FeaturedProducts({
                           sizes,
                           slug,
                         }}
-                      />
+                      /> */}
                     </div>
                   </div>
                 </div>
