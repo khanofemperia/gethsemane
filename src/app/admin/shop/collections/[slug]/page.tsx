@@ -31,7 +31,7 @@ import {
   BannerImagesButton,
   BannerImagesOverlay,
 } from "@/components/admin/Storefront/EditCollection/BannerImagesOverlay";
-import { getCollection } from "@/lib/getData";
+import { getCollection, getProductsByIds } from "@/lib/getData";
 
 type ProductWithIndex = ProductType & { index: number };
 
@@ -71,6 +71,27 @@ export default async function EditCollection({
     notFound();
   }
 
+  const productIndexes = new Map(
+    (collection.products || []).map((product) => [product.id, product.index])
+  );
+
+  const collectionProducts = await getProductsByIds({
+    ids: Array.from(productIndexes.keys()),
+    fields: ["id", "slug", "images", "name", "pricing"],
+  });
+
+  const sortedProducts = (collectionProducts || [])
+    .map((product) => ({
+      ...product,
+      index: productIndexes.get(product.id) ?? 0,
+    }))
+    .sort((a, b) => a.index - b.index);
+
+  const updatedCollection = {
+    ...collection,
+    products: sortedProducts,
+  };
+
   const {
     id,
     campaignDuration,
@@ -80,7 +101,9 @@ export default async function EditCollection({
     bannerImages,
     visibility,
     products,
-  } = collection as CollectionDataType;
+  } = updatedCollection as CollectionDataType;
+
+  console.log(updatedCollection);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -348,7 +371,7 @@ export default async function EditCollection({
             </div>
           </div>
         </div>
-        {/* <div>
+        <div>
           <p className="text-sm mb-4 md:max-w-[85%]">
             Curate a selection that feels complete, with products that
             complement each other. Mix styles, colors, sizes, and prices so
@@ -365,7 +388,7 @@ export default async function EditCollection({
               {products.length > 0 ? (
                 products
                   .slice(0, 3)
-                  .map(({ id, index, slug, mainImage, name, price }) => (
+                  .map(({ id, index, slug, images, name, pricing }) => (
                     <Link
                       key={index}
                       href={`/admin/shop/products/${slug}-${id}`}
@@ -374,7 +397,7 @@ export default async function EditCollection({
                       <div className="relative w-full h-full">
                         <div className="aspect-square w-full overflow-hidden flex items-center justify-center shadow-[2px_2px_4px_#9E9E9E] bg-white">
                           <Image
-                            src={mainImage}
+                            src={images.main}
                             alt={name}
                             width={216}
                             height={216}
@@ -382,9 +405,23 @@ export default async function EditCollection({
                           />
                         </div>
                         <div className="flex items-center justify-center absolute bottom-0 text-sm w-full">
-                          <span className="font-bold">
-                            ${formatThousands(price)}
-                          </span>
+                          {Number(pricing.salePrice) ? (
+                            <div className="flex items-center gap-[6px]">
+                              <span className="font-medium">
+                                ${formatThousands(Number(pricing.salePrice))}
+                              </span>
+                              <span className="text-xs text-gray line-through mt-[2px]">
+                                ${formatThousands(Number(pricing.basePrice))}
+                              </span>
+                              <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                                -{pricing.discountPercentage}%
+                              </span>
+                            </div>
+                          ) : (
+                            <p className="font-medium">
+                              ${formatThousands(Number(pricing.basePrice))}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </Link>
@@ -394,13 +431,13 @@ export default async function EditCollection({
               )}
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
       <CampaignDurationOverlay data={{ id, campaignDuration }} />
       <BasicDetailsOverlay data={{ id, title, slug, collectionType }} />
       {bannerImages && <BannerImagesOverlay data={{ id, bannerImages }} />}
       <VisibilityOverlay data={{ id, visibility }} />
-      {/* <ProductListOverlay data={{ id, products }} /> */}
+      <ProductListOverlay data={{ id, products }} />
     </>
   );
 }

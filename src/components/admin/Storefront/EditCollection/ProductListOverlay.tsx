@@ -28,15 +28,7 @@ import {
 } from "./ChangeProductIndexOverlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-type CollectionProductType = {
-  id: string;
-  name: string;
-  index: number;
-  price: string;
-  mainImage: string;
-  slug: string;
-  visibility: string;
-};
+type ProductWithIndex = ProductType & { index: number };
 
 export function ProductListButton() {
   const { showOverlay } = useOverlayStore();
@@ -60,7 +52,7 @@ export function ProductListButton() {
 export function ProductListOverlay({
   data,
 }: {
-  data: { id: string; products: CollectionProductType[] };
+  data: { id: string; products: ProductWithIndex[] };
 }) {
   const PUBLISHED = "PUBLISHED";
   const DRAFT = "DRAFT";
@@ -208,7 +200,7 @@ export function ProductListOverlay({
   };
 
   const pagination = (
-    data: CollectionProductType[],
+    data: ProductWithIndex[],
     currentPage: number,
     rowsPerPage: number
   ) => {
@@ -305,10 +297,7 @@ export function ProductListOverlay({
                     type="button"
                     className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
                   >
-                    <ArrowLeftIcon
-                      className="fill-blue -ml-[2px]"
-                      size={20}
-                    />
+                    <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                     <span className="font-semibold text-sm text-blue">
                       Products
                     </span>
@@ -411,9 +400,9 @@ export function ProductListOverlay({
                                     id,
                                     index,
                                     slug,
-                                    mainImage,
+                                    images,
                                     name,
-                                    price,
+                                    pricing,
                                     visibility,
                                   }) => (
                                     <tr
@@ -426,7 +415,7 @@ export function ProductListOverlay({
                                       <td className="p-3 max-w-[120px] min-w-[120px] border-r">
                                         <div className="aspect-square w-full overflow-hidden flex items-center justify-center bg-white">
                                           <Image
-                                            src={mainImage}
+                                            src={images.main}
                                             alt={name}
                                             width={216}
                                             height={216}
@@ -438,7 +427,32 @@ export function ProductListOverlay({
                                         <p className="line-clamp-3">{name}</p>
                                       </td>
                                       <td className="px-3 max-w-[100px] min-w-[100px] border-r">
-                                        <p>${formatThousands(price)}</p>
+                                        {Number(pricing.salePrice) ? (
+                                          <div className="flex items-center gap-[6px]">
+                                            <span className="font-medium">
+                                              $
+                                              {formatThousands(
+                                                Number(pricing.salePrice)
+                                              )}
+                                            </span>
+                                            <span className="text-xs text-gray line-through mt-[2px]">
+                                              $
+                                              {formatThousands(
+                                                Number(pricing.basePrice)
+                                              )}
+                                            </span>
+                                            <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                                              -{pricing.discountPercentage}%
+                                            </span>
+                                          </div>
+                                        ) : (
+                                          <p className="font-medium">
+                                            $
+                                            {formatThousands(
+                                              Number(pricing.basePrice)
+                                            )}
+                                          </p>
+                                        )}
                                       </td>
                                       <td className="px-3 max-w-[116px] min-w-[116px] border-r">
                                         {visibility.toUpperCase() ===
