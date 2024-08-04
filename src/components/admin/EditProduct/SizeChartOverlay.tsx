@@ -55,12 +55,14 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
   });
 
   useEffect(() => {
-    setTableData(
-      data.sizes || {
+    if (Object.keys(data.sizes || {}).length === 0) {
+      setTableData({
         inches: { columns: [], rows: [] },
         centimeters: { columns: [], rows: [] },
-      }
-    );
+      });
+    } else {
+      setTableData(data.sizes);
+    }
   }, [data]);
 
   const columns = tableData.inches.columns

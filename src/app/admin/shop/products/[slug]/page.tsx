@@ -286,7 +286,7 @@ export default async function EditProduct({
             <div className="flex flex-col gap-5 p-5">
               <div className="relative border rounded-xl">
                 <div>
-                  {options.sizes.inches.rows.length === 0 ? (
+                  {Object.keys(options.sizes || {}).length === 0 ? (
                     <div className="w-full flex items-center justify-between p-5 pr-2">
                       <span className="text-xs text-gray">No sizes</span>
                       <SizeChartButton />
@@ -300,18 +300,19 @@ export default async function EditProduct({
                 </div>
                 <div>
                   {(() => {
-                    if (
-                      options.sizes.inches.columns &&
-                      options.sizes.inches.rows
-                    ) {
-                      const firstColumnLabel =
-                        options.sizes.inches.columns.find(
-                          (column) => column.order === 1
-                        )?.label;
+                    if (Object.keys(options.sizes || {}).length === 0) {
+                      return null;
+                    }
+
+                    const sizesInches = options.sizes.inches;
+                    if (sizesInches?.columns && sizesInches?.rows) {
+                      const firstColumnLabel = sizesInches.columns.find(
+                        (column) => column.order === 1
+                      )?.label;
 
                       return (
                         <div className="flex flex-wrap gap-2 p-5 pt-0">
-                          {options.sizes.inches.rows.map((row, index) => (
+                          {sizesInches.rows.map((row, index) => (
                             <div
                               key={index}
                               className="min-w-12 w-max h-7 px-4 text-sm font-medium select-none rounded-full bg-lightgray flex items-center justify-center"
@@ -326,6 +327,7 @@ export default async function EditProduct({
                   })()}
                 </div>
               </div>
+
               <div className="relative border rounded-xl">
                 <div>
                   {options.colors.length === 0 ||

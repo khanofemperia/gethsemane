@@ -74,7 +74,7 @@ export async function CreateProductAction(data: CreateProductType) {
       },
       options: {
         colors: [],
-        sizes: [],
+        sizes: {},
       },
       seo: {
         metaTitle: "",
