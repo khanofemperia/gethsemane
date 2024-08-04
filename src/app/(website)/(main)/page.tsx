@@ -5,11 +5,32 @@ import {
   getCategories,
   getCollections,
   getPageHero,
-  getProducts,
   getProductsByIds,
 } from "@/lib/getData";
 import Image from "next/image";
 import Link from "next/link";
+
+type CollectionProductType = {
+  index: number;
+  id: string;
+};
+
+type CollectionType = {
+  id: string;
+  index: number;
+  title: string;
+  slug: string;
+  campaignDuration: DateRangeType;
+  collectionType: string;
+  bannerImages?: {
+    desktopImage: string;
+    mobileImage: string;
+  };
+  products: CollectionProductType[];
+  visibility: VisibilityType;
+  createdAt: string;
+  updatedAt: string;
+};
 
 type EnrichedProductType = CollectionProductType & {
   updatedAt: string;
@@ -31,7 +52,9 @@ export default async function Home() {
     getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
   ]);
 
-  const getFeaturedCollections = async (): Promise<CollectionType[]> => {
+  const getFeaturedCollections = async (): Promise<
+    EnrichedCollectionType[]
+  > => {
     const featuredCollections = (collections || []).filter(
       (collection) =>
         collection.collectionType === "FEATURED" &&
@@ -90,27 +113,17 @@ export default async function Home() {
       } as EnrichedCollectionType;
     });
 
-    const sortedCollections = collectionsWithProducts
-      .map((collection) => ({
-        ...collection,
-        products: collection.products.map(
-          ({ updatedAt, visibility, slug, name, images, pricing, ...rest }) =>
-            rest
-        ),
-      }))
-      .filter(
-        (collection): collection is CollectionType =>
-          collection.id !== undefined &&
-          collection.products.every(
-            (product) => "id" in product && "index" in product
-          )
-      )
-      .sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
-
-    return sortedCollections;
+    return collectionsWithProducts;
   };
 
   const featuredCollections = await getFeaturedCollections();
+
+  const combinedCollections = [
+    ...(featuredCollections || []),
+    ...(collections?.filter(
+      (collection) => collection.collectionType !== "FEATURED"
+    ) || []),
+  ].sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 
   return (
     <>
@@ -151,9 +164,9 @@ export default async function Home() {
           <Categories categories={categories} />
         )}
         <div className="max-w-[968px] mx-auto flex flex-col gap-10">
-          {collections &&
-            collections.length > 0 &&
-            collections.map((collection, index) => {
+          {combinedCollections &&
+            combinedCollections.length > 0 &&
+            combinedCollections.map((collection, index) => {
               switch (collection.collectionType) {
                 case "FEATURED":
                   if (collection.products && collection.products.length >= 3) {
