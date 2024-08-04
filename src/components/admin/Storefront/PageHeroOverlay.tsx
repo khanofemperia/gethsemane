@@ -195,12 +195,9 @@ export function PageHeroOverlay({
                 <button
                   onClick={onHideOverlay}
                   type="button"
-                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon
-                    className="fill-blue -ml-[2px]"
-                    size={20}
-                  />
+                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
                     Edit page hero
                   </span>
@@ -209,10 +206,10 @@ export function PageHeroOverlay({
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700": !loading,
                     }
                   )}
                 >
@@ -226,9 +223,9 @@ export function PageHeroOverlay({
                   )}
                 </button>
               </div>
-              <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
+              <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-8 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-semibold text-sm">Visibility</h2>
+                  <h2 className="text-xs text-gray">Visibility</h2>
                   <div className="px-[10px] py-2 w-full min-[425px]:w-max rounded-md flex gap-4 min-[425px]:gap-4 items-start justify-between bg-lightgray">
                     <div className="text-sm">
                       Display page hero on storefront
@@ -261,7 +258,7 @@ export function PageHeroOverlay({
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="title" className="font-semibold text-sm">
+                  <label htmlFor="title" className="text-xs text-gray">
                     Title
                   </label>
                   <div className="w-full h-9 relative">
@@ -276,17 +273,14 @@ export function PageHeroOverlay({
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="destinationUrl"
-                    className="font-semibold text-sm"
-                  >
+                  <label htmlFor="destinationUrl" className="text-xs text-gray">
                     Destination URL
                   </label>
                   <div className="w-full h-9 relative">
                     <input
                       type="text"
                       name="destinationUrl"
-                      placeholder="https://cherlygood.com/shop/denim-skirts"
+                      placeholder="https://cherlygood.com/denim-skirts"
                       value={destinationUrl}
                       onChange={(e) => setDestinationUrl(e.target.value)}
                       className="w-full h-9 px-3 rounded-md border"
@@ -294,10 +288,10 @@ export function PageHeroOverlay({
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-semibold text-sm">Images</h2>
+                  <h2 className="text-xs text-gray">Images</h2>
                   <div className="p-5 rounded-md border flex flex-col gap-5">
                     <div className="flex flex-col gap-2">
-                      <h2 className="font-medium text-sm text-gray">
+                      <h2 className="text-xs text-gray">
                         Desktop (1440x360 px)
                       </h2>
                       <div className="w-full border rounded-md overflow-hidden">
@@ -338,7 +332,7 @@ export function PageHeroOverlay({
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <h2 className="font-medium text-sm text-gray">
+                      <h2 className="text-xs text-gray">
                         Mobile (960x1280 px)
                       </h2>
                       <div className="w-full max-w-[416px] border rounded-md overflow-hidden">
@@ -387,10 +381,10 @@ export function PageHeroOverlay({
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-blue-dimmed": !loading,
+                    "bg-neutral-700": !loading,
                   }
                 )}
               >

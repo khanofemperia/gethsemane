@@ -19,7 +19,7 @@ export async function UpdatePageHeroAction(data: PageHeroType) {
   try {
     const { ...updatedPageHeroData } = data;
 
-    const documentRef = doc(database, "pageHero", "storefrontHero");
+    const documentRef = doc(database, "pageHero", "homepageHero");
     await updateDoc(documentRef, updatedPageHeroData);
 
     revalidatePath("/admin/shop");

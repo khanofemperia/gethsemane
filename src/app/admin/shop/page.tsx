@@ -7,7 +7,7 @@ import { NewCollectionOverlay } from "@/components/admin/Storefront/NewCollectio
 import {
   PageHeroButton,
   PageHeroOverlay,
-} from "@/components/admin/Storefront/PageHero";
+} from "@/components/admin/Storefront/PageHeroOverlay";
 import {
   getCategories,
   getCollections,
