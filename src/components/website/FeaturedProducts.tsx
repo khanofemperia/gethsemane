@@ -9,6 +9,44 @@ import { EmblaCarouselType } from "embla-carousel";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { useRouter } from "next/navigation";
 
+type CollectionProductType = {
+  index: number;
+  id: string;
+};
+
+type CollectionType = {
+  id: string;
+  index: number;
+  title: string;
+  slug: string;
+  campaignDuration: DateRangeType;
+  collectionType: string;
+  bannerImages?: {
+    desktopImage: string;
+    mobileImage: string;
+  };
+  products: CollectionProductType[];
+  visibility: VisibilityType;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type EnrichedProductType = CollectionProductType & {
+  updatedAt: string;
+  visibility: VisibilityType;
+  slug: string;
+  name: string;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  pricing: PricingType;
+};
+
+type EnrichedCollectionType = Omit<CollectionType, "products"> & {
+  products: EnrichedProductType[];
+};
+
 type UsePrevNextButtonsType = {
   prevBtnDisabled: boolean;
   nextBtnDisabled: boolean;
@@ -87,7 +125,7 @@ export const NextButton: React.FC<PropType> = (props) => {
 export function FeaturedProducts({
   collection,
 }: {
-  collection: CollectionType;
+  collection: EnrichedCollectionType; // Ensure this is the enriched type
 }) {
   const router = useRouter();
   const { id, slug, title, products } = collection;
@@ -101,12 +139,6 @@ export function FeaturedProducts({
     onPrevButtonClick,
     onNextButtonClick,
   } = usePrevNextButtons(emblaApi);
-
-  console.log(products); /*
-  { id: '24454', index: 1 },
-  { id: '20709', index: 2 },
-  { id: '60323', index: 3 }
-  */
 
   return (
     <>
@@ -124,7 +156,58 @@ export function FeaturedProducts({
       <div
         className="embla py-1 px-[14px] overflow-hidden relative select-none"
         ref={emblaRef}
-      ></div>
+      >
+        <div className="embla__container select-none w-full flex gap-1 md:gap-0">
+          {products
+            .slice(0, 3)
+            .map(
+              ({ id, index, name, images, pricing }: EnrichedProductType) => (
+                <div
+                  key={index}
+                  className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
+                >
+                  <Link
+                    href={`/${slug}-${id}`}
+                    className="w-full aspect-square rounded-xl flex items-center justify-center overflow-hidden"
+                  >
+                    <Image
+                      src={images.main}
+                      alt={name}
+                      width={1000}
+                      height={1000}
+                      priority={true}
+                    />
+                  </Link>
+                  <div
+                    className="pt-[10px] flex flex-col gap-[6px]"
+                    onClick={() => router.push(`/${slug}-${id}`)}
+                  >
+                    <p className="text-sm line-clamp-1">{name}</p>
+                    <div className="flex items-start justify-between w-full">
+                      <span className="font-semibold w-max h-5">
+                        ${pricing.basePrice}
+                      </span>
+                      {/* <QuickviewButton
+                        onClick={(event) => event.stopPropagation()}
+                        product={{
+                          id,
+                          name,
+                          prici,
+                          mainImage,
+                          images,
+                          description,
+                          colors,
+                          sizes,
+                          slug,
+                        }}
+                      /> */}
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+        </div>
+      </div>
     </>
   );
 }

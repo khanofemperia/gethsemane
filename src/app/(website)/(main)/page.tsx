@@ -37,8 +37,11 @@ type EnrichedProductType = CollectionProductType & {
   visibility: VisibilityType;
   slug: string;
   name: string;
-  images: string[];
-  pricing: any;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  pricing: PricingType;
 };
 
 type EnrichedCollectionType = Omit<CollectionType, "products"> & {
@@ -173,7 +176,7 @@ export default async function Home() {
                     return (
                       <div key={index}>
                         <FeaturedProducts
-                          collection={collection as CollectionType}
+                          collection={collection as EnrichedCollectionType}
                         />
                       </div>
                     );
