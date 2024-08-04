@@ -456,15 +456,26 @@ export async function getUpsell({
   return upsell;
 }
 
-export async function getPageHero(): Promise<PageHeroType | null> {
+export async function getPageHero(): Promise<PageHeroType> {
   const documentRef = doc(database, "pageHero", "homepageHero");
   const snapshot = await getDoc(documentRef);
 
+  const defaultPageHero: Omit<PageHeroType, "id"> = {
+    images: {
+      desktop: "",
+      mobile: "",
+    },
+    title: "",
+    destinationUrl: "",
+    visibility: "HIDDEN",
+  };
+
   if (!snapshot.exists()) {
-    return null;
+    await setDoc(documentRef, defaultPageHero);
+    return { id: documentRef.id, ...defaultPageHero };
   }
 
-  return snapshot.data() as PageHeroType;
+  return { id: snapshot.id, ...(snapshot.data() as Omit<PageHeroType, "id">) };
 }
 
 export async function getCategories(): Promise<CategoryType[] | null> {

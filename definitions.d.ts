@@ -34,20 +34,7 @@ type ImageType = {
   image: string;
 };
 
-type HighlightsType = {
-  headline: string;
-  keyPoints: string[];
-} | null;
-
-// Specific types
-type CategoryType = {
-  id: string;
-  index: number;
-  name: string;
-  image: string;
-  visibility: VisibilityType;
-};
-
+/***************************************************************/
 type CollectionProductType = {
   index: number;
   id: string;
@@ -70,12 +57,15 @@ type CollectionType = {
   updatedAt: string;
 };
 
+/***************************************************************/
 type SettingsType = {
   categorySection: {
     visibility: string;
   };
   [key: string]: any;
 };
+
+/***************************************************************/
 
 type PageHeroType = {
   id: string;
@@ -85,6 +75,15 @@ type PageHeroType = {
   };
   title: string;
   destinationUrl: string;
+  visibility: string;
+};
+
+/***************************************************************/
+type CategoryType = {
+  id: string;
+  index: number;
+  name: string;
+  image: string;
   visibility: VisibilityType;
 };
 
@@ -150,11 +149,7 @@ type ProductType = {
     headline: string;
     keyPoints: KeyPointsType[];
   };
-  pricing: {
-    basePrice: number;
-    salePrice?: number;
-    discountPercentage?: number;
-  };
+  pricing: PricingType;
   images: {
     main: string;
     gallery: string[];

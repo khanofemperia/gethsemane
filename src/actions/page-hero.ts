@@ -5,17 +5,7 @@ import { database } from "@/lib/firebase";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-type PageHeroType = {
-  images: {
-    desktopImage: string | null;
-    mobileImage: string | null;
-  };
-  title: string | null;
-  destinationUrl: string | null;
-  visibility: string;
-};
-
-export async function UpdatePageHeroAction(data: PageHeroType) {
+export async function UpdatePageHeroAction(data: Partial<PageHeroType>) {
   try {
     const { ...updatedPageHeroData } = data;
 

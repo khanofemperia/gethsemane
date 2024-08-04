@@ -200,12 +200,9 @@ export function CategoriesOverlay({
                 <button
                   onClick={onHideOverlay}
                   type="button"
-                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon
-                    className="fill-blue -ml-[2px]"
-                    size={20}
-                  />
+                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
                     Setup categories
                   </span>
@@ -214,10 +211,10 @@ export function CategoriesOverlay({
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700": !loading,
                     }
                   )}
                 >
@@ -233,7 +230,7 @@ export function CategoriesOverlay({
               </div>
               <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-semibold text-sm">Visibility</h2>
+                  <h2 className="text-xs text-gray">Visibility</h2>
                   <div className="px-[10px] py-2 w-full min-[425px]:w-max rounded-md flex gap-4 min-[425px]:gap-4 items-start justify-between bg-lightgray">
                     <div className="text-sm">
                       Display category section on storefront
@@ -269,7 +266,7 @@ export function CategoriesOverlay({
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-semibold text-sm">Categories</h2>
+                  <h2 className="text-xs text-gray">Categories</h2>
                   <div className="flex flex-wrap gap-2">
                     {categories.map(({ index, image, name }, mapIndex) => (
                       <div
@@ -325,10 +322,10 @@ export function CategoriesOverlay({
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-blue-dimmed": !loading,
+                    "bg-neutral-700": !loading,
                   }
                 )}
               >

@@ -66,6 +66,7 @@ export function PageHeroOverlay({
 }) {
   const HIDDEN = "HIDDEN";
   const PUBLISHED = "PUBLISHED";
+  
 
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
@@ -136,13 +137,13 @@ export function PageHeroOverlay({
         setShowAlert(true);
       } else {
         const result = await UpdatePageHeroAction({
-          title: title,
+          title,
           images: {
-            desktopImage: desktopImage,
-            mobileImage: mobileImage,
+            desktop: desktopImage,
+            mobile: mobileImage,
           },
-          destinationUrl: destinationUrl,
-          visibility: visibility,
+          destinationUrl,
+          visibility,
         });
         setAlertMessageType(result.type);
         setAlertMessage(result.message);
@@ -223,7 +224,7 @@ export function PageHeroOverlay({
                   )}
                 </button>
               </div>
-              <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-8 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
+              <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div className="flex flex-col gap-2">
                   <h2 className="text-xs text-gray">Visibility</h2>
                   <div className="px-[10px] py-2 w-full min-[425px]:w-max rounded-md flex gap-4 min-[425px]:gap-4 items-start justify-between bg-lightgray">
