@@ -426,7 +426,7 @@ export function ProductListOverlay({
                                       <td className="px-3 max-w-[200px] min-w-[200px] border-r">
                                         <p className="line-clamp-3">{name}</p>
                                       </td>
-                                      <td className="px-3 max-w-[100px] min-w-[100px] border-r">
+                                      <td className="px-3 max-w-[180px] min-w-[180px] border-r">
                                         {Number(pricing.salePrice) ? (
                                           <div className="flex items-center gap-[6px]">
                                             <span className="font-medium">

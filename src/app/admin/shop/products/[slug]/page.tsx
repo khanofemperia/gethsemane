@@ -327,7 +327,6 @@ export default async function EditProduct({
                   })()}
                 </div>
               </div>
-
               <div className="relative border rounded-xl">
                 <div>
                   {options.colors.length === 0 ||

@@ -103,8 +103,6 @@ export default async function EditCollection({
     products,
   } = updatedCollection as CollectionDataType;
 
-  console.log(updatedCollection);
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
