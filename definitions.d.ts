@@ -48,6 +48,11 @@ type CategoryType = {
   visibility: VisibilityType;
 };
 
+type CollectionProductType = {
+  index: number;
+  id: string;
+};
+
 type CollectionType = {
   id: string;
   index: number;
@@ -59,7 +64,7 @@ type CollectionType = {
     desktopImage: string;
     mobileImage: string;
   };
-  products: ProductType[];
+  products: CollectionProductType[];
   visibility: VisibilityType;
   createdAt: string;
   updatedAt: string;

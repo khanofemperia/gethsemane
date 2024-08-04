@@ -11,7 +11,7 @@ import { database } from "@/lib/firebase";
 
 type BaseOptionsType = {
   fields?: string[];
-  visibility?: string;
+  visibility?: VisibilityType;
 };
 
 type SingleItemOptionsType = {
@@ -19,10 +19,30 @@ type SingleItemOptionsType = {
   fields?: string[];
 };
 
-type SanitizedOptionsType = {
-  id?: string;
+type GetProductsByIdsOptionsType = {
+  ids: string[];
+  fields?: string[];
+  visibility?: VisibilityType;
+};
+
+type SanitizedSingleItemOptionsType = {
+  id: string;
   fields: string[];
-  visibility?: "DRAFT" | "PUBLISHED" | "HIDDEN";
+};
+
+type SanitizedMultiItemOptionsType = {
+  ids: string[];
+  fields: string[];
+  visibility?: VisibilityType;
+};
+
+type VisibilityType = "DRAFT" | "PUBLISHED" | "HIDDEN";
+
+type ProductType = {
+  id: string;
+  updatedAt: string;
+  visibility: VisibilityType;
+  [key: string]: any;
 };
 
 type Sortable = { [key: string]: any };
@@ -41,15 +61,32 @@ function sortItems<T extends Sortable>(
   });
 }
 
-function sanitizeOptions(
-  options: BaseOptionsType | SingleItemOptionsType
-): SanitizedOptionsType {
-  const sanitizedOptions: SanitizedOptionsType = {
+function sanitizeSingleItemOptions(
+  options: SingleItemOptionsType
+): SanitizedSingleItemOptionsType {
+  return {
+    id: options.id.trim(),
+    fields: Array.isArray(options.fields)
+      ? options.fields.filter(
+          (field): field is string =>
+            typeof field === "string" && field.trim() !== ""
+        )
+      : [],
+  };
+}
+
+function sanitizeMultiItemOptions(
+  options: GetProductsByIdsOptionsType
+): SanitizedMultiItemOptionsType {
+  const sanitizedOptions: SanitizedMultiItemOptionsType = {
+    ids: [],
     fields: [],
   };
 
-  if ("id" in options && typeof options.id === "string") {
-    sanitizedOptions.id = options.id.trim();
+  if (Array.isArray(options.ids)) {
+    sanitizedOptions.ids = options.ids.filter(
+      (id): id is string => typeof id === "string" && id.trim() !== ""
+    );
   }
 
   if (Array.isArray(options.fields)) {
@@ -59,18 +96,35 @@ function sanitizeOptions(
     );
   }
 
-  const validVisibilityFlags = ["DRAFT", "PUBLISHED", "HIDDEN"] as const;
-  if ("visibility" in options && typeof options.visibility === "string") {
-    const uppercaseVisibility = options.visibility.toUpperCase();
-    if (validVisibilityFlags.includes(uppercaseVisibility as any)) {
-      sanitizedOptions.visibility = uppercaseVisibility as
-        | "DRAFT"
-        | "PUBLISHED"
-        | "HIDDEN";
+  const validVisibilityFlags: VisibilityType[] = [
+    "DRAFT",
+    "PUBLISHED",
+    "HIDDEN",
+  ];
+  if (typeof options.visibility === "string") {
+    const uppercaseVisibility =
+      options.visibility.toUpperCase() as VisibilityType;
+    if (validVisibilityFlags.includes(uppercaseVisibility)) {
+      sanitizedOptions.visibility = uppercaseVisibility;
     }
   }
 
   return sanitizedOptions;
+}
+
+function sanitizeBaseOptions(
+  options: BaseOptionsType
+): SanitizedMultiItemOptionsType {
+  return {
+    ids: [],
+    fields: Array.isArray(options.fields)
+      ? options.fields.filter(
+          (field): field is string =>
+            typeof field === "string" && field.trim() !== ""
+        )
+      : [],
+    visibility: options.visibility,
+  };
 }
 
 /**
@@ -85,7 +139,7 @@ function sanitizeOptions(
 export async function getProduct(
   options: SingleItemOptionsType
 ): Promise<Partial<ProductType> | null> {
-  const sanitizedOptions = sanitizeOptions(options);
+  const sanitizedOptions = sanitizeSingleItemOptions(options);
   const { id, fields } = sanitizedOptions;
 
   if (!id) {
@@ -132,7 +186,7 @@ export async function getProduct(
 export async function getProducts(
   options: BaseOptionsType = {}
 ): Promise<ProductType[] | null> {
-  const sanitizedOptions = sanitizeOptions(options);
+  const sanitizedOptions = sanitizeBaseOptions(options);
   const { fields, visibility } = sanitizedOptions;
 
   const collectionRef = collection(database, "products");
@@ -142,6 +196,68 @@ export async function getProducts(
   if (visibility) {
     firestoreQuery = query(
       collectionRef,
+      where("visibility", "==", visibility)
+    );
+  }
+
+  const snapshot = await getDocs(firestoreQuery);
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  const products = snapshot.docs.map((doc) => {
+    const data = doc.data();
+    let selectedFields: Partial<ProductType> = {};
+
+    if (fields.length) {
+      fields.forEach((field) => {
+        if (data.hasOwnProperty(field)) {
+          selectedFields[field as keyof ProductType] = data[field];
+        }
+      });
+    } else {
+      selectedFields = data;
+    }
+
+    return {
+      id: doc.id,
+      ...selectedFields,
+      updatedAt: data["updatedAt"],
+      visibility: data["visibility"],
+    } as ProductType;
+  });
+
+  const sortedProducts = sortItems(products, "updatedAt", true);
+  return sortedProducts;
+}
+
+/**
+ * Get multiple products by their IDs. Optionally specify fields and visibility.
+ *
+ * @example
+ * const products = await getProductsByIds({
+ *   ids: ["1", "2", "3"],
+ *   fields: ['id', 'name', 'pricing'],
+ *   visibility: 'PUBLISHED'
+ * });
+ */
+export async function getProductsByIds(
+  options: GetProductsByIdsOptionsType
+): Promise<ProductType[] | null> {
+  const sanitizedOptions = sanitizeMultiItemOptions(options);
+  const { ids, fields, visibility } = sanitizedOptions;
+
+  if (!ids || ids.length === 0) {
+    return null;
+  }
+
+  const productsRef = collection(database, "products");
+  let firestoreQuery = query(productsRef, where("__name__", "in", ids));
+
+  if (visibility) {
+    firestoreQuery = query(
+      firestoreQuery,
       where("visibility", "==", visibility)
     );
   }
@@ -190,7 +306,7 @@ export async function getProducts(
 export async function getCollection(
   options: SingleItemOptionsType
 ): Promise<Partial<CollectionType> | null> {
-  const sanitizedOptions = sanitizeOptions(options);
+  const sanitizedOptions = sanitizeSingleItemOptions(options);
   const { id, fields } = sanitizedOptions;
 
   if (!id) {
@@ -237,7 +353,7 @@ export async function getCollection(
 export async function getCollections(
   options: BaseOptionsType = {}
 ): Promise<Partial<CollectionType>[] | null> {
-  const sanitizedOptions = sanitizeOptions(options);
+  const sanitizedOptions = sanitizeBaseOptions(options);
   const { fields, visibility } = sanitizedOptions;
 
   const firestoreCollectionRef = collection(database, "collections");
