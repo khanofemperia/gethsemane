@@ -42,7 +42,7 @@ export function ChangeCollectionIndexButton({
   return (
     <button
       onClick={handleClick}
-      className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray"
+      className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray lg:hover:bg-lightgray"
     >
       <ChangeIndexIcon size={18} />
     </button>
