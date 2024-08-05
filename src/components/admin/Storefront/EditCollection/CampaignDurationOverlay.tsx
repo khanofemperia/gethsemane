@@ -148,12 +148,9 @@ export function CampaignDurationOverlay({
                 <button
                   onClick={onHideOverlay}
                   type="button"
-                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon
-                    className="fill-blue -ml-[2px]"
-                    size={20}
-                  />
+                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
                     Campaign duration
                   </span>
@@ -162,10 +159,10 @@ export function CampaignDurationOverlay({
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700/85": !loading,
                     }
                   )}
                 >
@@ -182,7 +179,7 @@ export function CampaignDurationOverlay({
               <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div className="w-full flex flex-col gap-5">
                   <div>
-                    <h2 className="text-sm font-semibold mx-auto mb-2 w-max">
+                    <h2 className="text-xs text-gray mx-auto mb-2 w-max">
                       Launch
                     </h2>
                     <div className="mx-auto border rounded-md overflow-hidden w-max text-center">
@@ -195,7 +192,7 @@ export function CampaignDurationOverlay({
                     </div>
                   </div>
                   <div>
-                    <h2 className="text-sm font-semibold mx-auto mb-2 w-max">
+                    <h2 className="text-xs text-gray mx-auto mb-2 w-max">
                       End date
                     </h2>
                     <div className="mx-auto border rounded-md overflow-hidden w-max text-center">
@@ -215,10 +212,10 @@ export function CampaignDurationOverlay({
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-blue-dimmed": !loading,
+                    "active:bg-neutral-700/85": !loading,
                   }
                 )}
               >

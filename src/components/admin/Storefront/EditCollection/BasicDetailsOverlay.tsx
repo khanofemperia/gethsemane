@@ -130,12 +130,9 @@ export function BasicDetailsOverlay({
                 <button
                   onClick={onHideOverlay}
                   type="button"
-                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                  className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon
-                    className="fill-blue -ml-[2px]"
-                    size={20}
-                  />
+                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
                     Basic details
                   </span>
@@ -144,10 +141,10 @@ export function BasicDetailsOverlay({
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700/85": !loading,
                     }
                   )}
                 >
@@ -163,7 +160,7 @@ export function BasicDetailsOverlay({
               </div>
               <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="title" className="font-semibold text-sm">
+                  <label htmlFor="title" className="text-xs text-gray">
                     Title
                   </label>
                   <div className="w-full h-9 relative">
@@ -173,13 +170,13 @@ export function BasicDetailsOverlay({
                       placeholder={`Belle Jolie Lipstick - She "Marks" Her Man with Her Lips`}
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                       required
                     />
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="slug" className="font-semibold text-sm">
+                  <label htmlFor="slug" className="text-xs text-gray">
                     Slug
                   </label>
                   <div className="w-full h-9 relative">
@@ -194,7 +191,7 @@ export function BasicDetailsOverlay({
                           .toLowerCase();
                         setSlug(sanitizedValue);
                       }}
-                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-blue"
+                      className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                       required
                     />
                   </div>
@@ -206,10 +203,10 @@ export function BasicDetailsOverlay({
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-blue-dimmed": !loading,
+                    "active:bg-neutral-700/85": !loading,
                   }
                 )}
               >

@@ -330,48 +330,58 @@ export default async function EditCollection({
           bannerImages.desktopImage &&
           bannerImages.mobileImage && (
             <div>
-              <p className="text-sm mb-4 md:max-w-[85%]">
-                description goes here...
-              </p>
-              <div className="w-full shadow rounded-xl bg-white">
-                <div className="w-full h-14 border-b flex items-center justify-between pl-5 pr-[10px]">
-                  <h2 className="font-semibold text-xl">Images</h2>
-                  <BannerImagesButton />
-                </div>
-                <div className="flex flex-col gap-5 p-5 pt-4">
-                  <div>
-                    <h3 className="mb-2 font-medium text-sm text-gray">
-                      Desktop (1440x360 px)
-                    </h3>
-                    <div className="w-full rounded-xl flex items-center justify-center overflow-hidden">
-                      {isValidRemoteImage(bannerImages?.desktopImage) && (
-                        <Image
-                          src={bannerImages?.desktopImage}
-                          alt={title}
-                          width={766}
-                          height={308}
-                          priority={true}
-                        />
-                      )}
+              <div className="mb-6">
+                <h2 className="font-semibold text-xl mb-3">Banner image</h2>
+                <p className="text-sm md:max-w-[85%]">
+                  Create a banner that demands attention. Bold imagery and a
+                  strong call-to-action can turn passive viewers into active
+                  customers.
+                </p>
+              </div>
+              <div className="w-full relative p-5 pr-2 flex items-center justify-between shadow rounded-xl bg-white">
+                {products.length > 0 ? (
+                  <div className="w-[calc(100%-60px)] flex flex-col gap-8">
+                    <div>
+                      <h3 className="text-xs text-gray mb-4">
+                        Desktop (1440x360 px)
+                      </h3>
+                      <div className="w-full rounded-xl flex items-center justify-center overflow-hidden">
+                        {isValidRemoteImage(bannerImages?.desktopImage) && (
+                          <Image
+                            src={bannerImages?.desktopImage}
+                            alt={title}
+                            width={766}
+                            height={308}
+                            priority={true}
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xs text-gray mb-4">
+                        Mobile (1080x1080 px)
+                      </h3>
+                      <div className="w-full max-w-[416px] aspect-square rounded-xl flex items-center justify-center overflow-hidden">
+                        {isValidRemoteImage(bannerImages?.mobileImage) && (
+                          <Image
+                            src={bannerImages?.mobileImage}
+                            alt={title}
+                            width={766}
+                            height={308}
+                            priority={true}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="mb-2 font-medium text-sm text-gray">
-                      Mobile (1080x1080 px)
-                    </h3>
-                    <div className="w-full max-w-[416px] aspect-square rounded-xl flex items-center justify-center overflow-hidden">
-                      {isValidRemoteImage(bannerImages?.mobileImage) && (
-                        <Image
-                          src={bannerImages?.mobileImage}
-                          alt={title}
-                          width={766}
-                          height={308}
-                          priority={true}
-                        />
-                      )}
-                    </div>
-                  </div>
-                </div>
+                ) : (
+                  <span className="text-xs text-gray">Nothing here</span>
+                )}
+                <BannerImagesButton
+                  className={clsx({
+                    "absolute top-2 right-2": products.length > 0,
+                  })}
+                />
               </div>
             </div>
           )}
@@ -441,9 +451,8 @@ export default async function EditCollection({
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Visibility</h2>
             <p className="text-sm md:max-w-[85%]">
-              Choose whether the collection is a work-in-progress (draft) or
-              ready to be seen (published), and decide if you want shoppers to
-              see it or keep it private (hidden).
+              Published or hidden? Choose if your creation is visible on the
+              public website.
             </p>
           </div>
           <div className="w-full max-w-[400px] relative shadow rounded-xl bg-white">

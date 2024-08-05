@@ -618,9 +618,8 @@ export default async function EditProduct({
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Visibility</h2>
             <p className="text-sm md:max-w-[85%]">
-              Choose whether the product is a work-in-progress (draft) or ready
-              to be seen (published), and decide if you want shoppers to see it
-              or keep it private (hidden).
+              Published or hidden? Choose if your creation is visible on the
+              public website.
             </p>
           </div>
           <div className="w-full max-w-[400px] relative shadow rounded-xl bg-white">

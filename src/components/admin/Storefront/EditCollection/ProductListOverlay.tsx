@@ -295,7 +295,7 @@ export function ProductListOverlay({
                   <button
                     onClick={onHideOverlay}
                     type="button"
-                    className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                    className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                   >
                     <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                     <span className="font-semibold text-sm text-blue">
@@ -423,8 +423,8 @@ export function ProductListOverlay({
                                           />
                                         </div>
                                       </td>
-                                      <td className="px-3 max-w-[200px] min-w-[200px] border-r">
-                                        <p className="line-clamp-3">{name}</p>
+                                      <td className="px-3 max-w-[180px] min-w-[180px] border-r">
+                                        <p className="line-clamp-2">{name}</p>
                                       </td>
                                       <td className="px-3 max-w-[180px] min-w-[180px] border-r">
                                         {Number(pricing.salePrice) ? (
@@ -454,7 +454,7 @@ export function ProductListOverlay({
                                           </p>
                                         )}
                                       </td>
-                                      <td className="px-3 max-w-[116px] min-w-[116px] border-r">
+                                      <td className="px-3 max-w-[150px] min-w-[150px] border-r">
                                         {visibility.toUpperCase() ===
                                         PUBLISHED ? (
                                           <p className="px-3 rounded-full h-6 w-max flex gap-1 items-center bg-green/10 border border-green/15 text-green">
@@ -470,7 +470,7 @@ export function ProductListOverlay({
                                           </p>
                                         )}
                                       </td>
-                                      <td className="px-3 max-w-[140px] min-w-[140px]">
+                                      <td className="px-3 max-w-[150px] min-w-[150px]">
                                         <div className="flex items-center justify-center">
                                           <Link
                                             href={`/admin/shop/products/${slug}-${id}`}
