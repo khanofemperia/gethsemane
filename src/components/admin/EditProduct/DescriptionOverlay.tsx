@@ -132,7 +132,7 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
                   hideOverlay({ pageName, overlayName });
                 }}
                 type="button"
-                className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray"
+                className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
               >
                 <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                 <span className="md:hidden font-semibold text-sm text-blue">
