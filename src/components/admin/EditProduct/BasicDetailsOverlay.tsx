@@ -370,12 +370,12 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                         <input
                           type="text"
                           id="discountPercentage"
-                          placeholder="--"
                           value={discountPercentage}
+                          placeholder="--"
                           onChange={(e) =>
                             setDiscountPercentage(e.target.value)
                           }
-                          className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
+                          className="w-full h-9 px-3 rounded-md placeholder:text-black transition duration-300 ease-in-out border focus:border-neutral-400"
                           required
                         />
                       </div>
