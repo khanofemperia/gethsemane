@@ -2,7 +2,7 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { capitalizeFirstLetter } from "@/lib/utils";
-import { FormEvent, useState, useEffect, useRef } from "react";
+import { FormEvent, useState, useEffect, useRef, ChangeEvent } from "react";
 import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, ChevronDownIcon, CloseIcon, EditIcon } from "@/icons";
@@ -88,39 +88,6 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   }, []);
 
   useEffect(() => {
-    calculateSalePrice(discountPercentage);
-  }, [basePrice, discountPercentage]);
-
-  const handleDiscountPercentageChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = event.target.value;
-    if (value === "" || /^[0-9]+$/.test(value)) {
-      setDiscountPercentage(value);
-      calculateSalePrice(value);
-    }
-  };
-
-  const calculateSalePrice = (discount: string) => {
-    const discountValue = parseInt(discount, 10);
-
-    if (isNaN(discountValue) || discountValue === 0) {
-      setSalePrice(0);
-    } else if (discountValue >= 0 && discountValue <= 100) {
-      const rawSalePrice = basePrice * (1 - discountValue / 100);
-
-      // Round down to the nearest .99
-      const roundedSalePrice =
-        rawSalePrice === 0 ? 0 : Math.floor(rawSalePrice) + 0.99;
-
-      // Format to two decimal places
-      const formattedSalePrice = Number(roundedSalePrice.toFixed(2));
-
-      setSalePrice(formattedSalePrice);
-    }
-  };
-
-  useEffect(() => {
     if (isOverlayVisible || showAlert) {
       document.body.style.overflow = "hidden";
     } else {
@@ -153,6 +120,33 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (basePrice === 0) {
+      setSalePrice(0);
+      setDiscountPercentage("");
+    } else {
+      calculateSalePrice(discountPercentage);
+    }
+  }, [basePrice, discountPercentage]);
+
+  const calculateSalePrice = (discount: string) => {
+    const discountValue = parseInt(discount, 10);
+
+    if (
+      basePrice === 0 ||
+      isNaN(discountValue) ||
+      discountValue <= 0 ||
+      discountValue >= 100
+    ) {
+      setSalePrice(0);
+    } else {
+      const rawSalePrice = basePrice * (1 - discountValue / 100);
+      const roundedSalePrice = Math.floor(rawSalePrice) + 0.99;
+      const formattedSalePrice = Number(roundedSalePrice.toFixed(2));
+      setSalePrice(formattedSalePrice);
+    }
+  };
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -206,6 +200,25 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   const handleSlugChange = (value: string) => {
     const sanitizedSlug = value.replace(/[^a-zA-Z0-9-]/g, "").toLowerCase();
     setSlug(sanitizedSlug);
+  };
+
+  const handleBasePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+
+    if (value === "") {
+      setBasePrice(0);
+    } else if (/^\d*\.?\d*$/.test(value)) {
+      setBasePrice(parseFloat(value) || 0);
+    }
+  };
+
+  const handleDiscountPercentageChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    if (/^\d*$/.test(value)) {
+      setDiscountPercentage(value);
+    }
   };
 
   return (
@@ -346,8 +359,8 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                           type="text"
                           id="basePrice"
                           placeholder="34.99"
-                          value={basePrice}
-                          onChange={(e) => setBasePrice(Number(e.target.value))}
+                          value={basePrice === 0 ? "" : basePrice.toString()}
+                          onChange={handleBasePriceChange}
                           className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                           required
                         />
@@ -356,7 +369,11 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                     <div className="flex flex-col gap-2">
                       <h2 className="text-xs text-gray">Sale price</h2>
                       <div className="w-full h-9 px-3 flex items-center rounded-md cursor-context-menu border bg-neutral-100">
-                        {salePrice > 0 ? `${salePrice.toFixed(2)}` : "--"}
+                        {salePrice > 0 &&
+                        parseInt(discountPercentage, 10) > 0 &&
+                        parseInt(discountPercentage, 10) < 100
+                          ? `${salePrice.toFixed(2)}`
+                          : "--"}
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
@@ -372,9 +389,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                           id="discountPercentage"
                           value={discountPercentage}
                           placeholder="--"
-                          onChange={(e) =>
-                            setDiscountPercentage(e.target.value)
-                          }
+                          onChange={handleDiscountPercentageChange}
                           className="w-full h-9 px-3 rounded-md placeholder:text-black transition duration-300 ease-in-out border focus:border-neutral-400"
                           required
                         />
