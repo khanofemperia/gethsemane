@@ -55,13 +55,13 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [name, setName] = useState(data.name);
   const [slug, setSlug] = useState(data.slug);
-  const [basePrice, setBasePrice] = useState(data.pricing.basePrice);
+  const [basePrice, setBasePrice] = useState(
+    data.pricing.basePrice.toString() || ""
+  );
   const [salePrice, setSalePrice] = useState(data.pricing.salePrice || 0);
   const [discountPercentage, setDiscountPercentage] = useState(
     data.pricing.discountPercentage || 0
   );
-
-  console.log(data.pricing);
 
   const categoryRef = useRef<HTMLDivElement>(null);
 
@@ -124,7 +124,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   }, []);
 
   useEffect(() => {
-    if (basePrice === 0) {
+    if (basePrice === "" || basePrice === "0") {
       setSalePrice(0);
       setDiscountPercentage(0);
     } else {
@@ -134,14 +134,15 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
 
   const calculateSalePrice = (discount: number) => {
     if (
-      basePrice === 0 ||
+      basePrice === "" ||
+      basePrice === "0" ||
       isNaN(discount) ||
       discount <= 0 ||
       discount >= 100
     ) {
       setSalePrice(0);
     } else {
-      const rawSalePrice = basePrice * (1 - discount / 100);
+      const rawSalePrice = Number(basePrice) * (1 - discount / 100);
       const roundedSalePrice = Math.floor(rawSalePrice) + 0.99;
       const formattedSalePrice = Number(roundedSalePrice.toFixed(2));
       setSalePrice(formattedSalePrice);
@@ -175,7 +176,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
       name,
       slug,
       pricing: {
-        basePrice,
+        basePrice: Number(basePrice),
         salePrice,
         discountPercentage,
       },
@@ -203,13 +204,8 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   };
 
   const handleBasePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-
-    if (value === "") {
-      setBasePrice(0);
-    } else {
-      setBasePrice(parseFloat(value) || 0);
-    }
+    const value = event.target.value.replace(/[^\d.]/g, "");
+    setBasePrice(value);
   };
 
   const handleDiscountPercentageChange = (
@@ -363,7 +359,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                           type="text"
                           id="basePrice"
                           placeholder="34.99"
-                          value={basePrice === 0 ? "" : basePrice.toString()}
+                          value={basePrice}
                           onChange={handleBasePriceChange}
                           className="w-full h-9 px-3 rounded-md transition duration-300 ease-in-out border focus:border-neutral-400"
                           required

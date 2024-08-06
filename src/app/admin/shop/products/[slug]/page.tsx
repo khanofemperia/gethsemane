@@ -89,7 +89,6 @@ export default async function EditProduct({
   ) {
     if (!upsell) return null;
 
-    // Use sale price if available, otherwise use base price
     const originalPrice =
       Number(currentProduct.salePrice) || Number(currentProduct.basePrice);
     const upsellPrice =
@@ -99,7 +98,7 @@ export default async function EditProduct({
     const percentageIncrease = (additionalSpend / originalPrice) * 100;
 
     return {
-      additionalSpend: additionalSpend.toFixed(2),
+      additionalSpend: Math.round(additionalSpend).toFixed(2),
       percentageIncrease: percentageIncrease.toFixed(0),
     };
   }
