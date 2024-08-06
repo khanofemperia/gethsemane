@@ -58,8 +58,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   const [basePrice, setBasePrice] = useState(data.pricing.basePrice);
   const [salePrice, setSalePrice] = useState(data.pricing.salePrice || 0);
   const [discountPercentage, setDiscountPercentage] = useState(
-    data.pricing.discountPercentage?.toString() || ""
+    data.pricing.discountPercentage || 0
   );
+
+  console.log(data.pricing);
 
   const categoryRef = useRef<HTMLDivElement>(null);
 
@@ -124,24 +126,22 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   useEffect(() => {
     if (basePrice === 0) {
       setSalePrice(0);
-      setDiscountPercentage("");
+      setDiscountPercentage(0);
     } else {
       calculateSalePrice(discountPercentage);
     }
   }, [basePrice, discountPercentage]);
 
-  const calculateSalePrice = (discount: string) => {
-    const discountValue = parseInt(discount, 10);
-
+  const calculateSalePrice = (discount: number) => {
     if (
       basePrice === 0 ||
-      isNaN(discountValue) ||
-      discountValue <= 0 ||
-      discountValue >= 100
+      isNaN(discount) ||
+      discount <= 0 ||
+      discount >= 100
     ) {
       setSalePrice(0);
     } else {
-      const rawSalePrice = basePrice * (1 - discountValue / 100);
+      const rawSalePrice = basePrice * (1 - discount / 100);
       const roundedSalePrice = Math.floor(rawSalePrice) + 0.99;
       const formattedSalePrice = Number(roundedSalePrice.toFixed(2));
       setSalePrice(formattedSalePrice);
@@ -177,7 +177,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
       pricing: {
         basePrice,
         salePrice,
-        discountPercentage: parseInt(discountPercentage, 10),
+        discountPercentage,
       },
     };
 
@@ -207,7 +207,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
 
     if (value === "") {
       setBasePrice(0);
-    } else if (/^\d*\.?\d*$/.test(value)) {
+    } else {
       setBasePrice(parseFloat(value) || 0);
     }
   };
@@ -217,7 +217,11 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   ) => {
     const value = event.target.value;
     if (/^\d*$/.test(value)) {
-      setDiscountPercentage(value);
+      if (value === "") {
+        setDiscountPercentage(0);
+      } else {
+        setDiscountPercentage(parseInt(value) || 0);
+      }
     }
   };
 
@@ -370,8 +374,8 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                       <h2 className="text-xs text-gray">Sale price</h2>
                       <div className="w-full h-9 px-3 flex items-center rounded-md cursor-context-menu border bg-neutral-100">
                         {salePrice > 0 &&
-                        parseInt(discountPercentage, 10) > 0 &&
-                        parseInt(discountPercentage, 10) < 100
+                        discountPercentage > 0 &&
+                        discountPercentage < 100
                           ? `${salePrice.toFixed(2)}`
                           : "--"}
                       </div>
@@ -387,7 +391,11 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                         <input
                           type="text"
                           id="discountPercentage"
-                          value={discountPercentage}
+                          value={
+                            discountPercentage === 0
+                              ? ""
+                              : discountPercentage.toString()
+                          }
                           placeholder="--"
                           onChange={handleDiscountPercentageChange}
                           className="w-full h-9 px-3 rounded-md placeholder:text-black transition duration-300 ease-in-out border focus:border-neutral-400"
