@@ -339,47 +339,43 @@ export default async function EditCollection({
                 </p>
               </div>
               <div className="w-full relative p-5 pr-2 flex items-center justify-between shadow rounded-xl bg-white">
-                {products.length > 0 ? (
-                  <div className="w-[calc(100%-60px)] flex flex-col gap-8">
-                    <div>
-                      <h3 className="text-xs text-gray mb-4">
-                        Desktop (1440x360 px)
-                      </h3>
-                      <div className="w-full rounded-xl flex items-center justify-center overflow-hidden">
-                        {isValidRemoteImage(bannerImages?.desktopImage) && (
-                          <Image
-                            src={bannerImages?.desktopImage}
-                            alt={title}
-                            width={766}
-                            height={308}
-                            priority={true}
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xs text-gray mb-4">
-                        Mobile (1080x1080 px)
-                      </h3>
-                      <div className="w-full max-w-[416px] aspect-square rounded-xl flex items-center justify-center overflow-hidden">
-                        {isValidRemoteImage(bannerImages?.mobileImage) && (
-                          <Image
-                            src={bannerImages?.mobileImage}
-                            alt={title}
-                            width={766}
-                            height={308}
-                            priority={true}
-                          />
-                        )}
-                      </div>
+                <div className="w-[calc(100%-60px)] flex flex-col gap-8">
+                  <div>
+                    <h3 className="text-xs text-gray mb-4">
+                      Desktop (1440x360 px)
+                    </h3>
+                    <div className="w-full rounded-xl flex items-center justify-center overflow-hidden">
+                      {isValidRemoteImage(bannerImages?.desktopImage) && (
+                        <Image
+                          src={bannerImages?.desktopImage}
+                          alt={title}
+                          width={766}
+                          height={308}
+                          priority={true}
+                        />
+                      )}
                     </div>
                   </div>
-                ) : (
-                  <span className="text-xs text-gray">Nothing here</span>
-                )}
+                  <div>
+                    <h3 className="text-xs text-gray mb-4">
+                      Mobile (1080x1080 px)
+                    </h3>
+                    <div className="w-full max-w-[416px] aspect-square rounded-xl flex items-center justify-center overflow-hidden">
+                      {isValidRemoteImage(bannerImages?.mobileImage) && (
+                        <Image
+                          src={bannerImages?.mobileImage}
+                          alt={title}
+                          width={766}
+                          height={308}
+                          priority={true}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
                 <BannerImagesButton
                   className={clsx({
-                    "absolute top-2 right-2": products.length > 0,
+                    "absolute top-2 right-2": true, // Changed from products.length > 0 to true
                   })}
                 />
               </div>
