@@ -51,8 +51,8 @@ export const useOverlayStore = createWithEqualityFn<OverlayStoreProps>(
             name: "mainImage",
             isVisible: false,
           },
-          images: {
-            name: "images",
+          imageGallery: {
+            name: "imageGallery",
             isVisible: false,
           },
           sizes: {

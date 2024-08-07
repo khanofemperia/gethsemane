@@ -220,7 +220,7 @@ export function BannerImagesOverlay({
                             onChange={(e) =>
                               setBannerDesktopImage(e.target.value)
                             }
-                            className="h-full w-full px-3 text-gray"
+                            className="h-full w-full px-3 text-sm text-gray"
                           />
                         </div>
                       </div>
@@ -264,7 +264,7 @@ export function BannerImagesOverlay({
                             onChange={(e) =>
                               setBannerMobileImage(e.target.value)
                             }
-                            className="h-full w-full px-3 text-gray"
+                            className="h-full w-full px-3 text-sm text-gray"
                           />
                         </div>
                       </div>

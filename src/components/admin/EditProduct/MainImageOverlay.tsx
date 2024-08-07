@@ -189,7 +189,7 @@ export function MainImageOverlay({ data }: { data: DataType }) {
                           placeholder="Paste image URL"
                           value={mainImage}
                           onChange={handleInputChange}
-                          className="h-full w-full px-3 text-gray"
+                          className="h-full w-full px-3 text-sm text-gray"
                         />
                       </div>
                     </div>

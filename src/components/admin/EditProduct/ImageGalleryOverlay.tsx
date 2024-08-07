@@ -21,12 +21,12 @@ type DataType = {
   };
 };
 
-export function ImagesButton() {
+export function ImageGalleryButton() {
   const { showOverlay } = useOverlayStore();
 
   const { pageName, overlayName } = useOverlayStore((state) => ({
     pageName: state.pages.editProduct.name,
-    overlayName: state.pages.editProduct.overlays.images.name,
+    overlayName: state.pages.editProduct.overlays.imageGallery.name,
   }));
 
   return (
@@ -40,7 +40,7 @@ export function ImagesButton() {
   );
 }
 
-export function ImagesOverlay({ data }: { data: DataType }) {
+export function ImageGalleryOverlay({ data }: { data: DataType }) {
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
@@ -54,8 +54,8 @@ export function ImagesOverlay({ data }: { data: DataType }) {
   const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
     (state) => ({
       pageName: state.pages.editProduct.name,
-      overlayName: state.pages.editProduct.overlays.images.name,
-      isOverlayVisible: state.pages.editProduct.overlays.images.isVisible,
+      overlayName: state.pages.editProduct.overlays.imageGallery.name,
+      isOverlayVisible: state.pages.editProduct.overlays.imageGallery.isVisible,
     })
   );
 

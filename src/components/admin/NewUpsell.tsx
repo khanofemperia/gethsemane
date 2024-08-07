@@ -545,7 +545,7 @@ export function NewUpsellOverlay() {
                           placeholder="Paste image URL"
                           value={mainImage}
                           onChange={(e) => setMainImage(e.target.value)}
-                          className="h-full w-full px-3 text-gray"
+                          className="h-full w-full px-3 text-sm text-gray"
                         />
                       </div>
                     </div>

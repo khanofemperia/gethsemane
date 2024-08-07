@@ -11,9 +11,9 @@ import {
   MainImageOverlay,
 } from "@/components/admin/EditProduct/MainImageOverlay";
 import {
-  ImagesButton,
-  ImagesOverlay,
-} from "@/components/admin/EditProduct/ImagesOverlay";
+  ImageGalleryButton,
+  ImageGalleryOverlay,
+} from "@/components/admin/EditProduct/ImageGalleryOverlay";
 import {
   VisibilityButton,
   VisibilityOverlay,
@@ -233,12 +233,12 @@ export default async function EditProduct({
                   ) ? (
                     <div className="w-full flex items-center justify-between p-5 pr-2">
                       <span className="text-xs text-gray">No gallery</span>
-                      <ImagesButton />
+                      <ImageGalleryButton />
                     </div>
                   ) : (
                     <div className="w-full flex items-center justify-between pl-5 pr-2 py-2">
                       <span className="text-xs text-gray">Gallery</span>
-                      <ImagesButton />
+                      <ImageGalleryButton />
                     </div>
                   )}
                 </div>
@@ -635,7 +635,7 @@ export default async function EditProduct({
       <OnPageSeoOverlay data={{ id, seo }} />
       <ProductSourceOverlay data={{ id, sourceInfo }} />
       <MainImageOverlay data={{ id, images }} />
-      <ImagesOverlay data={{ id, images }} />
+      <ImageGalleryOverlay data={{ id, images }} />
       <ColorsOverlay data={{ id, colors: options.colors }} />
       <SizeChartOverlay
         data={{
