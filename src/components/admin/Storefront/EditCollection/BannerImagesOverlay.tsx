@@ -160,10 +160,10 @@ export function BannerImagesOverlay({
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700/85": !loading,
                     }
                   )}
                 >
@@ -179,7 +179,7 @@ export function BannerImagesOverlay({
               </div>
               <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-semibold text-sm">Images</h2>
+                  <h2 className="text-xs text-gray">Images</h2>
                   <div className="p-5 rounded-md border flex flex-col gap-5">
                     <div className="flex flex-col gap-2">
                       <h2 className="text-xs text-gray">
@@ -278,10 +278,10 @@ export function BannerImagesOverlay({
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-blue-dimmed": !loading,
+                    "active:bg-neutral-700/85": !loading,
                   }
                 )}
               >

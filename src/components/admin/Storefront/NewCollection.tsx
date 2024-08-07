@@ -270,10 +270,10 @@ export function NewCollectionOverlay() {
                   onClick={handleSave}
                   disabled={loading}
                   className={clsx(
-                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                    "relative h-9 w-max px-4 rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                     {
                       "bg-opacity-50": loading,
-                      "active:bg-blue-dimmed": !loading,
+                      "active:bg-neutral-700/85": !loading,
                     }
                   )}
                 >
@@ -289,7 +289,7 @@ export function NewCollectionOverlay() {
               </div>
               <div className="w-full h-full mt-[52px] md:mt-0 px-5 pt-5 pb-28 md:pb-10 flex flex-col gap-5 overflow-x-hidden overflow-y-visible invisible-scrollbar md:overflow-hidden">
                 <div className="flex flex-col gap-2">
-                  <h2 className="font-semibold text-sm">Type</h2>
+                  <h2 className="text-xs text-gray">Type</h2>
                   <div ref={collectionTypeRef} className="w-full h-9 relative">
                     <button
                       onClick={() =>
@@ -334,7 +334,7 @@ export function NewCollectionOverlay() {
                   </div>
                 </div>
                 <div>
-                  <h2 className="font-semibold text-sm">Campaign duration</h2>
+                  <h2 className="text-xs text-gray">Campaign duration</h2>
                   <div className="flex flex-col min-[478px]:flex-row items-start gap-3 mt-4">
                     <div
                       className={clsx(
@@ -344,7 +344,7 @@ export function NewCollectionOverlay() {
                         }
                       )}
                     >
-                      <span className="w-max text-nowrap font-semibold text-sm text-gray">
+                      <span className="w-max text-nowrap text-sm text-gray">
                         Launch
                       </span>
                       <DatePicker
@@ -362,7 +362,7 @@ export function NewCollectionOverlay() {
                         }
                       )}
                     >
-                      <span className="w-max text-nowrap font-semibold text-sm text-gray">
+                      <span className="w-max text-nowrap text-sm text-gray">
                         End date
                       </span>
                       <DatePicker
@@ -375,7 +375,7 @@ export function NewCollectionOverlay() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="title" className="font-semibold text-sm">
+                  <label htmlFor="title" className="text-xs text-gray">
                     Title
                   </label>
                   <div className="w-full h-9 relative">
@@ -391,7 +391,7 @@ export function NewCollectionOverlay() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="slug" className="font-semibold text-sm">
+                  <label htmlFor="slug" className="text-xs text-gray">
                     Slug
                   </label>
                   <div className="w-full h-9 relative">
@@ -413,7 +413,7 @@ export function NewCollectionOverlay() {
                 </div>
                 {selectedCollectionType === BANNER && (
                   <div className="flex flex-col gap-2">
-                    <h2 className="font-semibold text-sm">Images</h2>
+                    <h2 className="text-xs text-gray">Images</h2>
                     <div className="p-5 rounded-md border flex flex-col gap-5">
                       <div className="flex flex-col gap-2">
                         <h2 className="text-xs text-gray">
@@ -519,10 +519,10 @@ export function NewCollectionOverlay() {
                 onClick={handleSave}
                 disabled={loading}
                 className={clsx(
-                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-blue",
+                  "relative h-12 w-full rounded-full overflow-hidden transition duration-300 ease-in-out text-white bg-neutral-700",
                   {
                     "bg-opacity-50": loading,
-                    "active:bg-blue-dimmed": !loading,
+                    "active:bg-neutral-700/85": !loading,
                   }
                 )}
               >
