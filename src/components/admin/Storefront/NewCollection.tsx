@@ -344,7 +344,7 @@ export function NewCollectionOverlay() {
                         }
                       )}
                     >
-                      <span className="w-max text-nowrap text-sm text-gray">
+                      <span className="w-max text-nowrap text-xs text-gray">
                         Launch
                       </span>
                       <DatePicker
@@ -362,7 +362,7 @@ export function NewCollectionOverlay() {
                         }
                       )}
                     >
-                      <span className="w-max text-nowrap text-sm text-gray">
+                      <span className="w-max text-nowrap text-xs text-gray">
                         End date
                       </span>
                       <DatePicker
