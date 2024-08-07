@@ -1,6 +1,5 @@
 import DataChip from "@/ui/DataChip";
 import {
-  capitalizeFirstLetter,
   formatThousands,
   isValidRemoteImage,
 } from "@/lib/utils";
@@ -331,7 +330,7 @@ export default async function EditCollection({
           bannerImages.mobileImage && (
             <div>
               <div className="mb-6">
-                <h2 className="font-semibold text-xl mb-3">Banner image</h2>
+                <h2 className="font-semibold text-xl mb-3">Banner images</h2>
                 <p className="text-sm md:max-w-[85%]">
                   Create a banner that demands attention. Bold imagery and a
                   strong call-to-action can turn passive viewers into active

@@ -135,7 +135,7 @@ export function BannerImagesOverlay({
             <div className="w-full h-[calc(100vh-188px)] md:h-auto">
               <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
                 <div className="relative flex justify-center items-center w-full h-7">
-                  <h2 className="font-semibold text-lg">Basic details</h2>
+                  <h2 className="font-semibold text-lg">Banner images</h2>
                   <button
                     onClick={onHideOverlay}
                     type="button"
@@ -153,7 +153,7 @@ export function BannerImagesOverlay({
                 >
                   <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
                   <span className="font-semibold text-sm text-blue">
-                    Basic details
+                    Banner images
                   </span>
                 </button>
                 <button
