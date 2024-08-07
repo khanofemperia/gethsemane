@@ -182,7 +182,7 @@ export function BannerImagesOverlay({
                   <h2 className="font-semibold text-sm">Images</h2>
                   <div className="p-5 rounded-md border flex flex-col gap-5">
                     <div className="flex flex-col gap-2">
-                      <h2 className="font-medium text-sm text-gray">
+                      <h2 className="text-xs text-gray">
                         Desktop (1440x360 px)
                       </h2>
                       <div className="w-full border rounded-md overflow-hidden">
@@ -226,7 +226,7 @@ export function BannerImagesOverlay({
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <h2 className="font-medium text-sm text-gray">
+                      <h2 className="text-xs text-gray">
                         Mobile (1080x1080 px)
                       </h2>
                       <div className="w-full max-w-[416px] border rounded-md overflow-hidden">
