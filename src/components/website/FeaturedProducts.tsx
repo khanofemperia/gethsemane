@@ -8,6 +8,7 @@ import { ComponentPropsWithRef, useCallback, useEffect, useState } from "react";
 import { EmblaCarouselType } from "embla-carousel";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { useRouter } from "next/navigation";
+import { formatThousands } from "@/lib/utils";
 
 type CollectionProductType = {
   index: number;
@@ -125,20 +126,13 @@ export const NextButton: React.FC<PropType> = (props) => {
 export function FeaturedProducts({
   collection,
 }: {
-  collection: EnrichedCollectionType; // Ensure this is the enriched type
+  collection: EnrichedCollectionType;
 }) {
   const router = useRouter();
   const { id, slug, title, products } = collection;
-  const [emblaRef, emblaApi] = useEmblaCarousel({
+  const [emblaRef] = useEmblaCarousel({
     align: "start",
   });
-
-  const {
-    prevBtnDisabled,
-    nextBtnDisabled,
-    onPrevButtonClick,
-    onNextButtonClick,
-  } = usePrevNextButtons(emblaApi);
 
   return (
     <>
@@ -161,7 +155,14 @@ export function FeaturedProducts({
           {products
             .slice(0, 3)
             .map(
-              ({ id, index, name, images, pricing }: EnrichedProductType) => (
+              ({
+                id,
+                index,
+                name,
+                slug,
+                images,
+                pricing,
+              }: EnrichedProductType) => (
                 <div
                   key={index}
                   className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
@@ -184,9 +185,28 @@ export function FeaturedProducts({
                   >
                     <p className="text-sm line-clamp-1">{name}</p>
                     <div className="flex items-start justify-between w-full">
-                      <span className="font-semibold w-max h-5">
+                      <div className="w-max flex items-center justify-center mt-2">
+                        {Number(pricing.salePrice) ? (
+                          <div className="flex items-center gap-[6px]">
+                            <span className="font-medium">
+                              ${formatThousands(Number(pricing.salePrice))}
+                            </span>
+                            <span className="text-xs text-gray line-through mt-[2px]">
+                              ${formatThousands(Number(pricing.basePrice))}
+                            </span>
+                            <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                              -{pricing.discountPercentage}%
+                            </span>
+                          </div>
+                        ) : (
+                          <p className="font-medium">
+                            ${formatThousands(Number(pricing.basePrice))}
+                          </p>
+                        )}
+                      </div>
+                      {/* <span className="font-semibold w-max h-5">
                         ${pricing.basePrice}
-                      </span>
+                      </span> */}
                       {/* <QuickviewButton
                         onClick={(event) => event.stopPropagation()}
                         product={{

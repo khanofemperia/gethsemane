@@ -10,6 +10,7 @@ import config from "@/lib/config";
 import SizeChartOverlay from "@/components/website/Product/SizeChartOverlay";
 import styles from "./styles.module.css";
 import { getProduct } from "@/lib/getData";
+import { formatThousands } from "@/lib/utils";
 
 type ProductInCartType = {
   id: string;
@@ -59,7 +60,7 @@ export default async function ProductDetails({
 
   const productId = params.slug.split("-").pop() as string;
   const product = (await getProduct({ id: productId })) as ProductType;
-  const { id, name, pricing, images, options } = product;
+  const { id, name, pricing, images, options, highlights } = product;
 
   const existingCart = await getCart();
   const isInCart = existingCart?.products.some(
@@ -186,7 +187,25 @@ export default async function ProductDetails({
                     </ul>
                   </div>
                   <div className="flex flex-col gap-5">
-                    <span className="font-bold">$49.99</span>
+                    <div className="w-max flex items-center justify-center mt-2">
+                      {Number(pricing.salePrice) ? (
+                        <div className="flex items-center gap-[6px]">
+                          <span className="font-bold">
+                            ${formatThousands(Number(pricing.salePrice))}
+                          </span>
+                          <span className="text-xs text-gray line-through mt-[2px]">
+                            ${formatThousands(Number(pricing.basePrice))}
+                          </span>
+                          <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                            -{pricing.discountPercentage}%
+                          </span>
+                        </div>
+                      ) : (
+                        <p className="font-bold">
+                          ${formatThousands(Number(pricing.basePrice))}
+                        </p>
+                      )}
+                    </div>
                     <Options
                       cartInfo={{
                         isInCart,
@@ -377,55 +396,52 @@ export default async function ProductDetails({
               <div className="sticky top-5 pt-5 min-w-[340px] w-[340px] min-[896px]:min-w-[400px] min-[896px]:w-[400px]">
                 <div>
                   <div className="flex flex-col gap-5">
-                    <p className="text-sm text-gray">
-                      High Waisted Running Shorts
-                    </p>
+                    <p className="text-sm text-gray">{name}</p>
                     <div className="flex flex-col gap-4">
-                      <p className="text-lg leading-[26px]">
-                        <strong className="font-bold text-lg leading-[26px]">
-                          Struggling with uncomfortable shorts during workouts?
-                        </strong>{" "}
-                        Say no more, our shorts guarantee{" "}
-                        <strong>
-                          <em className="text-lg leading-[26px]">
-                            comfort and style
-                          </em>
-                        </strong>{" "}
-                        for every activity!
-                      </p>
-                      <ul className="text-sm list-inside *:leading-[25px]">
-                        <li className="flex items-start gap-2">
-                          <CheckmarkIcon
-                            className="fill-green mt-[3px] -ml-[1px]"
-                            size={19}
-                          />
-                          <span>Quick-dry fabric for cool comfort.</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckmarkIcon
-                            className="fill-green mt-[3px] -ml-[1px]"
-                            size={19}
-                          />
-                          <span>Double layer design for better movement.</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckmarkIcon
-                            className="fill-green mt-[3px] -ml-[1px]"
-                            size={19}
-                          />
-                          <span>Zipper pocket to secure your phone.</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckmarkIcon
-                            className="fill-green mt-[3px] -ml-[1px]"
-                            size={19}
-                          />
-                          <span>Ideal for running, gym, and casual wear.</span>
-                        </li>
+                      <div
+                        className="text-lg leading-[26px] [&>:last-child]:mb-0"
+                        dangerouslySetInnerHTML={{
+                          __html: highlights.headline || "",
+                        }}
+                      />
+                      <ul className="text-sm list-inside *:leading-[22px]">
+                        {highlights.keyPoints
+                          .slice()
+                          .sort((a, b) => a.index - b.index)
+                          .map((point) => (
+                            <li
+                              key={point.index}
+                              className="flex items-start gap-2 mb-2 last:mb-0"
+                            >
+                              <CheckmarkIcon
+                                className="fill-green mt-[1px] -ml-[1px]"
+                                size={19}
+                              />
+                              <span>{point.text}</span>
+                            </li>
+                          ))}
                       </ul>
                     </div>
                     <div className="flex flex-col gap-5">
-                      <span className="font-bold">$49.99</span>
+                      <div className="w-max flex items-center justify-center mt-2">
+                        {Number(pricing.salePrice) ? (
+                          <div className="flex items-center gap-[6px]">
+                            <span className="font-bold">
+                              ${formatThousands(Number(pricing.salePrice))}
+                            </span>
+                            <span className="text-xs text-gray line-through mt-[2px]">
+                              ${formatThousands(Number(pricing.basePrice))}
+                            </span>
+                            <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                              -{pricing.discountPercentage}%
+                            </span>
+                          </div>
+                        ) : (
+                          <p className="font-bold">
+                            ${formatThousands(Number(pricing.basePrice))}
+                          </p>
+                        )}
+                      </div>
                       <Options
                         cartInfo={{
                           isInCart,
