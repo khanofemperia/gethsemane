@@ -9,8 +9,95 @@ import { cookies } from "next/headers";
 import config from "@/lib/config";
 import SizeChartOverlay from "@/components/website/Product/SizeChartOverlay";
 import styles from "./styles.module.css";
-import { getProduct } from "@/lib/getData";
+import { getProduct, getProductWithUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
+
+type ColumnType = { label: string; order: number };
+type RowType = { [key: string]: string };
+
+type SizeChartType = {
+  inches: {
+    columns: ColumnType[];
+    rows: RowType[];
+  };
+  centimeters: {
+    columns: ColumnType[];
+    rows: RowType[];
+  };
+};
+
+type KeyPointsType = { index: number; text: string };
+
+type PricingType = {
+  salePrice: number;
+  basePrice: number;
+  discountPercentage: number;
+};
+
+type UpsellProductType = {
+  id: string;
+  name: string;
+  slug: string;
+  mainImage: string;
+  basePrice: number;
+};
+
+type UpsellType = {
+  id: string;
+  mainImage: string;
+  pricing: PricingType;
+  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+  createdAt: string;
+  updatedAt: string;
+  products: UpsellProductType[];
+};
+
+type ProductType = {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  description: string;
+  highlights: {
+    headline: string;
+    keyPoints: KeyPointsType[];
+  };
+  pricing: PricingType;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  options: {
+    colors: Array<{
+      name: string;
+      image: string;
+    }>;
+    sizes: SizeChartType;
+  };
+  seo: {
+    metaTitle: string;
+    metaDescription: string;
+    keywords: string[];
+  };
+  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+  createdAt: string;
+  updatedAt: string;
+  sourceInfo: {
+    platform: string;
+    platformUrl: string;
+    store: string;
+    storeId: string;
+    storeUrl: string;
+    productUrl: string;
+  };
+  upsell: UpsellType;
+  averageOrderValueBooster?: averageOrderValueBoosterType;
+  frequentlyBoughtTogether?: Array<{
+    id: string;
+    name: string;
+    price: number;
+  }>;
+};
 
 type ProductInCartType = {
   id: string;
@@ -59,8 +146,12 @@ export default async function ProductDetails({
   }
 
   const productId = params.slug.split("-").pop() as string;
-  const product = (await getProduct({ id: productId })) as ProductType;
-  const { id, name, pricing, images, options, highlights } = product;
+  const product = (await getProductWithUpsell({
+    id: productId,
+  })) as ProductType;
+  const { id, name, pricing, images, options, highlights, upsell } = product;
+
+  console.log(upsell);
 
   const existingCart = await getCart();
   const isInCart = existingCart?.products.some(
@@ -457,72 +548,69 @@ export default async function ProductDetails({
                       />
                     </div>
                   </div>
-                  <div
-                    className={`${styles.custom_border} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
-                  >
-                    <div className="w-full">
-                      <div>
-                        <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
-                          UPGRADE MY ORDER
-                        </h2>
-                        <div className="mt-1 text-center font-medium text-amber-dimmed">
-                          $137.99 (42% Off)
+                  {upsell &&
+                    upsell.products.length > 0 &&
+                    upsell.pricing.salePrice && (
+                      <div
+                        className={`${styles.custom_border} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
+                      >
+                        <div className="w-full">
+                          <div>
+                            <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                              UPGRADE MY ORDER
+                            </h2>
+                            <div className="mt-1 text-center font-medium text-amber-dimmed">
+                              {upsell.pricing.salePrice
+                                ? `$${formatThousands(
+                                    Number(upsell.pricing.salePrice)
+                                  )} (${
+                                    upsell.pricing.discountPercentage
+                                  }% Off)`
+                                : `$${formatThousands(
+                                    Number(upsell.pricing.basePrice)
+                                  )}`}
+                            </div>
+                          </div>
+                          <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
+                            <Image
+                              src={upsell.mainImage}
+                              alt="Upgrade my order"
+                              width={240}
+                              height={240}
+                              priority
+                            />
+                          </div>
+                          <div className="w-[200px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
+                            <ul className="*:flex *:justify-between">
+                              {upsell.products.map((product) => (
+                                <li key={product.id}>
+                                  <p className="text-gray">{product.name}</p>
+                                  <p>
+                                    <span className="line-through text-gray">
+                                      $
+                                      {formatThousands(
+                                        Number(product.basePrice)
+                                      )}
+                                    </span>
+                                  </p>
+                                </li>
+                              ))}
+                              {upsell.pricing.salePrice && (
+                                <li className="mt-2 flex items-center rounded font-semibold">
+                                  <p className="mx-auto">
+                                    You Save $
+                                    {formatThousands(
+                                      Number(upsell.pricing.basePrice) -
+                                        Number(upsell.pricing.salePrice)
+                                    )}
+                                  </p>
+                                </li>
+                              )}
+                            </ul>
+                          </div>
                         </div>
                       </div>
-                      <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
-                        <Image
-                          src="https://i.pinimg.com/564x/ab/d7/1b/abd71b557fc77916f1570da50c0325a8.jpg"
-                          alt="Upgrade my order"
-                          width={240}
-                          height={240}
-                          priority
-                        />
-                      </div>
-                      <div className="w-[200px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
-                        <ul className="*:flex *:justify-between">
-                          <li>
-                            <p className="text-gray">Shorts</p>
-                            <p>
-                              <span className="font-semibold">$67.99</span>{" "}
-                              <span className="line-through text-gray">
-                                $79.99
-                              </span>
-                            </p>
-                          </li>
-                          <li>
-                            <p className="text-gray">Backpack</p>
-                            <p>
-                              <span className="font-semibold">$41.99</span>{" "}
-                              <span className="line-through text-gray">
-                                $99.99
-                              </span>
-                            </p>
-                          </li>
-                          <li>
-                            <p className="text-gray">Sneakers</p>
-                            <p>
-                              <span className="font-semibold">$29.99</span>{" "}
-                              <span className="line-through text-gray">
-                                $69.99
-                              </span>
-                            </p>
-                          </li>
-                          <li>
-                            <p className="text-gray">Hoodie</p>
-                            <p>
-                              <span className="font-semibold">$79.99</span>{" "}
-                              <span className="line-through text-gray">
-                                $189.99
-                              </span>
-                            </p>
-                          </li>
-                          <li className="mt-2 flex items-center rounded font-semibold">
-                            <p className="mx-auto">You Save $100.00</p>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+                    )}
                 </div>
                 <div className="sticky left-0 right-0 bottom-0 z-10 mt-6 pt-1 pb-5 shadow-[0_-12px_16px_2px_white] bg-white">
                   <div className="flex gap-2 min-[896px]:gap-3">

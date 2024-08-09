@@ -295,6 +295,73 @@ export async function getProductsByIds(
 }
 
 /**
+ * Get a product with its upsell and related products.
+ *
+ * @example
+ * const productWithUpsell = await getProductWithUpsell({
+ *   id: "12345",
+ * });
+ */
+export async function getProductWithUpsell(
+  options: SingleItemOptionsType
+): Promise<
+  | (Partial<ProductType> & {
+      upsellDetails?: Partial<UpsellType> & {
+        products: UpsellType["products"];
+      };
+    })
+  | null
+> {
+  const product = await getProduct(options);
+
+  if (!product || !product.upsell) {
+    return product;
+  }
+
+  const upsellDocRef = doc(database, "upsells", product.upsell);
+  const upsellSnapshot = await getDoc(upsellDocRef);
+
+  if (!upsellSnapshot.exists()) {
+    return product;
+  }
+
+  const upsellData = upsellSnapshot.data() as UpsellType;
+
+  const productsInUpsell = await Promise.all(
+    upsellData.products.map(async (productItem) => {
+      const productDocRef = doc(database, "products", productItem.id);
+      const productSnapshot = await getDoc(productDocRef);
+
+      if (!productSnapshot.exists()) {
+        return null;
+      }
+
+      const productData = productSnapshot.data() as ProductType;
+      return {
+        index: productItem.index,
+        name: productItem.name,
+        id: productData.id,
+        slug: productData.slug,
+        mainImage: productData.images.main,
+        basePrice: productData.pricing.basePrice,
+      };
+    })
+  );
+
+  const upsellDetails = {
+    ...upsellData,
+    products: productsInUpsell.filter(
+      (item): item is UpsellType["products"][number] => item !== null
+    ),
+  };
+
+  return {
+    ...product,
+    upsell: upsellDetails,
+  };
+}
+
+/**
  * Get a collection by ID. Optionally specify fields.
  *
  * @example
