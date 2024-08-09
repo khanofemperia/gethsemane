@@ -1,4 +1,5 @@
 import type { ElementNode, LexicalEditor } from "lexical";
+
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useLexicalEditable } from "@lexical/react/useLexicalEditable";
 import {
@@ -31,6 +32,7 @@ import {
   $isRangeSelection,
   $isTextNode,
 } from "lexical";
+import * as React from "react";
 import { ReactPortal, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -60,6 +62,9 @@ function isTableSelectionRectangular(selection: TableSelection): boolean {
     const node = nodes[i];
     if ($isTableCellNode(node)) {
       const row = node.getParentOrThrow();
+      if (!$isTableRowNode(row)) {
+        throw new Error("Expected CellNode to have a RowNode parent");
+      }
       if (currentRow !== row) {
         if (expectedColumns !== null && currentColumns !== expectedColumns) {
           return false;
@@ -134,7 +139,7 @@ function currentCellBackgroundColor(editor: LexicalEditor): null | string {
   });
 }
 
-type TableCellActionMenuType = Readonly<{
+type TableCellActionMenuProps = Readonly<{
   contextRef: { current: null | HTMLElement };
   onClose: () => void;
   setIsMenuOpen: (isOpen: boolean) => void;
@@ -153,7 +158,7 @@ function TableActionMenu({
   contextRef,
   cellMerge,
   showColorPickerModal,
-}: TableCellActionMenuType) {
+}: TableCellActionMenuProps) {
   const [editor] = useLexicalComposerContext();
   const dropDownRef = useRef<HTMLDivElement | null>(null);
   const [tableCellNode, updateTableCellNode] = useState(_tableCellNode);
@@ -168,17 +173,22 @@ function TableActionMenu({
   );
 
   useEffect(() => {
-    return editor.registerMutationListener(TableCellNode, (nodeMutations) => {
-      const nodeUpdated =
-        nodeMutations.get(tableCellNode.getKey()) === "updated";
+    const teardown = editor.registerMutationListener(
+      TableCellNode,
+      (nodeMutations) => {
+        const nodeUpdated =
+          nodeMutations.get(tableCellNode.getKey()) === "updated";
 
-      if (nodeUpdated) {
-        editor.getEditorState().read(() => {
-          updateTableCellNode(tableCellNode.getLatest());
-        });
-        setBackgroundColor(currentCellBackgroundColor(editor) || "");
+        if (nodeUpdated) {
+          editor.getEditorState().read(() => {
+            updateTableCellNode(tableCellNode.getLatest());
+          });
+          setBackgroundColor(currentCellBackgroundColor(editor) || "");
+        }
       }
-    });
+    );
+
+    return teardown;
   }, [editor, tableCellNode]);
 
   useEffect(() => {
@@ -373,7 +383,9 @@ function TableActionMenu({
   const toggleTableRowIsHeader = useCallback(() => {
     editor.update(() => {
       const tableNode = $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
+
       const tableRowIndex = $getTableRowIndexFromTableCellNode(tableCellNode);
+
       const tableRows = tableNode.getChildren();
 
       if (tableRowIndex >= tableRows.length || tableRowIndex < 0) {

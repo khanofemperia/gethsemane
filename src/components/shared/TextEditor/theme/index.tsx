@@ -83,8 +83,6 @@ const theme: EditorThemeClasses = {
   quote: "TextEditorTheme__quote",
   rtl: "TextEditorTheme__rtl",
   table: "TextEditorTheme__table",
-  tableAddColumns: "TextEditorTheme__tableAddColumns",
-  tableAddRows: "TextEditorTheme__tableAddRows",
   tableCell: "TextEditorTheme__tableCell",
   tableCellActionButton: "TextEditorTheme__tableCellActionButton",
   tableCellActionButtonContainer:

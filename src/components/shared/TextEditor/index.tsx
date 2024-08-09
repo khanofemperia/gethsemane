@@ -24,6 +24,7 @@ import LinkPlugin from "./plugins/LinkPlugin";
 import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import TableCellActionMenuPlugin from "./plugins/TableActionMenuPlugin";
 import TableCellResizer from "./plugins/TableCellResizer";
+import TableHoverActionsPlugin from "./plugins/TableHoverActionsPlugin";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
@@ -94,6 +95,7 @@ export const TextEditor: React.FC<TextEditorType> = memo(function TextEditor({
             <HashtagPlugin />
             <TablePlugin />
             <TableCellResizer />
+            <TableHoverActionsPlugin />
             <ImagesPlugin />
             <ListMaxIndentLevelPlugin maxDepth={7} />
             <ClickableLinkPlugin />
