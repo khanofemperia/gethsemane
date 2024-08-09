@@ -7,7 +7,6 @@ import { ListItemNode, ListNode } from "@lexical/list";
 import { MarkNode } from "@lexical/mark";
 import { OverflowNode } from "@lexical/overflow";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 
 import { ImageNode } from "./ImageNode";
 
@@ -17,9 +16,6 @@ const TextEditorNodes: Array<Klass<LexicalNode>> = [
   ListItemNode,
   QuoteNode,
   CodeNode,
-  TableNode,
-  TableCellNode,
-  TableRowNode,
   HashtagNode,
   CodeHighlightNode,
   AutoLinkNode,

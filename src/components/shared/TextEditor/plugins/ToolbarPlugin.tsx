@@ -22,7 +22,6 @@ import {
   $patchStyleText,
   $setBlocksType,
 } from "@lexical/selection";
-import { $isTableNode, $isTableSelection } from "@lexical/table";
 import {
   $findMatchingParent,
   $getNearestBlockElementAncestorOrThrow,
@@ -61,10 +60,7 @@ import DropDown, { DropdownItem } from "../ui/Dropdown";
 import DropdownColorPicker from "../ui/DropdownColorPicker";
 import { getSelectedNode } from "../utils/getSelectedNode";
 import { sanitizeUrl } from "../utils/url";
-import {
-  InsertImageDialog,
-} from "./ImagesPlugin";
-import { InsertTableDialog } from "./TablePlugin";
+import { InsertImageDialog } from "./ImagesPlugin";
 
 type ToolbarPluginType = {
   setIsLinkEditMode: Dispatch<boolean>;
@@ -439,12 +435,7 @@ export default function ToolbarPlugin({
         setIsLink(false);
       }
 
-      const tableNode = $findMatchingParent(node, $isTableNode);
-      if ($isTableNode(tableNode)) {
-        setRootType("table");
-      } else {
-        setRootType("root");
-      }
+      setRootType("root");
 
       if (elementDOM !== null) {
         setSelectedElementKey(elementKey);
@@ -492,8 +483,8 @@ export default function ToolbarPlugin({
         $isElementNode(matchingParent)
           ? matchingParent.getFormatType()
           : $isElementNode(node)
-          ? node.getFormatType()
-          : parent?.getFormatType() || "left"
+            ? node.getFormatType()
+            : parent?.getFormatType() || "left"
       );
     }
   }, [activeEditor]);
@@ -582,7 +573,7 @@ export default function ToolbarPlugin({
   const clearFormatting = useCallback(() => {
     activeEditor.update(() => {
       const selection = $getSelection();
-      if ($isRangeSelection(selection) || $isTableSelection(selection)) {
+      if ($isRangeSelection(selection)) {
         const anchor = selection.anchor;
         const focus = selection.focus;
         const nodes = selection.getNodes();
@@ -593,10 +584,7 @@ export default function ToolbarPlugin({
         }
 
         nodes.forEach((node, idx) => {
-          // We split the first and last node by the selection
-          // So that we don't format unselected text inside those nodes
           if ($isTextNode(node)) {
-            // Use a separate variable to ensure TS does not lose the refinement
             let textNode = node;
             if (idx === 0 && anchor.offset !== 0) {
               textNode = textNode.splitText(anchor.offset)[1] || textNode;
@@ -604,14 +592,7 @@ export default function ToolbarPlugin({
             if (idx === nodes.length - 1) {
               textNode = textNode.splitText(focus.offset)[0] || textNode;
             }
-            /**
-             * If the selected text has one format applied
-             * selecting a portion of the text, could
-             * clear the format to the wrong portion of the text.
-             *
-             * The cleared text is based on the length of the selected text.
-             */
-            // We need this in case the selected text only has one format
+
             const extractedTextNode = extractedNodes[0];
             if (nodes.length === 1 && $isTextNode(extractedTextNode)) {
               textNode = extractedTextNode;
@@ -732,7 +713,7 @@ export default function ToolbarPlugin({
           className={"toolbar-item spaced " + (isUnderline ? "active" : "")}
           title="Underline (Ctrl+U)"
           type="button"
-          aria-label={`Format text to underlined. Shortcut: "Ctrl+U"}`}
+          aria-label={`Format text to underlined. Shortcut: "Ctrl+U"`}
         >
           <i className="format underline" />
         </button>
@@ -838,57 +819,39 @@ export default function ToolbarPlugin({
               </DropdownItem>
             </DropDown>
             <Divider />
-            <DropDown
+            <button
               disabled={!isEditable}
-              buttonClassName="toolbar-item spaced"
-              buttonLabel="Insert"
-              buttonAriaLabel="Insert specialized editor node"
-              buttonIconClassName="icon plus"
+              onClick={() => {
+                showModal("Insert Image", (onClose) => (
+                  <InsertImageDialog
+                    activeEditor={activeEditor}
+                    onClose={onClose}
+                  />
+                ));
+              }}
+              className="toolbar-item"
+              aria-label="Insert image"
+              title="Insert Image"
+              type="button"
             >
-              <DropdownItem
-                onClick={() => {
-                  showModal("Insert Image", (onClose) => (
-                    <InsertImageDialog
-                      activeEditor={activeEditor}
-                      onClose={onClose}
-                    />
-                  ));
-                }}
-                className="item"
-              >
-                <i className="icon image" />
-                <span className="text">Image</span>
-              </DropdownItem>
-              <DropdownItem
-                onClick={() => {
-                  showModal("Insert Table", (onClose) => (
-                    <InsertTableDialog
-                      activeEditor={activeEditor}
-                      onClose={onClose}
-                    />
-                  ));
-                }}
-                className="item"
-              >
-                <i className="icon table" />
-                <span className="text">Table</span>
-              </DropdownItem>
-            </DropDown>
+              <i className="icon image" />
+              <span className="text !p-0">Image</span>
+            </button>
           </>
         )}
+        {!isSimpleEditor && (
+          <>
+            <Divider />
+            <ElementFormatDropdown
+              disabled={!isEditable}
+              value={elementFormat}
+              editor={editor}
+              isRTL={isRTL}
+            />
+          </>
+        )}
+        {modal}
       </>
-      {!isSimpleEditor && (
-        <>
-          <Divider />
-          <ElementFormatDropdown
-            disabled={!isEditable}
-            value={elementFormat}
-            editor={editor}
-            isRTL={isRTL}
-          />
-        </>
-      )}
-      {modal}
     </div>
   );
 }

@@ -12,7 +12,6 @@ import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 
 import Nodes from "./nodes/TextEditorNodes";
 import theme from "./theme";
@@ -22,9 +21,6 @@ import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import ImagesPlugin from "./plugins/ImagesPlugin";
 import LinkPlugin from "./plugins/LinkPlugin";
 import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
-import TableCellActionMenuPlugin from "./plugins/TableActionMenuPlugin";
-import TableCellResizer from "./plugins/TableCellResizer";
-import TableHoverActionsPlugin from "./plugins/TableHoverActionsPlugin";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
@@ -93,9 +89,6 @@ export const TextEditor: React.FC<TextEditorType> = memo(function TextEditor({
             <LinkPlugin />
             <AutoLinkPlugin />
             <HashtagPlugin />
-            <TablePlugin />
-            <TableCellResizer />
-            <TableHoverActionsPlugin />
             <ImagesPlugin />
             <ListMaxIndentLevelPlugin maxDepth={7} />
             <ClickableLinkPlugin />
@@ -105,10 +98,6 @@ export const TextEditor: React.FC<TextEditorType> = memo(function TextEditor({
                   anchorElem={floatingAnchorElem}
                   isLinkEditMode={isLinkEditMode}
                   setIsLinkEditMode={setIsLinkEditMode}
-                />
-                <TableCellActionMenuPlugin
-                  anchorElem={floatingAnchorElem}
-                  cellMerge={true}
                 />
               </>
             )}
