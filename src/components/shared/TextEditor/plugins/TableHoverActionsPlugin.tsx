@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import * as React from "react";
 import { createPortal } from "react-dom";
 
-import { useDebounce } from "../CodeActionMenuPlugin/utils";
+import { useDebounce } from "./CodeActionMenuPlugin/utils";
 
 const BUTTON_WIDTH_PX = 20;
 
@@ -139,32 +139,28 @@ function TableHoverActionsContainer({
   }, [shouldListenMouseMove, debouncedOnMouseMove]);
 
   useEffect(() => {
-    return mergeRegister(
-      editor.registerMutationListener(
-        TableNode,
-        (mutations) => {
-          editor.getEditorState().read(() => {
-            for (const [key, type] of mutations) {
-              switch (type) {
-                case "created":
-                  codeSetRef.current.add(key);
-                  setShouldListenMouseMove(codeSetRef.current.size > 0);
-                  break;
+    const teardown = editor.registerMutationListener(TableNode, (mutations) => {
+      editor.getEditorState().read(() => {
+        for (const [key, type] of mutations) {
+          switch (type) {
+            case "created":
+              codeSetRef.current.add(key);
+              setShouldListenMouseMove(codeSetRef.current.size > 0);
+              break;
 
-                case "destroyed":
-                  codeSetRef.current.delete(key);
-                  setShouldListenMouseMove(codeSetRef.current.size > 0);
-                  break;
+            case "destroyed":
+              codeSetRef.current.delete(key);
+              setShouldListenMouseMove(codeSetRef.current.size > 0);
+              break;
 
-                default:
-                  break;
-              }
-            }
-          });
-        },
-        { skipInitialization: false }
-      )
-    );
+            default:
+              break;
+          }
+        }
+      });
+    });
+
+    return teardown;
   }, [editor]);
 
   const insertAction = (insertRow: boolean) => {
