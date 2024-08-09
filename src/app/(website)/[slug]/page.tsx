@@ -11,6 +11,7 @@ import SizeChartOverlay from "@/components/website/Product/SizeChartOverlay";
 import styles from "./styles.module.css";
 import { getProduct, getProductWithUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
+import "@/components/shared/TextEditor/theme/index.css";
 
 type ColumnType = { label: string; order: number };
 type RowType = { [key: string]: string };
@@ -149,9 +150,16 @@ export default async function ProductDetails({
   const product = (await getProductWithUpsell({
     id: productId,
   })) as ProductType;
-  const { id, name, pricing, images, options, highlights, upsell } = product;
-
-  console.log(upsell);
+  const {
+    id,
+    name,
+    pricing,
+    images,
+    options,
+    highlights,
+    upsell,
+    description,
+  } = product;
 
   const existingCart = await getCart();
   const isInCart = existingCart?.products.some(
@@ -548,54 +556,58 @@ export default async function ProductDetails({
                       />
                     </div>
                   </div>
-                  {upsell &&
-                    upsell.products.length > 0 &&
-                    upsell.pricing.salePrice && (
-                      <div
-                        className={`${styles.custom_border} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
-                      >
-                        <div className="w-full">
-                          <div>
-                            <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
-                              UPGRADE MY ORDER
-                            </h2>
-                            <div className="mt-1 text-center font-medium text-amber-dimmed">
-                              {upsell.pricing.salePrice
-                                ? `$${formatThousands(
-                                    Number(upsell.pricing.salePrice)
-                                  )} (${
-                                    upsell.pricing.discountPercentage
-                                  }% Off)`
-                                : `$${formatThousands(
-                                    Number(upsell.pricing.basePrice)
-                                  )}`}
-                            </div>
+                  {upsell && upsell.products.length > 0 && (
+                    <div
+                      className={`${styles.custom_border} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
+                    >
+                      <div className="w-full">
+                        <div>
+                          <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                            UPGRADE MY ORDER
+                          </h2>
+                          <div className="mt-1 text-center font-medium text-amber-dimmed">
+                            {upsell.pricing.salePrice
+                              ? `$${formatThousands(
+                                  Number(upsell.pricing.salePrice)
+                                )} (${upsell.pricing.discountPercentage}% Off)`
+                              : `$${formatThousands(
+                                  Number(upsell.pricing.basePrice)
+                                )} today`}
                           </div>
-                          <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
-                            <Image
-                              src={upsell.mainImage}
-                              alt="Upgrade my order"
-                              width={240}
-                              height={240}
-                              priority
-                            />
-                          </div>
-                          <div className="w-[200px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
-                            <ul className="*:flex *:justify-between">
-                              {upsell.products.map((product) => (
-                                <li key={product.id}>
-                                  <p className="text-gray">{product.name}</p>
-                                  <p>
-                                    <span className="line-through text-gray">
-                                      $
-                                      {formatThousands(
-                                        Number(product.basePrice)
-                                      )}
-                                    </span>
-                                  </p>
-                                </li>
-                              ))}
-                              {upsell.pricing.salePrice && (
+                        </div>
+                        <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
+                          <Image
+                            src={upsell.mainImage}
+                            alt="Upgrade my order"
+                            width={240}
+                            height={240}
+                            priority
+                          />
+                        </div>
+                        <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
+                          <ul className="*:flex *:justify-between">
+                            {upsell.products.map((product) => (
+                              <li key={product.id}>
+                                <p className="text-gray">{product.name}</p>
+                                <p>
+                                  <span
+                                    className={`${
+                                      upsell.pricing.salePrice > 0 &&
+                                      upsell.pricing.salePrice <
+                                        upsell.pricing.basePrice
+                                        ? "line-through text-gray"
+                                        : "text-gray"
+                                    }`}
+                                  >
+                                    $
+                                    {formatThousands(Number(product.basePrice))}
+                                  </span>
+                                </p>
+                              </li>
+                            ))}
+                            {upsell.pricing.salePrice > 0 &&
+                              upsell.pricing.salePrice <
+                                upsell.pricing.basePrice && (
                                 <li className="mt-2 flex items-center rounded font-semibold">
                                   <p className="mx-auto">
                                     You Save $
@@ -606,11 +618,11 @@ export default async function ProductDetails({
                                   </p>
                                 </li>
                               )}
-                            </ul>
-                          </div>
+                          </ul>
                         </div>
                       </div>
-                    )}
+                    </div>
+                  )}
                 </div>
                 <div className="sticky left-0 right-0 bottom-0 z-10 mt-6 pt-1 pb-5 shadow-[0_-12px_16px_2px_white] bg-white">
                   <div className="flex gap-2 min-[896px]:gap-3">
@@ -625,6 +637,14 @@ export default async function ProductDetails({
               </div>
             </div>
             <div className="w-full px-[70px] mx-auto">
+              <div className="w-[580px] flex flex-col gap-12">
+                <div
+                  className="[&>:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{
+                    __html: description || "",
+                  }}
+                />
+              </div>
               <div className="w-[580px] flex flex-col gap-12">
                 <div>
                   <h2 className="text-[21px] leading-6 mb-4 font-bold">
