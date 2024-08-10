@@ -57,7 +57,6 @@ import * as React from "react";
 
 import useModal from "../hooks/useModal";
 import DropDown, { DropdownItem } from "../ui/Dropdown";
-import DropdownColorPicker from "../ui/DropdownColorPicker";
 import { getSelectedNode } from "../utils/getSelectedNode";
 import { sanitizeUrl } from "../utils/url";
 import { InsertImageDialog } from "./ImagesPlugin";
@@ -741,24 +740,6 @@ export default function ToolbarPlugin({
             >
               <i className="format link" />
             </button>
-            <DropdownColorPicker
-              disabled={!isEditable}
-              buttonClassName="toolbar-item color-picker"
-              buttonAriaLabel="Formatting text color"
-              buttonIconClassName="icon font-color"
-              color={fontColor}
-              onChange={onFontColorSelect}
-              title="text color"
-            />
-            <DropdownColorPicker
-              disabled={!isEditable}
-              buttonClassName="toolbar-item color-picker"
-              buttonAriaLabel="Formatting background color"
-              buttonIconClassName="icon bg-color"
-              color={bgColor}
-              onChange={onBgColorSelect}
-              title="bg color"
-            />
             <DropDown
               disabled={!isEditable}
               buttonClassName="toolbar-item spaced"
