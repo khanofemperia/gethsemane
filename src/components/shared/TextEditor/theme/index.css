@@ -58,6 +58,7 @@
 .TextEditorTheme__textCode {
   background-color: rgb(240, 242, 245);
   padding: 1px 0.25rem;
+  border-radius: 4px;
   font-family: Menlo, Consolas, Monaco, monospace;
   font-size: 94%;
 }
