@@ -641,7 +641,7 @@ export default async function ProductDetails({
                 <div
                   className={`
                     [&>p>img]:max-w-[500px] [&>p>img]:rounded-xl [&>p>img]:my-7 
-                    [&>:last-child]:mb-0 [&>:first-child>img]:mt-0 [&>:last-child>img]:mb-0
+                    [&>:last-child]:mb-0 [&>:first-child]:mt-0 [&>:first-child>img]:mt-0 [&>:last-child>img]:mb-0
                   `}
                   dangerouslySetInnerHTML={{
                     __html: description || "",
