@@ -71,6 +71,7 @@ const blockTypeToBlockName = {
   bullet: "Bulleted List",
   check: "Check List",
   h2: "Heading 2",
+  h3: "Heading 3",
   number: "Numbered List",
   paragraph: "Normal",
   quote: "Quote",
@@ -210,6 +211,13 @@ function BlockFormatDropDown({
       >
         <i className="icon h2" />
         <span className="text">Heading 2</span>
+      </DropdownItem>
+      <DropdownItem
+        className={"item " + dropDownActiveClass(blockType === "h3")}
+        onClick={() => formatHeading("h3")}
+      >
+        <i className="icon h3" />
+        <span className="text">Heading 3</span>
       </DropdownItem>
       <DropdownItem
         className={"item " + dropDownActiveClass(blockType === "bullet")}

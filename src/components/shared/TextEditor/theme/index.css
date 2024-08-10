@@ -18,10 +18,16 @@
 }
 .TextEditorTheme__h2 {
   font-weight: 700;
-  font-size: 22px;
+  font-size: 26px;
   line-height: 32px;
   margin-bottom: 16px;
-  margin-top: 40px;
+  margin-top: 36px;
+}
+.TextEditorTheme__h3 {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 32px;
+  margin-bottom: 22px;
 }
 .TextEditorTheme__indent {
   --lexical-indent-base-value: 40px;

@@ -639,7 +639,10 @@ export default async function ProductDetails({
             <div className="w-full px-[70px] mx-auto">
               <div className="w-[580px] flex flex-col gap-12">
                 <div
-                  className="[&>p>img]:max-w-[500px] [&>p>img]:rounded-3xl [&>p>img]:my-7 [&>:last-child]:mb-0"
+                  className={`
+                    [&>p>img]:max-w-[500px] [&>p>img]:rounded-3xl [&>p>img]:my-7 
+                    [&>:last-child]:mb-0 [&>:first-child>img]:mt-0 [&>:last-child>img]:mb-0
+                  `}
                   dangerouslySetInnerHTML={{
                     __html: description || "",
                   }}
