@@ -639,94 +639,11 @@ export default async function ProductDetails({
             <div className="w-full px-[70px] mx-auto">
               <div className="w-[580px] flex flex-col gap-12">
                 <div
-                  className="[&>:last-child]:mb-0"
+                  className="[&>p>img]:max-w-[500px] [&>p>img]:rounded-3xl [&>p>img]:my-7 [&>:last-child]:mb-0"
                   dangerouslySetInnerHTML={{
                     __html: description || "",
                   }}
                 />
-              </div>
-              <div className="w-[580px] flex flex-col gap-12">
-                <div>
-                  <h2 className="text-[21px] leading-6 mb-4 font-bold">
-                    The Next-Gen Blender
-                  </h2>
-                  <p className="leading-7">
-                    BlendJet 2 serves up big blender power on the go. We created
-                    the BlendJet 2 portable blender so you can make{" "}
-                    <strong>anything you want, anywhere in the world</strong> —
-                    from a mountaintop to your kitchen countertop. It's easy and
-                    convenient to use at home, at work, outdoors, at the gym, in
-                    the car, at the beach, on vacation or wherever the day takes
-                    you.
-                  </p>
-                  <div>
-                    <br />
-                  </div>
-                  <div className="w-[500px] aspect-square rounded-3xl overflow-hidden flex items-center justify-center">
-                    <Image
-                      src="https://i.pinimg.com/564x/8e/fe/b1/8efeb1b9afef852636be660f109fa802.jpg"
-                      alt="Fruits"
-                      width={580}
-                      height={580}
-                      priority={true}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <h2 className="text-[21px] leading-6 mb-4 font-bold">
-                    Patented TurboJet Technology
-                  </h2>
-                  <p className="leading-7">
-                    Traditional blenders only use their blades to blend, but we
-                    invented a new method that makes every other blender
-                    obsolete. Our secret weapon? BlendJet 2's stainless steel
-                    blades are offset from the center of the base, which creates
-                    a tornado effect that blasts ingredients into the back of
-                    the jar 275 times per second, resulting in{" "}
-                    <strong>dramatically better blending.</strong>
-                    This technology — combined with a more powerful motor and
-                    doubled battery capacity — makes BlendJet 2{" "}
-                    <strong>five times more powerful than BlendJet One.</strong>
-                  </p>
-                  <div>
-                    <br />
-                  </div>
-                  <div className="w-[500px] aspect-square rounded-3xl overflow-hidden flex items-center justify-center">
-                    <Image
-                      src="https://i.pinimg.com/564x/53/be/0c/53be0c721aa59013e6251d64f54ea01d.jpg"
-                      alt="Fruits"
-                      width={580}
-                      height={580}
-                      priority={true}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <h2 className="text-[21px] leading-6 mb-4 font-bold">
-                    Perfect for Everything
-                  </h2>
-                  <p className="leading-7">
-                    BlendJet 2 makes smoothie-bar-quality beverages,
-                    silky-smooth protein shakes, top-shelf mixed drinks and
-                    creamy frozen lattes, plus milkshakes, slushies, baby food,
-                    dips, dressings, sauces, <strong>and so much more.</strong>{" "}
-                    We'll send a new recipe video straight to your inbox each
-                    week to inspire creativity and ensure you get the most out
-                    of your BlendJet 2.
-                  </p>
-                  <div>
-                    <br />
-                  </div>
-                  <div className="w-[500px] aspect-square rounded-3xl overflow-hidden flex items-center justify-center">
-                    <Image
-                      src="https://i.pinimg.com/564x/33/d3/9b/33d39bb6a10b39ebe4b96b6aa56d5b84.jpg"
-                      alt="Fruits"
-                      width={580}
-                      height={580}
-                      priority={true}
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           </div>

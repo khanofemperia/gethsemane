@@ -5,12 +5,12 @@
   text-align: right;
 }
 .TextEditorTheme__paragraph {
-  line-height: 28px;
-  margin-bottom: 20px;
+  line-height: 26px;
+  margin-bottom: 22px;
 }
 .TextEditorTheme__quote {
-  line-height: 28px;
-  margin-bottom: 20px;
+  line-height: 26px;
+  margin-bottom: 22px;
   padding: 20px 18px;
   border-left: 5px solid #c9c9c9;
   background-color: #f5f5f5;
@@ -18,7 +18,7 @@
 }
 .TextEditorTheme__h2 {
   font-weight: 700;
-  font-size: 21px;
+  font-size: 22px;
   line-height: 32px;
   margin-bottom: 16px;
   margin-top: 40px;
@@ -72,7 +72,7 @@
   font-family: Menlo, Consolas, Monaco, monospace;
   display: block;
   padding: 8px 8px 8px 52px;
-  line-height: 1.53;
+  line-height: 26px;
   font-size: 13px;
   margin: 0;
   margin-top: 8px;
@@ -93,161 +93,6 @@
   white-space: pre-wrap;
   text-align: right;
   min-width: 25px;
-}
-.TextEditorTheme__table {
-  border-collapse: collapse;
-  border-spacing: 0;
-  overflow-y: scroll;
-  overflow-x: scroll;
-  table-layout: fixed;
-  width: max-content;
-  margin: 0px 25px 30px 0px;
-}
-.TextEditorTheme__tableSelection *::selection {
-  background-color: transparent;
-}
-.TextEditorTheme__tableSelected {
-  outline: 2px solid rgb(60, 132, 244);
-}
-.TextEditorTheme__tableCell {
-  border: 1px solid #bbb;
-  width: 75px;
-  min-width: 75px;
-  vertical-align: top;
-  text-align: start;
-  padding: 6px 8px;
-  position: relative;
-  outline: none;
-}
-.TextEditorTheme__tableCellSortedIndicator {
-  display: block;
-  opacity: 0.5;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background-color: #999;
-}
-.TextEditorTheme__tableCellResizer {
-  position: absolute;
-  right: -4px;
-  height: 100%;
-  width: 8px;
-  cursor: ew-resize;
-  z-index: 10;
-  top: 0;
-}
-.TextEditorTheme__tableCellHeader {
-  background-color: #f2f3f5;
-  text-align: start;
-}
-.TextEditorTheme__tableCellSelected {
-  background-color: #c9dbf0;
-}
-.TextEditorTheme__tableCellPrimarySelected {
-  border: 2px solid rgb(60, 132, 244);
-  display: block;
-  height: calc(100% - 2px);
-  position: absolute;
-  width: calc(100% - 2px);
-  left: -1px;
-  top: -1px;
-  z-index: 2;
-}
-.TextEditorTheme__tableCellEditing {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-  border-radius: 3px;
-}
-.TextEditorTheme__tableAddColumns {
-  position: absolute;
-  background-color: #eee;
-  height: 100%;
-  animation: table-controls 0.2s ease;
-  border: 0;
-  cursor: pointer;
-}
-.TextEditorTheme__tableAddColumns:after {
-  background-image: url(/icons/plus.svg);
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: block;
-  content: " ";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.4;
-}
-.TextEditorTheme__tableAddColumns:hover,
-.TextEditorTheme__tableAddRows:hover {
-  background-color: #c9dbf0;
-}
-.TextEditorTheme__tableAddRows {
-  position: absolute;
-  width: calc(100% - 25px);
-  background-color: #eee;
-  animation: table-controls 0.2s ease;
-  border: 0;
-  cursor: pointer;
-}
-.TextEditorTheme__tableAddRows:after {
-  background-image: url(/icons/plus.svg);
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: block;
-  content: " ";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.4;
-}
-@keyframes table-controls {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-.TextEditorTheme__tableCellResizeRuler {
-  display: block;
-  position: absolute;
-  width: 1px;
-  background-color: rgb(60, 132, 244);
-  height: 100%;
-  top: 0;
-}
-.TextEditorTheme__tableCellActionButtonContainer {
-  display: block;
-  right: 5px;
-  top: 6px;
-  position: absolute;
-  z-index: 4;
-  width: 20px;
-  height: 20px;
-}
-.TextEditorTheme__tableCellActionButton {
-  background-color: #eee;
-  display: block;
-  border: 0;
-  border-radius: 20px;
-  width: 20px;
-  height: 20px;
-  color: #222;
-  cursor: pointer;
-}
-.TextEditorTheme__tableCellActionButton:hover {
-  background-color: #ddd;
-}
-.TextEditorTheme__characterLimit {
-  display: inline;
-  background-color: #ffbbbb !important;
 }
 .TextEditorTheme__ol1 {
   display: block;
@@ -293,13 +138,14 @@
   list-style-type: disc;
   padding: 0;
   margin: 0;
+  margin-bottom: 22px;
   list-style-position: outside;
 }
 .TextEditorTheme__listItem {
   margin-left: 40px;
   margin-right: 40px;
-  line-height: 28px;
-  margin-bottom: 20px;
+  line-height: 26px;
+  margin-bottom: 12px;
 }
 .TextEditorTheme__listItemChecked,
 .TextEditorTheme__listItemUnchecked {
