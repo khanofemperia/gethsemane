@@ -17,17 +17,11 @@
   border-radius: 0 8px 8px 0;
 }
 .TextEditorTheme__h2 {
-  font-weight: 600;
-  font-size: 30px;
-  line-height: 40px;
-  margin-bottom: 20px;
-  margin-top: 40px;
-}
-.TextEditorTheme__h3 {
   font-weight: 700;
-  font-size: 22px;
+  font-size: 24px;
   line-height: 32px;
   margin-bottom: 20px;
+  margin-top: 40px;
 }
 .TextEditorTheme__indent {
   --lexical-indent-base-value: 40px;
