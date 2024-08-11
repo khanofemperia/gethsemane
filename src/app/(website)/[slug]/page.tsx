@@ -286,7 +286,7 @@ export default async function ProductDetails({
                     </ul>
                   </div>
                   <div className="flex flex-col gap-5">
-                    <div className="w-max flex items-center justify-center mt-2">
+                    <div className="w-max flex items-center justify-center">
                       {Number(pricing.salePrice) ? (
                         <div className="flex items-center gap-[6px]">
                           <span className="font-bold">
@@ -295,7 +295,7 @@ export default async function ProductDetails({
                           <span className="text-xs text-gray line-through mt-[2px]">
                             ${formatThousands(Number(pricing.basePrice))}
                           </span>
-                          <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                          <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
                             -{pricing.discountPercentage}%
                           </span>
                         </div>
@@ -522,7 +522,7 @@ export default async function ProductDetails({
                       </ul>
                     </div>
                     <div className="flex flex-col gap-5">
-                      <div className="w-max flex items-center justify-center mt-2">
+                      <div className="w-max flex items-center justify-center">
                         {Number(pricing.salePrice) ? (
                           <div className="flex items-center gap-[6px]">
                             <span className="font-bold">
@@ -531,7 +531,7 @@ export default async function ProductDetails({
                             <span className="text-xs text-gray line-through mt-[2px]">
                               ${formatThousands(Number(pricing.basePrice))}
                             </span>
-                            <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                            <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
                               -{pricing.discountPercentage}%
                             </span>
                           </div>

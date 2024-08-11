@@ -81,7 +81,7 @@ export default function StickyBar({
             <div className="w-full h-full rounded-md absolute top-0 bottom-0 left-0 right-0 ease-in-out hover:bg-blue hover:bg-opacity-40 hover:duration-300 hover:ease-out"></div>
           </div>
           <div className="h-full flex gap-5 items-center">
-            <div className="w-max flex items-center justify-center mt-2">
+            <div className="w-max flex items-center justify-center">
               {Number(pricing.salePrice) ? (
                 <div className="flex items-center gap-[6px]">
                   <span className="font-bold">
@@ -90,7 +90,7 @@ export default function StickyBar({
                   <span className="text-xs text-gray line-through mt-[2px]">
                     ${formatThousands(Number(pricing.basePrice))}
                   </span>
-                  <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                  <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
                     -{pricing.discountPercentage}%
                   </span>
                 </div>
