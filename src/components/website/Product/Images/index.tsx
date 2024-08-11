@@ -20,7 +20,7 @@ export default function Images({ images, productName }: ProductImagesType) {
   return (
     <div className="flex w-full select-none">
       <div
-        className={`${styles.custom_scrollbar} apply-scrollbar min-w-[62px] max-w-[62px] max-h-[380px] overflow-x-hidden overflow-y-visible flex flex-col gap-2 mr-2`}
+        className={`${styles.customScrollbar} apply-scrollbar min-w-[62px] max-w-[62px] max-h-[380px] overflow-x-hidden overflow-y-visible flex flex-col gap-2 mr-2`}
       >
         {productImages.map((image, index) => (
           <div

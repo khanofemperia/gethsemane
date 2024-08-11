@@ -90,8 +90,8 @@ type CategoryType = {
 /***************************************************************/
 type PricingType = {
   basePrice: number;
-  salePrice?: number;
-  discountPercentage?: number;
+  salePrice: number;
+  discountPercentage: number;
 };
 
 type UpsellType = {

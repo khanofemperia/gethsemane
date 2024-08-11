@@ -321,7 +321,7 @@ export default async function ProductDetails({
                   </div>
                 </div>
                 <div
-                  className={`${styles.custom_border} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
+                  className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
                 >
                   <div className="w-full">
                     <div>
@@ -335,7 +335,7 @@ export default async function ProductDetails({
                     <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
                       <Image
                         src="https:i.pinimg.com/564x/ab/d7/1b/abd71b557fc77916f1570da50c0325a8.jpg"
-                        alt="Upgrade my order"
+                        alt="Upgrade order"
                         width={240}
                         height={240}
                         priority
@@ -558,7 +558,7 @@ export default async function ProductDetails({
                   </div>
                   {upsell && upsell.products.length > 0 && (
                     <div
-                      className={`${styles.custom_border} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
+                      className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
                     >
                       <div className="w-full">
                         <div>
@@ -578,7 +578,7 @@ export default async function ProductDetails({
                         <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
                           <Image
                             src={upsell.mainImage}
-                            alt="Upgrade my order"
+                            alt="Upgrade order"
                             width={240}
                             height={240}
                             priority
@@ -653,6 +653,12 @@ export default async function ProductDetails({
         </div>
       </main>
       <StickyBar
+        productInfo={{
+          pricing,
+          upsell,
+          mainImage: images.main,
+          name,
+        }}
         Options={
           <Options
             cartInfo={{

@@ -1,13 +1,47 @@
 "use client";
 
+import { formatThousands } from "@/lib/utils";
 import clsx from "clsx";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+type UpsellProductType = {
+  id: string;
+  name: string;
+  slug: string;
+  mainImage: string;
+  basePrice: number;
+};
+
+type UpsellType = {
+  id: string;
+  mainImage: string;
+  pricing: PricingType;
+  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+  createdAt: string;
+  updatedAt: string;
+  products: UpsellProductType[];
+};
+
+type DataType = {
+  pricing: PricingType;
+  upsell: UpsellType;
+  mainImage: string;
+  name: string;
+};
+
 const SCROLL_THRESHOLD = 1040;
 
-export default function StickyBar({ Options }: { Options: React.ReactNode }) {
+export default function StickyBar({
+  productInfo,
+  Options,
+}: {
+  productInfo: DataType;
+  Options: React.ReactNode;
+}) {
   const [barIsHidden, setBarIsHidden] = useState(true);
+
+  const { pricing, upsell, mainImage, name } = productInfo;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,8 +72,8 @@ export default function StickyBar({ Options }: { Options: React.ReactNode }) {
         <div className="h-full flex gap-5">
           <div className="h-full aspect-square relative rounded-md flex items-center justify-center overflow-hidden">
             <Image
-              src="https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/fbf522c1b1d84378bd9bda770affaa9a.jpg?imageView2/2/w/800/q/70/format/webp"
-              alt="High Waisted Running Shorts"
+              src={mainImage}
+              alt={name}
               width={64}
               height={64}
               priority={true}
@@ -47,7 +81,25 @@ export default function StickyBar({ Options }: { Options: React.ReactNode }) {
             <div className="w-full h-full rounded-md absolute top-0 bottom-0 left-0 right-0 ease-in-out hover:bg-blue hover:bg-opacity-40 hover:duration-300 hover:ease-out"></div>
           </div>
           <div className="h-full flex gap-5 items-center">
-            <span className="font-bold">$49.99</span>
+            <div className="w-max flex items-center justify-center mt-2">
+              {Number(pricing.salePrice) ? (
+                <div className="flex items-center gap-[6px]">
+                  <span className="font-bold">
+                    ${formatThousands(Number(pricing.salePrice))}
+                  </span>
+                  <span className="text-xs text-gray line-through mt-[2px]">
+                    ${formatThousands(Number(pricing.basePrice))}
+                  </span>
+                  <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] mt-[2px] py-1 px-[5px]">
+                    -{pricing.discountPercentage}%
+                  </span>
+                </div>
+              ) : (
+                <p className="font-bold">
+                  ${formatThousands(Number(pricing.basePrice))}
+                </p>
+              )}
+            </div>
             {Options}
           </div>
         </div>
@@ -61,70 +113,70 @@ export default function StickyBar({ Options }: { Options: React.ReactNode }) {
             </button>
             {!barIsHidden && (
               <div className="peer-hover:block hidden absolute top-[58px] -right-3 py-[18px] px-6 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:right-20 min-[840px]:before:right-24">
-                <div className="w-max rounded-md pb-[10px] bg-white">
-                  <div className="w-full">
-                    <div>
-                      <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
-                        UPGRADE MY ORDER
-                      </h2>
-                      <div className="mt-1 text-center font-medium text-amber-dimmed">
-                        $137.99 (42% Off)
+                {upsell && upsell.products.length > 0 && (
+                  <div className="w-max rounded-md pb-[10px] bg-white">
+                    <div className="w-full">
+                      <div>
+                        <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                          UPGRADE MY ORDER
+                        </h2>
+                        <div className="mt-1 text-center font-medium text-amber-dimmed">
+                          {upsell.pricing.salePrice
+                            ? `$${formatThousands(
+                                Number(upsell.pricing.salePrice)
+                              )} (${upsell.pricing.discountPercentage}% Off)`
+                            : `$${formatThousands(
+                                Number(upsell.pricing.basePrice)
+                              )} today`}
+                        </div>
+                      </div>
+                      <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
+                        <Image
+                          src={upsell.mainImage}
+                          alt="Upgrade order"
+                          width={240}
+                          height={240}
+                          priority
+                        />
+                      </div>
+                      <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
+                        <ul className="*:flex *:justify-between">
+                          {upsell.products.map((product) => (
+                            <li key={product.id}>
+                              <p className="text-gray">{product.name}</p>
+                              <p>
+                                <span
+                                  className={`${
+                                    upsell.pricing.salePrice > 0 &&
+                                    upsell.pricing.salePrice <
+                                      upsell.pricing.basePrice
+                                      ? "line-through text-gray"
+                                      : "text-gray"
+                                  }`}
+                                >
+                                  ${formatThousands(Number(product.basePrice))}
+                                </span>
+                              </p>
+                            </li>
+                          ))}
+                          {upsell.pricing.salePrice > 0 &&
+                            upsell.pricing.salePrice <
+                              upsell.pricing.basePrice && (
+                              <li className="mt-2 flex items-center rounded font-semibold">
+                                <p className="mx-auto">
+                                  You Save $
+                                  {formatThousands(
+                                    Number(upsell.pricing.basePrice) -
+                                      Number(upsell.pricing.salePrice)
+                                  )}
+                                </p>
+                              </li>
+                            )}
+                        </ul>
                       </div>
                     </div>
-                    <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
-                      <Image
-                        src="https://i.pinimg.com/564x/ab/d7/1b/abd71b557fc77916f1570da50c0325a8.jpg"
-                        alt="Upgrade my order"
-                        width={240}
-                        height={240}
-                        priority
-                      />
-                    </div>
-                    <div className="w-[200px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
-                      <ul className="*:flex *:justify-between">
-                        <li>
-                          <p className="text-gray">Shorts</p>
-                          <p>
-                            <span className="font-semibold">$67.99</span>{" "}
-                            <span className="line-through text-gray">
-                              $79.99
-                            </span>
-                          </p>
-                        </li>
-                        <li>
-                          <p className="text-gray">Backpack</p>
-                          <p>
-                            <span className="font-semibold">$41.99</span>{" "}
-                            <span className="line-through text-gray">
-                              $99.99
-                            </span>
-                          </p>
-                        </li>
-                        <li>
-                          <p className="text-gray">Sneakers</p>
-                          <p>
-                            <span className="font-semibold">$29.99</span>{" "}
-                            <span className="line-through text-gray">
-                              $69.99
-                            </span>
-                          </p>
-                        </li>
-                        <li>
-                          <p className="text-gray">Hoodie</p>
-                          <p>
-                            <span className="font-semibold">$79.99</span>{" "}
-                            <span className="line-through text-gray">
-                              $189.99
-                            </span>
-                          </p>
-                        </li>
-                        <li className="mt-2 flex items-center rounded font-semibold">
-                          <p className="mx-auto">You Save $100.00</p>
-                        </li>
-                      </ul>
-                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
           </div>
