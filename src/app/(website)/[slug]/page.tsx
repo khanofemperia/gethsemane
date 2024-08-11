@@ -238,51 +238,30 @@ export default async function ProductDetails({
               </div>
               <div className="max-w-[580px] mx-auto pb-12 pt-5 px-5">
                 <div className="flex flex-col gap-5">
-                  <p className="text-sm text-gray">
-                    High Waisted Running Shorts
-                  </p>
+                  <p className="text-sm text-gray">{name}</p>
                   <div className="flex flex-col gap-4">
-                    <p className="text-lg leading-[26px]">
-                      <strong className="font-bold text-lg leading-[26px]">
-                        Struggling with uncomfortable shorts during workouts?
-                      </strong>{" "}
-                      Say no more, our shorts guarantee{" "}
-                      <strong>
-                        <em className="text-lg leading-[26px]">
-                          comfort and style
-                        </em>
-                      </strong>{" "}
-                      for every activity!
-                    </p>
-                    <ul className="text-sm list-inside *:leading-[25px]">
-                      <li className="flex items-start gap-2">
-                        <CheckmarkIcon
-                          className="fill-green mt-[3px] -ml-[1px]"
-                          size={19}
-                        />
-                        <span>Quick-dry fabric for cool comfort.</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckmarkIcon
-                          className="fill-green mt-[3px] -ml-[1px]"
-                          size={19}
-                        />
-                        <span>Double layer design for better movement.</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckmarkIcon
-                          className="fill-green mt-[3px] -ml-[1px]"
-                          size={19}
-                        />
-                        <span>Zipper pocket to secure your phone.</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckmarkIcon
-                          className="fill-green mt-[3px] -ml-[1px]"
-                          size={19}
-                        />
-                        <span>Ideal for running, gym, and casual wear.</span>
-                      </li>
+                    <div
+                      className="text-lg leading-[26px] [&>:last-child]:mb-0"
+                      dangerouslySetInnerHTML={{
+                        __html: highlights.headline || "",
+                      }}
+                    />
+                    <ul className="text-sm list-inside *:leading-[22px]">
+                      {highlights.keyPoints
+                        .slice()
+                        .sort((a, b) => a.index - b.index)
+                        .map((point) => (
+                          <li
+                            key={point.index}
+                            className="flex items-start gap-2 mb-2 last:mb-0"
+                          >
+                            <CheckmarkIcon
+                              className="fill-green mt-[1px] -ml-[1px]"
+                              size={19}
+                            />
+                            <span>{point.text}</span>
+                          </li>
+                        ))}
                     </ul>
                   </div>
                   <div className="flex flex-col gap-5">
@@ -320,157 +299,82 @@ export default async function ProductDetails({
                     />
                   </div>
                 </div>
-                <div
-                  className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
-                >
-                  <div className="w-full">
-                    <div>
-                      <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
-                        UPGRADE MY ORDER
-                      </h2>
-                      <div className="mt-1 text-center font-medium text-amber-dimmed">
-                        $137.99 (42% Off)
+                {upsell && upsell.products.length > 0 && (
+                  <div
+                    className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
+                  >
+                    <div className="w-full">
+                      <div>
+                        <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                          UPGRADE MY ORDER
+                        </h2>
+                        <div className="mt-1 text-center font-medium text-amber-dimmed">
+                          {upsell.pricing.salePrice
+                            ? `$${formatThousands(
+                                Number(upsell.pricing.salePrice)
+                              )} (${upsell.pricing.discountPercentage}% Off)`
+                            : `$${formatThousands(
+                                Number(upsell.pricing.basePrice)
+                              )} today`}
+                        </div>
+                      </div>
+                      <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
+                        <Image
+                          src={upsell.mainImage}
+                          alt="Upgrade order"
+                          width={240}
+                          height={240}
+                          priority
+                        />
+                      </div>
+                      <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
+                        <ul className="*:flex *:justify-between">
+                          {upsell.products.map((product) => (
+                            <li key={product.id}>
+                              <p className="text-gray">{product.name}</p>
+                              <p>
+                                <span
+                                  className={`${
+                                    upsell.pricing.salePrice > 0 &&
+                                    upsell.pricing.salePrice <
+                                      upsell.pricing.basePrice
+                                      ? "line-through text-gray"
+                                      : "text-gray"
+                                  }`}
+                                >
+                                  ${formatThousands(Number(product.basePrice))}
+                                </span>
+                              </p>
+                            </li>
+                          ))}
+                          {upsell.pricing.salePrice > 0 &&
+                            upsell.pricing.salePrice <
+                              upsell.pricing.basePrice && (
+                              <li className="mt-2 flex items-center rounded font-semibold">
+                                <p className="mx-auto">
+                                  You Save $
+                                  {formatThousands(
+                                    Number(upsell.pricing.basePrice) -
+                                      Number(upsell.pricing.salePrice)
+                                  )}
+                                </p>
+                              </li>
+                            )}
+                        </ul>
                       </div>
                     </div>
-                    <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
-                      <Image
-                        src="https:i.pinimg.com/564x/ab/d7/1b/abd71b557fc77916f1570da50c0325a8.jpg"
-                        alt="Upgrade order"
-                        width={240}
-                        height={240}
-                        priority
-                      />
-                    </div>
-                    <div className="w-[200px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
-                      <ul className="*:flex *:justify-between">
-                        <li>
-                          <p className="text-gray">Shorts</p>
-                          <p>
-                            <span className="font-semibold">$67.99</span>{" "}
-                            <span className="line-through text-gray">
-                              $79.99
-                            </span>
-                          </p>
-                        </li>
-                        <li>
-                          <p className="text-gray">Backpack</p>
-                          <p>
-                            <span className="font-semibold">$41.99</span>{" "}
-                            <span className="line-through text-gray">
-                              $99.99
-                            </span>
-                          </p>
-                        </li>
-                        <li>
-                          <p className="text-gray">Sneakers</p>
-                          <p>
-                            <span className="font-semibold">$29.99</span>{" "}
-                            <span className="line-through text-gray">
-                              $69.99
-                            </span>
-                          </p>
-                        </li>
-                        <li>
-                          <p className="text-gray">Hoodie</p>
-                          <p>
-                            <span className="font-semibold">$79.99</span>{" "}
-                            <span className="line-through text-gray">
-                              $189.99
-                            </span>
-                          </p>
-                        </li>
-                        <li className="mt-2 flex items-center rounded font-semibold">
-                          <p className="mx-auto">You Save $100.00</p>
-                        </li>
-                      </ul>
-                    </div>
                   </div>
-                </div>
-                <div className="w-full mt-12 flex flex-col gap-12">
-                  <div>
-                    <h2 className="text-[21px] leading-8 mb-4 font-bold">
-                      The Next-Gen Blender
-                    </h2>
-                    <p className="leading-7">
-                      BlendJet 2 serves up big blender power on the go. We
-                      created the BlendJet 2 portable blender so you can make{" "}
-                      <strong>anything you want, anywhere in the world</strong>{" "}
-                      — from a mountaintop to your kitchen countertop. It's easy
-                      and convenient to use at home, at work, outdoors, at the
-                      gym, in the car, at the beach, on vacation or wherever the
-                      day takes you.
-                    </p>
-                    <div>
-                      <br />
-                    </div>
-                    <div className="w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center">
-                      <Image
-                        src="https://i.pinimg.com/564x/8e/fe/b1/8efeb1b9afef852636be660f109fa802.jpg"
-                        alt="Fruits"
-                        width={580}
-                        height={580}
-                        priority={true}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <h2 className="text-[21px] leading-8 mb-4 font-bold">
-                      Patented TurboJet Technology
-                    </h2>
-                    <p className="leading-7">
-                      Traditional blenders only use their blades to blend, but
-                      we invented a new method that makes every other blender
-                      obsolete. Our secret weapon? BlendJet 2's stainless steel
-                      blades are offset from the center of the base, which
-                      creates a tornado effect that blasts ingredients into the
-                      back of the jar 275 times per second, resulting in{" "}
-                      <strong>dramatically better blending.</strong>
-                      This technology — combined with a more powerful motor and
-                      doubled battery capacity — makes BlendJet 2{" "}
-                      <strong>
-                        five times more powerful than BlendJet One.
-                      </strong>
-                    </p>
-                    <div>
-                      <br />
-                    </div>
-                    <div className="w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center">
-                      <Image
-                        src="https://i.pinimg.com/564x/53/be/0c/53be0c721aa59013e6251d64f54ea01d.jpg"
-                        alt="Fruits"
-                        width={580}
-                        height={580}
-                        priority={true}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <h2 className="text-[21px] leading-8 mb-4 font-bold">
-                      Perfect for Everything
-                    </h2>
-                    <p className="leading-7">
-                      BlendJet 2 makes smoothie-bar-quality beverages,
-                      silky-smooth protein shakes, top-shelf mixed drinks and
-                      creamy frozen lattes, plus milkshakes, slushies, baby
-                      food, dips, dressings, sauces,{" "}
-                      <strong>and so much more.</strong> We'll send a new recipe
-                      video straight to your inbox each week to inspire
-                      creativity and ensure you get the most out of your
-                      BlendJet 2.
-                    </p>
-                    <div>
-                      <br />
-                    </div>
-                    <div className="w-full aspect-square rounded-xl overflow-hidden flex items-center justify-center">
-                      <Image
-                        src="https://i.pinimg.com/564x/33/d3/9b/33d39bb6a10b39ebe4b96b6aa56d5b84.jpg"
-                        alt="Fruits"
-                        width={580}
-                        height={580}
-                        priority={true}
-                      />
-                    </div>
-                  </div>
+                )}
+                <div className="w-full mt-12">
+                  <div
+                    className={`
+                    [&>p>img]:max-w-[500px] [&>p>img]:rounded-xl [&>p>img]:my-7 
+                    [&>:last-child]:mb-0 [&>:first-child]:mt-0 [&>:first-child>img]:mt-0 [&>:last-child>img]:mb-0
+                  `}
+                    dangerouslySetInnerHTML={{
+                      __html: description || "",
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -637,7 +541,7 @@ export default async function ProductDetails({
               </div>
             </div>
             <div className="w-full px-[70px] mx-auto">
-              <div className="w-[580px] flex flex-col gap-12">
+              <div className="w-[580px]">
                 <div
                   className={`
                     [&>p>img]:max-w-[500px] [&>p>img]:rounded-xl [&>p>img]:my-7 

@@ -78,7 +78,6 @@ export default function StickyBar({
               height={64}
               priority={true}
             />
-            <div className="w-full h-full rounded-md absolute top-0 bottom-0 left-0 right-0 ease-in-out hover:bg-blue hover:bg-opacity-40 hover:duration-300 hover:ease-out"></div>
           </div>
           <div className="h-full flex gap-5 items-center">
             <div className="w-max flex items-center justify-center">

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { ChevronRightIcon } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 
 type ColorType = {
@@ -151,12 +151,24 @@ export default function ProductOptions({
   productInfo,
 }: ProductOptionsType) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [wasStickyBarVisible, setWasStickyBarVisible] = useState(false);
   const { setSelectedSize, setSelectedColor } = useOptionsStore();
   const { selectedColor, selectedSize } = useOptionsStore.getState();
 
   const hasColor = productInfo.options.colors.length > 0;
   const hasSize = Object.keys(productInfo.options.sizes).length > 0;
+
+  const handleScroll = useCallback(() => {
+    const isStickyBarVisible = window.scrollY >= SCROLL_THRESHOLD;
+
+    if (isStickyBarVisible || (!isStickyBarVisible && isDropdownVisible)) {
+      setDropdownVisible(false);
+    }
+  }, [isDropdownVisible]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   useEffect(() => {
     if (cartInfo.isInCart && cartInfo.productInCart) {
@@ -185,19 +197,6 @@ export default function ProductOptions({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isDropdownVisible]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const isStickyBarVisible = window.scrollY >= SCROLL_THRESHOLD;
-      if (wasStickyBarVisible && !isStickyBarVisible) {
-        setDropdownVisible(false);
-      }
-      setWasStickyBarVisible(isStickyBarVisible);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [wasStickyBarVisible]);
 
   if (!hasColor && !hasSize) {
     return null;
