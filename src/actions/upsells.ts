@@ -45,12 +45,12 @@ export async function UpdateUpsellAction(data: { id: string } & Partial<UpsellTy
 
     await setDoc(docRef, updatedUpsell);
 
-    // Revalidate paths to update data
+    // Revalidate paths to update upsell data
     revalidatePath(`/admin/shop/upsells/${data.id}`, "page"); // Admin edit upsell page
-    revalidatePath("/admin/shop/upsells"); // Admin upsell list page
+    revalidatePath("/admin/shop/upsells"); // Admin upsells page
     revalidatePath(`/`); // Public main page
 
-    // Revalidate product pages if the upsell affects specific products
+    // Revalidate products related to the updated upsell
     if (currentUpsell.products.length > 0) {
       currentUpsell.products.forEach(product => {
         revalidatePath(`/${product.slug}-${product.id}`); // Public product details page
