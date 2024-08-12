@@ -165,7 +165,7 @@ export function FeaturedProducts({
               >
                 <p className="text-sm line-clamp-1">{product.name}</p>
                 <div className="flex items-center justify-between w-full">
-                  <div className="w-max flex items-center justify-center mt-2">
+                  <div className="w-max flex items-center justify-center">
                     {Number(product.pricing.salePrice) ? (
                       <div className="flex items-center gap-[6px]">
                         <span className="font-medium">
