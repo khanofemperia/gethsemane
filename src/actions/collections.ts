@@ -147,10 +147,11 @@ export async function ChangeCollectionIndexAction(data: {
     ]);
 
     // Revalidate paths to update collections data
+    const collectionData = collectionOneBeforeUpdate;
     revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath(`/admin/shop/collections/${collectionData.slug}-${collectionData.id}`); // Admin edit collection page
     revalidatePath("/"); // Public main page
-    revalidatePath("/collections/[slug]", "page"); // Public collection page
+    revalidatePath(`/collections/${collectionData.slug}-${collectionData.id}`); // Public collection page
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -212,10 +213,11 @@ export async function UpdateCollectionAction(data: {
     });
     
     // Revalidate paths to update collections data
+    const collectionData = collectionSnapshot.data();
     revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath(`/admin/shop/collections/${collectionData.slug}-${data.id}`); // Admin edit collection page
     revalidatePath("/"); // Public main page
-    revalidatePath("/collections/[slug]", "page"); // Public collection page
+    revalidatePath(`/collections/${collectionData.slug}-${data.id}`); // Public collection page
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -293,9 +295,9 @@ export async function AddProductAction(data: {
 
     // Revalidate paths to update collections data
     revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath(`/admin/shop/collections/${collectionData.slug}-${collectionId}`); // Admin edit collection page
     revalidatePath("/"); // Public main page
-    revalidatePath("/collections/[slug]", "page"); // Public collection page
+    revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -350,9 +352,9 @@ export async function RemoveProductAction(data: {
 
     // Revalidate paths to update collections data
     revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath(`/admin/shop/collections/${collectionData.slug}-${collectionId}`); // Admin edit collection page
     revalidatePath("/"); // Public main page
-    revalidatePath("/collections/[slug]", "page"); // Public collection page
+    revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -438,9 +440,9 @@ export async function ChangeProductIndexAction(data: {
 
       // Revalidate paths to update collections data
       revalidatePath("/admin/shop"); // Admin shop page
-      revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+      revalidatePath(`/admin/shop/collections/${collectionData.slug}-${collectionId}`); // Admin edit collection page
       revalidatePath("/"); // Public main page
-      revalidatePath("/collections/[slug]", "page"); // Public collection page
+      revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
 
       return {
         type: AlertMessageType.SUCCESS,
