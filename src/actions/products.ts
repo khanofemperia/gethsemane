@@ -164,14 +164,21 @@ export async function UpdateProductAction(
             pricing: newUpsellPricing,
             updatedAt: currentTimestamp(),
           });
-
-          revalidatePath("/admin/shop/upsells/[id]", "page");
         }
       }
     }
 
-    revalidatePath("/admin/shop/products/[slug]", "page");
-
+    // Revalidate paths to update collections data
+    revalidatePath(`/admin/shop/collections/${currentProduct.slug}-${currentProduct.id}`); // Admin edit product page
+    revalidatePath("/admin/shop/products"); // Admin products page
+    revalidatePath("/admin/shop/upsells/[id]", "page"); Admin edit upsell page
+    revalidatePath("/"); // Public main page
+    revalidatePath(`/collections/[slug]`, 'page'); // Public single collection page
+    revalidatePath(`/${currentProduct.slug}-${currentProduct.id`); // Public product details page
+    revalidatePath('/categories/[slug]', 'page'); // Public single category page
+    revalidatePath('/cart'); // Public cart page
+    revalidatePath('/checkout'); // Public checkout page
+    
     return {
       type: AlertMessageType.SUCCESS,
       message: "Product updated successfully",
