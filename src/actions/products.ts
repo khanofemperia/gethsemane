@@ -171,7 +171,7 @@ export async function UpdateProductAction(
     // Revalidate paths to update collections data
     revalidatePath(`/admin/shop/collections/${currentProduct.slug}-${currentProduct.id}`); // Admin edit product page
     revalidatePath("/admin/shop/products"); // Admin products page
-    revalidatePath("/admin/shop/upsells/[id]", "page"); Admin edit upsell page
+    revalidatePath("/admin/shop/upsells/[id]", "page"); // Admin edit upsell page
     revalidatePath("/"); // Public main page
     revalidatePath(`/collections/[slug]`, 'page'); // Public single collection page
     revalidatePath(`/${currentProduct.slug}-${currentProduct.id`); // Public product details page
