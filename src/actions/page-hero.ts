@@ -12,7 +12,9 @@ export async function UpdatePageHeroAction(data: Partial<PageHeroType>) {
     const documentRef = doc(database, "pageHero", "homepageHero");
     await updateDoc(documentRef, updatedPageHeroData);
 
-    revalidatePath("/admin/shop");
+    // Revalidate paths to update page hero data
+    revalidatePath("/admin/shop"); // Admin shop page
+    revalidatePath("/");  // Public main page
 
     return {
       type: AlertMessageType.SUCCESS,
