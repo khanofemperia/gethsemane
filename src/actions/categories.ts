@@ -31,9 +31,9 @@ export default async function UpdateCategoriesAction(data: DataType) {
 
     await Promise.all([...updatePromises, settingsPromise]);
 
-    // Revalidate paths where Categories are rendered
+    // Revalidate paths to update categories data
     revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath("/");  // Main page
+    revalidatePath("/");  // Public main page
 
     return { type: AlertMessageType.SUCCESS, message: "Categories updated successfully" };
   } catch (error) {
