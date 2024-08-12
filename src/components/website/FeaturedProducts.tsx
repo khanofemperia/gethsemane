@@ -32,17 +32,7 @@ type CollectionType = {
   updatedAt: string;
 };
 
-type EnrichedProductType = CollectionProductType & {
-  updatedAt: string;
-  visibility: VisibilityType;
-  slug: string;
-  name: string;
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  pricing: PricingType;
-};
+type EnrichedProductType = CollectionProductType & ProductType;
 
 type EnrichedCollectionType = Omit<CollectionType, "products"> & {
   products: EnrichedProductType[];
@@ -134,6 +124,8 @@ export function FeaturedProducts({
     align: "start",
   });
 
+  console.log(collection);
+
   return (
     <>
       <div className="mx-auto mb-2 md:mb-4 pl-[24px] pr-[22px] flex items-center justify-between md:justify-normal gap-4">
@@ -152,80 +144,56 @@ export function FeaturedProducts({
         ref={emblaRef}
       >
         <div className="embla__container select-none w-full flex gap-1 md:gap-0">
-          {products
-            .slice(0, 3)
-            .map(
-              ({
-                id,
-                index,
-                name,
-                slug,
-                images,
-                pricing,
-              }: EnrichedProductType) => (
-                <div
-                  key={index}
-                  className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
-                >
-                  <Link
-                    href={`/${slug}-${id}`}
-                    className="w-full aspect-square rounded-xl flex items-center justify-center overflow-hidden"
-                  >
-                    <Image
-                      src={images.main}
-                      alt={name}
-                      width={1000}
-                      height={1000}
-                      priority={true}
-                    />
-                  </Link>
-                  <div
-                    className="pt-[10px] flex flex-col gap-[6px]"
-                    onClick={() => router.push(`/${slug}-${id}`)}
-                  >
-                    <p className="text-sm line-clamp-1">{name}</p>
-                    <div className="flex items-start justify-between w-full">
-                      <div className="w-max flex items-center justify-center mt-2">
-                        {Number(pricing.salePrice) ? (
-                          <div className="flex items-center gap-[6px]">
-                            <span className="font-medium">
-                              ${formatThousands(Number(pricing.salePrice))}
-                            </span>
-                            <span className="text-xs text-gray line-through mt-[2px]">
-                              ${formatThousands(Number(pricing.basePrice))}
-                            </span>
-                            <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                              -{pricing.discountPercentage}%
-                            </span>
-                          </div>
-                        ) : (
-                          <p className="font-medium">
-                            ${formatThousands(Number(pricing.basePrice))}
-                          </p>
-                        )}
+          {products.slice(0, 3).map((product: EnrichedProductType) => (
+            <div
+              key={product.index}
+              className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
+            >
+              <Link
+                href={`/${product.slug}-${product.id}`}
+                className="w-full aspect-square rounded-xl flex items-center justify-center overflow-hidden"
+              >
+                <Image
+                  src={product.images.main}
+                  alt={product.name}
+                  width={1000}
+                  height={1000}
+                  priority={true}
+                />
+              </Link>
+              <div
+                className="pt-[10px] flex flex-col gap-[6px]"
+                onClick={() => router.push(`/${slug}-${id}`)}
+              >
+                <p className="text-sm line-clamp-1">{product.name}</p>
+                <div className="flex items-start justify-between w-full">
+                  <div className="w-max flex items-center justify-center mt-2">
+                    {Number(product.pricing.salePrice) ? (
+                      <div className="flex items-center gap-[6px]">
+                        <span className="font-medium">
+                          ${formatThousands(Number(product.pricing.salePrice))}
+                        </span>
+                        <span className="text-xs text-gray line-through mt-[2px]">
+                          ${formatThousands(Number(product.pricing.basePrice))}
+                        </span>
+                        <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
+                          -{product.pricing.discountPercentage}%
+                        </span>
                       </div>
-                      {/* <span className="font-semibold w-max h-5">
-                        ${pricing.basePrice}
-                      </span> */}
-                      {/* <QuickviewButton
-                        onClick={(event) => event.stopPropagation()}
-                        product={{
-                          id,
-                          name,
-                          prici,
-                          mainImage,
-                          images,
-                          description,
-                          colors,
-                          sizes,
-                          slug,
-                        }}
-                      /> */}
-                    </div>
+                    ) : (
+                      <p className="font-medium">
+                        ${formatThousands(Number(product.pricing.basePrice))}
+                      </p>
+                    )}
                   </div>
+                  <QuickviewButton
+                    onClick={(event) => event.stopPropagation()}
+                    productId={product.id}
+                  />
                 </div>
-              )
-            )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </>

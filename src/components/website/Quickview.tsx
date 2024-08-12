@@ -7,30 +7,70 @@ import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 // import SpecialOffer from "../SpecialOffer";
 // import ProductOptions from "../Product/ProductOptions";
 import { CloseIcon } from "@/icons";
+import { getProductWithUpsell } from "@/lib/getData";
 
-type ColorType = {
+type ProductType = {
+  id: string;
   name: string;
-  image: string;
-};
-
-type QuickviewButtonType = {
-  product: {
+  slug: string;
+  description: string;
+  highlights: {
+    headline: string;
+    keyPoints: { index: number; text: string }[];
+  };
+  pricing: {
+    salePrice: number;
+    basePrice: number;
+    discountPercentage: number;
+  };
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  options: {
+    colors: Array<{
+      name: string;
+      image: string;
+    }>;
+    sizes: {
+      inches: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+      centimeters: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+    };
+  };
+  upsell: {
     id: string;
-    name: string;
-    price: string;
     mainImage: string;
-    images: string[] | null;
-    description: string | null;
-    colors: ColorType[] | null;
-    sizes: SizeChartType | null;
-    slug: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+    }[];
   };
 };
 
 export function QuickviewButton({
-  product,
+  productId,
   onClick,
-}: QuickviewButtonType & { onClick?: (event: React.MouseEvent) => void }) {
+}: {
+  productId: string;
+  onClick?: (event: React.MouseEvent) => void;
+}) {
   const { showOverlay } = useQuickviewStore();
   const setSelectedProduct = useQuickviewStore(
     (state) => state.setSelectedProduct
@@ -42,17 +82,20 @@ export function QuickviewButton({
       onClick(event);
     }
 
-    console.log("Opening quickview...");
+    
+    try {
+      const product = (await getProductWithUpsell({
+        id: productId,
+      })) as ProductType;
+      
+      const isInCart = false;
+      const productInCart = null;
 
-    // try {
-    //   const response = await fetch(`/api/carts/products/${product.id}`);
-    //   const { isInCart, productInCart } = await response.json();
-
-    //   setSelectedProduct(product, isInCart, productInCart);
-    //   showOverlay();
-    // } catch (error) {
-    //   console.error("Error checking cart:", error);
-    // }
+      setSelectedProduct(product, isInCart, productInCart);
+      showOverlay();
+    } catch (error) {
+      console.error("Error checking cart:", error);
+    }
   };
 
   return (

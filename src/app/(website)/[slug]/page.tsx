@@ -13,57 +13,20 @@ import { getProduct, getProductWithUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import "@/components/shared/TextEditor/theme/index.css";
 
-type ColumnType = { label: string; order: number };
-type RowType = { [key: string]: string };
-
-type SizeChartType = {
-  inches: {
-    columns: ColumnType[];
-    rows: RowType[];
-  };
-  centimeters: {
-    columns: ColumnType[];
-    rows: RowType[];
-  };
-};
-
-type KeyPointsType = { index: number; text: string };
-
-type PricingType = {
-  salePrice: number;
-  basePrice: number;
-  discountPercentage: number;
-};
-
-type UpsellProductType = {
-  id: string;
-  name: string;
-  slug: string;
-  mainImage: string;
-  basePrice: number;
-};
-
-type UpsellType = {
-  id: string;
-  mainImage: string;
-  pricing: PricingType;
-  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-  createdAt: string;
-  updatedAt: string;
-  products: UpsellProductType[];
-};
-
 type ProductType = {
   id: string;
   name: string;
   slug: string;
-  category: string;
   description: string;
   highlights: {
     headline: string;
-    keyPoints: KeyPointsType[];
+    keyPoints: { index: number; text: string }[];
   };
-  pricing: PricingType;
+  pricing: {
+    salePrice: number;
+    basePrice: number;
+    discountPercentage: number;
+  };
   images: {
     main: string;
     gallery: string[];
@@ -73,31 +36,36 @@ type ProductType = {
       name: string;
       image: string;
     }>;
-    sizes: SizeChartType;
+    sizes: {
+      inches: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+      centimeters: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+    };
   };
-  seo: {
-    metaTitle: string;
-    metaDescription: string;
-    keywords: string[];
-  };
-  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-  createdAt: string;
-  updatedAt: string;
-  sourceInfo: {
-    platform: string;
-    platformUrl: string;
-    store: string;
-    storeId: string;
-    storeUrl: string;
-    productUrl: string;
-  };
-  upsell: UpsellType;
-  averageOrderValueBooster?: averageOrderValueBoosterType;
-  frequentlyBoughtTogether?: Array<{
+  upsell: {
     id: string;
-    name: string;
-    price: number;
-  }>;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+    }[];
+  };
 };
 
 type ProductInCartType = {

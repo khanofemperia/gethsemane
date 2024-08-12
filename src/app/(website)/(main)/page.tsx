@@ -32,17 +32,7 @@ type CollectionType = {
   updatedAt: string;
 };
 
-type EnrichedProductType = CollectionProductType & {
-  updatedAt: string;
-  visibility: VisibilityType;
-  slug: string;
-  name: string;
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  pricing: PricingType;
-};
+type EnrichedProductType = CollectionProductType & ProductType;
 
 type EnrichedCollectionType = Omit<CollectionType, "products"> & {
   products: EnrichedProductType[];
@@ -80,12 +70,14 @@ export default async function Home() {
       ids: productIds,
       fields: [
         "id",
-        "slug",
         "name",
-        "images",
+        "slug",
+        "description",
+        "highlights",
         "pricing",
-        "updatedAt",
-        "visibility",
+        "images",
+        "options",
+        "upsell",
       ],
       visibility: "PUBLISHED",
     });

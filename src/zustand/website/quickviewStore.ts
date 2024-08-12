@@ -1,21 +1,59 @@
 import { createWithEqualityFn } from "zustand/traditional";
 import { shallow } from "zustand/shallow";
 
-type ColorType = {
-  name: string;
-  image: string;
-};
-
 type ProductType = {
   id: string;
   name: string;
-  price: string;
-  mainImage: string;
-  images: string[] | null;
-  description: string | null;
-  colors: ColorType[] | null;
-  sizes: SizeChartType | null;
   slug: string;
+  description: string;
+  highlights: {
+    headline: string;
+    keyPoints: { index: number; text: string }[];
+  };
+  pricing: {
+    salePrice: number;
+    basePrice: number;
+    discountPercentage: number;
+  };
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  options: {
+    colors: Array<{
+      name: string;
+      image: string;
+    }>;
+    sizes: {
+      inches: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+      centimeters: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+    };
+  };
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+    }[];
+  };
 };
 
 type ProductInCartType = {
