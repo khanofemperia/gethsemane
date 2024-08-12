@@ -147,7 +147,11 @@ export async function ChangeCollectionIndexAction(data: {
       }),
     ]);
 
-    revalidatePath("/admin/shop");
+    // Revalidate paths to update collections data
+    revalidatePath("/admin/shop"); // Admin shop page
+    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath("/"); // Public main page
+    revalidatePath("/collections/[slug]", "page"); // Public collection page
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -207,7 +211,12 @@ export async function UpdateCollectionAction(data: {
       ...updateData,
       updatedAt: currentTimestamp(),
     });
-    revalidatePath("/admin/shop/collections/[slug]", "page");
+    
+    // Revalidate paths to update collections data
+    revalidatePath("/admin/shop"); // Admin shop page
+    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath("/"); // Public main page
+    revalidatePath("/collections/[slug]", "page"); // Public collection page
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -283,7 +292,11 @@ export async function AddProductAction(data: {
       updatedAt: currentTimestamp(),
     });
 
-    revalidatePath("/admin/shop/collections/[slug]", "page");
+    // Revalidate paths to update collections data
+    revalidatePath("/admin/shop"); // Admin shop page
+    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath("/"); // Public main page
+    revalidatePath("/collections/[slug]", "page"); // Public collection page
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -336,7 +349,11 @@ export async function RemoveProductAction(data: {
       updatedAt: currentTimestamp(),
     });
 
-    revalidatePath("/admin/shop/collections/[slug]", "page");
+    // Revalidate paths to update collections data
+    revalidatePath("/admin/shop"); // Admin shop page
+    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath("/"); // Public main page
+    revalidatePath("/collections/[slug]", "page"); // Public collection page
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -420,7 +437,11 @@ export async function ChangeProductIndexAction(data: {
         updatedAt: currentTimestamp(),
       });
 
-      revalidatePath("/admin/shop/collections/[slug]", "page");
+      // Revalidate paths to update collections data
+      revalidatePath("/admin/shop"); // Admin shop page
+      revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+      revalidatePath("/"); // Public main page
+      revalidatePath("/collections/[slug]", "page"); // Public collection page
 
       return {
         type: AlertMessageType.SUCCESS,
