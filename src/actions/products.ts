@@ -173,8 +173,8 @@ export async function UpdateProductAction(
     revalidatePath("/admin/shop/products"); // Admin products page
     revalidatePath("/admin/shop/upsells/[id]", "page"); // Admin edit upsell page
     revalidatePath("/"); // Public main page
-    revalidatePath(`/collections/[slug]`, 'page'); // Public single collection page
     revalidatePath(`/${currentProduct.slug}-${currentProduct.id`); // Public product details page
+    revalidatePath(`/collections/[slug]`, 'page'); // Public single collection page
     revalidatePath('/categories/[slug]', 'page'); // Public single category page
     revalidatePath('/cart'); // Public cart page
     revalidatePath('/checkout'); // Public checkout page
