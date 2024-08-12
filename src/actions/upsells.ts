@@ -31,15 +31,11 @@ export async function CreateUpsellAction(data: Partial<UpsellType>) {
   }
 }
 
-export async function UpdateUpsellAction(
-  data: {
-    id: string;
-  } & Partial<ProductType>
-) {
+export async function UpdateUpsellAction(data: { id: string } & Partial<UpsellType>) {
   try {
     const docRef = doc(database, "upsells", data.id);
     const docSnap = await getDoc(docRef);
-    const currentUpsell = docSnap.data();
+    const currentUpsell = docSnap.data() as UpsellType;
 
     const updatedUpsell = {
       ...currentUpsell,
@@ -48,8 +44,19 @@ export async function UpdateUpsellAction(
     };
 
     await setDoc(docRef, updatedUpsell);
-    
-    revalidatePath("/admin/shop/upsells/[id]", "page");
+
+    // Revalidate paths to update data
+    revalidatePath(`/admin/shop/upsells/${data.id}`, "page"); // Admin edit upsell page
+    revalidatePath("/admin/shop/upsells"); // Admin upsell list page
+    revalidatePath(`/`); // Public main page
+
+    // Revalidate product pages if the upsell affects specific products
+    if (currentUpsell.products.length > 0) {
+      currentUpsell.products.forEach(product => {
+        revalidatePath(`/${product.slug}-${product.id}`); // Public product details page
+        revalidatePath(`/admin/shop/products/${product.slug}-${product.id}`); // Admin edit product page
+      });
+    }
 
     return {
       type: AlertMessageType.SUCCESS,
