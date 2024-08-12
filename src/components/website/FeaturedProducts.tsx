@@ -124,8 +124,6 @@ export function FeaturedProducts({
     align: "start",
   });
 
-  console.log(collection);
-
   return (
     <>
       <div className="mx-auto mb-2 md:mb-4 pl-[24px] pr-[22px] flex items-center justify-between md:justify-normal gap-4">
@@ -163,10 +161,10 @@ export function FeaturedProducts({
               </Link>
               <div
                 className="pt-[10px] flex flex-col gap-[6px]"
-                onClick={() => router.push(`/${slug}-${id}`)}
+                onClick={() => router.push(`/${product.slug}-${product.id}`)}
               >
                 <p className="text-sm line-clamp-1">{product.name}</p>
-                <div className="flex items-start justify-between w-full">
+                <div className="flex items-center justify-between w-full">
                   <div className="w-max flex items-center justify-center mt-2">
                     {Number(product.pricing.salePrice) ? (
                       <div className="flex items-center gap-[6px]">
