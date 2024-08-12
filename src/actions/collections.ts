@@ -81,7 +81,6 @@ export async function CreateCollectionAction(data: {
     });
 
     await setDoc(documentRef, newCollection);
-
     await Promise.all(updatePromises);
 
     revalidatePath("/admin/shop");
