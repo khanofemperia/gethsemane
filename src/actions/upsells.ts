@@ -31,7 +31,9 @@ export async function CreateUpsellAction(data: Partial<UpsellType>) {
   }
 }
 
-export async function UpdateUpsellAction(data: { id: string } & Partial<UpsellType>) {
+export async function UpdateUpsellAction(
+  data: { id: string } & Partial<UpsellType>
+) {
   try {
     const docRef = doc(database, "upsells", data.id);
     const docSnap = await getDoc(docRef);
@@ -52,7 +54,7 @@ export async function UpdateUpsellAction(data: { id: string } & Partial<UpsellTy
 
     // Revalidate products related to the updated upsell
     if (currentUpsell.products.length > 0) {
-      currentUpsell.products.forEach(product => {
+      currentUpsell.products.forEach((product) => {
         revalidatePath(`/${product.slug}-${product.id}`); // Public product details page
         revalidatePath(`/admin/shop/products/${product.slug}-${product.id}`); // Admin edit product page
       });
