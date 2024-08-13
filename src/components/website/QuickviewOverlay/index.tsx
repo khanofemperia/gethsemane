@@ -86,7 +86,7 @@ export function QuickviewButton({
 
     const isInCart = false;
     const productInCart = null;
-    
+
     setSelectedProduct(product, isInCart, productInCart);
     showOverlay();
   };
@@ -150,7 +150,7 @@ export function QuickviewOverlay() {
             <div className="w-[400px]">
               <div>
                 <div className="flex flex-col gap-5 pt-4">
-                  <p className="text-sm text-gray">{selectedProduct.name}</p>
+                  <p className="line-clamp-2 text-sm text-gray">{selectedProduct.name}</p>
                   <div className="flex flex-col gap-4">
                     <div
                       className="text-lg leading-[26px] [&>:last-child]:mb-0"
@@ -165,7 +165,7 @@ export function QuickviewOverlay() {
                         .map((point) => (
                           <li
                             key={point.index}
-                            className="flex items-start gap-2 mb-2 last:mb-0"
+                            className="flex items-start gap-2 mb-[7px] last:mb-0"
                           >
                             <CheckmarkIcon
                               className="fill-green mt-[1px] -ml-[1px]"

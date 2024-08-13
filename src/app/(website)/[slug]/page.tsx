@@ -221,7 +221,7 @@ export default async function ProductDetails({
                         .map((point) => (
                           <li
                             key={point.index}
-                            className="flex items-start gap-2 mb-2 last:mb-0"
+                            className="flex items-start gap-2 mb-[7px] last:mb-0"
                           >
                             <CheckmarkIcon
                               className="fill-green mt-[1px] -ml-[1px]"
@@ -382,7 +382,7 @@ export default async function ProductDetails({
                           .map((point) => (
                             <li
                               key={point.index}
-                              className="flex items-start gap-2 mb-2 last:mb-0"
+                              className="flex items-start gap-2 mb-[7px] last:mb-0"
                             >
                               <CheckmarkIcon
                                 className="fill-green mt-[1px] -ml-[1px]"
