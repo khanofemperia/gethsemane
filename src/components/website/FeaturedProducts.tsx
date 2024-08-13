@@ -1,6 +1,6 @@
 "use client";
 
-import { QuickviewButton } from "./Quickview";
+import { QuickviewButton } from "./QuickviewOverlay";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import Link from "next/link";

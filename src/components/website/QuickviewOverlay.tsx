@@ -113,7 +113,7 @@ export function QuickviewButton({
   );
 }
 
-export default function Quickview() {
+export function QuickviewOverlay() {
   const { hideOverlay } = useQuickviewStore();
 
   const { isQuickviewOpen } = useQuickviewStore((state) => ({
@@ -129,6 +129,8 @@ export default function Quickview() {
     }));
 
   useEffect(() => {
+    console.log("In quickview overlay");
+    console.log(selectedProduct);
     if (isQuickviewOpen) {
       document.body.style.overflow = "hidden";
     } else {
