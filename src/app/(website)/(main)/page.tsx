@@ -7,16 +7,68 @@ import {
   getCollections,
   getPageHero,
   getProductsByIds,
+  getProductsWithUpsells,
 } from "@/lib/getData";
 import Image from "next/image";
 import Link from "next/link";
 
-type CollectionProductType = {
+type EnrichedProductType = {
   index: number;
   id: string;
+  name: string;
+  slug: string;
+  description: string;
+  highlights: {
+    headline: string;
+    keyPoints: { index: number; text: string }[];
+  };
+  pricing: {
+    salePrice: number;
+    basePrice: number;
+    discountPercentage: number;
+  };
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  options: {
+    colors: Array<{
+      name: string;
+      image: string;
+    }>;
+    sizes: {
+      inches: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+      centimeters: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+    };
+  };
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+    }[];
+  };
 };
 
-type CollectionType = {
+type EnrichedCollectionType = {
   id: string;
   index: number;
   title: string;
@@ -27,16 +79,10 @@ type CollectionType = {
     desktopImage: string;
     mobileImage: string;
   };
-  products: CollectionProductType[];
+  products: EnrichedProductType[];
   visibility: VisibilityType;
   createdAt: string;
   updatedAt: string;
-};
-
-type EnrichedProductType = CollectionProductType & ProductType;
-
-type EnrichedCollectionType = Omit<CollectionType, "products"> & {
-  products: EnrichedProductType[];
 };
 
 export default async function Home() {
@@ -67,7 +113,7 @@ export default async function Home() {
 
     const productIds = productIdToIndexMap.map((item) => item.id);
 
-    const productsFromDb = await getProductsByIds({
+    const productsFromDb = await getProductsWithUpsells({
       ids: productIds,
       fields: [
         "id",
@@ -105,7 +151,7 @@ export default async function Home() {
 
       return {
         ...collection,
-        products: enrichedProducts as EnrichedProductType[],
+        products: enrichedProducts as Array<{ index: number; id: string }>,
       } as EnrichedCollectionType;
     });
 
@@ -113,6 +159,8 @@ export default async function Home() {
   };
 
   const featuredCollections = await getFeaturedCollections();
+
+  console.log(featuredCollections[0].products[0].upsell);
 
   const combinedCollections = [
     ...(featuredCollections || []),

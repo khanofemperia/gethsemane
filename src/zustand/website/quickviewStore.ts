@@ -1,7 +1,8 @@
 import { createWithEqualityFn } from "zustand/traditional";
 import { shallow } from "zustand/shallow";
 
-type ProductType = {
+type EnrichedProductType = {
+  index: number;
   id: string;
   name: string;
   slug: string;
@@ -64,13 +65,13 @@ type ProductInCartType = {
 
 type QuickviewStoreType = {
   isVisible: boolean;
-  selectedProduct: ProductType | null;
+  selectedProduct: EnrichedProductType | null;
   isInCart: boolean;
   productInCart: ProductInCartType | null;
   showOverlay: () => void;
   hideOverlay: () => void;
   setSelectedProduct: (
-    product: ProductType,
+    product: EnrichedProductType,
     isInCart: boolean,
     productInCart: ProductInCartType | null
   ) => void;
@@ -85,7 +86,7 @@ export const useQuickviewStore = createWithEqualityFn<QuickviewStoreType>(
     showOverlay: () => set({ isVisible: true }),
     hideOverlay: () => set({ isVisible: false }),
     setSelectedProduct: (
-      product: ProductType,
+      product: EnrichedProductType,
       isInCart: boolean,
       productInCart: ProductInCartType | null
     ) => set({ selectedProduct: product, isInCart, productInCart }),

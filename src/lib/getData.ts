@@ -374,11 +374,12 @@ export async function getProductWithUpsell(
 export async function getProductsWithUpsells(
   options: GetProductsByIdsOptionsType
 ): Promise<
-  (ProductType & {
-    upsellDetails?: Partial<UpsellType> & {
-      products: UpsellType["products"];
-    };
-  })[] | null
+  | (ProductType & {
+      upsellDetails?: Partial<UpsellType> & {
+        products: UpsellType["products"];
+      };
+    })[]
+  | null
 > {
   const sanitizedOptions = sanitizeMultiItemOptions(options);
   const { ids, fields, visibility } = sanitizedOptions;
@@ -404,8 +405,8 @@ export async function getProductsWithUpsells(
   }
 
   const products = await Promise.all(
-    snapshot.docs.map(async (doc) => {
-      const data = doc.data();
+    snapshot.docs.map(async (docSnapshot) => {
+      const data = docSnapshot.data();
       let selectedFields: Partial<ProductType> = {};
 
       if (fields.length) {
@@ -419,14 +420,14 @@ export async function getProductsWithUpsells(
       }
 
       const product: ProductType = {
-        id: doc.id,
+        id: docSnapshot.id,
         ...selectedFields,
         updatedAt: data["updatedAt"],
         visibility: data["visibility"],
       };
 
       // Fetch upsell details if an upsell ID is present and non-empty
-      let upsellDetails = undefined;
+      let upsell = undefined;
       if (product.upsell && product.upsell.trim()) {
         const upsellDocRef = doc(database, "upsells", product.upsell);
         const upsellSnapshot = await getDoc(upsellDocRef);
@@ -455,7 +456,7 @@ export async function getProductsWithUpsells(
             })
           );
 
-          upsellDetails = {
+          upsell = {
             ...upsellData,
             products: productsInUpsell.filter(
               (item): item is UpsellType["products"][number] => item !== null
@@ -466,7 +467,7 @@ export async function getProductsWithUpsells(
 
       return {
         ...product,
-        upsellDetails,
+        upsell: upsell || "",
       };
     })
   );

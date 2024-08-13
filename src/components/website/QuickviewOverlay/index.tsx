@@ -11,6 +11,7 @@ import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
 
 type ProductType = {
+  index: number;
   id: string;
   name: string;
   slug: string;
@@ -66,10 +67,10 @@ type ProductType = {
 };
 
 export function QuickviewButton({
-  productId,
+  product,
   onClick,
 }: {
-  productId: string;
+  product: ProductType;
   onClick?: (event: React.MouseEvent) => void;
 }) {
   const { showOverlay } = useQuickviewStore();
@@ -77,25 +78,211 @@ export function QuickviewButton({
     (state) => state.setSelectedProduct
   );
 
-  const handleClick = async (event: React.MouseEvent) => {
+  const handleClick = (event: React.MouseEvent) => {
     if (onClick) {
       event.stopPropagation();
       onClick(event);
     }
 
-    try {
-      const product = (await getProductWithUpsell({
-        id: productId,
-      })) as ProductType;
+    const isInCart = false;
+    const productInCart = null;
 
-      const isInCart = false;
-      const productInCart = null;
+    // const item = {
+    //   id: "91062",
+    //   name: "Waterproof Windproof Women's Hiking Jacket",
+    //   slug: "waterproof-windproof-womens-hiking-jacket",
+    //   description:
+    //     '<p class="TextEditorTheme__paragraph" dir="ltr"><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">Imagine this: you’re exploring the city in the middle of a downpour, and you’re still dry and stylish.</strong></b><span style="white-space: pre-wrap;"> Wind gusts are no match, and you’re as warm as ever.</span></p><p class="TextEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">This jacket lets you take on rainy days, stroll through the park in chilly winds, and stay comfortable no matter the weather. Go ahead and live your life, no matter the weather. </span><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">With this jacket, you’re ready for anything.</strong></b></p><p class="TextEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">It’s like a hug you can wear. Slip it on, and it feels just like your favorite sweater – soft, cozy, and instantly comforting.</span></p><p class="TextEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">Remember those times you had to turn down a spontaneous picnic or skip a hike because of the weather? With this jacket, you can say “yes” to all those adventures. Rain? No problem. Chilly evening? You’re covered. Literally!</span></p><p class="TextEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">We all want to look good while we’re out and about. This jacket is like that perfect pair of jeans – </span><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">stylish enough for a coffee date but tough enough for a nature walk. Win-win!</strong></b></p><p class="TextEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">Think of this jacket as your new best friend. Always there when you need it, never letting you down, and making you feel fantastic. It won’t complain if you change your plans last minute – it’s just ready to go.</span></p><p class="TextEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">And here’s the kicker: it’s eco-friendly. Made with materials kind to the planet, so you can feel good about your choice.</span></p><p class="TextEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">With this jacket, you’re always prepared. Surprise rain shower? You’ve got this. Unexpected outdoor invite? You’re ready. </span><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">It’s like having a superpower – the power to enjoy life, come rain or shine.</strong></b></p><p class="TextEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">So, what do you say? Ready to make every day an “oh, this old thing?” kind of day? Your future self will thank you. This jacket isn’t just a purchase – it’s a whole new way of living. And honey, you deserve it!</span></p><p class="TextEditorTheme__paragraph" dir="ltr"><span style="white-space: pre-wrap;">Let’s make bad weather days a thing of the past. Your new favorite jacket is waiting for you.</span></p><p class="TextEditorTheme__paragraph" dir="ltr"><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">Shop now and experience the difference.</strong></b></p>',
+    //   highlights: {
+    //     keyPoints: [
+    //       {
+    //         index: 1,
+    //         text: "Stay warm and dry in any weather.",
+    //       },
+    //       {
+    //         text: "Look great for coffee dates or city exploring in the rain.",
+    //         index: 2,
+    //       },
+    //       {
+    //         text: "Move comfortably all day long.",
+    //         index: 3,
+    //       },
+    //     ],
+    //     headline:
+    //       '<p class="TextEditorTheme__paragraph" dir="ltr"><b><strong class="TextEditorTheme__textBold" style="white-space: pre-wrap;">Weather keeping you indoors?</strong></b><span style="white-space: pre-wrap;"> Time to break free. Say ‘yes’ to adventures with our </span><i><b><strong class="TextEditorTheme__textBold TextEditorTheme__textItalic" style="white-space: pre-wrap;">all-weather jacket.</strong></b></i></p>',
+    //   },
+    //   pricing: {
+    //     salePrice: 14.99,
+    //     basePrice: 21.99,
+    //     discountPercentage: 36,
+    //   },
+    //   images: {
+    //     gallery: [
+    //       "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/a29326a077e220c1e15738bf1de23a0f.jpg?imageView2/2/w/800/q/70/format/webp",
+    //       "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/faea6cf32f753464ed5c1eef962aa663.jpg?imageView2/2/w/800/q/70/format/webp",
+    //       "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/1a9ebc84fd63acda663c10ae31eba549.jpg?imageView2/2/w/800/q/70/format/webp",
+    //       "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/9aa150bf3f09ed747f4feab7e4762e94.jpg?imageView2/2/w/800/q/70/format/webp",
+    //     ],
+    //     main: "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/2bdc46577e09529eae927dc850f2a62e.jpg?imageView2/2/w/800/q/70/format/webp",
+    //   },
+    //   options: {
+    //     colors: [
+    //       {
+    //         name: "Pink",
+    //         image:
+    //           "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/2bdc46577e09529eae927dc850f2a62e.jpg?imageView2/2/w/800/q/70/format/webp",
+    //       },
+    //       {
+    //         name: "Purple",
+    //         image:
+    //           "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/c351bbef9bc014fe53769cce7bd8a985.jpg?imageView2/2/w/800/q/70/format/webp",
+    //       },
+    //       {
+    //         image:
+    //           "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/1b9cc2ef7d0250bab4c916ece31c06ec.jpg?imageView2/2/w/800/q/70/format/webp",
+    //         name: "Turquoise",
+    //       },
+    //       {
+    //         name: "Black",
+    //         image:
+    //           "https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/314892ee24b07a88b7417acbba9e0ae8.jpg?imageView2/2/w/800/q/70/format/webp",
+    //       },
+    //     ],
+    //     sizes: {
+    //       inches: {
+    //         rows: [
+    //           {
+    //             Bust: "33.9-35.5",
+    //             Size: "S",
+    //             Waist: "26-27.6",
+    //             US: "4",
+    //             Height: "5'5\"-5'7\"",
+    //             Hips: "35.9-37.4",
+    //           },
+    //           {
+    //             Size: "M",
+    //             Hips: "37.4-39",
+    //             US: "6",
+    //             Bust: "35.5-37",
+    //             Height: "5'7\"-5'9\"",
+    //             Waist: "27.6-29.2",
+    //           },
+    //           {
+    //             Bust: "37.4-39.8",
+    //             US: "8/10",
+    //             Hips: "39.4-41.8",
+    //             Height: "5'9\"-5'11\"",
+    //             Size: "L",
+    //             Waist: "29.6-31.9",
+    //           },
+    //           {
+    //             Height: "5'9\"-5'11\"",
+    //             Size: "XL",
+    //             US: "12",
+    //             Waist: "31.9-34.3",
+    //             Hips: "41.8-44.1",
+    //             Bust: "39.8-42.2",
+    //           },
+    //         ],
+    //         columns: [
+    //           {
+    //             label: "Size",
+    //             order: 1,
+    //           },
+    //           {
+    //             order: 2,
+    //             label: "US",
+    //           },
+    //           {
+    //             order: 3,
+    //             label: "Bust",
+    //           },
+    //           {
+    //             order: 4,
+    //             label: "Waist",
+    //           },
+    //           {
+    //             order: 5,
+    //             label: "Hips",
+    //           },
+    //           {
+    //             label: "Height",
+    //             order: 6,
+    //           },
+    //         ],
+    //       },
+    //       centimeters: {
+    //         rows: [
+    //           {
+    //             US: "4",
+    //             Height: "165-170",
+    //             Size: "S",
+    //             Bust: "86-90",
+    //             Waist: "66-70",
+    //             Hips: "91-95",
+    //           },
+    //           {
+    //             US: "6",
+    //             Height: "170-175",
+    //             Size: "M",
+    //             Hips: "95-99",
+    //             Bust: "90-94",
+    //             Waist: "70-74",
+    //           },
+    //           {
+    //             Height: "175-180",
+    //             Bust: "95-101",
+    //             Size: "L",
+    //             Waist: "75-81",
+    //             US: "8/10",
+    //             Hips: "100-106",
+    //           },
+    //           {
+    //             US: "12",
+    //             Waist: "81-87",
+    //             Size: "XL",
+    //             Hips: "106-112",
+    //             Height: "175-180",
+    //             Bust: "101-107",
+    //           },
+    //         ],
+    //         columns: [
+    //           {
+    //             order: 1,
+    //             label: "Size",
+    //           },
+    //           {
+    //             order: 2,
+    //             label: "US",
+    //           },
+    //           {
+    //             label: "Bust",
+    //             order: 3,
+    //           },
+    //           {
+    //             order: 4,
+    //             label: "Waist",
+    //           },
+    //           {
+    //             label: "Hips",
+    //             order: 5,
+    //           },
+    //           {
+    //             label: "Height",
+    //             order: 6,
+    //           },
+    //         ],
+    //       },
+    //     },
+    //   },
+    //   upsell: "72549",
+    //   updatedAt: "2024-08-10 20:01:03",
+    //   visibility: "PUBLISHED",
+    //   index: 3,
+    // };
 
-      setSelectedProduct(product, isInCart, productInCart);
-      showOverlay();
-    } catch (error) {
-      console.error("Error checking cart:", error);
-    }
+    // setSelectedProduct(item, isInCart, productInCart);
+    showOverlay();
   };
 
   return (
@@ -128,6 +315,11 @@ export function QuickviewOverlay() {
       isInCart: state.isInCart,
       productInCart: state.productInCart,
     }));
+
+  useEffect(() => {
+    console.log("Here you go...");
+    console.log(selectedProduct);
+  }, []);
 
   useEffect(() => {
     if (isQuickviewOpen) {
