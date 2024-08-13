@@ -264,7 +264,7 @@ export default function ProductOptions({
         <ChevronRightIcon className="-mr-[8px] stroke-[#828282]" size={20} />
       </button>
       {isDropdownVisible && (
-        <div className="w-max min-w-[238px] max-w-[334px] absolute top-[42px] left-0 p-5 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:left-16 min-[840px]:before:right-24">
+        <div className="w-max min-w-[238px] max-w-[288px] absolute top-[42px] left-0 p-5 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:left-16 min-[840px]:before:right-24">
           {hasColor && hasSize && (
             <div className="flex flex-col gap-4 select-none">
               <ProductColors colors={productInfo.options.colors} />
