@@ -131,7 +131,7 @@ export function FeaturedProducts({
           {title}
         </h2>
         <Link
-          href="#"
+          href={`/collections/${slug}-${id}`}
           className="text-sm rounded-full px-3 h-8 text-nowrap flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
         >
           See more
@@ -142,56 +142,67 @@ export function FeaturedProducts({
         ref={emblaRef}
       >
         <div className="embla__container select-none w-full flex gap-1 md:gap-0">
-          {products.slice(0, 3).map((product: EnrichedProductType) => (
-            <div
-              key={product.index}
-              className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
-            >
-              <Link
-                href={`/${product.slug}-${product.id}`}
-                className="w-full aspect-square rounded-xl flex items-center justify-center overflow-hidden"
-              >
-                <Image
-                  src={product.images.main}
-                  alt={product.name}
-                  width={1000}
-                  height={1000}
-                  priority={true}
-                />
-              </Link>
-              <div
-                className="pt-[10px] flex flex-col gap-[6px]"
-                onClick={() => router.push(`/${product.slug}-${product.id}`)}
-              >
-                <p className="text-sm line-clamp-1">{product.name}</p>
-                <div className="flex items-center justify-between w-full">
-                  <div className="w-max flex items-center justify-center">
-                    {Number(product.pricing.salePrice) ? (
-                      <div className="flex items-center gap-[6px]">
-                        <span className="font-medium">
-                          ${formatThousands(Number(product.pricing.salePrice))}
-                        </span>
-                        <span className="text-xs text-gray line-through mt-[2px]">
-                          ${formatThousands(Number(product.pricing.basePrice))}
-                        </span>
-                        <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                          -{product.pricing.discountPercentage}%
-                        </span>
+          {products
+            .slice(0, 3)
+            .map(
+              ({
+                id,
+                index,
+                name,
+                slug,
+                pricing,
+                images,
+              }: EnrichedProductType) => (
+                <div
+                  key={index}
+                  className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
+                >
+                  <Link
+                    href={`/${slug}-${id}`}
+                    className="w-full aspect-square rounded-xl flex items-center justify-center overflow-hidden"
+                  >
+                    <Image
+                      src={images.main}
+                      alt={name}
+                      width={1000}
+                      height={1000}
+                      priority={true}
+                    />
+                  </Link>
+                  <div
+                    className="pt-[10px] flex flex-col gap-[6px]"
+                    onClick={() => router.push(`/${slug}-${id}`)}
+                  >
+                    <p className="text-sm line-clamp-1">{name}</p>
+                    <div className="flex items-center justify-between w-full">
+                      <div className="w-max flex items-center justify-center">
+                        {Number(pricing.salePrice) ? (
+                          <div className="flex items-center gap-[6px]">
+                            <span className="font-medium">
+                              ${formatThousands(Number(pricing.salePrice))}
+                            </span>
+                            <span className="text-xs text-gray line-through mt-[2px]">
+                              ${formatThousands(Number(pricing.basePrice))}
+                            </span>
+                            <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
+                              -{pricing.discountPercentage}%
+                            </span>
+                          </div>
+                        ) : (
+                          <p className="font-medium">
+                            ${formatThousands(Number(pricing.basePrice))}
+                          </p>
+                        )}
                       </div>
-                    ) : (
-                      <p className="font-medium">
-                        ${formatThousands(Number(product.pricing.basePrice))}
-                      </p>
-                    )}
+                      <QuickviewButton
+                        onClick={(event) => event.stopPropagation()}
+                        productId={id}
+                      />
+                    </div>
                   </div>
-                  <QuickviewButton
-                    onClick={(event) => event.stopPropagation()}
-                    productId={product.id}
-                  />
                 </div>
-              </div>
-            </div>
-          ))}
+              )
+            )}
         </div>
       </div>
     </>

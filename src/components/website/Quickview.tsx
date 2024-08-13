@@ -82,12 +82,11 @@ export function QuickviewButton({
       onClick(event);
     }
 
-    
     try {
       const product = (await getProductWithUpsell({
         id: productId,
       })) as ProductType;
-      
+
       const isInCart = false;
       const productInCart = null;
 
