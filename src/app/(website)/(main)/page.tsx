@@ -160,8 +160,6 @@ export default async function Home() {
 
   const featuredCollections = await getFeaturedCollections();
 
-  console.log(featuredCollections[0].products[0].upsell);
-
   const combinedCollections = [
     ...(featuredCollections || []),
     ...(collections?.filter(
