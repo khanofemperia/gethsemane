@@ -362,6 +362,120 @@ export async function getProductWithUpsell(
 }
 
 /**
+ * Get multiple products by their IDs with their upsell details.
+ *
+ * @example
+ * const productsWithUpsells = await getProductsWithUpsells({
+ *   ids: ["1", "2", "3"],
+ *   fields: ['id', 'name', 'pricing'],
+ *   visibility: 'PUBLISHED'
+ * });
+ */
+export async function getProductsWithUpsells(
+  options: GetProductsByIdsOptionsType
+): Promise<
+  (ProductType & {
+    upsellDetails?: Partial<UpsellType> & {
+      products: UpsellType["products"];
+    };
+  })[] | null
+> {
+  const sanitizedOptions = sanitizeMultiItemOptions(options);
+  const { ids, fields, visibility } = sanitizedOptions;
+
+  if (!ids || ids.length === 0) {
+    return null;
+  }
+
+  const productsRef = collection(database, "products");
+  let firestoreQuery = query(productsRef, where("__name__", "in", ids));
+
+  if (visibility) {
+    firestoreQuery = query(
+      firestoreQuery,
+      where("visibility", "==", visibility)
+    );
+  }
+
+  const snapshot = await getDocs(firestoreQuery);
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  const products = await Promise.all(
+    snapshot.docs.map(async (doc) => {
+      const data = doc.data();
+      let selectedFields: Partial<ProductType> = {};
+
+      if (fields.length) {
+        fields.forEach((field) => {
+          if (data.hasOwnProperty(field)) {
+            selectedFields[field as keyof ProductType] = data[field];
+          }
+        });
+      } else {
+        selectedFields = data;
+      }
+
+      const product: ProductType = {
+        id: doc.id,
+        ...selectedFields,
+        updatedAt: data["updatedAt"],
+        visibility: data["visibility"],
+      };
+
+      // Fetch upsell details if an upsell ID is present and non-empty
+      let upsellDetails = undefined;
+      if (product.upsell && product.upsell.trim()) {
+        const upsellDocRef = doc(database, "upsells", product.upsell);
+        const upsellSnapshot = await getDoc(upsellDocRef);
+
+        if (upsellSnapshot.exists()) {
+          const upsellData = upsellSnapshot.data() as UpsellType;
+
+          const productsInUpsell = await Promise.all(
+            upsellData.products.map(async (productItem) => {
+              const productDocRef = doc(database, "products", productItem.id);
+              const productSnapshot = await getDoc(productDocRef);
+
+              if (!productSnapshot.exists()) {
+                return null;
+              }
+
+              const productData = productSnapshot.data() as ProductType;
+              return {
+                index: productItem.index,
+                name: productItem.name,
+                id: productData.id,
+                slug: productData.slug,
+                mainImage: productData.images.main,
+                basePrice: productData.pricing.basePrice,
+              };
+            })
+          );
+
+          upsellDetails = {
+            ...upsellData,
+            products: productsInUpsell.filter(
+              (item): item is UpsellType["products"][number] => item !== null
+            ),
+          };
+        }
+      }
+
+      return {
+        ...product,
+        upsellDetails,
+      };
+    })
+  );
+
+  const sortedProducts = sortItems(products, "updatedAt", true);
+  return sortedProducts;
+}
+
+/**
  * Get a collection by ID. Optionally specify fields.
  *
  * @example
