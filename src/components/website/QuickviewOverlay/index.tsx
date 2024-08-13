@@ -146,34 +146,17 @@ export function QuickviewOverlay() {
   return (
     isVisible && (
       <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
-        <div className="w-max max-h-[554px] py-5 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-14px">
-          <div className="px-10 flex flex-row custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
-            <div className="w-[582px]">
-              <div className="max-w-[650px] flex flex-col gap-16">
-                <Images
-                  images={selectedProduct.images}
-                  productName={selectedProduct.name}
-                />
-              </div>
-              {selectedProduct.description && (
-                <div className="w-full px-[70px] mx-auto">
-                  <div className="w-[580px]">
-                    <div
-                      className={`
-                    [&>p>img]:max-w-[500px] [&>p>img]:rounded-xl [&>p>img]:my-7 
-                    [&>:last-child]:mb-0 [&>:first-child]:mt-0 [&>:first-child>img]:mt-0 [&>:last-child>img]:mb-0
-                  `}
-                      dangerouslySetInnerHTML={{
-                        __html: selectedProduct.description || "",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
+        <div className="w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
+          <div className="pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
+            <div className="w-[556px] flex flex-col gap-16">
+              <Images
+                images={selectedProduct.images}
+                productName={selectedProduct.name}
+              />
             </div>
-            <div className="sticky top-5 pt-5 min-w-[340px] w-[340px] min-[896px]:min-w-[400px] min-[896px]:w-[400px]">
+            <div className="w-[400px]">
               <div>
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-5 pt-4">
                   <p className="text-sm text-gray">{selectedProduct.name}</p>
                   <div className="flex flex-col gap-4">
                     <div
