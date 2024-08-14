@@ -71,6 +71,10 @@ type ProductWithUpsellType = Partial<Omit<ProductType, "upsell">> & {
   };
 };
 
+type CollectionWithProductsAndUpsellsType = Omit<CollectionType, "products"> & {
+  products: ProductWithUpsellType[];
+};
+
 type Sortable = { [key: string]: any };
 
 function sortItems<T extends Sortable>(
@@ -91,7 +95,7 @@ function sanitizeSingleItemOptions(
   options: SingleItemOptionsType
 ): SanitizedSingleItemOptionsType {
   return {
-    id: options.id.trim(),
+    id: typeof options.id === "string" ? options.id.trim() : "",
     fields: Array.isArray(options.fields)
       ? options.fields.filter(
           (field): field is string =>
@@ -738,6 +742,100 @@ export async function getCollections(
 
   const sortedCollections = sortItems(collections, "index");
   return sortedCollections;
+}
+
+export async function getCollectionWithProductsAndUpsells(
+  options: SingleItemOptionsType
+): Promise<CollectionWithProductsAndUpsellsType | null> {
+  const sanitizedOptions = sanitizeSingleItemOptions(options);
+  const { id, fields } = sanitizedOptions;
+
+  if (!id) {
+    return null;
+  }
+
+  const collectionDocRef = doc(database, "collections", id);
+  const collectionSnapshot = await getDoc(collectionDocRef);
+
+  if (!collectionSnapshot.exists()) {
+    return null;
+  }
+
+  const collectionData = collectionSnapshot.data();
+
+  let selectedFields: Partial<CollectionType> = {};
+  if (fields.length) {
+    fields.forEach((field) => {
+      if (collectionData.hasOwnProperty(field)) {
+        selectedFields[field as keyof CollectionType] = collectionData[field];
+      }
+    });
+  } else {
+    selectedFields = collectionData;
+  }
+
+  const productsWithUpsells = await Promise.all(
+    collectionData.products.map(
+      async ({ id, index }: { id: string; index: number }) => {
+        const productWithUpsell = await getProductWithUpsell({
+          id,
+          fields,
+        });
+
+        if (productWithUpsell && productWithUpsell.id) {
+          return { ...productWithUpsell, index };
+        } else {
+          return null;
+        }
+      }
+    )
+  );
+
+  const filteredProducts = productsWithUpsells.filter((item) => item !== null);
+
+  const collectionWithProducts = {
+    id: collectionSnapshot.id,
+    ...selectedFields,
+    products: filteredProducts as ProductWithUpsellType[],
+  } as {
+    id: string;
+    index: number;
+    title: string;
+    slug: string;
+    campaignDuration: DateRangeType;
+    collectionType: string;
+    bannerImages?: {
+      desktopImage: string;
+      mobileImage: string;
+    };
+    products: Omit<ProductType, "upsell"> &
+      {
+        upsell: {
+          id: string;
+          mainImage: string;
+          pricing: {
+            salePrice: number;
+            basePrice: number;
+            discountPercentage: number;
+          };
+          visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+          createdAt: string;
+          updatedAt: string;
+          products: {
+            id: string;
+            name: string;
+            slug: string;
+            mainImage: string;
+            basePrice: number;
+          }[];
+        };
+      }[];
+    visibility: VisibilityType;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  return collectionWithProducts;
 }
 
 export async function getUpsells(): Promise<UpsellType[] | null> {
