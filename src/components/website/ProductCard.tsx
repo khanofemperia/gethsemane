@@ -5,28 +5,26 @@ import { formatThousands } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-type EnrichedUpsellType = {
-  id: string;
-  mainImage: string;
-  pricing: {
-    salePrice: number;
-    basePrice: number;
-    discountPercentage: number;
-  };
-  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-  createdAt: string;
-  updatedAt: string;
-  products: {
-    id: string;
-    name: string;
-    slug: string;
-    mainImage: string;
-    basePrice: number;
-  }[];
-};
-
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
-  upsell?: EnrichedUpsellType;
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+    }[];
+  };
 };
 
 export function ProductCard({ product }: { product: ProductWithUpsellType }) {
@@ -66,10 +64,10 @@ export function ProductCard({ product }: { product: ProductWithUpsellType }) {
               </p>
             )}
           </div>
-          {/* <QuickviewButton
+          <QuickviewButton
             onClick={(event) => event.stopPropagation()}
             product={product}
-          /> */}
+          />
         </div>
       </div>
     </div>

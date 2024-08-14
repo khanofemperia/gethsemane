@@ -1,41 +1,7 @@
 import { createWithEqualityFn } from "zustand/traditional";
 import { shallow } from "zustand/shallow";
 
-type EnrichedProductType = {
-  index: number;
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  highlights: {
-    headline: string;
-    keyPoints: { index: number; text: string }[];
-  };
-  pricing: {
-    salePrice: number;
-    basePrice: number;
-    discountPercentage: number;
-  };
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  options: {
-    colors: Array<{
-      name: string;
-      image: string;
-    }>;
-    sizes: {
-      inches: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-      centimeters: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-    };
-  };
+type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
     id: string;
     mainImage: string;
@@ -65,13 +31,13 @@ type ProductInCartType = {
 
 type QuickviewStoreType = {
   isVisible: boolean;
-  selectedProduct: EnrichedProductType | null;
+  selectedProduct: ProductWithUpsellType | null;
   isInCart: boolean;
   productInCart: ProductInCartType | null;
   showOverlay: () => void;
   hideOverlay: () => void;
   setSelectedProduct: (
-    product: EnrichedProductType,
+    product: ProductWithUpsellType,
     isInCart: boolean,
     productInCart: ProductInCartType | null
   ) => void;
@@ -86,7 +52,7 @@ export const useQuickviewStore = createWithEqualityFn<QuickviewStoreType>(
     showOverlay: () => set({ isVisible: true }),
     hideOverlay: () => set({ isVisible: false }),
     setSelectedProduct: (
-      product: EnrichedProductType,
+      product: ProductWithUpsellType,
       isInCart: boolean,
       productInCart: ProductInCartType | null
     ) => set({ selectedProduct: product, isInCart, productInCart }),

@@ -10,6 +10,28 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { useRouter } from "next/navigation";
 import { formatThousands } from "@/lib/utils";
 
+type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+    }[];
+  };
+};
+
 type EnrichedProductType = {
   index: number;
   id: string;
@@ -164,10 +186,14 @@ export function FeaturedProducts({
   collection: EnrichedCollectionType;
 }) {
   const router = useRouter();
-  const { id, slug, title, products } = collection;
   const [emblaRef] = useEmblaCarousel({
     align: "start",
   });
+
+  const { id, slug, title } = collection;
+  const products = collection.products as (ProductWithUpsellType & {
+    index: number;
+  })[];
 
   return (
     <>
@@ -187,7 +213,7 @@ export function FeaturedProducts({
         ref={emblaRef}
       >
         <div className="embla__container select-none w-full flex gap-1 md:gap-0">
-          {products.slice(0, 3).map((product: EnrichedProductType) => (
+          {products.slice(0, 3).map((product) => (
             <div
               key={product.index}
               className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"

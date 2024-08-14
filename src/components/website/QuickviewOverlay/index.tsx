@@ -10,41 +10,7 @@ import { formatThousands } from "@/lib/utils";
 import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
 
-type EnrichedProductType = {
-  index: number;
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  highlights: {
-    headline: string;
-    keyPoints: { index: number; text: string }[];
-  };
-  pricing: {
-    salePrice: number;
-    basePrice: number;
-    discountPercentage: number;
-  };
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  options: {
-    colors: Array<{
-      name: string;
-      image: string;
-    }>;
-    sizes: {
-      inches: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-      centimeters: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-    };
-  };
+type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
     id: string;
     mainImage: string;
@@ -70,7 +36,7 @@ export function QuickviewButton({
   product,
   onClick,
 }: {
-  product: EnrichedProductType;
+  product: ProductWithUpsellType;
   onClick?: (event: React.MouseEvent) => void;
 }) {
   const { showOverlay } = useQuickviewStore();
@@ -114,13 +80,13 @@ export function QuickviewOverlay() {
     isQuickviewOpen: state.isVisible,
   }));
 
-  const { isInCart, productInCart, selectedProduct, setSelectedProduct } =
-    useQuickviewStore((state) => ({
+  const { isInCart, productInCart, selectedProduct } = useQuickviewStore(
+    (state) => ({
       selectedProduct: state.selectedProduct,
-      setSelectedProduct: state.setSelectedProduct,
       isInCart: state.isInCart,
       productInCart: state.productInCart,
-    }));
+    })
+  );
 
   useEffect(() => {
     if (isQuickviewOpen) {
@@ -150,7 +116,9 @@ export function QuickviewOverlay() {
             <div className="w-[400px]">
               <div>
                 <div className="flex flex-col gap-5 pt-4">
-                  <p className="line-clamp-2 text-sm text-gray">{selectedProduct.name}</p>
+                  <p className="line-clamp-2 text-sm text-gray">
+                    {selectedProduct.name}
+                  </p>
                   <div className="flex flex-col gap-4">
                     <div
                       className="text-lg leading-[26px] [&>:last-child]:mb-0"

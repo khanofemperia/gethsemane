@@ -1,28 +1,26 @@
 import { ProductCard } from "@/components/website/ProductCard";
 import { getProductsByCategoryWithUpsell } from "@/lib/getData";
 
-type EnrichedUpsellType = {
-  id: string;
-  mainImage: string;
-  pricing: {
-    salePrice: number;
-    basePrice: number;
-    discountPercentage: number;
-  };
-  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-  createdAt: string;
-  updatedAt: string;
-  products: {
-    id: string;
-    name: string;
-    slug: string;
-    mainImage: string;
-    basePrice: number;
-  }[];
-};
-
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
-  upsell?: EnrichedUpsellType;
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+    }[];
+  };
 };
 
 export default async function Categories({
