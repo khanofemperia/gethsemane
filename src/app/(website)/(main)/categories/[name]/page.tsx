@@ -1,4 +1,5 @@
 import { ProductCard } from "@/components/website/ProductCard";
+import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { getProductsByCategoryWithUpsell } from "@/lib/getData";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
@@ -33,12 +34,15 @@ export default async function Categories({
   })) as ProductWithUpsellType[];
 
   return (
-    <div className="max-w-[968px] mx-auto pt-10">
-      <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
-        {products.map((product, index) => (
-          <ProductCard key={index} product={product} />
-        ))}
+    <>
+      <div className="max-w-[968px] mx-auto pt-10">
+        <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
+          {products.map((product, index) => (
+            <ProductCard key={index} product={product} />
+          ))}
+        </div>
       </div>
-    </div>
+      <QuickviewOverlay />
+    </>
   );
 }
