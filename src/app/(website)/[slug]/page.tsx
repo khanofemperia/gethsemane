@@ -160,7 +160,7 @@ export default async function ProductDetails({
           </Link>
           <div className="w-full flex items-center justify-center md:pl-6 lg:pl-0 overflow-hidden">
             <Link
-              href="/shop"
+              href="/"
               className="flex items-center gap-[10px] px-5 w-full md:max-w-[560px] h-12 rounded-full ease-in-out transition duration-300 bg-[#e9eff6] active:bg-[#c4f8d6] lg:hover:bg-[#c4f8d6]"
             >
               <Image
