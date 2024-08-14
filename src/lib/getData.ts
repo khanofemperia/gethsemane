@@ -8,6 +8,7 @@ import {
   where,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
+import { capitalizeFirstLetter } from "./utils";
 
 type BaseOptionsType = {
   fields?: string[];
@@ -36,13 +37,40 @@ type SanitizedMultiItemOptionsType = {
   visibility?: VisibilityType;
 };
 
-type VisibilityType = "DRAFT" | "PUBLISHED" | "HIDDEN";
+type GetProductsByCategoryOptionsType = {
+  category: string; // Category is required
+  fields?: string[];
+  visibility?: VisibilityType;
+};
 
-type ProductType = {
+type SanitizedGetProductsByCategoryOptionsType = {
+  category: string;
+  fields: string[];
+  visibility?: VisibilityType;
+};
+
+type EnrichedUpsellType = {
   id: string;
+  mainImage: string;
+  pricing: {
+    salePrice: number;
+    basePrice: number;
+    discountPercentage: number;
+  };
+  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+  createdAt: string;
   updatedAt: string;
-  visibility: VisibilityType;
-  [key: string]: any;
+  products: {
+    id: string;
+    name: string;
+    slug: string;
+    mainImage: string;
+    basePrice: number;
+  }[];
+};
+
+type ProductWithUpsellType = Partial<Omit<ProductType, "upsell">> & {
+  upsell?: EnrichedUpsellType;
 };
 
 type Sortable = { [key: string]: any };
@@ -117,6 +145,21 @@ function sanitizeBaseOptions(
 ): SanitizedMultiItemOptionsType {
   return {
     ids: [],
+    fields: Array.isArray(options.fields)
+      ? options.fields.filter(
+          (field): field is string =>
+            typeof field === "string" && field.trim() !== ""
+        )
+      : [],
+    visibility: options.visibility,
+  };
+}
+
+function sanitizeGetProductsByCategoryOptions(
+  options: GetProductsByCategoryOptionsType
+): SanitizedGetProductsByCategoryOptionsType {
+  return {
+    category: options.category.trim(),
     fields: Array.isArray(options.fields)
       ? options.fields.filter(
           (field): field is string =>
@@ -304,25 +347,22 @@ export async function getProductsByIds(
  */
 export async function getProductWithUpsell(
   options: SingleItemOptionsType
-): Promise<
-  | (Partial<ProductType> & {
-      upsellDetails?: Partial<UpsellType> & {
-        products: UpsellType["products"];
-      };
-    })
-  | null
-> {
+): Promise<ProductWithUpsellType | ProductType | null> {
   const product = await getProduct(options);
 
-  if (!product || !product.upsell) {
-    return product;
+  if (!product) {
+    return null;
+  }
+
+  if (!product.upsell || product.upsell === "") {
+    return product as ProductType;
   }
 
   const upsellDocRef = doc(database, "upsells", product.upsell);
   const upsellSnapshot = await getDoc(upsellDocRef);
 
   if (!upsellSnapshot.exists()) {
-    return product;
+    return product as ProductType;
   }
 
   const upsellData = upsellSnapshot.data() as UpsellType;
@@ -373,14 +413,7 @@ export async function getProductWithUpsell(
  */
 export async function getProductsWithUpsells(
   options: GetProductsByIdsOptionsType
-): Promise<
-  | (ProductType & {
-      upsellDetails?: Partial<UpsellType> & {
-        products: UpsellType["products"];
-      };
-    })[]
-  | null
-> {
+): Promise<ProductWithUpsellType[] | ProductType[] | null> {
   const sanitizedOptions = sanitizeMultiItemOptions(options);
   const { ids, fields, visibility } = sanitizedOptions;
 
@@ -419,7 +452,7 @@ export async function getProductsWithUpsells(
         selectedFields = data;
       }
 
-      const product: ProductType = {
+      const product: Partial<ProductType> = {
         id: docSnapshot.id,
         ...selectedFields,
         updatedAt: data["updatedAt"],
@@ -468,7 +501,118 @@ export async function getProductsWithUpsells(
       return {
         ...product,
         upsell: upsell || "",
+      } as ProductWithUpsellType;
+    })
+  );
+
+  const sortedProducts = sortItems(products, "updatedAt", true);
+  return sortedProducts;
+}
+
+/**
+ * Get products by category. Category is required. Optionally specify fields and visibility.
+ *
+ * @example
+ * const products = await getProductsByCategoryWithUpsell({
+ *   category: "dresses",
+ *   fields: ['id', 'name', 'pricing'],
+ *   visibility: 'PUBLISHED'
+ * });
+ */
+export async function getProductsByCategoryWithUpsell(
+  options: GetProductsByCategoryOptionsType
+): Promise<ProductWithUpsellType[] | ProductType[] | null> {
+  const sanitizedOptions = sanitizeGetProductsByCategoryOptions(options);
+  const { category, fields, visibility } = sanitizedOptions;
+
+  if (!category) {
+    throw new Error("Category is required.");
+  }
+
+  const collectionRef = collection(database, "products");
+
+  let firestoreQuery = query(
+    collectionRef,
+    where("category", "==", capitalizeFirstLetter(category))
+  );
+
+  if (visibility) {
+    firestoreQuery = query(
+      firestoreQuery,
+      where("visibility", "==", visibility)
+    );
+  }
+
+  const snapshot = await getDocs(firestoreQuery);
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  const products = await Promise.all(
+    snapshot.docs.map(async (docSnapshot) => {
+      const data = docSnapshot.data();
+      let selectedFields: Partial<ProductType> = {};
+
+      if (fields.length) {
+        fields.forEach((field) => {
+          if (data.hasOwnProperty(field)) {
+            selectedFields[field as keyof ProductType] = data[field];
+          }
+        });
+      } else {
+        selectedFields = data;
+      }
+
+      const product: Partial<ProductType> = {
+        id: docSnapshot.id,
+        ...selectedFields,
+        updatedAt: data["updatedAt"],
+        visibility: data["visibility"],
       };
+
+      let upsell = undefined;
+      if (product.upsell && product.upsell.trim()) {
+        const upsellDocRef = doc(database, "upsells", product.upsell);
+        const upsellSnapshot = await getDoc(upsellDocRef);
+
+        if (upsellSnapshot.exists()) {
+          const upsellData = upsellSnapshot.data() as UpsellType;
+
+          const productsInUpsell = await Promise.all(
+            upsellData.products.map(async (productItem) => {
+              const productDocRef = doc(database, "products", productItem.id);
+              const productSnapshot = await getDoc(productDocRef);
+
+              if (!productSnapshot.exists()) {
+                return null;
+              }
+
+              const productData = productSnapshot.data() as ProductType;
+              return {
+                index: productItem.index,
+                name: productItem.name,
+                id: productData.id,
+                slug: productData.slug,
+                mainImage: productData.images.main,
+                basePrice: productData.pricing.basePrice,
+              };
+            })
+          );
+
+          upsell = {
+            ...upsellData,
+            products: productsInUpsell.filter(
+              (item): item is UpsellType["products"][number] => item !== null
+            ),
+          };
+        }
+      }
+
+      return {
+        ...product,
+        upsell: upsell || "",
+      } as ProductWithUpsellType;
     })
   );
 

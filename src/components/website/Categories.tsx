@@ -104,7 +104,7 @@ export function Categories({ categories }: { categories: CategoryType[] }) {
         <div className="embla__container w-full flex">
           {categories.map(({ index, name, image }) => (
             <Link
-              href="#"
+              href={`/categories/${name.toLowerCase()}`}
               key={index}
               className="embla__slide mr-5 last:mr-0 flex flex-col gap-2 items-center rounded-xl p-[10px] ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
             >

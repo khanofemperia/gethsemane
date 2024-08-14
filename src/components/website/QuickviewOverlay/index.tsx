@@ -10,7 +10,7 @@ import { formatThousands } from "@/lib/utils";
 import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
 
-type ProductType = {
+type EnrichedProductType = {
   index: number;
   id: string;
   name: string;
@@ -70,7 +70,7 @@ export function QuickviewButton({
   product,
   onClick,
 }: {
-  product: ProductType;
+  product: EnrichedProductType;
   onClick?: (event: React.MouseEvent) => void;
 }) {
   const { showOverlay } = useQuickviewStore();
