@@ -2,6 +2,7 @@ import { Banner } from "@/components/website/Banner";
 import { Categories } from "@/components/website/Categories";
 import { FeaturedProducts } from "@/components/website/FeaturedProducts";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
+import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import {
   getCategories,
   getCollections,
@@ -237,6 +238,7 @@ export default async function Home() {
         </div>
       </div>
       <QuickviewOverlay />
+      <UpsellReviewOverlay />
     </>
   );
 }
