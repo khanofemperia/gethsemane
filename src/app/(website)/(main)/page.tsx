@@ -238,7 +238,7 @@ export default async function Home() {
         </div>
       </div>
       <QuickviewOverlay />
-      <UpsellReviewOverlay />
+      {/* <UpsellReviewOverlay /> */}
     </>
   );
 }

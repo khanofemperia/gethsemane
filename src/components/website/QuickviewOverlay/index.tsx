@@ -9,6 +9,7 @@ import Images from "../Product/Images";
 import { formatThousands } from "@/lib/utils";
 import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
+import { UpsellReviewButton } from "../UpsellReviewOverlay";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -76,8 +77,8 @@ export function QuickviewButton({
 export function QuickviewOverlay() {
   const { hideOverlay } = useQuickviewStore();
 
-  const { isQuickviewOpen } = useQuickviewStore((state) => ({
-    isQuickviewOpen: state.isVisible,
+  const { isOverlayOpened } = useQuickviewStore((state) => ({
+    isOverlayOpened: state.isVisible,
   }));
 
   const { isInCart, productInCart, selectedProduct } = useQuickviewStore(
@@ -89,7 +90,7 @@ export function QuickviewOverlay() {
   );
 
   useEffect(() => {
-    if (isQuickviewOpen) {
+    if (isOverlayOpened) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "visible";
@@ -98,9 +99,9 @@ export function QuickviewOverlay() {
     return () => {
       document.body.style.overflow = "visible";
     };
-  }, [isQuickviewOpen]);
+  }, [isOverlayOpened]);
 
-  const isVisible = isQuickviewOpen && selectedProduct;
+  const isVisible = isOverlayOpened && selectedProduct;
 
   return (
     isVisible && (
@@ -275,9 +276,7 @@ export function QuickviewOverlay() {
                   <button className="text-sm min-[896px]:text-base font-semibold w-full h-[44px] min-[896px]:h-12  rounded-full ease-in-out duration-150 transition border border-[rgb(150,150,150)] hover:border-[rgb(80,80,80)] active:border-[rgb(150,150,150)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.16)]">
                     Add to Cart
                   </button>
-                  <button className="text-sm min-[896px]:text-base inline-block text-center align-middle h-[44px] min-[896px]:h-12 w-full border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-300 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
-                    Yes, Let's Upgrade
-                  </button>
+                  <UpsellReviewButton product={{id: selectedProduct.id, upsell: selectedProduct.upsell}} />
                 </div>
               </div>
             </div>
