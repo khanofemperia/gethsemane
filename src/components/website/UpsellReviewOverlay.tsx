@@ -1,18 +1,8 @@
 "use client";
 
-import { CreateProductAction } from "@/actions/products";
-import AlertMessage from "@/components/shared/AlertMessage";
-import { capitalizeFirstLetter, isValidRemoteImage } from "@/lib/utils";
-import { useState, useEffect, useRef } from "react";
-import Spinner from "@/ui/Spinners/White";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { useNavbarMenuStore } from "@/zustand/admin/navbarMenuStore";
-import { ArrowLeftIcon, ChevronDownIcon, CloseIcon } from "@/icons";
-import clsx from "clsx";
-import Image from "next/image";
-import Overlay from "@/ui/Overlay";
-import { AlertMessageType } from "@/lib/sharedTypes";
-import { getCategories } from "@/lib/getData";
+import { CloseIconThin } from "@/icons";
 
 export function UpsellReviewButton() {
   const { showOverlay } = useOverlayStore();
@@ -43,13 +33,15 @@ export function UpsellReviewOverlay() {
   return (
     <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
       <div className="relative overflow-hidden shadow rounded-2xl bg-white">
-        <div className="w-[640px] h-full pt-[40px] pb-[85px] flex flex-col relative">
-          <div className="w-max mx-auto flex gap-y-1 gap-x-2 *:w-7 *:h-7 *:rounded-full *:bg-lightgray *:flex *:items-center *:justify-center *:text-xs">
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div>4</div>
-            <div>5</div>
+        <div className="w-[640px] h-full pt-8 pb-[85px] flex flex-col relative">
+          <div className="mb-2">
+            <div className="w-max mx-auto flex gap-y-1 gap-x-2 *:w-7 *:h-7 *:rounded-full *:bg-lightgray *:flex *:items-center *:justify-center *:text-xs">
+              <div>1</div>
+              <div>2</div>
+              <div>3</div>
+              <div>4</div>
+              <div>5</div>
+            </div>
           </div>
           <div className="custom-scrollbar overflow-x-hidden overflow-y-visible">
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Est
@@ -83,10 +75,16 @@ export function UpsellReviewOverlay() {
             dolore optio voluptatibus ratione minima!
           </div>
           <div className="absolute left-0 right-0 bottom-0">
-            <div className="h-[85px] bg-slate-300"></div>
+            <div className="h-[85px] pt-2 flex justify-center">
+              <button className="h-12 w-max px-20 inline-block text-center align-middle border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-300 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
+                All Set! Add Upgrade to Cart
+              </button>
+            </div>
           </div>
         </div>
-        <button className="w-9 h-9 rounded-full absolute top-2 right-2 flex items-center justify-center ease-in-out transition duration-300 hover:bg-lightgray"></button>
+        <button className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center ease-in-out transition duration-300 hover:bg-lightgray">
+          <CloseIconThin size={24} className="text-gray" />
+        </button>
       </div>
     </div>
   );

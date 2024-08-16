@@ -16,8 +16,10 @@ import {
   HiCheck,
 } from "react-icons/hi";
 import { HiArrowUpRight } from "react-icons/hi2";
+import { IoCloseOutline } from "react-icons/io5";
 
 export const CloseIcon = HiX;
+export const CloseIconThin = IoCloseOutline;
 export const CartIcon = PiShoppingCartSimpleBold;
 export const SearchIcon = HiOutlineSearch;
 export const ChevronLeftIcon = TbChevronLeft;
