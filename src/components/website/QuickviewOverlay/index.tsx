@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
-import { CheckmarkIcon, CloseIcon } from "@/icons";
+import { CheckmarkIcon, CloseIconThin } from "@/icons";
 import Images from "../Product/Images";
 import { formatThousands } from "@/lib/utils";
 import Options from "@/components/website/Product/Options";
@@ -275,7 +275,12 @@ export function QuickviewOverlay() {
                   <button className="text-sm min-[896px]:text-base font-semibold w-full h-[44px] min-[896px]:h-12  rounded-full ease-in-out duration-150 transition border border-[rgb(150,150,150)] hover:border-[rgb(80,80,80)] active:border-[rgb(150,150,150)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.16)]">
                     Add to Cart
                   </button>
-                  <UpsellReviewButton product={{id: selectedProduct.id, upsell: selectedProduct.upsell}} />
+                  <UpsellReviewButton
+                    product={{
+                      id: selectedProduct.id,
+                      upsell: selectedProduct.upsell,
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -285,7 +290,7 @@ export function QuickviewOverlay() {
             className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
             type="button"
           >
-            <CloseIcon size={24} />
+            <CloseIconThin size={24} className="stroke-gray" />
           </button>
         </div>
       </div>
