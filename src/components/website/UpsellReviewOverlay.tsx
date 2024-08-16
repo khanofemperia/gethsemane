@@ -64,18 +64,6 @@ export function UpsellReviewOverlay() {
     selectedProduct: state.selectedProduct,
   }));
 
-  useEffect(() => {
-    if (isOverlayOpened) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "visible";
-    }
-
-    return () => {
-      document.body.style.overflow = "visible";
-    };
-  }, [isOverlayOpened]);
-
   const isVisible = isOverlayOpened && selectedProduct;
 
   return (
@@ -93,36 +81,7 @@ export function UpsellReviewOverlay() {
               </div>
             </div>
             <div className="custom-scrollbar overflow-x-hidden overflow-y-visible">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Est
-              recusandae amet rem sint aliquid quod architecto quas iure,
-              tenetur enim, aperiam cupiditate. Possimus iusto et commodi facere
-              alias eius deleniti. Enim maxime architecto asperiores sit illum
-              cum provident debitis nesciunt, corporis totam quis omnis,
-              inventore expedita error, eum voluptatem quibusdam eveniet?
-              Molestiae quis laboriosam quaerat eos cupiditate atque, nemo
-              totam? Possimus repellendus maiores repudiandae et quidem, quas
-              tempore aspernatur eligendi facere voluptate sequi deleniti animi
-              harum eum eius quisquam hic iusto odio qui voluptas ducimus! Nobis
-              aliquam inventore consequuntur corrupti! A neque quia vero
-              voluptas, nesciunt culpa facilis dolorem est accusantium, ipsum
-              vel asperiores fugiat molestias, praesentium repellendus rem
-              nostrum magni enim. Aliquid quidem laudantium expedita ipsa.
-              Dicta, labore excepturi! Esse mollitia perspiciatis officiis
-              blanditiis nesciunt natus. Voluptas quae quis ipsam suscipit
-              laboriosam porro eos numquam temporibus repellendus, molestias qui
-              nihil expedita nisi maiores enim dignissimos ducimus perspiciatis
-              eveniet! Est? Beatae iure commodi consectetur possimus nobis ullam
-              ad inventore ipsum provident, ab fuga repudiandae accusantium
-              nesciunt illum quasi quibusdam numquam sit quidem. Quisquam unde
-              repudiandae, quibusdam vitae tenetur repellendus doloremque?
-              Fugiat labore ipsum ut id cupiditate exercitationem, nam alias
-              vitae illo repellendus perspiciatis sequi ducimus? Magnam laborum
-              sit similique! Veritatis, corrupti? Excepturi officiis impedit
-              aspernatur quae incidunt aliquid ipsam esse! Nihil iure animi
-              repellat cumque tempora eaque, voluptatum autem illo. Aliquid
-              dolorum laboriosam deserunt quia animi hic, corrupti natus modi
-              dolore! Ea suscipit magni alias dolore optio voluptatibus ratione
-              minima!
+              
             </div>
             <div className="absolute left-0 right-0 bottom-0">
               <div className="h-[85px] pt-2 flex justify-center">

@@ -4,15 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { CartIcon, SearchIcon } from "@/icons";
+import { CartIcon } from "@/icons";
 
 export default function Navbar() {
   const [isScrollingUp, setIsScrollingUp] = useState(true);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [prevScrollPosition, setPrevScrollPosition] = useState(0);
-  const [isNavbarHidden, setIsNavbarHidden] = useState(true);
-  const searchRef = useRef(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,45 +35,13 @@ export default function Navbar() {
     }
   }, [prevScrollPosition]);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (!searchRef.current || !(event.target instanceof Node)) {
-        return;
-      }
-
-      const targetNode = searchRef.current as Node;
-
-      if (!targetNode.contains(event.target)) {
-        setIsSearchVisible(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isSearchVisible) {
-      setIsNavbarHidden(true);
-      setIsScrollingUp(true);
-    }
-
-    if (isSearchVisible && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isSearchVisible]);
-
   return (
     <>
       <nav
         className={clsx(
           "w-full max-h-[116px] md:max-h-16 z-20 fixed top-0 border-b transition duration-100 ease-in-out bg-white",
           {
-            "-translate-y-full":
-              !isScrollingUp && isNavbarHidden && prevScrollPosition >= 154,
+            "-translate-y-full": !isScrollingUp && prevScrollPosition >= 154,
           }
         )}
       >
