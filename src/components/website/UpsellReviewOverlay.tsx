@@ -69,8 +69,8 @@ export function UpsellReviewOverlay() {
   return (
     isVisible && (
       <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
-        <div className="relative overflow-hidden shadow rounded-2xl bg-white">
-          <div className="w-[640px] h-full pt-8 pb-[85px] flex flex-col relative">
+        <div className="max-h-[764px] relative overflow-hidden shadow rounded-2xl bg-white">
+          <div className="w-[764px] h-full pt-8 pb-[85px] flex flex-col relative">
             <div className="mb-2">
               <div className="w-max mx-auto flex gap-y-1 gap-x-2 *:w-7 *:h-7 *:rounded-full *:bg-lightgray *:flex *:items-center *:justify-center *:text-xs">
                 <div>1</div>
@@ -80,7 +80,13 @@ export function UpsellReviewOverlay() {
                 <div>5</div>
               </div>
             </div>
-            <div className="custom-scrollbar overflow-x-hidden overflow-y-visible"></div>
+            <div className="px-8 pt-3 flex flex-wrap gap-2 custom-scrollbar overflow-x-hidden overflow-y-visible">
+              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
+              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
+              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
+              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
+              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
+            </div>
             <div className="absolute left-0 right-0 bottom-0">
               <div className="h-[85px] pt-2 flex justify-center">
                 <button className="h-12 w-max px-20 inline-block text-center align-middle border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-300 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
