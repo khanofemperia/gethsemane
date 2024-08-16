@@ -80,7 +80,7 @@ export function UpsellReviewOverlay() {
 
   return (
     isVisible && (
-      <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
+      <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
         <div className="relative overflow-hidden shadow rounded-2xl bg-white">
           <div className="w-[640px] h-full pt-8 pb-[85px] flex flex-col relative">
             <div className="mb-2">
@@ -137,7 +137,7 @@ export function UpsellReviewOverlay() {
             onClick={hideOverlay}
             className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center ease-in-out transition duration-300 hover:bg-lightgray"
           >
-            <CloseIconThin size={24} className="text-gray" />
+            <CloseIconThin size={24} className="stroke-gray" />
           </button>
         </div>
       </div>

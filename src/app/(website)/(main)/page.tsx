@@ -7,7 +7,6 @@ import {
   getCategories,
   getCollections,
   getPageHero,
-  getProductsByIds,
   getProductsWithUpsells,
 } from "@/lib/getData";
 import Image from "next/image";
@@ -238,7 +237,7 @@ export default async function Home() {
         </div>
       </div>
       <QuickviewOverlay />
-      {/* <UpsellReviewOverlay /> */}
+      <UpsellReviewOverlay />
     </>
   );
 }

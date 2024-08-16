@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { CheckmarkIcon, CloseIcon } from "@/icons";
-import { getProductWithUpsell } from "@/lib/getData";
 import Images from "../Product/Images";
 import { formatThousands } from "@/lib/utils";
 import Options from "@/components/website/Product/Options";
