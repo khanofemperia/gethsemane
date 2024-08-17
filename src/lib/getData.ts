@@ -487,6 +487,7 @@ export async function getProductsWithUpsells(
                 slug: productData.slug,
                 mainImage: productData.images.main,
                 basePrice: productData.pricing.basePrice,
+                options: productData.options,
               };
             })
           );

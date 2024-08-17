@@ -89,6 +89,9 @@ export function QuickviewOverlay() {
   );
 
   useEffect(() => {
+    if (selectedProduct && selectedProduct?.upsell) {
+      console.log(selectedProduct.upsell);
+    }
     if (isOverlayOpened) {
       document.body.style.overflow = "hidden";
     } else {

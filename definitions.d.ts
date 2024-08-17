@@ -108,23 +108,26 @@ type UpsellType = {
     name: string;
     mainImage: string;
     basePrice: number;
+    options: {
+      colors: Array<{
+        name: string;
+        image: string;
+      }>;
+      sizes: {
+        inches: {
+          columns: Array<{ label: string; order: number }>;
+          rows: Array<{ [key: string]: string }>;
+        };
+        centimeters: {
+          columns: Array<{ label: string; order: number }>;
+          rows: Array<{ [key: string]: string }>;
+        };
+      };
+    };
   }>;
 };
 
 /***************************************************************/
-type ColumnType = { label: string; order: number };
-type RowType = { [key: string]: string };
-
-type SizeChartType = {
-  inches: {
-    columns: ColumnType[];
-    rows: RowType[];
-  };
-  centimeters: {
-    columns: ColumnType[];
-    rows: RowType[];
-  };
-};
 
 type KeyPointsType = { index: number; text: string };
 
@@ -159,7 +162,16 @@ type ProductType = {
       name: string;
       image: string;
     }>;
-    sizes: SizeChartType;
+    sizes: {
+      inches: {
+        columns: Array<{ label: string; order: number }>;
+        rows: Array<{ [key: string]: string }>;
+      };
+      centimeters: {
+        columns: Array<{ label: string; order: number }>;
+        rows: Array<{ [key: string]: string }>;
+      };
+    };
   };
   seo: {
     metaTitle: string;

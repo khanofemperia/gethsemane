@@ -195,6 +195,37 @@ export function FeaturedProducts({
     index: number;
   })[];
 
+  /*
+  
+  {
+    products: [
+      {
+        index: 1,
+        name: 'Lace Top',
+        id: '91468',
+        slug: 'crew-neck-lace-splicing-top-ruffle-stretch-semi-sheer-polyester',
+        mainImage: 'https://img.kwcdn.com/product/fancy/571c0264-cbdd-4e8c-ba54-bee75eb3784d.jpg?imageView2/2/w/800/q/70/format/webp',
+        basePrice: 59.99
+      },
+      {
+        index: 2,
+        name: 'Waterproof Jacket',
+        id: '91062',
+        slug: 'waterproof-windproof-womens-hiking-jacket',
+        mainImage: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/2bdc46577e09529eae927dc850f2a62e.jpg?imageView2/2/w/800/q/70/format/webp',
+        basePrice: 21.99
+      }
+    ],
+    id: '72549',
+    mainImage: 'https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg',
+    updatedAt: '2024-08-10 21:13:31',
+    visibility: 'DRAFT',
+    pricing: { salePrice: 0, basePrice: 81.99, discountPercentage: 0 },
+    createdAt: '2024-08-03 12:14:50'
+  }
+
+  */
+
   return (
     <>
       <div className="mx-auto mb-2 md:mb-4 pl-[24px] pr-[22px] flex items-center justify-between md:justify-normal gap-4">

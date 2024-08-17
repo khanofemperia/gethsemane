@@ -23,6 +23,22 @@ type UpsellReviewProductType = {
       slug: string;
       mainImage: string;
       basePrice: number;
+      options: {
+        colors: Array<{
+          name: string;
+          image: string;
+        }>;
+        sizes: {
+          inches: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+          centimeters: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+        };
+      };
     }[];
   };
 };
@@ -72,7 +88,7 @@ export function UpsellReviewOverlay() {
         <div className="max-h-[764px] relative overflow-hidden shadow rounded-2xl bg-white">
           <div className="w-[764px] h-full pt-8 pb-[85px] flex flex-col relative">
             <div className="mb-2">
-              <div className="w-max mx-auto flex gap-y-1 gap-x-2 *:w-7 *:h-7 *:rounded-full *:bg-lightgray *:flex *:items-center *:justify-center *:text-xs">
+              <div className="w-max mx-auto flex gap-y-1 gap-x-3 *:w-7 *:h-7 *:rounded-full *:bg-lightgray *:flex *:items-center *:justify-center *:text-xs">
                 <div>1</div>
                 <div>2</div>
                 <div>3</div>
@@ -81,11 +97,15 @@ export function UpsellReviewOverlay() {
               </div>
             </div>
             <div className="px-8 pt-3 flex flex-wrap gap-2 custom-scrollbar overflow-x-hidden overflow-y-visible">
-              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
-              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
-              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
-              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
-              <div className="w-56 h-[280px] bg-black rounded-xl"></div>
+              {selectedProduct.upsell.products.map(({name, basePrice, mainImage, options}, index) => (
+                <div key={index} className="w-56 border p-2 pb-4 rounded-2xl flex flex-col gap-2">
+                  <div className="w-full aspect-square rounded-xl bg-slate-500"></div>
+                  <div className="flex justify-between">
+                    <span className="text-xs text-gray">{name}</span>
+                    <span className="text-xs text-gray">{basePrice}</span>
+                  </div>
+                </div>
+              ))}
             </div>
             <div className="absolute left-0 right-0 bottom-0">
               <div className="h-[85px] pt-2 flex justify-center">
