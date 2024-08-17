@@ -138,7 +138,11 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
     }
   }, [columns]);
 
-  const updateInchesData = (updatedData: RowType[]) => {
+  const updateInchesData = (
+    updatedData: Array<{
+      [key: string]: string;
+    }>
+  ) => {
     setTableData((prevData) => ({
       ...prevData,
       inches: {
@@ -148,7 +152,11 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
     }));
   };
 
-  const updateCentimetersData = (updatedData: RowType[]) => {
+  const updateCentimetersData = (
+    updatedData: Array<{
+      [key: string]: string;
+    }>
+  ) => {
     setTableData((prevData) => ({
       ...prevData,
       centimeters: {
