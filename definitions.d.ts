@@ -94,6 +94,17 @@ type PricingType = {
   discountPercentage: number;
 };
 
+type SizeChartType = {
+  inches: {
+    columns: Array<{ label: string; order: number }>;
+    rows: Array<{ [key: string]: string }>;
+  };
+  centimeters: {
+    columns: Array<{ label: string; order: number }>;
+    rows: Array<{ [key: string]: string }>;
+  };
+};
+
 type UpsellType = {
   id: string;
   mainImage: string;

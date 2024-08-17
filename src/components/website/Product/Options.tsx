@@ -1,17 +1,16 @@
 "use client";
+
 import Image from "next/image";
 import { ChevronRightIcon } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { useCallback, useEffect, useState } from "react";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 
-type ColorType = {
-  name: string;
-  image: string;
-};
-
 type ProductColorsType = {
-  colors: ColorType[];
+  colors: Array<{
+    name: string;
+    image: string;
+  }>;
 };
 
 type ProductOptionsType = {
