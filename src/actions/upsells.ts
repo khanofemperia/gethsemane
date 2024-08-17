@@ -42,7 +42,7 @@ type ProductWithoutOptions = {
 
 export async function UpdateUpsellAction(
   data: { id: string } & Partial<Omit<UpsellType, "products">> & {
-      products: ProductWithoutOptions[];
+      products?: ProductWithoutOptions[];
     }
 ) {
   try {
