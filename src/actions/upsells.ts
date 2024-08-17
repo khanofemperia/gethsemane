@@ -6,7 +6,20 @@ import { generateId, currentTimestamp } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-export async function CreateUpsellAction(data: Partial<UpsellType>) {
+type ProductWithoutOptions = {
+  index: number;
+  id: string;
+  slug: string;
+  name: string;
+  mainImage: string;
+  basePrice: number;
+};
+
+export async function CreateUpsellAction(
+  data: Partial<Omit<UpsellType, "products">> & {
+    products?: ProductWithoutOptions[];
+  }
+) {
   try {
     const documentRef = doc(database, "upsells", generateId());
     const currentTime = currentTimestamp();
@@ -30,15 +43,6 @@ export async function CreateUpsellAction(data: Partial<UpsellType>) {
     return { type: AlertMessageType.ERROR, message: "Failed to create upsell" };
   }
 }
-
-type ProductWithoutOptions = {
-  index: number;
-  id: string;
-  slug: string;
-  name: string;
-  mainImage: string;
-  basePrice: number;
-};
 
 export async function UpdateUpsellAction(
   data: { id: string } & Partial<Omit<UpsellType, "products">> & {
