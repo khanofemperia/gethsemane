@@ -31,8 +31,19 @@ export async function CreateUpsellAction(data: Partial<UpsellType>) {
   }
 }
 
+type ProductWithoutOptions = {
+  index: number;
+  id: string;
+  slug: string;
+  name: string;
+  mainImage: string;
+  basePrice: number;
+};
+
 export async function UpdateUpsellAction(
-  data: { id: string } & Partial<UpsellType>
+  data: { id: string } & Partial<Omit<UpsellType, "products">> & {
+      products: ProductWithoutOptions[];
+    }
 ) {
   try {
     const docRef = doc(database, "upsells", data.id);
