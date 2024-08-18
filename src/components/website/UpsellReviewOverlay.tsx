@@ -62,7 +62,7 @@ function ProductColors({
   onColorSelect,
 }: ProductColorsType) {
   return (
-    <div className="w-full">
+    <div className="max-w-[280px]">
       <div className="flex flex-wrap gap-2">
         {colors.map(({ name, image }, index) => (
           <div
@@ -174,7 +174,7 @@ function ProductOptions({
   const hasSize = Object.keys(product.options.sizes).length > 0;
 
   return (
-    <div className="mt-4">
+    <div>
       {hasColor && hasSize && (
         <div className="flex flex-col gap-4 select-none">
           <ProductColors
@@ -251,22 +251,25 @@ export function UpsellReviewOverlay() {
                 <div>5</div>
               </div>
             </div>
-            <div className="px-8 pt-3 flex flex-wrap gap-2 justify-center custom-scrollbar overflow-x-hidden overflow-y-visible">
+            <div className="px-8 pt-3 flex flex-col gap-2 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
               {selectedProduct.upsell.products.map((product, index) => (
-                <div key={index} className="w-56 border p-2 pb-4 rounded-2xl">
-                  <div className="mb-2 w-full aspect-square rounded-xl overflow-hidden">
+                <div
+                  key={index}
+                  className="w-[522px] flex gap-5 border p-2 pr-5 rounded-2xl"
+                >
+                  <div className="min-w-36 max-w-36 min-h-36 max-h-36 rounded-xl overflow-hidden">
                     <Image
                       src={product.mainImage}
                       alt={product.name}
-                      width={224}
-                      height={224}
+                      width={160}
+                      height={160}
                       priority={true}
                     />
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray">{product.name}</span>
+                  <div className="mt-1 flex flex-col gap-4">
+                    <p className="text-sm text-gray">{product.name}</p>
+                    <ProductOptions product={product} />
                   </div>
-                  <ProductOptions product={product} />
                 </div>
               ))}
             </div>
