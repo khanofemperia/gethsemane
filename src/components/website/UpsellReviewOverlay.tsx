@@ -281,23 +281,28 @@ export function UpsellReviewOverlay() {
     selectedProduct && (
       <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
         <div className="max-h-[764px] relative overflow-hidden shadow rounded-2xl bg-white">
-          <div className="w-max h-full pt-8 pb-[80px] flex flex-col relative">
+          <div className="w-max h-full pt-6 pb-[80px] flex flex-col relative">
             <div className="mb-2">
-              <div className="w-max mx-auto flex gap-y-1 gap-x-3">
-                {selectedProduct.upsell.products.map((product, index) => (
-                  <div
-                    key={product.id}
-                    className={clsx(
-                      "w-7 h-7 rounded-full flex items-center justify-center text-xs",
-                      {
-                        "bg-black text-white": isProductReady(product),
-                        "bg-lightgray text-black": !isProductReady(product),
-                      }
-                    )}
-                  >
-                    {index + 1}
-                  </div>
-                ))}
+              <div className="w-max mx-auto flex flex-col gap-2 items-center">
+                <div className="flex gap-y-1 gap-x-3">
+                  {selectedProduct.upsell.products.map((product, index) => (
+                    <div
+                      key={product.id}
+                      className={clsx(
+                        "w-7 h-7 rounded-full flex items-center justify-center text-xs",
+                        {
+                          "bg-black text-white": isProductReady(product),
+                          "bg-lightgray text-black": !isProductReady(product),
+                        }
+                      )}
+                    >
+                      {index + 1}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray">
+                  Select options for each product (e.g., color, size)
+                </p>
               </div>
             </div>
             <div className="px-8 pt-2 pb-5 flex flex-col gap-2 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
