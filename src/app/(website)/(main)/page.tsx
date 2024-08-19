@@ -13,7 +13,6 @@ import {
   getDiscoveryProducts,
   getPageHero,
   getProductsByIdsWithUpsells,
-  getProductsWithUpsells,
 } from "@/lib/getData";
 import Image from "next/image";
 import Link from "next/link";
@@ -153,7 +152,6 @@ export default async function Home() {
       getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
       getDiscoveryProducts({
         limit: 10,
-        fields: ["id", "name", "price", "mainImage"],
       }),
     ]);
 
@@ -299,9 +297,11 @@ export default async function Home() {
                   return null;
               }
             })}
-          <DiscoveryProducts
-            products={discoveryProducts as ProductWithUpsellType[]}
-          />
+          <div className="px-[14px]">
+            <DiscoveryProducts
+              products={discoveryProducts as ProductWithUpsellType[]}
+            />
+          </div>
         </div>
       </div>
       <QuickviewOverlay />
@@ -311,22 +311,22 @@ export default async function Home() {
 }
 
 function DiscoveryProducts({
-  heading = "Explore your interests",
+  heading = "Explore Your Interests",
   products,
 }: {
   heading?: string;
   products: ProductWithUpsellType[];
 }) {
   return (
-    <div>
-      <h2 className="font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
+    <>
+      <h2 className="py-1 mb-4 font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
         {heading}
       </h2>
       <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
         {products.map((product, index) => (
-          <ProductCard index={index} product={product} />
+          <ProductCard key={index} product={product} />
         ))}
       </div>
-    </div>
+    </>
   );
 }

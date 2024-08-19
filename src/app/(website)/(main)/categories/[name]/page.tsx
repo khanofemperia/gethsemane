@@ -54,7 +54,7 @@ export default async function Categories({
       <div className="max-w-[968px] mx-auto pt-10">
         <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
           {products.map((product, index) => (
-            <ProductCard index={index} product={product} />
+            <ProductCard key={index} product={product} />
           ))}
         </div>
       </div>
