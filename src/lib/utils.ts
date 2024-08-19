@@ -104,6 +104,65 @@ export function isGifImage(url: string) {
   }
 }
 
+type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+      options: {
+        colors: Array<{
+          name: string;
+          image: string;
+        }>;
+        sizes: {
+          inches: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+          centimeters: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+        };
+      };
+    }[];
+  };
+};
+
+/**
+ * Shuffle an array of products using the Fisher-Yates algorithm.
+ *
+ * @param {ProductWithUpsellType[]} products - The array of products to shuffle.
+ * @returns {ProductWithUpsellType[]} A shuffled array of products.
+ */
+export function shuffleDiscoveryProducts(
+  products: ProductWithUpsellType[]
+): ProductWithUpsellType[] {
+  // Shuffle the products using the Fisher-Yates algorithm
+  const shuffledProducts = [...products];
+  for (let i = shuffledProducts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledProducts[i], shuffledProducts[j]] = [
+      shuffledProducts[j],
+      shuffledProducts[i],
+    ];
+  }
+  return shuffledProducts;
+}
+
 export const productInternationalSizes = {
   Size: ["S", "M", "L", "XL", "XXL"],
   US: ["4", "6", "8/10", "12", "14"],

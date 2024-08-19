@@ -1053,14 +1053,6 @@ export async function getSettings(): Promise<SettingsType | null> {
   return currentSettings;
 }
 
-/**
- * Get a random selection of published products from all categories.
- *
- * @param {Object} options - The options for retrieving treasure hunt products.
- * @param {number} [options.limit=20] - The maximum number of products to return.
- * @param {string[]} [options.fields] - The fields to include for each product.
- * @returns {Promise<ProductWithUpsellType[] | null>} A promise that resolves to an array of randomly selected products or null if no products are found.
- */
 export async function getDiscoveryProducts(
   options: {
     limit?: number;
@@ -1078,15 +1070,5 @@ export async function getDiscoveryProducts(
     return null;
   }
 
-  // Shuffle the products using the Fisher-Yates algorithm
-  const shuffledProducts = [...allProducts];
-  for (let i = shuffledProducts.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledProducts[i], shuffledProducts[j]] = [
-      shuffledProducts[j],
-      shuffledProducts[i],
-    ];
-  }
-
-  return shuffledProducts.slice(0, limit);
+  return allProducts.slice(0, limit);
 }
