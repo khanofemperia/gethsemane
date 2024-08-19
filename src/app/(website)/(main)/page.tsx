@@ -1,9 +1,8 @@
 import { Banner } from "@/components/website/Banner";
 import { Categories } from "@/components/website/Categories";
+import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { FeaturedProducts } from "@/components/website/FeaturedProducts";
-import { ProductCard } from "@/components/website/ProductCard";
 import {
-  QuickviewButton,
   QuickviewOverlay,
 } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
@@ -14,7 +13,6 @@ import {
   getPageHero,
   getProductsByIdsWithUpsells,
 } from "@/lib/getData";
-import { shuffleDiscoveryProducts } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -307,29 +305,6 @@ export default async function Home() {
       </div>
       <QuickviewOverlay />
       <UpsellReviewOverlay />
-    </>
-  );
-}
-
-function DiscoveryProducts({
-  heading = "Explore Your Interests",
-  products,
-}: {
-  heading?: string;
-  products: ProductWithUpsellType[];
-}) {
-  const shuffledProducts = shuffleDiscoveryProducts(products);
-
-  return (
-    <>
-      <h2 className="py-1 mb-4 font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
-        {heading}
-      </h2>
-      <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
-        {shuffledProducts.map((product, index) => (
-          <ProductCard key={index} product={product} />
-        ))}
-      </div>
     </>
   );
 }
