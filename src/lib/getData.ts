@@ -414,6 +414,102 @@ export async function getProductWithUpsell(
  * });
  */
 export async function getProductsWithUpsells(
+  options: BaseOptionsType = {}
+): Promise<ProductWithUpsellType[] | null> {
+  const sanitizedOptions = sanitizeBaseOptions(options);
+  const { fields, visibility } = sanitizedOptions;
+
+  const collectionRef = collection(database, "products");
+
+  let firestoreQuery = query(collectionRef);
+
+  if (visibility) {
+    firestoreQuery = query(
+      collectionRef,
+      where("visibility", "==", visibility)
+    );
+  }
+
+  const snapshot = await getDocs(firestoreQuery);
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  const products = await Promise.all(
+    snapshot.docs.map(async (docSnapshot) => {
+      const data = docSnapshot.data();
+      let selectedFields: Partial<ProductType> = {};
+
+      if (fields.length) {
+        fields.forEach((field) => {
+          if (data.hasOwnProperty(field)) {
+            selectedFields[field as keyof ProductType] = data[field];
+          }
+        });
+      } else {
+        selectedFields = data;
+      }
+
+      const product: Partial<ProductType> = {
+        id: docSnapshot.id,
+        ...selectedFields,
+        updatedAt: data["updatedAt"],
+        visibility: data["visibility"],
+      };
+
+      // Fetch upsell details if an upsell ID is present and non-empty
+      let upsell = undefined;
+      if (product.upsell && product.upsell.trim()) {
+        const upsellDocRef = doc(database, "upsells", product.upsell);
+        const upsellSnapshot = await getDoc(upsellDocRef);
+
+        if (upsellSnapshot.exists()) {
+          const upsellData = upsellSnapshot.data() as UpsellType;
+
+          const productsInUpsell = await Promise.all(
+            upsellData.products.map(async (productItem) => {
+              const productDocRef = doc(database, "products", productItem.id);
+              const productSnapshot = await getDoc(productDocRef);
+
+              if (!productSnapshot.exists()) {
+                return null;
+              }
+
+              const productData = productSnapshot.data() as ProductType;
+              return {
+                index: productItem.index,
+                name: productItem.name,
+                id: productData.id,
+                slug: productData.slug,
+                mainImage: productData.images.main,
+                basePrice: productData.pricing.basePrice,
+                options: productData.options,
+              };
+            })
+          );
+
+          upsell = {
+            ...upsellData,
+            products: productsInUpsell.filter(
+              (item): item is UpsellType["products"][number] => item !== null
+            ),
+          };
+        }
+      }
+
+      return {
+        ...product,
+        upsell: upsell || "",
+      } as ProductWithUpsellType;
+    })
+  );
+
+  const sortedProducts = sortItems(products, "updatedAt", true);
+  return sortedProducts;
+}
+
+export async function getProductsByIdsWithUpsells(
   options: GetProductsByIdsOptionsType
 ): Promise<ProductWithUpsellType[] | ProductType[] | null> {
   const sanitizedOptions = sanitizeMultiItemOptions(options);
@@ -955,4 +1051,42 @@ export async function getSettings(): Promise<SettingsType | null> {
   }
 
   return currentSettings;
+}
+
+/**
+ * Get a random selection of published products from all categories.
+ *
+ * @param {Object} options - The options for retrieving treasure hunt products.
+ * @param {number} [options.limit=20] - The maximum number of products to return.
+ * @param {string[]} [options.fields] - The fields to include for each product.
+ * @returns {Promise<ProductWithUpsellType[] | null>} A promise that resolves to an array of randomly selected products or null if no products are found.
+ */
+export async function getDiscoveryProducts(
+  options: {
+    limit?: number;
+    fields?: string[];
+  } = {}
+): Promise<ProductWithUpsellType[] | null> {
+  const { limit = 20, fields } = options;
+
+  const allProducts = await getProductsWithUpsells({
+    fields: fields,
+    visibility: "PUBLISHED",
+  });
+
+  if (!allProducts || allProducts.length === 0) {
+    return null;
+  }
+
+  // Shuffle the products using the Fisher-Yates algorithm
+  const shuffledProducts = [...allProducts];
+  for (let i = shuffledProducts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledProducts[i], shuffledProducts[j]] = [
+      shuffledProducts[j],
+      shuffledProducts[i],
+    ];
+  }
+
+  return shuffledProducts.slice(0, limit);
 }

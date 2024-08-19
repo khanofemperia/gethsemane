@@ -1,4 +1,4 @@
-import { ProductCard } from "@/components/website/ProductCard";
+import { ProductCard } from "@/components/website/ProductCards";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { getCollectionWithProductsAndUpsells } from "@/lib/getData";
 

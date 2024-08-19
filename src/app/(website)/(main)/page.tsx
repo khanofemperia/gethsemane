@@ -1,12 +1,18 @@
 import { Banner } from "@/components/website/Banner";
 import { Categories } from "@/components/website/Categories";
 import { FeaturedProducts } from "@/components/website/FeaturedProducts";
-import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
+import { ProductCard } from "@/components/website/ProductCard";
+import {
+  QuickviewButton,
+  QuickviewOverlay,
+} from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import {
   getCategories,
   getCollections,
+  getDiscoveryProducts,
   getPageHero,
+  getProductsByIdsWithUpsells,
   getProductsWithUpsells,
 } from "@/lib/getData";
 import Image from "next/image";
@@ -101,12 +107,55 @@ type EnrichedCollectionType = {
   updatedAt: string;
 };
 
+type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+      options: {
+        colors: Array<{
+          name: string;
+          image: string;
+        }>;
+        sizes: {
+          inches: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+          centimeters: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+        };
+      };
+    }[];
+  };
+};
+
 export default async function Home() {
-  const [pageHero, categories, collections] = await Promise.all([
-    getPageHero(),
-    getCategories(),
-    getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
-  ]);
+  const [pageHero, categories, collections, discoveryProducts] =
+    await Promise.all([
+      getPageHero(),
+      getCategories(),
+      getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
+      getDiscoveryProducts({
+        limit: 10,
+        fields: ["id", "name", "price", "mainImage"],
+      }),
+    ]);
 
   const getFeaturedCollections = async (): Promise<
     EnrichedCollectionType[]
@@ -129,7 +178,7 @@ export default async function Home() {
 
     const productIds = productIdToIndexMap.map((item) => item.id);
 
-    const productsFromDb = await getProductsWithUpsells({
+    const productsFromDb = await getProductsByIdsWithUpsells({
       ids: productIds,
       fields: [
         "id",
@@ -250,10 +299,34 @@ export default async function Home() {
                   return null;
               }
             })}
+          <DiscoveryProducts
+            products={discoveryProducts as ProductWithUpsellType[]}
+          />
         </div>
       </div>
       <QuickviewOverlay />
       <UpsellReviewOverlay />
     </>
+  );
+}
+
+function DiscoveryProducts({
+  heading = "Explore your interests",
+  products,
+}: {
+  heading?: string;
+  products: ProductWithUpsellType[];
+}) {
+  return (
+    <div>
+      <h2 className="font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
+        {heading}
+      </h2>
+      <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
+        {products.map((product, index) => (
+          <ProductCard index={index} product={product} />
+        ))}
+      </div>
+    </div>
   );
 }
