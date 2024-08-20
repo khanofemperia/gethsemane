@@ -226,10 +226,10 @@ export function FeaturedProducts({
         </Link>
       </div>
       <div
-        className="embla overflow-hidden relative select-none"
+        className="embla relative select-none"
         ref={emblaRef}
       >
-        <div className="embla__container select-none w-full flex gap-1 md:gap-0">
+        <div className="embla__container w-full flex gap-1 md:gap-0">
           {products.slice(0, 3).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
