@@ -101,12 +101,12 @@ export function Categories({ categories }: { categories: CategoryType[] }) {
         className="embla relative select-none overflow-hidden w-full max-w-[768px] lg:max-w-[828px] py-1 px-3 md:px-1 mx-auto"
         ref={emblaRef}
       >
-        <div className="embla__container w-full flex cursor-grab">
+        <div className="embla__container w-full flex cursor-context-menu">
           {categories.map(({ index, name, image }) => (
             <Link
               href={`/categories/${name.toLowerCase()}`}
               key={index}
-              className="embla__slide cursor-grab mr-5 last:mr-0 flex flex-col gap-2 items-center rounded-xl p-[10px] ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
+              className="embla__slide cursor-pointer mr-5 last:mr-0 flex flex-col gap-2 items-center rounded-xl p-[10px] ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
             >
               <div className="lg:hidden w-[90px] h-[90px] rounded-full shadow-[rgba(0,0,0,0.2)_0px_1px_3px_0px,_rgba(27,31,35,0.15)_0px_0px_0px_1px]">
                 <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center z-10">
