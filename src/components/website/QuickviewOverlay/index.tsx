@@ -3,12 +3,13 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
-import { CheckmarkIcon, CloseIconThin } from "@/icons";
+import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import Images from "../Product/Images";
 import { formatThousands } from "@/lib/utils";
 import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
 import { UpsellReviewButton } from "../UpsellReviewOverlay";
+import Link from "next/link";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -123,7 +124,7 @@ export function QuickviewOverlay() {
 
   return (
     isVisible && (
-      <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
+      <div className="custom-scrollbar flex justify-center w-screen h-screen overflow-x-hidden overflow-y-visible z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
         <div className="w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
           <div className="pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
             <div className="w-[556px] flex flex-col gap-16">
@@ -289,7 +290,7 @@ export function QuickviewOverlay() {
                     </div>
                   )}
               </div>
-              <div className="sticky left-0 right-0 bottom-0 z-10 mt-6 pt-1 pb-5 shadow-[0_-12px_16px_2px_white] bg-white">
+              <div className="sticky left-0 right-0 bottom-0 z-10 mt-6 pt-1 pb-0 shadow-[0_-12px_16px_2px_white] bg-white">
                 <div className="flex gap-2 min-[896px]:gap-3">
                   <button className="text-sm min-[896px]:text-base font-semibold w-full h-[44px] min-[896px]:h-12  rounded-full ease-in-out duration-150 transition border border-[rgb(150,150,150)] hover:border-[rgb(80,80,80)] active:border-[rgb(150,150,150)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.16)]">
                     Add to Cart
@@ -300,6 +301,15 @@ export function QuickviewOverlay() {
                       upsell: selectedProduct.upsell,
                     }}
                   />
+                </div>
+                <div className="mt-5">
+                  <Link
+                    className="flex items-center text-sm hover:underline"
+                    href={`${selectedProduct.slug}-${selectedProduct.id}`}
+                  >
+                    <span>All details</span>
+                    <ChevronRightIcon size={20} />
+                  </Link>
                 </div>
               </div>
             </div>
