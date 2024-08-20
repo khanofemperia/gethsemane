@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function Banner({ collection }: { collection: CollectionType }) {
   return (
-    <div className="py-1 px-[14px]">
+    <div>
       <Link href={`/collections/${collection.slug}-${collection.id}`}>
         <div className="w-full rounded-2xl p-[10px] ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]">
           <div className="w-full flex items-center justify-center rounded-xl overflow-hidden">
@@ -23,8 +23,8 @@ export function Banner({ collection }: { collection: CollectionType }) {
                 <Image
                   src={collection.bannerImages.desktopImage}
                   alt={collection.title}
-                  width={920}
-                  height={340}
+                  width={948}
+                  height={250}
                   priority
                 />
               )}

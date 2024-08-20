@@ -2,9 +2,7 @@ import { Banner } from "@/components/website/Banner";
 import { Categories } from "@/components/website/Categories";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { FeaturedProducts } from "@/components/website/FeaturedProducts";
-import {
-  QuickviewOverlay,
-} from "@/components/website/QuickviewOverlay";
+import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import {
   getCategories,
@@ -296,11 +294,9 @@ export default async function Home() {
                   return null;
               }
             })}
-          <div className="px-[14px]">
-            <DiscoveryProducts
-              products={discoveryProducts as ProductWithUpsellType[]}
-            />
-          </div>
+          <DiscoveryProducts
+            products={discoveryProducts as ProductWithUpsellType[]}
+          />
         </div>
       </div>
       <QuickviewOverlay />

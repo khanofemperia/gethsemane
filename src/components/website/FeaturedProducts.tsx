@@ -9,6 +9,7 @@ import { EmblaCarouselType } from "embla-carousel";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { useRouter } from "next/navigation";
 import { formatThousands } from "@/lib/utils";
+import { ProductCard } from "./ProductCard";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -213,7 +214,7 @@ export function FeaturedProducts({
 
   return (
     <>
-      <div className="mx-auto mb-2 md:mb-4 pl-[24px] pr-[22px] flex items-center justify-between md:justify-normal gap-4">
+      <div className="w-[calc(100%-40px)] mx-auto mb-4 flex items-center gap-4">
         <h2 className="font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
           {title}
         </h2>
@@ -225,59 +226,12 @@ export function FeaturedProducts({
         </Link>
       </div>
       <div
-        className="embla py-1 px-[14px] overflow-hidden relative select-none"
+        className="embla overflow-hidden relative select-none"
         ref={emblaRef}
       >
         <div className="embla__container select-none w-full flex gap-1 md:gap-0">
           {products.slice(0, 3).map((product) => (
-            <div
-              key={product.index}
-              className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]"
-            >
-              <Link
-                href={`/${product.slug}-${product.id}`}
-                className="w-full aspect-square rounded-xl flex items-center justify-center overflow-hidden"
-              >
-                <Image
-                  src={product.images.main}
-                  alt={product.name}
-                  width={1000}
-                  height={1000}
-                  priority={true}
-                />
-              </Link>
-              <div
-                className="pt-[10px] flex flex-col gap-[6px]"
-                onClick={() => router.push(`/${slug}-${id}`)}
-              >
-                <p className="text-sm line-clamp-1">{product.name}</p>
-                <div className="flex items-center justify-between w-full">
-                  <div className="w-max flex items-center justify-center">
-                    {Number(product.pricing.salePrice) ? (
-                      <div className="flex items-center gap-[6px]">
-                        <span className="font-medium">
-                          ${formatThousands(Number(product.pricing.salePrice))}
-                        </span>
-                        <span className="text-xs text-gray line-through mt-[2px]">
-                          ${formatThousands(Number(product.pricing.basePrice))}
-                        </span>
-                        <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                          -{product.pricing.discountPercentage}%
-                        </span>
-                      </div>
-                    ) : (
-                      <p className="font-medium">
-                        ${formatThousands(Number(product.pricing.basePrice))}
-                      </p>
-                    )}
-                  </div>
-                  <QuickviewButton
-                    onClick={(event) => event.stopPropagation()}
-                    product={product}
-                  />
-                </div>
-              </div>
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>

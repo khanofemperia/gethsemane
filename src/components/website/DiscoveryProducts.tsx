@@ -55,8 +55,8 @@ export function DiscoveryProducts({
   );
 
   return (
-    <>
-      <h2 className="py-1 mb-4 font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
+    <div>
+      <h2 className="w-[calc(100%-40px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
         {heading}
       </h2>
       <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
@@ -64,6 +64,6 @@ export function DiscoveryProducts({
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-    </>
+    </div>
   );
 }

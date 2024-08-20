@@ -6,6 +6,8 @@ import { PiShieldCheckBold } from "react-icons/pi";
 import Image from "next/image";
 import { cookies } from "next/headers";
 import config from "@/lib/config";
+import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
+import { getDiscoveryProducts } from "@/lib/getData";
 
 type ShoppingCartProps = {
   date_created: { seconds: number; nanoseconds: number };
@@ -24,23 +26,56 @@ type ShoppingCartProps = {
   last_updated: { seconds: number; nanoseconds: number };
 };
 
+type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+      options: {
+        colors: Array<{
+          name: string;
+          image: string;
+        }>;
+        sizes: {
+          inches: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+          centimeters: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+        };
+      };
+    }[];
+  };
+};
+
 async function getCart() {
   // try {
   //   const deviceIdentifier = cookies().get("device_identifier")?.value;
-
   //   const response = await fetch(
   //     `${config.BASE_URL}/api/carts/${deviceIdentifier}`,
   //     {
   //       cache: "no-store",
   //     }
   //   );
-
   //   if (!response.ok) return null;
-
   //   const data = await response.json();
-
   //   if (Object.keys(data).length === 0) return null;
-
   //   return data;
   // } catch (error) {
   //   console.error("Error fetching cart:", error);
@@ -49,14 +84,20 @@ async function getCart() {
 }
 
 export default async function Cart() {
+  const discoveryProducts = await getDiscoveryProducts({
+    limit: 10,
+  });
+
   // const shoppingCart: ShoppingCartProps = await getCart();
   const shoppingCart = null;
 
   return (
-    <div className="relative mx-auto flex flex-row gap-10 w-[1014px] mt-[68px]">
-      <div className="w-[580px] h-max">
-        <div className="pt-[40px] font-semibold">Shopping cart</div>
-        {/* <div className="mt-4 flex flex-wrap gap-2">
+    <>
+      <div className="max-w-[960px] mx-auto mt-[68px]">
+        <div className="relative flex flex-row gap-10">
+          <div className="w-[580px] h-max">
+            <div className="pt-[40px] font-semibold">Shopping cart</div>
+            {/* <div className="mt-4 flex flex-wrap gap-2">
           {shoppingCart.products.map(
             ({ id, poster, name, price, color, size }, index) => (
               <div
@@ -94,87 +135,95 @@ export default async function Cart() {
             )
           )}
         </div> */}
-      </div>
-      <div className="order-last w-[340px] min-w-[340px] sticky top-[68px] pt-[42px] h-max flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-[6px] items-center">
-            <TbLock className="stroke-green-600 -ml-[1px]" size={20} />
-            <span className="text-sm text-gray">
-              Secure Checkout with SSL Encryption
-            </span>
           </div>
-          <div className="flex gap-[6px] items-center">
-            <PiShieldCheckBold className="fill-green-600" size={18} />
-            <span className="text-sm text-gray ml-[1px]">
-              Safe Payment Methods
-            </span>
-          </div>
-          <div className="flex gap-[6px] items-center">
-            <TbTruck className="stroke-green-600" size={20} />
-            <span className="text-sm text-gray">Free Shipping</span>
-          </div>
-        </div>
-        <div className="mb-2 flex items-center gap-1">
+          <div className="order-last w-[340px] min-w-[340px] sticky top-[68px] pt-[42px] h-max flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-[6px] items-center">
+                <TbLock className="stroke-green-600 -ml-[1px]" size={20} />
+                <span className="text-sm text-gray">
+                  Secure Checkout with SSL Encryption
+                </span>
+              </div>
+              <div className="flex gap-[6px] items-center">
+                <PiShieldCheckBold className="fill-green-600" size={18} />
+                <span className="text-sm text-gray ml-[1px]">
+                  Safe Payment Methods
+                </span>
+              </div>
+              <div className="flex gap-[6px] items-center">
+                <TbTruck className="stroke-green-600" size={20} />
+                <span className="text-sm text-gray">Free Shipping</span>
+              </div>
+            </div>
+            {/* <div className="mb-2 flex items-center gap-1">
           <span className="font-medium">Total (5 Items):</span>
           <span className="font-bold text-xl">$108.99</span>
-        </div>
-        <div className="flex items-center mb-2">
-          <div className="h-[20px] rounded-[3px] flex items-center justify-center">
-            <Image
-              src="/images/payment-methods/visa.svg"
-              alt="Visa"
-              width={34}
-              height={34}
-              priority={true}
-            />
-          </div>
-          <div className="ml-[10px] h-[18px] w-[36px] rounded-[3px] flex items-center justify-center">
-            <Image
-              className="-ml-[4px]"
-              src="/images/payment-methods/mastercard.svg"
-              alt="Mastercard"
-              width={38}
-              height={38}
-              priority={true}
-            />
-          </div>
-          <div className="ml-[5px] h-[20px] overflow-hidden rounded-[3px] flex items-center justify-center">
-            <Image
-              src="/images/payment-methods/american-express.png"
-              alt="American Express"
-              width={60}
-              height={20}
-              priority={true}
-            />
-          </div>
-          <div className="ml-[10px] h-[20px] rounded-[3px] flex items-center justify-center">
-            <Image
-              src="/images/payment-methods/discover.svg"
-              alt="Discover"
-              width={64}
-              height={14}
-              priority={true}
-            />
-          </div>
-          <div className="ml-[10px] h-[20px] rounded-[3px] flex items-center justify-center">
-            <Image
-              src="/images/payment-methods/diners-club-international.svg"
-              alt="Diners Club International"
-              width={68}
-              height={10}
-              priority={true}
-            />
-          </div>
-        </div>
-        <div className="flex flex-col gap-3">
+        </div> */}
+            <div className="flex items-center mb-2">
+              <div className="h-[20px] rounded-[3px] flex items-center justify-center">
+                <Image
+                  src="/images/payment-methods/visa.svg"
+                  alt="Visa"
+                  width={34}
+                  height={34}
+                  priority={true}
+                />
+              </div>
+              <div className="ml-[10px] h-[18px] w-[36px] rounded-[3px] flex items-center justify-center">
+                <Image
+                  className="-ml-[4px]"
+                  src="/images/payment-methods/mastercard.svg"
+                  alt="Mastercard"
+                  width={38}
+                  height={38}
+                  priority={true}
+                />
+              </div>
+              <div className="ml-[5px] h-[20px] overflow-hidden rounded-[3px] flex items-center justify-center">
+                <Image
+                  src="/images/payment-methods/american-express.png"
+                  alt="American Express"
+                  width={60}
+                  height={20}
+                  priority={true}
+                />
+              </div>
+              <div className="ml-[10px] h-[20px] rounded-[3px] flex items-center justify-center">
+                <Image
+                  src="/images/payment-methods/discover.svg"
+                  alt="Discover"
+                  width={64}
+                  height={14}
+                  priority={true}
+                />
+              </div>
+              <div className="ml-[10px] h-[20px] rounded-[3px] flex items-center justify-center">
+                <Image
+                  src="/images/payment-methods/diners-club-international.svg"
+                  alt="Diners Club International"
+                  width={68}
+                  height={10}
+                  priority={true}
+                />
+              </div>
+            </div>
+            {/* <div className="flex flex-col gap-3">
           <button className="w-full h-12 italic font-extrabold text-xl bg-sky-700 text-white rounded-full flex items-center justify-center">
             PayPal
           </button>
           <button className="w-full h-12 bg-black text-white rounded-full flex items-center justify-center">
             Debit or Credit Card
           </button>
+        </div> */}
+          </div>
         </div>
       </div>
-    </div>
+      <div className="max-w-[968px] mx-auto">
+        <DiscoveryProducts
+          heading="Add These to Your Cart"
+          products={discoveryProducts as ProductWithUpsellType[]}
+        />
+      </div>
+    </>
   );
 }
