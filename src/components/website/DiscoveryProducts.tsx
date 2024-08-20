@@ -1,8 +1,6 @@
-"use client";
-
 import { shuffleDiscoveryProducts } from "@/lib/utils";
 import { ProductCard } from "./ProductCard";
-import { useMemo } from "react";
+import { unstable_noStore as noStore } from "next/cache";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -49,11 +47,9 @@ export function DiscoveryProducts({
   heading?: string;
   products: ProductWithUpsellType[];
 }) {
-  const shuffledProducts = useMemo(
-    () => shuffleDiscoveryProducts(products),
-    [products]
-  );
-
+  noStore();
+  
+  const shuffledProducts = shuffleDiscoveryProducts([...products]);
   return (
     <div>
       <h2 className="w-[calc(100%-40px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
