@@ -214,7 +214,7 @@ export function FeaturedProducts({
 
   return (
     <>
-      <div className="w-[calc(100%-40px)] mx-auto mb-4 flex items-center gap-4">
+      <div className="w-[calc(100%-20px)] mx-auto mb-4 flex items-center gap-4">
         <h2 className="font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
           {title}
         </h2>
