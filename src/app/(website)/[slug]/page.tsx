@@ -297,8 +297,8 @@ export default async function ProductDetails({
                       </div>
                       <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
                         <ul className="*:flex *:justify-between">
-                          {upsell.products.map((product) => (
-                            <li key={product.id}>
+                          {upsell.products.map((product, index) => (
+                            <li key={index}>
                               <p className="text-gray">{product.name}</p>
                               <p>
                                 <span
@@ -458,8 +458,8 @@ export default async function ProductDetails({
                         </div>
                         <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
                           <ul className="*:flex *:justify-between">
-                            {upsell.products.map((product) => (
-                              <li key={product.id}>
+                            {upsell.products.map((product, index) => (
+                              <li key={index}>
                                 <p className="text-gray">{product.name}</p>
                                 <p>
                                   <span
