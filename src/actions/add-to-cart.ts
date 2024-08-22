@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { customAlphabet } from "nanoid";
+import { nanoid } from "nanoid";
 import {
   getDocs,
   collection,
@@ -13,6 +13,8 @@ import {
 } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 import { database } from "@/lib/firebase";
+import { generateId } from "@/lib/utils";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export async function AddToCartAction({
   id,
@@ -25,10 +27,7 @@ export async function AddToCartAction({
 }) {
   const generateNewCart = async () => {
     try {
-      const newDeviceIdentifier = customAlphabet(
-        "1234567890abcdefghijklmnopqrstuvwxyz",
-        32
-      )();
+      const newDeviceIdentifier = nanoid();
 
       cookies().set({
         name: "device_identifier",
@@ -37,17 +36,16 @@ export async function AddToCartAction({
         secure: true,
         sameSite: "strict",
         path: "/",
-        maxAge: 30 * 24 * 60 * 60,
+        maxAge: 30 * 24 * 60 * 60, // expires in 30 days
       });
 
-      const cartId = customAlphabet("1234567890", 5)();
       const newCartData = {
         device_identifier: newDeviceIdentifier,
         products: [{ id, size, color }],
-        date_created: serverTimestamp(),
-        last_updated: serverTimestamp(),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
       };
-      const newCartDocRef = doc(collection(database, "carts"), cartId);
+      const newCartDocRef = doc(collection(database, "carts"), generateId());
 
       await runTransaction(database, async (transaction) => {
         transaction.set(newCartDocRef, newCartData);
@@ -56,14 +54,14 @@ export async function AddToCartAction({
       revalidatePath("/[slug]", "page");
 
       return {
-        success: true,
+        type: AlertMessageType.SUCCESS,
         message: "Item added to cart",
       };
     } catch (error) {
       console.error("Error generating new cart:", error);
       return {
-        success: false,
-        message: "Error generating new cart",
+        type: AlertMessageType.ERROR,
+        message: "Please reload the page and try again",
       };
     }
   };
@@ -104,22 +102,22 @@ export async function AddToCartAction({
       await runTransaction(database, async (transaction) => {
         transaction.update(cartDoc, {
           products: existingProducts,
-          last_updated: serverTimestamp(),
+          updatedAt: serverTimestamp(),
         });
       });
 
       revalidatePath("/[slug]", "page");
 
       return {
-        success: true,
+        type: AlertMessageType.SUCCESS,
         message: "Item added to cart",
       };
     }
   } catch (error) {
     console.error("Error adding product to cart:", error);
     return {
-      success: false,
-      message: "Error adding product to cart",
+      type: AlertMessageType.ERROR,
+      message: "Please reload the page and try again",
     };
   }
 }
