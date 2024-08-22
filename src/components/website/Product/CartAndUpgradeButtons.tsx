@@ -3,11 +3,16 @@
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { useEffect, useState, useTransition } from "react";
-import SpinnerWhite from "@/ui/Spinners/White";
-import clsx from "clsx";
 import { AddToCartAction } from "@/actions/add-to-cart";
+import { AlertMessageType } from "@/lib/sharedTypes";
+import SpinnerWhite from "@/ui/Spinners/White";
+import SpinnerGray from "@/ui/Spinners/Gray";
+import clsx from "clsx";
 
-type ResponseType = { success: boolean; message: string };
+type ResponseType = {
+  type: AlertMessageType;
+  message: string;
+};
 
 export function CartAndUpgradeButtons({
   productId,
@@ -26,11 +31,7 @@ export function CartAndUpgradeButtons({
 
   useEffect(() => {
     if (response) {
-      if (response.success === false) {
-        showAlert("Error, refresh and try again");
-      } else {
-        showAlert(response.message);
-      }
+      showAlert(response.message);
     }
   }, [response]);
 
@@ -70,7 +71,7 @@ export function CartAndUpgradeButtons({
         )}
       >
         Add to Cart
-        {isPending ? <SpinnerWhite size={28} /> : <>Add to Cart</>}
+        {isPending ? <SpinnerGray size={28} /> : <>Add to Cart</>}
       </button>
       <button className="text-sm min-[896px]:text-base inline-block text-center align-middle h-[44px] min-[896px]:h-12 w-full border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-100 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
         Yes, Let's Upgrade
