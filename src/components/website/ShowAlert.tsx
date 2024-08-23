@@ -12,18 +12,6 @@ export default function ShowAlert() {
     isVisible: state.isVisible,
   }));
 
-  useEffect(() => {
-    if (isVisible) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "visible";
-    }
-
-    return () => {
-      document.body.style.overflow = "visible";
-    };
-  }, [isVisible]);
-
   return (
     <>
       {isVisible && (
