@@ -10,7 +10,7 @@ import {
   getDiscoveryProducts,
   getPageHero,
   getProductsByIdsWithUpsells,
-} from "@/lib/getData";
+} from "@/app/data/getData";
 import Image from "next/image";
 import Link from "next/link";
 

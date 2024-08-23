@@ -1,6 +1,6 @@
 import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
-import { getProductsByCategoryWithUpsell } from "@/lib/getData";
+import { getProductsByCategoryWithUpsell } from "@/app/data/getData";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {

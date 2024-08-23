@@ -12,7 +12,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getCategories } from "@/lib/getData";
+import { getCategories } from "@/app/data/getData";
 
 export function NewProductMenuButton() {
   const { showOverlay } = useOverlayStore();

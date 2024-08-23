@@ -10,7 +10,7 @@ import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getCategories } from "@/lib/getData";
+import { getCategories } from "@/app/data/getData";
 
 type DataType = {
   id: string;

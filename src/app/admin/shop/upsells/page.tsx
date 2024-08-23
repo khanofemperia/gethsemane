@@ -1,6 +1,6 @@
 import { NewUpsellOverlay } from "@/components/admin/NewUpsell";
 import UpsellGrid from "@/components/admin/UpsellGrid";
-import { getUpsells } from "@/lib/getData";
+import { getUpsells } from "@/app/data/getData";
 
 export default async function Upsells() {
   const upsells = (await getUpsells()) as UpsellType[];

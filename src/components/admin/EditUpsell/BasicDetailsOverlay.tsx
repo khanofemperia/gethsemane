@@ -18,7 +18,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getProduct } from "@/lib/getData";
+import { getProduct } from "@/app/data/getData";
 import { MdOutlineDragIndicator } from "react-icons/md";
 import { ReactSortable } from "react-sortablejs";
 

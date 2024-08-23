@@ -30,7 +30,7 @@ import {
   DescriptionButton,
   DescriptionOverlay,
 } from "@/components/admin/EditProduct/DescriptionOverlay";
-import { getProduct, getUpsell } from "@/lib/getData";
+import { getProduct, getUpsell } from "@/app/data/getData";
 import Link from "next/link";
 import { CheckmarkIcon } from "@/icons";
 import {

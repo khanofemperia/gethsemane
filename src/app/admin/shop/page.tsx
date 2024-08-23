@@ -13,7 +13,7 @@ import {
   getCollections,
   getPageHero,
   getSettings,
-} from "@/lib/getData";
+} from "@/app/data/getData";
 import clsx from "clsx";
 
 export default async function Storefront() {
