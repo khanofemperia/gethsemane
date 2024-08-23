@@ -104,7 +104,7 @@ export default async function ProductDetails({
 
   return (
     <>
-      <div className="h-screen custom-scrollbar">
+      <div className="h-screen overflow-x-hidden overflow-y-visible custom-scrollbar">
         <nav className="hidden md:block w-full max-h-[116px] md:max-h-16 border-b bg-white">
           <div className="w-full max-w-[1080px] mx-auto py-2 px-5 min-[1120px]:px-0 relative flex gap-1 flex-col md:flex-row">
             <Link
