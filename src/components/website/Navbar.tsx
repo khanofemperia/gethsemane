@@ -6,16 +6,6 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { CartIcon } from "@/icons";
 
-type CartType = {
-  id: string;
-  device_identifier: string;
-  products: Array<{
-    id: string;
-    size: string;
-    color: string;
-  }>;
-};
-
 export default function Navbar({ itemsInCart }: { itemsInCart: number }) {
   const [isScrollingUp, setIsScrollingUp] = useState(true);
   const [prevScrollPosition, setPrevScrollPosition] = useState(0);

@@ -6,10 +6,9 @@ import Image from "next/image";
 import StickyBar from "@/components/website/Product/StickyBar";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import config from "@/lib/config";
 import SizeChartOverlay from "@/components/website/Product/SizeChartOverlay";
 import styles from "./styles.module.css";
-import { getProductWithUpsell } from "@/lib/getData";
+import { getCart, getProductWithUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import "@/components/shared/TextEditor/theme/index.css";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
@@ -76,49 +75,18 @@ type ProductInCartType = {
   size: string;
 };
 
-async function getCart() {
-  const deviceIdentifier = cookies().get("device_identifier")?.value;
-
-  if (!deviceIdentifier) return null;
-
-  try {
-    const response = await fetch(
-      `${config.BASE_URL}/api/carts/${deviceIdentifier}`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-
-    if (Object.keys(data).length === 0) return null;
-
-    return data;
-  } catch (error) {
-    console.error("Error fetching cart:", error);
-    return null;
-  }
-}
-
 export default async function ProductDetails({
   params,
 }: {
   params: { slug: string };
 }) {
-  const isValidSlug = (input: string): boolean => {
-    const regex = /^[a-zA-Z0-9-]+-\d{5}$/;
-    return regex.test(input);
-  };
+  const cookieStore = cookies();
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
+  const cart = await getCart(deviceIdentifier);
+  const itemsInCart = cart ? cart.products.length : 0;
 
-  if (!isValidSlug(params.slug)) {
-    return <div>404 - page not found</div>;
-  }
-
-  const productId = params.slug.split("-").pop() as string;
   const product = (await getProductWithUpsell({
-    id: productId,
+    id: params.slug.split("-").pop() as string,
   })) as ProductType;
   const {
     id,
@@ -130,19 +98,6 @@ export default async function ProductDetails({
     upsell,
     description,
   } = product;
-
-  const existingCart = await getCart();
-  const isInCart = existingCart?.products.some(
-    (product: any) => product.id === id
-  );
-
-  let productInCart;
-
-  if (isInCart) {
-    productInCart = existingCart.products.find(
-      (p: ProductInCartType) => p.id === id
-    );
-  }
 
   const hasColor = product.options.colors.length > 0;
   const hasSize = Object.keys(product.options.sizes).length > 0;
@@ -183,12 +138,17 @@ export default async function ProductDetails({
               </span>
             </Link>
           </div>
-          <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-12 flex items-center justify-end *:h-12 *:w-12 *:rounded-full *:flex *:items-center *:justify-center *:ease-in-out *:transition *:duration-300">
+          <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-12 flex items-center justify-end">
             <Link
               href="/cart"
-              className="active:bg-lightgray lg:hover:bg-lightgray"
+              className="relative h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
             >
               <CartIcon size={26} />
+              {itemsInCart > 0 && (
+                <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
+                  {itemsInCart}
+                </span>
+              )}
             </Link>
           </div>
         </div>
@@ -259,8 +219,8 @@ export default async function ProductDetails({
                     </div>
                     <Options
                       cartInfo={{
-                        isInCart,
-                        productInCart,
+                        isInCart: false,
+                        productInCart: null,
                       }}
                       productInfo={{
                         id,
@@ -420,8 +380,8 @@ export default async function ProductDetails({
                       </div>
                       <Options
                         cartInfo={{
-                          isInCart,
-                          productInCart,
+                          isInCart: false,
+                          productInCart: null,
                         }}
                         productInfo={{
                           id,
@@ -538,8 +498,8 @@ export default async function ProductDetails({
         Options={
           <Options
             cartInfo={{
-              isInCart,
-              productInCart,
+              isInCart: false,
+              productInCart: null,
             }}
             productInfo={{
               id,

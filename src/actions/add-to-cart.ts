@@ -51,6 +51,7 @@ export async function AddToCartAction({
         transaction.set(newCartDocRef, newCartData);
       });
 
+      revalidatePath("/");
       revalidatePath("/[slug]", "page");
 
       return {
@@ -106,6 +107,7 @@ export async function AddToCartAction({
         });
       });
 
+      revalidatePath("/");
       revalidatePath("/[slug]", "page");
 
       return {
