@@ -16,7 +16,7 @@ type CartType = {
   }>;
 };
 
-export default function Navbar({ cart }: { cart: CartType | null }) {
+export default function Navbar({ itemsInCart }: { itemsInCart: number }) {
   const [isScrollingUp, setIsScrollingUp] = useState(true);
   const [prevScrollPosition, setPrevScrollPosition] = useState(0);
 
@@ -94,9 +94,9 @@ export default function Navbar({ cart }: { cart: CartType | null }) {
               className="relative h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
             >
               <CartIcon size={26} />
-              {cart && (
+              {itemsInCart > 0 && (
                 <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
-                  {cart.products.length}
+                  {itemsInCart}
                 </span>
               )}
             </Link>

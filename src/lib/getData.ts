@@ -9,17 +9,6 @@ import {
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 import { capitalizeFirstLetter } from "./utils";
-import { cookies } from "next/headers";
-
-type CartType = {
-  id: string;
-  device_identifier: string;
-  products: Array<{
-    id: string;
-    size: string;
-    color: string;
-  }>;
-};
 
 type BaseOptionsType = {
   fields?: string[];
@@ -1084,10 +1073,20 @@ export async function getDiscoveryProducts(
   return allProducts.slice(0, limit);
 }
 
-export async function getCart(): Promise<CartType | null> {
-  try {
-    const deviceIdentifier = cookies().get("device_identifier")?.value;
+type CartType = {
+  id: string;
+  device_identifier: string;
+  products: Array<{
+    id: string;
+    size: string;
+    color: string;
+  }>;
+};
 
+export async function getCart(
+  deviceIdentifier: string | undefined
+): Promise<CartType | null> {
+  try {
     if (!deviceIdentifier) {
       return null;
     }

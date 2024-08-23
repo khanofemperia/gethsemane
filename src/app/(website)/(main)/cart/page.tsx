@@ -1,31 +1,5 @@
-import { AiOutlineDelete } from "react-icons/ai";
-import { HiMiniChevronRight } from "react-icons/hi2";
-import style from "./style.module.css";
-import { TbLock, TbTruck } from "react-icons/tb";
-import { PiShieldCheckBold } from "react-icons/pi";
-import Image from "next/image";
-import { cookies } from "next/headers";
-import config from "@/lib/config";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { getDiscoveryProducts } from "@/lib/getData";
-import { CartIcon } from "@/icons";
-
-type ShoppingCartProps = {
-  date_created: { seconds: number; nanoseconds: number };
-  device_identifier: string;
-  products: {
-    id: string;
-    name: string;
-    price: string;
-    poster: string;
-    status: string;
-    visibility: string;
-    color: string;
-    size: string;
-    slug: string;
-  }[];
-  last_updated: { seconds: number; nanoseconds: number };
-};
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -65,32 +39,10 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   };
 };
 
-async function getCart() {
-  // try {
-  //   const deviceIdentifier = cookies().get("device_identifier")?.value;
-  //   const response = await fetch(
-  //     `${config.BASE_URL}/api/carts/${deviceIdentifier}`,
-  //     {
-  //       cache: "no-store",
-  //     }
-  //   );
-  //   if (!response.ok) return null;
-  //   const data = await response.json();
-  //   if (Object.keys(data).length === 0) return null;
-  //   return data;
-  // } catch (error) {
-  //   console.error("Error fetching cart:", error);
-  //   return null;
-  // }
-}
-
 export default async function Cart() {
   const discoveryProducts = await getDiscoveryProducts({
     limit: 10,
   });
-
-  // const shoppingCart: ShoppingCartProps = await getCart();
-  const shoppingCart = null;
 
   return (
     <div className="max-w-[968px] mx-auto mt-[68px]">
