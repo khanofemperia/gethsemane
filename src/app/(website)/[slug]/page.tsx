@@ -3,7 +3,6 @@ import ImageCarousel from "@/components/website/Product/ImageCarousel";
 import { CartIcon, CheckmarkIcon, ChevronLeftIcon } from "@/icons";
 import Images from "@/components/website/Product/Images";
 import Image from "next/image";
-import StickyBar from "@/components/website/Product/StickyBar";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import SizeChartOverlay from "@/components/website/Product/SizeChartOverlay";
@@ -13,6 +12,7 @@ import { formatThousands } from "@/lib/utils";
 import "@/components/shared/TextEditor/theme/index.css";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
 import ShowAlert from "@/components/website/ShowAlert";
+import { ProductDetailsWrapper } from "@/components/website/ProductDetailsWrapper";
 
 type ProductType = {
   id: string;
@@ -69,12 +69,6 @@ type ProductType = {
   };
 };
 
-type ProductInCartType = {
-  id: string;
-  color: string;
-  size: string;
-};
-
 export default async function ProductDetails({
   params,
 }: {
@@ -104,7 +98,16 @@ export default async function ProductDetails({
 
   return (
     <>
-      <div className="h-screen overflow-x-hidden overflow-y-visible custom-scrollbar">
+      <ProductDetailsWrapper
+        productInfo={{
+          id,
+          name,
+          pricing,
+          images,
+          options,
+          upsell,
+        }}
+      >
         <nav className="hidden md:block w-full max-h-[116px] md:max-h-16 border-b bg-white">
           <div className="w-full max-w-[1080px] mx-auto py-2 px-5 min-[1120px]:px-0 relative flex gap-1 flex-col md:flex-row">
             <Link
@@ -494,39 +497,16 @@ export default async function ProductDetails({
             </div>
           </div>
         </main>
-      </div>
-      <StickyBar
-        productInfo={{
-          pricing,
-          upsell,
-          mainImage: images.main,
-          name,
-        }}
-        Options={
-          <Options
-            cartInfo={{
-              isInCart: false,
-              productInCart: null,
-            }}
-            productInfo={{
-              id,
-              name,
-              pricing,
-              images,
-              options,
-            }}
-          />
-        }
-      />
-      <SizeChartOverlay
-        productInfo={{
-          id,
-          name,
-          pricing,
-          images,
-          options,
-        }}
-      />
+        <SizeChartOverlay
+          productInfo={{
+            id,
+            name,
+            pricing,
+            images,
+            options,
+          }}
+        />
+      </ProductDetailsWrapper>
       <ShowAlert />
     </>
   );

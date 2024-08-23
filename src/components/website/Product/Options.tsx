@@ -150,24 +150,39 @@ export default function ProductOptions({
   productInfo,
 }: ProductOptionsType) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+
   const { setSelectedSize, setSelectedColor } = useOptionsStore();
   const { selectedColor, selectedSize } = useOptionsStore.getState();
 
   const hasColor = productInfo.options.colors.length > 0;
   const hasSize = Object.keys(productInfo.options.sizes).length > 0;
 
-  const handleScroll = useCallback(() => {
-    const isStickyBarVisible = window.scrollY >= SCROLL_THRESHOLD;
-
-    if (isStickyBarVisible || (!isStickyBarVisible && isDropdownVisible)) {
-      setDropdownVisible(false);
-    }
-  }, [isDropdownVisible]);
-
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+    const handleScroll = () => {
+      if (isDropdownVisible) {
+        setDropdownVisible(false);
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (
+        isDropdownVisible &&
+        !target.closest(".dropdown-container") &&
+        !target.closest(".overlay")
+      ) {
+        setDropdownVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, true);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownVisible]);
 
   useEffect(() => {
     if (cartInfo.isInCart && cartInfo.productInCart) {
@@ -180,22 +195,6 @@ export default function ProductOptions({
     setSelectedColor,
     setSelectedSize,
   ]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (
-        isDropdownVisible &&
-        !target.closest(".dropdown-container") &&
-        !target.closest(".overlay")
-      ) {
-        setDropdownVisible(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isDropdownVisible]);
 
   if (!hasColor && !hasSize) {
     return null;

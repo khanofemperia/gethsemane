@@ -35,28 +35,23 @@ const SCROLL_THRESHOLD = 1040;
 export default function StickyBar({
   productInfo,
   Options,
+  scrollPosition,
 }: {
   productInfo: DataType;
   Options: React.ReactNode;
+  scrollPosition: number;
 }) {
   const [barIsHidden, setBarIsHidden] = useState(true);
 
   const { pricing, upsell, mainImage, name } = productInfo;
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY >= SCROLL_THRESHOLD) {
-        setBarIsHidden(false);
-      } else {
-        setBarIsHidden(true);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+    if (scrollPosition >= SCROLL_THRESHOLD) {
+      setBarIsHidden(false);
+    } else {
+      setBarIsHidden(true);
+    }
+  }, [scrollPosition]);
 
   return (
     <div
