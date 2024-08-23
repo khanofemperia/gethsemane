@@ -2,11 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { CartIcon } from "@/icons";
 
-export default function Navbar() {
+type CartType = {
+  id: string;
+  device_identifier: string;
+  products: Array<{
+    id: string;
+    size: string;
+    color: string;
+  }>;
+};
+
+export default function Navbar({ cart }: { cart: CartType | null }) {
   const [isScrollingUp, setIsScrollingUp] = useState(true);
   const [prevScrollPosition, setPrevScrollPosition] = useState(0);
 
@@ -78,12 +88,17 @@ export default function Navbar() {
               </span>
             </Link>
           </div>
-          <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-12 flex items-center justify-end *:h-12 *:w-12 *:rounded-full *:flex *:items-center *:justify-center *:ease-in-out *:transition *:duration-300">
+          <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-12 flex items-center justify-end">
             <Link
               href="/cart"
-              className="active:bg-lightgray lg:hover:bg-lightgray"
+              className="relative h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
             >
               <CartIcon size={26} />
+              {cart && (
+                <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
+                  {cart.products.length}
+                </span>
+              )}
             </Link>
           </div>
         </div>

@@ -9,6 +9,17 @@ import {
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 import { capitalizeFirstLetter } from "./utils";
+import { cookies } from "next/headers";
+
+type CartType = {
+  id: string;
+  device_identifier: string;
+  products: Array<{
+    id: string;
+    size: string;
+    color: string;
+  }>;
+};
 
 type BaseOptionsType = {
   fields?: string[];
@@ -1071,4 +1082,37 @@ export async function getDiscoveryProducts(
   }
 
   return allProducts.slice(0, limit);
+}
+
+export async function getCart(): Promise<CartType | null> {
+  try {
+    const deviceIdentifier = cookies().get("device_identifier")?.value;
+
+    if (!deviceIdentifier) {
+      return null;
+    }
+
+    const collectionRef = collection(database, "carts");
+    const snapshot = await getDocs(
+      query(collectionRef, where("device_identifier", "==", deviceIdentifier))
+    );
+
+    if (snapshot.empty) {
+      return null;
+    }
+
+    const cartDoc = snapshot.docs[0]; // Assume there's only one cart per device identifier
+    const cartData = cartDoc.data();
+
+    const cart: CartType = {
+      id: cartDoc.id,
+      device_identifier: cartData.device_identifier,
+      products: cartData.products,
+    };
+
+    return cart;
+  } catch (error) {
+    console.error("Error fetching cart:", error);
+    return null;
+  }
 }
