@@ -7,7 +7,7 @@ import Image from "next/image";
 import { cookies } from "next/headers";
 import config from "@/lib/config";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
-import { getDiscoveryProducts } from "@/app/data/getData";
+import { getDiscoveryProducts } from "@/lib/getData";
 import { CartIcon } from "@/icons";
 
 type ShoppingCartProps = {

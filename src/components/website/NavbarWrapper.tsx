@@ -1,4 +1,4 @@
-import { getCart } from "@/app/data/getData";
+import { getCart } from "@/lib/getData";
 import Navbar from "./Navbar";
 
 export async function NavbarWrapper() {

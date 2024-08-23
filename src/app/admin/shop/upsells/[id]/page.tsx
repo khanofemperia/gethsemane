@@ -11,7 +11,7 @@ import {
   VisibilityOverlay,
 } from "@/components/admin/EditUpsell/VisibilityOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
-import { getUpsell } from "@/app/data/getData";
+import { getUpsell } from "@/lib/getData";
 import clsx from "clsx";
 
 export default async function EditUpsell({

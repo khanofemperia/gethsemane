@@ -9,7 +9,7 @@ import { cookies } from "next/headers";
 import config from "@/lib/config";
 import SizeChartOverlay from "@/components/website/Product/SizeChartOverlay";
 import styles from "./styles.module.css";
-import { getProductWithUpsell } from "@/app/data/getData";
+import { getProductWithUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import "@/components/shared/TextEditor/theme/index.css";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";

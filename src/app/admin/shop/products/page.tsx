@@ -1,6 +1,6 @@
 import { NewProductOverlay } from "@/components/admin/NewProduct";
 import ProductGrid from "@/components/admin/ProductGrid";
-import { getProducts } from "@/app/data/getData";
+import { getProducts } from "@/lib/getData";
 
 export default async function Products() {
   const products = (await getProducts({

@@ -8,7 +8,7 @@ import {
   where,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
-import { capitalizeFirstLetter } from "../../lib/utils";
+import { capitalizeFirstLetter } from "./utils";
 import { cookies } from "next/headers";
 
 type CartType = {

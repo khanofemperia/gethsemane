@@ -13,7 +13,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getProduct } from "@/app/data/getData";
+import { getProduct } from "@/lib/getData";
 import { ReactSortable } from "react-sortablejs";
 
 type ProductType = {

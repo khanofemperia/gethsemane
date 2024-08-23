@@ -30,7 +30,7 @@ import {
   BannerImagesButton,
   BannerImagesOverlay,
 } from "@/components/admin/Storefront/EditCollection/BannerImagesOverlay";
-import { getCollection, getProductsByIds } from "@/app/data/getData";
+import { getCollection, getProductsByIds } from "@/lib/getData";
 
 type ProductWithIndex = ProductType & { index: number };
 
