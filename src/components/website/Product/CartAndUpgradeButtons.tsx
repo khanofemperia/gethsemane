@@ -2,10 +2,12 @@
 
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { AddToCartAction } from "@/actions/add-to-cart";
 import SpinnerGray from "@/ui/Spinners/Gray";
+import Link from "next/link";
 import clsx from "clsx";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function CartAndUpgradeButtons({
   productId,
@@ -17,6 +19,7 @@ export function CartAndUpgradeButtons({
   hasSize: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
+  const [itemAdded, setItemAdded] = useState(false); // New state for tracking cart addition
 
   const { selectedColor, selectedSize } = useOptionsStore();
   const { showAlert } = useAlertStore();
@@ -37,12 +40,22 @@ export function CartAndUpgradeButtons({
       });
 
       showAlert({ message: result.message, type: result.type });
+
+      if (result.type === AlertMessageType.SUCCESS) {
+        setItemAdded(true);
+      }
     });
   };
 
-  //   const handleUpgrade = () => {
-  //     // show upsellReviewOverlay.tsx
-  //   };
+  if (itemAdded) {
+    return (
+      <Link href="/cart" className="w-full">
+        <button className="text-sm min-[896px]:text-base font-semibold w-full h-[44px] min-[896px]:h-12 flex items-center justify-center rounded-full ease-in-out duration-300 transition bg-green text-white">
+          Added (1) - View Cart
+        </button>
+      </Link>
+    );
+  }
 
   return (
     <>
