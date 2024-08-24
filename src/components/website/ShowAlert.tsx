@@ -4,17 +4,16 @@ import { useAlertStore } from "@/zustand/website/alertStore";
 import AlertMessage from "../shared/AlertMessage";
 
 export default function ShowAlert() {
-  const { hideAlert } = useAlertStore();
-
-  const { message, isVisible } = useAlertStore((state) => ({
-    message: state.alertMessage,
-    isVisible: state.isVisible,
-  }));
+  const { message, type, isVisible, hideAlert } = useAlertStore();
 
   return (
     <>
       {isVisible && (
-        <AlertMessage message={message} hideAlertMessage={hideAlert} />
+        <AlertMessage
+          hideAlertMessage={hideAlert}
+          message={message}
+          type={type}
+        />
       )}
     </>
   );

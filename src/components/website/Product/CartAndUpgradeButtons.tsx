@@ -2,17 +2,10 @@
 
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
-import { useEffect, useState, useTransition } from "react";
+import { useTransition } from "react";
 import { AddToCartAction } from "@/actions/add-to-cart";
-import { AlertMessageType } from "@/lib/sharedTypes";
-import SpinnerWhite from "@/ui/Spinners/White";
 import SpinnerGray from "@/ui/Spinners/Gray";
 import clsx from "clsx";
-
-type ResponseType = {
-  type: AlertMessageType;
-  message: string;
-};
 
 export function CartAndUpgradeButtons({
   productId,
@@ -24,23 +17,16 @@ export function CartAndUpgradeButtons({
   hasSize: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
-  const [response, setResponse] = useState<ResponseType | undefined>(undefined);
 
   const { selectedColor, selectedSize } = useOptionsStore();
   const { showAlert } = useAlertStore();
 
-  useEffect(() => {
-    if (response) {
-      showAlert(response.message);
-    }
-  }, [response]);
-
   const handleAddToCart = async () => {
     if (hasColor && !selectedColor) {
-      return showAlert("Select a color");
+      return showAlert({ message: "Select a color" });
     }
     if (hasSize && !selectedSize) {
-      return showAlert("Select a size");
+      return showAlert({ message: "Select a size" });
     }
 
     startTransition(async () => {
@@ -50,7 +36,7 @@ export function CartAndUpgradeButtons({
         size: selectedSize,
       });
 
-      setResponse(result);
+      showAlert({ message: result.message, type: result.type });
     });
   };
 

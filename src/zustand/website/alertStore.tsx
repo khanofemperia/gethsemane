@@ -3,17 +3,26 @@ import { shallow } from "zustand/shallow";
 
 type AlertStoreType = {
   isVisible: boolean;
-  alertMessage: string;
-  showAlert: (message: string) => void;
+  message: string;
+  type: "SUCCESS" | "ERROR" | "NEUTRAL";
+  showAlert: ({
+    message,
+    type,
+  }: {
+    message: string;
+    type?: "SUCCESS" | "ERROR" | "NEUTRAL";
+  }) => void;
   hideAlert: () => void;
 };
 
 export const useAlertStore = createWithEqualityFn<AlertStoreType>(
   (set) => ({
     isVisible: false,
-    alertMessage: "",
-    showAlert: (message) => set({ isVisible: true, alertMessage: message }),
-    hideAlert: () => set({ isVisible: false, alertMessage: "" }),
+    message: "",
+    type: "NEUTRAL",
+    showAlert: ({ message, type = "NEUTRAL" }) =>
+      set({ isVisible: true, message, type }),
+    hideAlert: () => set({ isVisible: false, message: "", type: "NEUTRAL" }),
   }),
   shallow
 );
