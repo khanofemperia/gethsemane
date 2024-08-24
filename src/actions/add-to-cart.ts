@@ -83,37 +83,40 @@ export async function AddToCartAction({
       // If cart not found, generate a new one
       return await generateNewCart();
     } else {
-      // If cart found, check if the product is already in the cart
+      // If cart found, check if the product with the same size and color exists
       const cartDoc = snapshot.docs[0].ref;
       const existingProducts = snapshot.docs[0].data().products;
 
-      const existingProductIndex = existingProducts.findIndex(
+      const productExists = existingProducts.some(
         (product: { id: string; size: string; color: string }) =>
-          product.id === id
+          product.id === id && product.size === size && product.color === color
       );
 
-      if (existingProductIndex !== -1) {
-        // Product already in cart, update its size and color
-        existingProducts[existingProductIndex] = { id, size, color };
+      if (productExists) {
+        // Item already exists in cart
+        return {
+          type: AlertMessageType.ERROR,
+          message: "Item already in cart",
+        };
       } else {
         // Product not in cart, add it to the existing products
         existingProducts.push({ id, size, color });
-      }
 
-      await runTransaction(database, async (transaction) => {
-        transaction.update(cartDoc, {
-          products: existingProducts,
-          updatedAt: serverTimestamp(),
+        await runTransaction(database, async (transaction) => {
+          transaction.update(cartDoc, {
+            products: existingProducts,
+            updatedAt: serverTimestamp(),
+          });
         });
-      });
 
-      revalidatePath("/");
-      revalidatePath("/[slug]", "page");
+        revalidatePath("/");
+        revalidatePath("/[slug]", "page");
 
-      return {
-        type: AlertMessageType.SUCCESS,
-        message: "Item added to cart",
-      };
+        return {
+          type: AlertMessageType.SUCCESS,
+          message: "Item added to cart",
+        };
+      }
     }
   } catch (error) {
     console.error("Error adding product to cart:", error);

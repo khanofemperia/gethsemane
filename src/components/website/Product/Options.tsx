@@ -80,6 +80,9 @@ function ProductSizeChart({ sizeChart }: { sizeChart: SizeChartType }) {
   const { columns, rows } = sizeChart.inches;
   const sizes = rows.map((row) => row[columns[0].label]);
 
+  const isFeetInchFormat = (value: string) =>
+    /\d+'(?:\d{1,2}")?-?\d*'?(?:\d{1,2}")?/.test(value);
+
   return (
     <div className="w-full">
       <div className="w-full max-w-[298px] flex flex-wrap gap-[10px]">
@@ -121,11 +124,18 @@ function ProductSizeChart({ sizeChart }: { sizeChart: SizeChartType }) {
                     const selectedRow = rows.find(
                       (row) => row[columns[0].label] === selectedSize
                     );
+                    const measurement = selectedRow
+                      ? selectedRow[column.label]
+                      : "";
+
                     return (
                       <li key={column.label} className="text-nowrap">
                         <span className="text-xs text-gray">{`${column.label}: `}</span>
                         <span className="text-xs font-semibold">
-                          {`${selectedRow ? selectedRow[column.label] : ""}in`}
+                          {measurement}
+                          {!isFeetInchFormat(measurement) && measurement !== ""
+                            ? " in"
+                            : ""}
                         </span>
                       </li>
                     );
@@ -142,8 +152,6 @@ function ProductSizeChart({ sizeChart }: { sizeChart: SizeChartType }) {
     </div>
   );
 }
-
-const SCROLL_THRESHOLD = 100;
 
 export default function ProductOptions({
   cartInfo,
