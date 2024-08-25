@@ -96,15 +96,15 @@ export default async function ProductDetails({
   const hasColor = product.options.colors.length > 0;
   const hasSize = Object.keys(product.options.sizes).length > 0;
 
-  const productInCart =
-    cart?.products.find(
+  const productsInCart =
+    cart?.products.filter(
       (item: { id: string; color: string; size: string }) =>
         item.id === product.id
-    ) || null;
+    ) || [];
 
   const cartInfo = {
-    isInCart: !!productInCart,
-    productInCart,
+    isInCart: productsInCart.length > 0,
+    productInCart: productsInCart,
   };
 
   return (

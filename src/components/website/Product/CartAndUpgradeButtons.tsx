@@ -20,11 +20,11 @@ export function CartAndUpgradeButtons({
   hasSize: boolean;
   cartInfo: {
     isInCart: boolean;
-    productInCart: {
+    productInCart: Array<{
       id: string;
       color: string;
       size: string;
-    } | null;
+    }>;
   };
 }) {
   const [isPending, startTransition] = useTransition();
@@ -36,10 +36,14 @@ export function CartAndUpgradeButtons({
   useEffect(() => {
     setIsInCart(
       cartInfo.isInCart &&
-        cartInfo.productInCart?.color === selectedColor &&
-        cartInfo.productInCart?.size === selectedSize
+        cartInfo.productInCart.some(
+          (item) =>
+            item.id === productId &&
+            item.color === selectedColor &&
+            item.size === selectedSize
+        )
     );
-  }, [cartInfo, selectedColor, selectedSize]);
+  }, [cartInfo, selectedColor, selectedSize, productId]);
 
   const handleAddToCart = async () => {
     if (hasColor && !selectedColor) {
