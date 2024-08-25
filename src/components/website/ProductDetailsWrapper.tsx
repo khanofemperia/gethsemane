@@ -100,10 +100,6 @@ export function ProductDetailsWrapper({
         }}
         Options={
           <Options
-            cartInfo={{
-              isInCart: false,
-              productInCart: null,
-            }}
             productInfo={{
               id,
               name,

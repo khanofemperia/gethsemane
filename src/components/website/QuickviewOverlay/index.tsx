@@ -194,10 +194,6 @@ export function QuickviewOverlay() {
                       )}
                     </div>
                     <Options
-                      cartInfo={{
-                        isInCart,
-                        productInCart,
-                      }}
                       productInfo={{
                         id: selectedProduct.id,
                         name: selectedProduct.name,

@@ -18,8 +18,8 @@ type ProductOptionsType = {
     isInCart: boolean;
     productInCart: {
       id: string;
-      color: string;
       size: string;
+      color: string;
     } | null;
   };
   productInfo: {
@@ -154,9 +154,29 @@ function ProductSizeChart({ sizeChart }: { sizeChart: SizeChartType }) {
 }
 
 export default function ProductOptions({
-  cartInfo,
   productInfo,
-}: ProductOptionsType) {
+}: {
+  productInfo: {
+    id: string;
+    name: string;
+    pricing: {
+      basePrice: number;
+      salePrice?: number;
+      discountPercentage?: number;
+    };
+    images: {
+      main: string;
+      gallery: string[];
+    };
+    options: {
+      colors: Array<{
+        name: string;
+        image: string;
+      }>;
+      sizes: SizeChartType;
+    };
+  };
+}) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   const { setSelectedSize, setSelectedColor } = useOptionsStore();
@@ -191,22 +211,6 @@ export default function ProductOptions({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isDropdownVisible]);
-
-  useEffect(() => {
-    if (cartInfo.isInCart && cartInfo.productInCart) {
-      setSelectedColor(cartInfo.productInCart.color);
-      setSelectedSize(cartInfo.productInCart.size);
-    }
-  }, [
-    cartInfo.isInCart,
-    cartInfo.productInCart,
-    setSelectedColor,
-    setSelectedSize,
-  ]);
-
-  if (!hasColor && !hasSize) {
-    return null;
-  }
 
   const getButtonText = () => {
     if (hasColor && hasSize) {
@@ -280,7 +284,7 @@ export default function ProductOptions({
           {hasColor && !hasSize && (
             <ProductColors colors={productInfo.options.colors} />
           )}
-          {!hasColor && hasSize && (
+          {!hasSize && hasSize && (
             <ProductSizeChart sizeChart={productInfo.options.sizes} />
           )}
         </div>

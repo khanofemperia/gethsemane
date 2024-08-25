@@ -96,6 +96,17 @@ export default async function ProductDetails({
   const hasColor = product.options.colors.length > 0;
   const hasSize = Object.keys(product.options.sizes).length > 0;
 
+  const productInCart =
+    cart?.products.find(
+      (item: { id: string; color: string; size: string }) =>
+        item.id === product.id
+    ) || null;
+
+  const cartInfo = {
+    isInCart: !!productInCart,
+    productInCart,
+  };
+
   return (
     <>
       <ProductDetailsWrapper
@@ -222,10 +233,6 @@ export default async function ProductDetails({
                         )}
                       </div>
                       <Options
-                        cartInfo={{
-                          isInCart: false,
-                          productInCart: null,
-                        }}
                         productInfo={{
                           id,
                           name,
@@ -384,10 +391,6 @@ export default async function ProductDetails({
                           )}
                         </div>
                         <Options
-                          cartInfo={{
-                            isInCart: false,
-                            productInCart: null,
-                          }}
                           productInfo={{
                             id,
                             name,
@@ -476,6 +479,7 @@ export default async function ProductDetails({
                         productId={product.id}
                         hasColor={hasColor}
                         hasSize={hasSize}
+                        cartInfo={cartInfo}
                       />
                     </div>
                   </div>

@@ -2,7 +2,7 @@
 
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { AddToCartAction } from "@/actions/add-to-cart";
 import SpinnerGray from "@/ui/Spinners/Gray";
 import Link from "next/link";
@@ -13,16 +13,33 @@ export function CartAndUpgradeButtons({
   productId,
   hasColor,
   hasSize,
+  cartInfo,
 }: {
   productId: string;
   hasColor: boolean;
   hasSize: boolean;
+  cartInfo: {
+    isInCart: boolean;
+    productInCart: {
+      id: string;
+      color: string;
+      size: string;
+    } | null;
+  };
 }) {
   const [isPending, startTransition] = useTransition();
-  const [itemAdded, setItemAdded] = useState(false); // New state for tracking cart addition
+  const [isInCart, setIsInCart] = useState(false);
 
   const { selectedColor, selectedSize } = useOptionsStore();
   const { showAlert } = useAlertStore();
+
+  useEffect(() => {
+    setIsInCart(
+      cartInfo.isInCart &&
+        cartInfo.productInCart?.color === selectedColor &&
+        cartInfo.productInCart?.size === selectedSize
+    );
+  }, [cartInfo, selectedColor, selectedSize]);
 
   const handleAddToCart = async () => {
     if (hasColor && !selectedColor) {
@@ -42,12 +59,12 @@ export function CartAndUpgradeButtons({
       showAlert({ message: result.message, type: result.type });
 
       if (result.type === AlertMessageType.SUCCESS) {
-        setItemAdded(true);
+        setIsInCart(true);
       }
     });
   };
 
-  if (itemAdded) {
+  if (isInCart) {
     return (
       <Link href="/cart" className="w-full">
         <button className="text-sm min-[896px]:text-base inline-block text-center align-middle h-[44px] min-[896px]:h-12 w-full border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-100 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
