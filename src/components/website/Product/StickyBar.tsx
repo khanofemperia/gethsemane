@@ -11,14 +11,6 @@ import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import SpinnerGray from "@/ui/Spinners/Gray";
 
-type UpsellProductType = {
-  id: string;
-  name: string;
-  slug: string;
-  mainImage: string;
-  basePrice: number;
-};
-
 type UpsellType = {
   id: string;
   mainImage: string;
@@ -26,43 +18,43 @@ type UpsellType = {
   visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
   createdAt: string;
   updatedAt: string;
-  products: UpsellProductType[];
-};
-
-type DataType = {
-  pricing: PricingType;
-  upsell: UpsellType;
-  mainImage: string;
-  name: string;
-};
-
-interface CartInfo {
-  isInCart: boolean;
-  productInCart: Array<{
+  products: Array<{
     id: string;
-    color: string;
-    size: string;
+    name: string;
+    slug: string;
+    mainImage: string;
+    basePrice: number;
   }>;
-}
+};
 
 const SCROLL_THRESHOLD = 1040;
 
 export default function StickyBar({
   productInfo,
-  Options,
+  optionsComponent,
   scrollPosition,
-  productId,
   hasColor,
   hasSize,
-  cartInfo,
+  inCart,
+  cartProducts,
 }: {
-  productInfo: DataType;
-  Options: React.ReactNode;
+  productInfo: {
+    id: string;
+    pricing: PricingType;
+    upsell: UpsellType;
+    mainImage: string;
+    name: string;
+  };
+  optionsComponent: JSX.Element;
   scrollPosition: number;
-  productId: string;
   hasColor: boolean;
   hasSize: boolean;
-  cartInfo: CartInfo;
+  inCart: boolean;
+  cartProducts: Array<{
+    id: string;
+    color: string;
+    size: string;
+  }>;
 }) {
   const [barIsHidden, setBarIsHidden] = useState(true);
   const [isPending, startTransition] = useTransition();
@@ -75,13 +67,15 @@ export default function StickyBar({
 
   useEffect(() => {
     setIsInCart(
-      cartInfo.isInCart &&
-        cartInfo.productInCart.some(
+      inCart &&
+        cartProducts.some(
           ({ id, color, size }) =>
-            id === productId && color === selectedColor && size === selectedSize
+            id === productInfo.id &&
+            color === selectedColor &&
+            size === selectedSize
         )
     );
-  }, [cartInfo, selectedColor, selectedSize, productId]);
+  }, [inCart, cartProducts, productInfo, selectedColor, selectedSize]);
 
   const handleAddToCart = async () => {
     if (hasColor && !selectedColor) {
@@ -99,7 +93,7 @@ export default function StickyBar({
 
     startTransition(async () => {
       const result = await AddToCartAction({
-        id: productId,
+        id: productInfo.id,
         color: selectedColor,
         size: selectedSize,
       });
@@ -167,7 +161,7 @@ export default function StickyBar({
                 </p>
               )}
             </div>
-            {Options}
+            {optionsComponent}
           </div>
         </div>
         <div className="w-[348px] min-[840px]:w-[410px] flex gap-3">

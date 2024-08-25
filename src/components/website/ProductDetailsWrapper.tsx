@@ -55,30 +55,25 @@ type ProductInfoType = {
   upsell: UpsellType;
 };
 
-interface CartInfo {
-  isInCart: boolean;
-  productInCart: Array<{
+export function ProductDetailsWrapper({
+  children,
+  inCart,
+  cartProducts,
+  hasColor,
+  hasSize,
+  productInfo,
+}: {
+  readonly children: React.ReactNode;
+  inCart: boolean;
+  cartProducts: Array<{
     id: string;
     color: string;
     size: string;
   }>;
-}
-
-export function ProductDetailsWrapper({
-  children,
-  productInfo,
-  productId,
-  hasColor,
-  hasSize,
-  cartInfo,
-}: Readonly<{
-  children: React.ReactNode;
-  productInfo: ProductInfoType;
-  productId: string;
   hasColor: boolean;
   hasSize: boolean;
-  cartInfo: CartInfo;
-}>) {
+  productInfo: ProductInfoType;
+}) {
   const { pricing, images, name, id, options, upsell } = productInfo;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -110,12 +105,13 @@ export function ProductDetailsWrapper({
       {children}
       <StickyBar
         productInfo={{
+          id,
+          name,
           pricing,
           upsell,
           mainImage: images.main,
-          name,
         }}
-        Options={
+        optionsComponent={
           <Options
             productInfo={{
               id,
@@ -127,10 +123,10 @@ export function ProductDetailsWrapper({
           />
         }
         scrollPosition={scrollPosition}
-        productId={productId}
         hasColor={hasColor}
         hasSize={hasSize}
-        cartInfo={cartInfo}
+        inCart={inCart}
+        cartProducts={cartProducts}
       />
     </div>
   );

@@ -102,18 +102,16 @@ export default async function ProductDetails({
         item.id === product.id
     ) || [];
 
-  const cartInfo = {
-    isInCart: productsInCart.length > 0,
-    productInCart: productsInCart,
-  };
+  const inCart = productsInCart.length > 0;
+  const cartProducts = productsInCart;
 
   return (
     <>
       <ProductDetailsWrapper
-        productId={product.id}
+        inCart={inCart}
+        cartProducts={cartProducts}
         hasColor={hasColor}
         hasSize={hasSize}
-        cartInfo={cartInfo}
         productInfo={{
           id,
           name,
@@ -481,9 +479,10 @@ export default async function ProductDetails({
                     <div className="flex gap-2 min-[896px]:gap-3">
                       <CartAndUpgradeButtons
                         productId={product.id}
+                        inCart={inCart}
+                        cartProducts={cartProducts}
                         hasColor={hasColor}
                         hasSize={hasSize}
-                        cartInfo={cartInfo}
                       />
                     </div>
                   </div>

@@ -9,27 +9,24 @@ import Link from "next/link";
 import clsx from "clsx";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-interface CartInfo {
-  isInCart: boolean;
-  productInCart: Array<{
+interface CartAndUpgradeButtonsProps {
+  productId: string;
+  inCart: boolean;
+  cartProducts: Array<{
     id: string;
     color: string;
     size: string;
   }>;
-}
-
-interface CartAndUpgradeButtonsProps {
-  productId: string;
   hasColor: boolean;
   hasSize: boolean;
-  cartInfo: CartInfo;
 }
 
 export function CartAndUpgradeButtons({
   productId,
+  inCart,
+  cartProducts,
   hasColor,
   hasSize,
-  cartInfo,
 }: CartAndUpgradeButtonsProps) {
   const [isPending, startTransition] = useTransition();
   const [isInCart, setIsInCart] = useState<boolean>(false);
@@ -39,13 +36,13 @@ export function CartAndUpgradeButtons({
 
   useEffect(() => {
     setIsInCart(
-      cartInfo.isInCart &&
-        cartInfo.productInCart.some(
+      inCart &&
+        cartProducts.some(
           ({ id, color, size }) =>
             id === productId && color === selectedColor && size === selectedSize
         )
     );
-  }, [cartInfo, selectedColor, selectedSize, productId]);
+  }, [inCart, cartProducts, productId, selectedColor, selectedSize]);
 
   const handleAddToCart = async () => {
     if (hasColor && !selectedColor) {
