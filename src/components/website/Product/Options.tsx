@@ -179,11 +179,15 @@ export default function ProductOptions({
 }) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
-  const { setSelectedSize, setSelectedColor } = useOptionsStore();
   const { selectedColor, selectedSize } = useOptionsStore.getState();
+  const { resetOptions } = useOptionsStore();
 
   const hasColor = productInfo.options.colors.length > 0;
   const hasSize = Object.keys(productInfo.options.sizes).length > 0;
+
+  useEffect(() => {
+    resetOptions();
+  }, [productInfo.id, resetOptions]);
 
   useEffect(() => {
     const handleScroll = () => {

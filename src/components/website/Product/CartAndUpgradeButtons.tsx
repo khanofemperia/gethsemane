@@ -60,7 +60,7 @@ export function CartAndUpgradeButtons({
         size: selectedSize,
       });
 
-      showAlert({ message: result.message, type: result.type });
+      showAlert({ message: result.message });
 
       if (result.type === AlertMessageType.SUCCESS) {
         setIsInCart(true);

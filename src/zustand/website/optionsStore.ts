@@ -6,6 +6,7 @@ type OptionsStoreType = {
   selectedSize: string;
   setSelectedColor: (color: string) => void;
   setSelectedSize: (size: string) => void;
+  resetOptions: () => void;
 };
 
 export const useOptionsStore = createWithEqualityFn<OptionsStoreType>(
@@ -14,6 +15,7 @@ export const useOptionsStore = createWithEqualityFn<OptionsStoreType>(
     selectedSize: "",
     setSelectedColor: (color) => set({ selectedColor: color }),
     setSelectedSize: (size) => set({ selectedSize: size }),
+    resetOptions: () => set({ selectedColor: "", selectedSize: "" }),
   }),
   shallow
 );
