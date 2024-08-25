@@ -5,11 +5,11 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 import { formatThousands } from "@/lib/utils";
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
-import clsx from "clsx";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import SpinnerGray from "@/ui/Spinners/Gray";
+import Image from "next/image";
+import Link from "next/link";
+import clsx from "clsx";
 
 type UpsellType = {
   id: string;

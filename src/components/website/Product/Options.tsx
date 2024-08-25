@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { ChevronRightIcon } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 
 type ProductColorsType = {
