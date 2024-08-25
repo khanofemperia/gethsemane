@@ -110,6 +110,10 @@ export default async function ProductDetails({
   return (
     <>
       <ProductDetailsWrapper
+        productId={product.id}
+        hasColor={hasColor}
+        hasSize={hasSize}
+        cartInfo={cartInfo}
         productInfo={{
           id,
           name,

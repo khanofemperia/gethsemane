@@ -55,12 +55,29 @@ type ProductInfoType = {
   upsell: UpsellType;
 };
 
+interface CartInfo {
+  isInCart: boolean;
+  productInCart: Array<{
+    id: string;
+    color: string;
+    size: string;
+  }>;
+}
+
 export function ProductDetailsWrapper({
   children,
   productInfo,
+  productId,
+  hasColor,
+  hasSize,
+  cartInfo,
 }: Readonly<{
   children: React.ReactNode;
   productInfo: ProductInfoType;
+  productId: string;
+  hasColor: boolean;
+  hasSize: boolean;
+  cartInfo: CartInfo;
 }>) {
   const { pricing, images, name, id, options, upsell } = productInfo;
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -110,6 +127,10 @@ export function ProductDetailsWrapper({
           />
         }
         scrollPosition={scrollPosition}
+        productId={productId}
+        hasColor={hasColor}
+        hasSize={hasSize}
+        cartInfo={cartInfo}
       />
     </div>
   );

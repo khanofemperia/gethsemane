@@ -13,37 +13,6 @@ type ProductColorsType = {
   }>;
 };
 
-type ProductOptionsType = {
-  cartInfo: {
-    isInCart: boolean;
-    productInCart: {
-      id: string;
-      size: string;
-      color: string;
-    } | null;
-  };
-  productInfo: {
-    id: string;
-    name: string;
-    pricing: {
-      basePrice: number;
-      salePrice?: number;
-      discountPercentage?: number;
-    };
-    images: {
-      main: string;
-      gallery: string[];
-    };
-    options: {
-      colors: Array<{
-        name: string;
-        image: string;
-      }>;
-      sizes: SizeChartType;
-    };
-  };
-};
-
 function ProductColors({ colors }: ProductColorsType) {
   const { selectedColor, setSelectedColor } = useOptionsStore();
 
