@@ -245,7 +245,7 @@ export default async function ProductDetails({
                       />
                     </div>
                   </div>
-                  {upsell && upsell.products.length > 0 && !inCart && (
+                  {upsell && upsell.products.length > 0 && (
                     <div
                       className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
                     >
@@ -403,7 +403,7 @@ export default async function ProductDetails({
                         />
                       </div>
                     </div>
-                    {upsell && upsell.products.length > 0 && !inCart && (
+                    {upsell && upsell.products.length > 0 && (
                       <div
                         className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
                       >
