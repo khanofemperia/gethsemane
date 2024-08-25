@@ -60,7 +60,13 @@ export function CartAndUpgradeButtons({
         size: selectedSize,
       });
 
-      showAlert({ message: result.message });
+      showAlert({
+        message: result.message,
+        type:
+          result.type === AlertMessageType.ERROR
+            ? AlertMessageType.ERROR
+            : AlertMessageType.NEUTRAL,
+      });
 
       if (result.type === AlertMessageType.SUCCESS) {
         setIsInCart(true);
