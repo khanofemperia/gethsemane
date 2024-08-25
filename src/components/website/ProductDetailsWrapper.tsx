@@ -104,24 +104,8 @@ export function ProductDetailsWrapper({
     >
       {children}
       <StickyBar
-        productInfo={{
-          id,
-          name,
-          pricing,
-          upsell,
-          mainImage: images.main,
-        }}
-        optionsComponent={
-          <Options
-            productInfo={{
-              id,
-              name,
-              pricing,
-              images,
-              options,
-            }}
-          />
-        }
+        productInfo={productInfo}
+        optionsComponent={<Options productInfo={productInfo} />}
         scrollPosition={scrollPosition}
         hasColor={hasColor}
         hasSize={hasSize}

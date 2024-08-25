@@ -27,6 +27,33 @@ type UpsellType = {
   }>;
 };
 
+type ProductInfoType = {
+  id: string;
+  name: string;
+  pricing: PricingType;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  options: {
+    colors: Array<{
+      name: string;
+      image: string;
+    }>;
+    sizes: {
+      inches: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+      centimeters: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+    };
+  };
+  upsell: UpsellType;
+};
+
 const SCROLL_THRESHOLD = 1040;
 
 export default function StickyBar({
@@ -38,13 +65,7 @@ export default function StickyBar({
   inCart,
   cartProducts,
 }: {
-  productInfo: {
-    id: string;
-    pricing: PricingType;
-    upsell: UpsellType;
-    mainImage: string;
-    name: string;
-  };
+  productInfo: ProductInfoType;
   optionsComponent: JSX.Element;
   scrollPosition: number;
   hasColor: boolean;
@@ -63,7 +84,7 @@ export default function StickyBar({
   const { selectedColor, selectedSize } = useOptionsStore();
   const { showAlert } = useAlertStore();
 
-  const { pricing, upsell, mainImage, name } = productInfo;
+  const { pricing, upsell, images, name } = productInfo;
 
   useEffect(() => {
     setIsInCart(
@@ -134,7 +155,7 @@ export default function StickyBar({
         <div className="h-full flex gap-5">
           <div className="h-full aspect-square relative rounded-md flex items-center justify-center overflow-hidden">
             <Image
-              src={mainImage}
+              src={images.main}
               alt={name}
               width={64}
               height={64}
