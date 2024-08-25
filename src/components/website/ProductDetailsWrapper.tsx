@@ -74,9 +74,8 @@ export function ProductDetailsWrapper({
   hasSize: boolean;
   productInfo: ProductInfoType;
 }) {
-  const { pricing, images, name, id, options, upsell } = productInfo;
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
