@@ -44,6 +44,12 @@ export function PostAddToCartOverlay() {
               </div>
             </div>
           </div>
+          <button
+            className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
+            type="button"
+          >
+            <CloseIconThin size={24} className="stroke-gray" />
+          </button>
         </div>
       </div>
     </Overlay>
