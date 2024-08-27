@@ -11,9 +11,9 @@ export function PostAddToCartOverlay() {
       <div className="w-full h-full pt-20 flex justify-center">
         <div className="w-[436px] h-max p-8 pt-6 rounded-2xl relative overflow-hidden shadow-lg bg-white">
           <div>
-            <div className="mb-5 flex gap-[6px] items-center justify-center">
-              <CheckmarkIcon size={20} />
-              <h2 className="font-semibold">Added to cart</h2>
+            <div className="mb-5 flex gap-1 items-center justify-center">
+              <CheckmarkIcon size={24} className="fill-green" />
+              <h2 className="font-semibold text-green">Added to cart</h2>
             </div>
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-2 items-center w-80 mx-auto">
