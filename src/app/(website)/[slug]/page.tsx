@@ -13,6 +13,7 @@ import "@/components/shared/TextEditor/theme/index.css";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
 import ShowAlert from "@/components/website/ShowAlert";
 import { ProductDetailsWrapper } from "@/components/website/ProductDetailsWrapper";
+import { PostAddToCartOverlay } from "@/components/website/PostAddToCartOverlay";
 
 type ProductType = {
   id: string;
@@ -515,6 +516,7 @@ export default async function ProductDetails({
         />
       </ProductDetailsWrapper>
       <ShowAlert />
+      <PostAddToCartOverlay />
     </>
   );
 }
