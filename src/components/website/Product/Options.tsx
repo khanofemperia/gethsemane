@@ -262,6 +262,15 @@ export default function ProductOptions({
           )}
         </div>
       )}
+      {/* Item is in cart */}
+      <div className="w-max relative mt-2 px-4 py-3 rounded shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:left-16 min-[840px]:before:right-24">
+        <div className="w-full h-full flex items-center justify-between gap-4">
+          <span className="font-bold">In cart</span>
+          <button className="text-xs text-blue px-2 w-max h-6 rounded-full cursor-pointer shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#f9f9f9_5%,_#e9e9e9_100%)] bg-[#f9f9f9] border border-[#dcdcdc] [text-shadow:0px_1px_0px_#ffffff] hover:[background:linear-gradient(to_bottom,_#e9e9e9_5%,_#f9f9f9_100%)] hover:bg-[#e9e9e9]">
+            See now
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

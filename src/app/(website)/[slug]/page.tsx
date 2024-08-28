@@ -516,7 +516,7 @@ export default async function ProductDetails({
         />
       </ProductDetailsWrapper>
       <ShowAlert />
-      <PostAddToCartOverlay />
+      {/* <PostAddToCartOverlay /> */}
     </>
   );
 }

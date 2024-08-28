@@ -102,7 +102,7 @@ export function ProductDetailsWrapper({
       className="h-screen overflow-x-hidden overflow-y-auto custom-scrollbar"
     >
       {children}
-      <StickyBar
+      {/* <StickyBar
         productInfo={productInfo}
         optionsComponent={<Options productInfo={productInfo} />}
         scrollPosition={scrollPosition}
@@ -110,7 +110,7 @@ export function ProductDetailsWrapper({
         hasSize={hasSize}
         inCart={inCart}
         cartProducts={cartProducts}
-      />
+      /> */}
     </div>
   );
 }
