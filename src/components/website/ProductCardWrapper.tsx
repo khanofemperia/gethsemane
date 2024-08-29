@@ -1,6 +1,4 @@
-import { shuffleDiscoveryProducts } from "@/lib/utils";
-import { unstable_noStore as noStore } from "next/cache";
-import { ProductCardWrapper } from "./ProductCardWrapper";
+import { ProductCard } from "./ProductCard";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -50,28 +48,27 @@ type CartType = {
   }>;
 };
 
-export function DiscoveryProducts({
-  heading = "Explore Your Interests",
-  products,
+export async function ProductCardWrapper({
+  product,
   cart,
 }: {
-  heading?: string;
-  products: ProductWithUpsellType[];
+  product: ProductWithUpsellType;
   cart: CartType;
 }) {
-  noStore();
+  const productsInCart =
+    cart?.products.filter(
+      (item: { id: string; color: string; size: string }) =>
+        item.id === product.id
+    ) || [];
 
-  const shuffledProducts = shuffleDiscoveryProducts([...products]);
+  const inCart = productsInCart.length > 0;
+  const cartProducts = productsInCart;
+
   return (
-    <div>
-      <h2 className="w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
-        {heading}
-      </h2>
-      <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
-        {shuffledProducts.map((product) => (
-          <ProductCardWrapper key={product.id} product={product} cart={cart} />
-        ))}
-      </div>
-    </div>
+    <ProductCard
+      product={product}
+      inCart={inCart}
+      cartProducts={cartProducts}
+    />
   );
 }

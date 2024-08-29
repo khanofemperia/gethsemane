@@ -5,12 +5,14 @@ import { FeaturedProducts } from "@/components/website/FeaturedProducts";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import {
+  getCart,
   getCategories,
   getCollections,
   getDiscoveryProducts,
   getPageHero,
   getProductsByIdsWithUpsells,
 } from "@/lib/getData";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -141,6 +143,16 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   };
 };
 
+type CartType = {
+  id: string;
+  device_identifier: string;
+  products: Array<{
+    id: string;
+    size: string;
+    color: string;
+  }>;
+};
+
 export default async function Home() {
   const [pageHero, categories, collections, discoveryProducts] =
     await Promise.all([
@@ -227,6 +239,10 @@ export default async function Home() {
     ) || []),
   ].sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 
+  const cookieStore = cookies();
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
+  const cart = await getCart(deviceIdentifier);
+
   return (
     <>
       {pageHero && (
@@ -276,6 +292,7 @@ export default async function Home() {
                       <div key={index}>
                         <FeaturedProducts
                           collection={collection as EnrichedCollectionType}
+                          cart={cart as CartType}
                         />
                       </div>
                     );
@@ -296,6 +313,7 @@ export default async function Home() {
             })}
           <DiscoveryProducts
             products={discoveryProducts as ProductWithUpsellType[]}
+            cart={cart as CartType}
           />
         </div>
       </div>

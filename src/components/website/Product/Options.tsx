@@ -178,7 +178,7 @@ export default function ProductOptions({
             size === selectedSize
         )
     );
-  }, [inCart, cartProducts, productInfo.id, selectedColor, selectedSize]);
+  }, [inCart, cartProducts, productInfo, selectedColor, selectedSize]);
 
   useEffect(() => {
     const handleScroll = () => {

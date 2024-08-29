@@ -1,6 +1,7 @@
-import { ProductCard } from "@/components/website/ProductCard";
+import { ProductCardWrapper } from "@/components/website/ProductCardWrapper";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
-import { getProductsByCategoryWithUpsell } from "@/lib/getData";
+import { getCart, getProductsByCategoryWithUpsell } from "@/lib/getData";
+import { cookies } from "next/headers";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -40,11 +41,25 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   };
 };
 
+type CartType = {
+  id: string;
+  device_identifier: string;
+  products: Array<{
+    id: string;
+    size: string;
+    color: string;
+  }>;
+};
+
 export default async function Categories({
   params,
 }: {
   params: { name: string };
 }) {
+  const cookieStore = cookies();
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
+  const cart = await getCart(deviceIdentifier);
+
   const products = (await getProductsByCategoryWithUpsell({
     category: params.name,
   })) as ProductWithUpsellType[];
@@ -54,7 +69,11 @@ export default async function Categories({
       <div className="max-w-[968px] mx-auto pt-10">
         <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
           {products.map((product, index) => (
-            <ProductCard key={index} product={product} />
+            <ProductCardWrapper
+              key={index}
+              product={product}
+              cart={cart as CartType}
+            />
           ))}
         </div>
       </div>

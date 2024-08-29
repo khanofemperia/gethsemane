@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
@@ -10,6 +10,7 @@ import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
 import { UpsellReviewButton } from "../UpsellReviewOverlay";
 import Link from "next/link";
+import { useOptionsStore } from "@/zustand/website/optionsStore";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -50,16 +51,21 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
 };
 
 export function QuickviewButton({
-  product,
   onClick,
+  product,
+  inCart,
+  cartProducts,
 }: {
-  product: ProductWithUpsellType;
   onClick?: (event: React.MouseEvent) => void;
+  product: ProductWithUpsellType;
+  inCart: boolean;
+  cartProducts: Array<{
+    id: string;
+    color: string;
+    size: string;
+  }>;
 }) {
-  const { showOverlay } = useQuickviewStore();
-  const setSelectedProduct = useQuickviewStore(
-    (state) => state.setSelectedProduct
-  );
+  const { showOverlay, setSelectedProduct } = useQuickviewStore();
 
   const handleClick = (event: React.MouseEvent) => {
     if (onClick) {
@@ -67,10 +73,7 @@ export function QuickviewButton({
       onClick(event);
     }
 
-    const isInCart = false;
-    const productInCart = null;
-
-    setSelectedProduct(product, isInCart, productInCart);
+    setSelectedProduct(product, inCart, cartProducts);
     showOverlay();
   };
 
@@ -91,25 +94,12 @@ export function QuickviewButton({
 }
 
 export function QuickviewOverlay() {
-  const { hideOverlay } = useQuickviewStore();
+  const { hideOverlay, isVisible } = useQuickviewStore();
 
-  const { isOverlayOpened } = useQuickviewStore((state) => ({
-    isOverlayOpened: state.isVisible,
-  }));
-
-  const { isInCart, productInCart, selectedProduct } = useQuickviewStore(
-    (state) => ({
-      selectedProduct: state.selectedProduct,
-      isInCart: state.isInCart,
-      productInCart: state.productInCart,
-    })
-  );
+  const { inCart, cartProducts, selectedProduct } = useQuickviewStore();
 
   useEffect(() => {
-    if (selectedProduct && selectedProduct?.upsell) {
-      console.log(selectedProduct.upsell);
-    }
-    if (isOverlayOpened) {
+    if (isVisible) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "visible";
@@ -118,12 +108,11 @@ export function QuickviewOverlay() {
     return () => {
       document.body.style.overflow = "visible";
     };
-  }, [isOverlayOpened]);
-
-  const isVisible = isOverlayOpened && selectedProduct;
+  }, [isVisible]);
 
   return (
-    isVisible && (
+    isVisible &&
+    selectedProduct && (
       <div className="custom-scrollbar flex justify-center w-screen h-screen overflow-x-hidden overflow-y-visible z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
         <div className="w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
           <div className="pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
@@ -201,6 +190,8 @@ export function QuickviewOverlay() {
                         images: selectedProduct.images,
                         options: selectedProduct.options,
                       }}
+                      inCart={inCart}
+                      cartProducts={cartProducts}
                     />
                   </div>
                 </div>

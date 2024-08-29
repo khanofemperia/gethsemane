@@ -10,6 +10,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { useRouter } from "next/navigation";
 import { formatThousands } from "@/lib/utils";
 import { ProductCard } from "./ProductCard";
+import { ProductCardWrapper } from "./ProductCardWrapper";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -129,6 +130,16 @@ type UsePrevNextButtonsType = {
   onNextButtonClick: () => void;
 };
 
+type CartType = {
+  id: string;
+  device_identifier: string;
+  products: Array<{
+    id: string;
+    size: string;
+    color: string;
+  }>;
+};
+
 export const usePrevNextButtons = (
   emblaApi: EmblaCarouselType | undefined
 ): UsePrevNextButtonsType => {
@@ -199,10 +210,11 @@ export const NextButton: React.FC<PropType> = (props) => {
 
 export function FeaturedProducts({
   collection,
+  cart,
 }: {
   collection: EnrichedCollectionType;
+  cart: CartType;
 }) {
-  const router = useRouter();
   const [emblaRef] = useEmblaCarousel({
     align: "start",
   });
@@ -225,13 +237,14 @@ export function FeaturedProducts({
           See more
         </Link>
       </div>
-      <div
-        className="embla relative select-none"
-        ref={emblaRef}
-      >
+      <div className="embla relative select-none" ref={emblaRef}>
         <div className="embla__container w-full flex gap-1 md:gap-0">
           {products.slice(0, 3).map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCardWrapper
+              key={product.id}
+              product={product}
+              cart={cart}
+            />
           ))}
         </div>
       </div>

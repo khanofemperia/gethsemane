@@ -1,5 +1,6 @@
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
-import { getDiscoveryProducts } from "@/lib/getData";
+import { getCart, getDiscoveryProducts } from "@/lib/getData";
+import { cookies } from "next/headers";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -39,7 +40,20 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   };
 };
 
+type CartType = {
+  id: string;
+  device_identifier: string;
+  products: Array<{
+    id: string;
+    size: string;
+    color: string;
+  }>;
+};
+
 export default async function Cart() {
+  const cookieStore = cookies();
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
+  const cart = await getCart(deviceIdentifier);
   const discoveryProducts = await getDiscoveryProducts({
     limit: 10,
   });
@@ -224,6 +238,7 @@ export default async function Cart() {
       <DiscoveryProducts
         heading="Add These to Your Cart"
         products={discoveryProducts as ProductWithUpsellType[]}
+        cart={cart as CartType}
       />
     </div>
   );
