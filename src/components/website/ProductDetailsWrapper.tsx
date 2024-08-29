@@ -102,15 +102,21 @@ export function ProductDetailsWrapper({
       className="h-screen overflow-x-hidden overflow-y-auto custom-scrollbar"
     >
       {children}
-      {/* <StickyBar
+      <StickyBar
         productInfo={productInfo}
-        optionsComponent={<Options productInfo={productInfo} />}
+        optionsComponent={
+          <Options
+            inCart={inCart}
+            cartProducts={cartProducts}
+            productInfo={productInfo}
+          />
+        }
         scrollPosition={scrollPosition}
         hasColor={hasColor}
         hasSize={hasSize}
         inCart={inCart}
         cartProducts={cartProducts}
-      /> */}
+      />
     </div>
   );
 }
