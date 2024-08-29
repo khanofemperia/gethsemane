@@ -31,7 +31,7 @@ export default function IDCopyButton({ id }: { id: string }) {
 
   return (
     <button
-      className="flex gap-2 items-center justify-between px-4 w-max h-9 rounded-full cursor-pointer shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#f9f9f9_5%,_#e9e9e9_100%)] bg-[#f9f9f9] border border-[#dcdcdc] text-[#666666] [text-shadow:0px_1px_0px_#ffffff] hover:[background:linear-gradient(to_bottom,_#e9e9e9_5%,_#f9f9f9_100%)] hover:bg-[#e9e9e9]"
+      className="flex gap-2 items-center justify-between px-4 w-max h-9 rounded-full cursor-pointer shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#f9f9f9_5%,_#e9e9e9_100%)] bg-[#f9f9f9] border border-[#dcdcdc] text-[#666666] hover:[background:linear-gradient(to_bottom,_#e9e9e9_5%,_#f9f9f9_100%)] hover:bg-[#e9e9e9]"
       type="button"
       onClick={() => handleCopyId(id)}
     >

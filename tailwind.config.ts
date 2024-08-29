@@ -3,7 +3,7 @@ import type { Config } from "tailwindcss";
 const customColors = {
   gold: "#af8100",
   amber: {
-    DEFAULT: "#e89300",
+    DEFAULT: "#DB8B00",
     dimmed: "#d38600",
   },
   red: {
