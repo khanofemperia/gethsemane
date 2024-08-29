@@ -260,30 +260,32 @@ export default function ProductOptions({
   };
 
   return (
-    <div className="dropdown-container w-max rounded-full relative">
-      <button
-        onClick={() => setDropdownVisible((prev) => !prev)}
-        className="h-8 w-max px-4 rounded-full flex items-center justify-center gap-[2px] ease-in-out duration-300 transition bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
-      >
-        <div className="text-sm font-medium">{getButtonText()}</div>
-        <ChevronRightIcon className="-mr-[8px] stroke-[#828282]" size={20} />
-      </button>
-      {isDropdownVisible && (
-        <div className="w-max min-w-[238px] max-w-[288px] absolute top-[42px] left-0 p-5 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:left-16 min-[840px]:before:right-24">
-          {hasColor && hasSize && (
-            <div className="flex flex-col gap-4 select-none">
+    <div className="dropdown-container w-max h-8 rounded-full relative flex gap-3 items-center">
+      <div className="relative">
+        <button
+          onClick={() => setDropdownVisible((prev) => !prev)}
+          className="h-8 w-max px-4 rounded-full flex items-center justify-center gap-[2px] ease-in-out duration-300 transition bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
+        >
+          <div className="text-sm font-medium">{getButtonText()}</div>
+          <ChevronRightIcon className="-mr-[8px] stroke-[#828282]" size={20} />
+        </button>
+        {isDropdownVisible && (
+          <div className="w-max min-w-[238px] max-w-[288px] absolute top-[42px] left-0 p-5 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:left-16 min-[840px]:before:right-24">
+            {hasColor && hasSize && (
+              <div className="flex flex-col gap-4 select-none">
+                <ProductColors colors={productInfo.options.colors} />
+                <ProductSizeChart sizeChart={productInfo.options.sizes} />
+              </div>
+            )}
+            {hasColor && !hasSize && (
               <ProductColors colors={productInfo.options.colors} />
+            )}
+            {!hasSize && hasSize && (
               <ProductSizeChart sizeChart={productInfo.options.sizes} />
-            </div>
-          )}
-          {hasColor && !hasSize && (
-            <ProductColors colors={productInfo.options.colors} />
-          )}
-          {!hasSize && hasSize && (
-            <ProductSizeChart sizeChart={productInfo.options.sizes} />
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </div>
       {isInCart && !isDropdownVisible && <InCartIndicator />}
     </div>
   );

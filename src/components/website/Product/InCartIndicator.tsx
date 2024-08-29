@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function InCartIndicator() {
   return (
-    <div className="w-max relative mt-2 px-4 py-[14px] rounded shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:left-16 min-[840px]:before:right-24">
+    <div className="w-max relative px-4 py-[14px] rounded shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tr-[2px] before:rotate-45 before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-[7px] before:border-l before:border-b before:border-[#d9d9d9]">
       <div className="w-full h-full flex items-center justify-between gap-4">
         <span className="font-bold">In cart</span>
         <Link
