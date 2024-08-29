@@ -243,6 +243,8 @@ export default async function ProductDetails({
                           images,
                           options,
                         }}
+                        inCart={inCart}
+                        cartProducts={cartProducts}
                       />
                     </div>
                   </div>
@@ -401,6 +403,8 @@ export default async function ProductDetails({
                             images,
                             options,
                           }}
+                          inCart={inCart}
+                          cartProducts={cartProducts}
                         />
                       </div>
                     </div>

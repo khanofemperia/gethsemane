@@ -5,7 +5,6 @@ import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { useState, useTransition, useEffect } from "react";
 import { AddToCartAction } from "@/actions/add-to-cart";
 import SpinnerGray from "@/ui/Spinners/Gray";
-import Link from "next/link";
 import clsx from "clsx";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
