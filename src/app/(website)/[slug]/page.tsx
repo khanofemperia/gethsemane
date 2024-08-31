@@ -122,7 +122,7 @@ export default async function ProductDetails({
           upsell,
         }}
       >
-        <nav className="hidden md:block w-full max-h-[116px] md:max-h-16 border-b bg-white">
+        <nav className="hidden md:block w-full max-h-[116px] md:max-h-16 px-8 border-b bg-white">
           <div className="w-full max-w-[1080px] mx-auto py-2 px-5 min-[1120px]:px-0 relative flex gap-1 flex-col md:flex-row">
             <Link
               href="/"
@@ -340,7 +340,7 @@ export default async function ProductDetails({
               </div>
             </div>
           </div>
-          <div className="hidden md:block">
+          <div className="hidden md:block px-8">
             <div className="w-full max-w-5xl mx-auto pt-5 pb-16 px-5 min-[1120px]:px-0 flex flex-col gap-16">
               <div className="flex gap-5 items-start justify-start relative">
                 <div className="sticky top-5 max-w-[650px] flex flex-col gap-16">
