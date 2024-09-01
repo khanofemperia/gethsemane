@@ -1,16 +1,11 @@
 "use client";
 
-import { QuickviewButton } from "./QuickviewOverlay";
 import useEmblaCarousel from "embla-carousel-react";
-import Image from "next/image";
 import Link from "next/link";
 import { ComponentPropsWithRef, useCallback, useEffect, useState } from "react";
 import { EmblaCarouselType } from "embla-carousel";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
-import { useRouter } from "next/navigation";
-import { formatThousands } from "@/lib/utils";
 import { ProductCard } from "./ProductCard";
-import { ProductCardWrapper } from "./ProductCardWrapper";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -240,11 +235,7 @@ export function FeaturedProducts({
       <div className="embla relative select-none" ref={emblaRef}>
         <div className="embla__container w-full flex gap-1 md:gap-0">
           {products.slice(0, 3).map((product) => (
-            <ProductCardWrapper
-              key={product.id}
-              product={product}
-              cart={cart}
-            />
+            <ProductCard key={product.id} product={product} cart={cart} />
           ))}
         </div>
       </div>

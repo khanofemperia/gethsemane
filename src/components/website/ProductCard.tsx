@@ -43,19 +43,30 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   };
 };
 
+type CartType = {
+  id: string;
+  device_identifier: string;
+  products: Array<{
+    id: string;
+    size: string;
+    color: string;
+  }>;
+};
+
 export function ProductCard({
   product,
-  inCart,
-  cartProducts,
+  cart,
 }: {
   product: ProductWithUpsellType;
-  inCart: boolean;
-  cartProducts: Array<{
-    id: string;
-    color: string;
-    size: string;
-  }>;
+  cart: CartType;
 }) {
+  const productsInCart =
+    cart?.products.filter(
+      (item: { id: string; color: string; size: string }) =>
+        item.id === product.id
+    ) || [];
+  const inCart = productsInCart.length > 0;
+
   return (
     <div className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]">
       <Link
@@ -96,7 +107,7 @@ export function ProductCard({
             onClick={(event) => event.stopPropagation()}
             product={product}
             inCart={inCart}
-            cartProducts={cartProducts}
+            cartProducts={productsInCart}
           />
         </div>
       </div>

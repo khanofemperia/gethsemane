@@ -1,6 +1,6 @@
 import { shuffleDiscoveryProducts } from "@/lib/utils";
 import { unstable_noStore as noStore } from "next/cache";
-import { ProductCardWrapper } from "./ProductCardWrapper";
+import { ProductCard } from "./ProductCard";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -69,7 +69,7 @@ export function DiscoveryProducts({
       </h2>
       <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
         {shuffledProducts.map((product) => (
-          <ProductCardWrapper key={product.id} product={product} cart={cart} />
+          <ProductCard key={product.id} product={product} cart={cart} />
         ))}
       </div>
     </div>
