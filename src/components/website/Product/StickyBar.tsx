@@ -186,104 +186,91 @@ export default function StickyBar({
           </div>
         </div>
         <div className="w-[348px] min-[840px]:w-[410px] flex gap-3">
-          {isInCart ? (
-            <Link href="/cart" className="w-full">
-              <button className="text-sm min-[896px]:text-base inline-block text-center align-middle h-[44px] min-[896px]:h-12 w-full border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-100 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
-                Added - View Cart
-              </button>
-            </Link>
-          ) : (
-            <>
-              <button
-                onClick={handleAddToCart}
-                disabled={isPending}
-                className={clsx(
-                  "font-semibold w-full h-[44px] min-[840px]:h-12 text-sm min-[840px]:text-base rounded-full ease-in-out duration-150 transition border border-[rgb(150,150,150)] hover:border-[rgb(80,80,80)] active:border-[rgb(150,150,150)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.16)]",
-                  { "cursor-context-menu opacity-50": isPending }
-                )}
-              >
-                {isPending ? <SpinnerGray size={28} /> : "Add to Cart"}
-              </button>
-              <div className="w-full h-[44px] min-[840px]:h-12 relative rounded-full">
-                <button className="peer inline-block text-center align-middle h-[44px] min-[840px]:h-12 w-full text-sm min-[840px]:text-base border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-300 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
-                  Yes, Let's Upgrade
-                </button>
-                {!barIsHidden && (
-                  <div className="peer-hover:block hidden absolute top-[58px] -right-3 py-[18px] px-6 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:right-20 min-[840px]:before:right-24">
-                    {upsell && upsell.products.length > 0 && (
-                      <div className="w-max rounded-md pb-[10px] bg-white">
-                        <div className="w-full">
-                          <div>
-                            <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
-                              UPGRADE MY ORDER
-                            </h2>
-                            <div className="mt-1 text-center font-medium text-amber-dimmed">
-                              {upsell.pricing.salePrice
-                                ? `$${formatThousands(
-                                    Number(upsell.pricing.salePrice)
-                                  )} (${
-                                    upsell.pricing.discountPercentage
-                                  }% Off)`
-                                : `$${formatThousands(
-                                    Number(upsell.pricing.basePrice)
-                                  )} today`}
-                            </div>
-                          </div>
-                          <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
-                            <Image
-                              src={upsell.mainImage}
-                              alt="Upgrade order"
-                              width={240}
-                              height={240}
-                              priority
-                            />
-                          </div>
-                          <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
-                            <ul className="*:flex *:justify-between">
-                              {upsell.products.map((product) => (
-                                <li key={product.id}>
-                                  <p className="text-gray">{product.name}</p>
-                                  <p>
-                                    <span
-                                      className={`${
-                                        upsell.pricing.salePrice > 0 &&
-                                        upsell.pricing.salePrice <
-                                          upsell.pricing.basePrice
-                                          ? "line-through text-gray"
-                                          : "text-gray"
-                                      }`}
-                                    >
-                                      $
-                                      {formatThousands(
-                                        Number(product.basePrice)
-                                      )}
-                                    </span>
-                                  </p>
-                                </li>
-                              ))}
-                              {upsell.pricing.salePrice > 0 &&
-                                upsell.pricing.salePrice <
-                                  upsell.pricing.basePrice && (
-                                  <li className="mt-2 flex items-center rounded font-semibold">
-                                    <p className="mx-auto">
-                                      You Save $
-                                      {formatThousands(
-                                        Number(upsell.pricing.basePrice) -
-                                          Number(upsell.pricing.salePrice)
-                                      )}
-                                    </p>
-                                  </li>
-                                )}
-                            </ul>
-                          </div>
+          {!isInCart && (
+            <button
+              onClick={handleAddToCart}
+              disabled={isPending}
+              className={clsx(
+                "font-semibold w-full h-[44px] min-[840px]:h-12 text-sm min-[840px]:text-base rounded-full ease-in-out duration-150 transition border border-[rgb(150,150,150)] hover:border-[rgb(80,80,80)] active:border-[rgb(150,150,150)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.16)]",
+                { "cursor-context-menu opacity-50": isPending }
+              )}
+            >
+              {isPending ? <SpinnerGray size={28} /> : "Add to Cart"}
+            </button>
+          )}
+          <div className="w-full h-[44px] min-[840px]:h-12 relative rounded-full">
+            <button className="peer inline-block text-center align-middle h-[44px] min-[840px]:h-12 w-full text-sm min-[840px]:text-base border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-300 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
+              Yes, Let's Upgrade
+            </button>
+            {!barIsHidden && (
+              <div className="peer-hover:block hidden absolute top-[58px] -right-3 py-[18px] px-6 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:right-20 min-[840px]:before:right-24">
+                {upsell && upsell.products.length > 0 && (
+                  <div className="w-max rounded-md pb-[10px] bg-white">
+                    <div className="w-full">
+                      <div>
+                        <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                          UPGRADE MY ORDER
+                        </h2>
+                        <div className="mt-1 text-center font-medium text-amber-dimmed">
+                          {upsell.pricing.salePrice
+                            ? `$${formatThousands(
+                                Number(upsell.pricing.salePrice)
+                              )} (${upsell.pricing.discountPercentage}% Off)`
+                            : `$${formatThousands(
+                                Number(upsell.pricing.basePrice)
+                              )} today`}
                         </div>
                       </div>
-                    )}
+                      <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
+                        <Image
+                          src={upsell.mainImage}
+                          alt="Upgrade order"
+                          width={240}
+                          height={240}
+                          priority
+                        />
+                      </div>
+                      <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
+                        <ul className="*:flex *:justify-between">
+                          {upsell.products.map((product) => (
+                            <li key={product.id}>
+                              <p className="text-gray">{product.name}</p>
+                              <p>
+                                <span
+                                  className={`${
+                                    upsell.pricing.salePrice > 0 &&
+                                    upsell.pricing.salePrice <
+                                      upsell.pricing.basePrice
+                                      ? "line-through text-gray"
+                                      : "text-gray"
+                                  }`}
+                                >
+                                  ${formatThousands(Number(product.basePrice))}
+                                </span>
+                              </p>
+                            </li>
+                          ))}
+                          {upsell.pricing.salePrice > 0 &&
+                            upsell.pricing.salePrice <
+                              upsell.pricing.basePrice && (
+                              <li className="mt-2 flex items-center rounded font-semibold">
+                                <p className="mx-auto">
+                                  You Save $
+                                  {formatThousands(
+                                    Number(upsell.pricing.basePrice) -
+                                      Number(upsell.pricing.salePrice)
+                                  )}
+                                </p>
+                              </li>
+                            )}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
