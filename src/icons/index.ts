@@ -17,6 +17,7 @@ import {
 } from "react-icons/hi";
 import { HiArrowUpRight } from "react-icons/hi2";
 import { IoCloseOutline } from "react-icons/io5";
+import { AiOutlineDelete } from "react-icons/ai";
 
 export const CloseIcon = HiX;
 export const CloseIconThin = IoCloseOutline;
@@ -26,6 +27,7 @@ export const ChevronLeftIcon = TbChevronLeft;
 export const ChevronRightIcon = TbChevronRight;
 export const ChevronDownIcon = TbChevronDown;
 export const CheckmarkIcon = HiCheck;
+export const TrashIcon = AiOutlineDelete;
 export const StarIcon = HiOutlineStar;
 export const HamburgerMenuIcon = HiOutlineMenu;
 export const ArrowLeftIcon = HiArrowLeft;

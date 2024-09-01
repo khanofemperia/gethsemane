@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import StickyBar from "./Product/StickyBar";
 import Options from "@/components/website/Product/Options";
 import Image from "next/image";
-import { CheckmarkIcon, ChevronRightIcon } from "@/icons";
+import { CheckmarkIcon, ChevronRightIcon, TrashIcon } from "@/icons";
 
 type UpsellProductType = {
   id: string;
@@ -124,7 +124,7 @@ export function ProductDetailsWrapper({
       <div className="w-[400px] h-full sticky top-0 border-l [background:linear-gradient(90deg,hsla(47,92%,95%,1)_0%,hsla(0,0%,100%,1)_100%)]">
         <div className="p-5 flex flex-col gap-2">
           <div className="flex gap-2 items-center">
-            <div className="h-[72px] w-[72px] overflow-hidden">
+            <div className="h-[72px] w-[72px] relative overflow-hidden">
               <Image
                 src="/images/sample/blue-bag.png"
                 alt="Shopping cart"
@@ -132,6 +132,9 @@ export function ProductDetailsWrapper({
                 height={72}
                 priority
               />
+              <span className="border border-white absolute top-[2px] right-2 min-w-[21px] w-max h-[21px] px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
+                5
+              </span>
             </div>
             <div className="h-max flex flex-col">
               <div className="h-max flex gap-[6px] text-xl">
@@ -144,9 +147,15 @@ export function ProductDetailsWrapper({
               </div>
             </div>
           </div>
-          <div>
-            <button className="flex items-center justify-center w-[300px] rounded-full cursor-pointer border border-[#b27100] text-white text-sm font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:text-base min-[896px]:h-12">
-              Go to cart
+          <div className="flex flex-col gap-2 w-[300px]">
+            <button className="flex items-center justify-center w-full rounded-full cursor-pointer text-white text-sm font-semibold h-[44px] bg-[#ffc439] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:text-base min-[896px]:h-12">
+              <Image
+                src="/images/sample/paypal.svg"
+                alt="PayPal"
+                width={72}
+                height={72}
+                priority
+              />
             </button>
           </div>
           <div className="mt-6">
@@ -172,11 +181,16 @@ export function ProductDetailsWrapper({
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <p className="text-sm line-clamp-1">
-                      Low High Hem Mock Neck Sweater, Elegant Long Sleeve
-                      Sweater For Fall & Winter, Women's Clothing
-                    </p>
-                    <button className="w-max px-2 rounded-full flex border border-[#c5c3c0] text-sm">
+                    <div className="h-6 flex items-center justify-between gap-1">
+                      <p className="text-sm line-clamp-1">
+                        Low High Hem Mock N e ck Sweater, Elegant Long Sleeve
+                        Sweater For Fall & Winter, Women's Clothing
+                      </p>
+                      <button className="group min-w-8 max-w-8 min-h-8 max-h-8 rounded-full flex items-center justify-center ease-in-out duration-300 transition hover:bg-lightgray">
+                        <TrashIcon className="fill-gray group-hover:fill-black" />
+                      </button>
+                    </div>
+                    <button className="w-max px-2 rounded-full flex border border-[#c5c3c0] text-sm ease-in-out duration-300 transition hover:border-[#76726c]">
                       <span>Sky Blue / M</span>
                       <ChevronRightIcon className="-mr-[7px]" size={20} />
                     </button>
@@ -184,9 +198,6 @@ export function ProductDetailsWrapper({
                       <span className="font-bold">$12.99</span>
                       <span className="text-xs text-gray line-through mt-[2px]">
                         $36.99
-                      </span>
-                      <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                        -65%
                       </span>
                     </div>
                   </div>

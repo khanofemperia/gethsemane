@@ -163,7 +163,7 @@ export default async function ProductDetails({
               >
                 <CartIcon size={26} />
                 {itemsInCart > 0 && (
-                  <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
+                  <span className="border border-white absolute top-[4px] left-[30px] min-w-[21px] w-max h-[21px] px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
                     {itemsInCart}
                   </span>
                 )}
