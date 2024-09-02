@@ -106,6 +106,8 @@ export default async function ProductDetails({
   const inCart = productsInCart.length > 0;
   const cartProducts = productsInCart;
 
+  // nbNB
+
   return (
     <>
       <ProductDetailsWrapper
@@ -197,19 +199,21 @@ export default async function ProductDetails({
                           __html: highlights.headline || "",
                         }}
                       />
-                      <ul className="text-sm list-inside *:leading-[22px]">
+                      <ul className="text-sm list-inside *:leading-5">
                         {highlights.keyPoints
                           .slice()
                           .sort((a, b) => a.index - b.index)
                           .map((point) => (
                             <li
                               key={point.index}
-                              className="flex items-start gap-2 mb-[7px] last:mb-0"
+                              className="flex items-start gap-1 mb-2 last:mb-0"
                             >
-                              <CheckmarkIcon
-                                className="fill-green mt-[1px] -ml-[1px]"
-                                size={19}
-                              />
+                              <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
+                                <CheckmarkIcon
+                                  className="fill-green -ml-1"
+                                  size={20}
+                                />
+                              </div>
                               <span>{point.text}</span>
                             </li>
                           ))}
@@ -330,12 +334,13 @@ export default async function ProductDetails({
               </div>
               <div className="h-[72px] pt-2 pb-5 px-[6px] min-[350px]:px-2 bg-white">
                 <div className="max-w-[580px] mx-auto flex gap-[6px] min-[350px]:gap-2">
-                  <button className="leading-5 text-[13px] min-[340px]:text-sm font-semibold w-full h-[44px] rounded-full ease-in-out duration-150 transition border border-[rgb(150,150,150)] hover:border-[rgb(80,80,80)] active:border-[rgb(150,150,150)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.16)]">
-                    Add to Cart
-                  </button>
-                  <button className="leading-5 text-[13px] min-[340px]:text-sm inline-block text-center align-middle h-[44px] w-full border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-100 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
-                    Yes, Let's Upgrade
-                  </button>
+                  <CartAndUpgradeButtons
+                    productId={product.id}
+                    inCart={inCart}
+                    cartProducts={cartProducts}
+                    hasColor={hasColor}
+                    hasSize={hasSize}
+                  />
                 </div>
               </div>
             </div>
@@ -357,19 +362,21 @@ export default async function ProductDetails({
                             __html: highlights.headline || "",
                           }}
                         />
-                        <ul className="text-sm list-inside *:leading-[22px]">
+                        <ul className="text-sm list-inside *:leading-5">
                           {highlights.keyPoints
                             .slice()
                             .sort((a, b) => a.index - b.index)
                             .map((point) => (
                               <li
                                 key={point.index}
-                                className="flex items-start gap-2 mb-[7px] last:mb-0"
+                                className="flex items-start gap-1 mb-2 last:mb-0"
                               >
-                                <CheckmarkIcon
-                                  className="fill-green mt-[1px] -ml-[1px]"
-                                  size={19}
-                                />
+                                <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
+                                  <CheckmarkIcon
+                                    className="fill-green -ml-1"
+                                    size={20}
+                                  />
+                                </div>
                                 <span>{point.text}</span>
                               </li>
                             ))}

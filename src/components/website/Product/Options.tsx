@@ -6,6 +6,8 @@ import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { useEffect, useState } from "react";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { InCartIndicator } from "./InCartIndicator";
+import clsx from "clsx";
+import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
 
 type ProductColorsType = {
   colors: Array<{
@@ -259,8 +261,15 @@ export default function ProductOptions({
     return "";
   };
 
+  const isInCartIndicator = true;
+
   return (
-    <div className="dropdown-container w-max h-8 rounded-full relative flex gap-3 items-center">
+    <div
+      className={clsx(
+        "dropdown-container w-max h-8 rounded-full relative flex gap-3 items-center",
+        { "h-max flex-col items-start": isInCartIndicator }
+      )}
+    >
       <div className="relative">
         <button
           onClick={() => setDropdownVisible((prev) => !prev)}
@@ -286,7 +295,13 @@ export default function ProductOptions({
           </div>
         )}
       </div>
-      {isInCart && !isDropdownVisible && <InCartIndicator />}
+      {isInCart &&
+        !isDropdownVisible &&
+        (isInCartIndicator ? (
+          <InCartIndicator />
+        ) : (
+          <StickyBarInCartIndicator />
+        ))}
     </div>
   );
 }
