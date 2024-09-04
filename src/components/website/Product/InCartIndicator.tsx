@@ -13,7 +13,7 @@ export function InCartIndicator() {
     //     </Link>
     //   </div>
     // </div>
-    <div className="w-max relative px-4 py-[14px] rounded shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tr-[2px] before:rotate-45 before:absolute before:-top-2 md:before:top-1/2 md:before:-translate-y-1/2 before:left-1/2 md:before:-left-[7px] before:-translate-x-1/2 md:before:translate-x-0 before:border-l before:border-t md:before:border-t-0 md:before:border-b before:border-[#d9d9d9]">
+    <div className="w-max relative px-4 py-[14px] rounded shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tr-[2px] before:rotate-45 before:absolute before:-top-2 md:before:top-1/2 md:before:-translate-y-1/2 before:left-14 md:before:-left-[7px] before:border-l before:border-t md:before:border-t-0 md:before:border-b before:border-[#d9d9d9]">
       <div className="w-full h-full flex items-center justify-between gap-4">
         <span className="font-bold">In cart</span>
         <Link
