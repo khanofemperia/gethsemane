@@ -266,8 +266,8 @@ export default function ProductOptions({
   return (
     <div
       className={clsx(
-        "dropdown-container w-max h-8 rounded-full relative flex gap-3 items-center",
-        { "h-max flex-col items-start": isInCartIndicator }
+        "dropdown-container w-max h-max rounded-full relative flex flex-col gap-3 items-start",
+        { "md:h-8 md:flex-row md:items-center": isInCartIndicator }
       )}
     >
       <div className="relative">
