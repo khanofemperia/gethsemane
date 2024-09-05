@@ -129,6 +129,7 @@ export default function ProductOptions({
   productInfo,
   inCart,
   cartProducts,
+  isStickyBarInCartIndicator,
 }: {
   productInfo: {
     id: string;
@@ -156,6 +157,7 @@ export default function ProductOptions({
     color: string;
     size: string;
   }>;
+  isStickyBarInCartIndicator: boolean;
 }) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [isInCart, setIsInCart] = useState<boolean>(false);
@@ -261,13 +263,15 @@ export default function ProductOptions({
     return "";
   };
 
-  const isInCartIndicator = true;
-
   return (
     <div
       className={clsx(
-        "dropdown-container w-max h-max rounded-full relative flex flex-col gap-3 items-start",
-        { "lg:h-8 lg:flex-row lg:items-center": isInCartIndicator }
+        "dropdown-container w-max rounded-full relative",
+        {
+          "h-max flex flex-col gap-3 items-start lg:h-8 lg:flex-row lg:items-center":
+            !isStickyBarInCartIndicator,
+        },
+        { "h-8 flex gap-3 items-center": isStickyBarInCartIndicator }
       )}
     >
       <div className="relative">
@@ -297,10 +301,10 @@ export default function ProductOptions({
       </div>
       {isInCart &&
         !isDropdownVisible &&
-        (isInCartIndicator ? (
-          <InCartIndicator />
-        ) : (
+        (isStickyBarInCartIndicator ? (
           <StickyBarInCartIndicator />
+        ) : (
+          <InCartIndicator />
         ))}
     </div>
   );

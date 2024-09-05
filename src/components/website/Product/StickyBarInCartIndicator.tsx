@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export function StickyBarInCartIndicator() {
   return (
-    <div className="w-max relative px-4 py-[14px] rounded shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tr-[2px] before:rotate-45 before:absolute before:-top-2 before:left-1/2 before:-translate-x-1/2 before:border-l before:border-t before:border-[#d9d9d9]">
-      <div className="w-full h-full flex items-center justify-between gap-4">
+    <div className="w-max relative px-[10px] pt-1 pb-[10px] min-[860px]:px-4 min-[860px]:py-[14px] rounded shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tr-[2px] before:rotate-45 before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-[7px] before:border-l before:border-b before:border-[#d9d9d9]">
+      <div className="w-full h-full flex flex-col min-[860px]:flex-row justify-between gap-1 min-[860px]:gap-4">
         <span className="font-bold">In cart</span>
         <Link
           href="/cart"

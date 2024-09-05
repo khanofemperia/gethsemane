@@ -106,8 +106,6 @@ export default async function ProductDetails({
   const inCart = productsInCart.length > 0;
   const cartProducts = productsInCart;
 
-  // nbNB
-
   return (
     <>
       <ProductDetailsWrapper
@@ -249,6 +247,7 @@ export default async function ProductDetails({
                         }}
                         inCart={inCart}
                         cartProducts={cartProducts}
+                        isStickyBarInCartIndicator={false}
                       />
                     </div>
                   </div>
@@ -412,6 +411,7 @@ export default async function ProductDetails({
                           }}
                           inCart={inCart}
                           cartProducts={cartProducts}
+                          isStickyBarInCartIndicator={false}
                         />
                       </div>
                     </div>

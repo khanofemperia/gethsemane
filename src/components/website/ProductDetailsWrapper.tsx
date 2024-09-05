@@ -109,6 +109,7 @@ export function ProductDetailsWrapper({
             inCart={inCart}
             cartProducts={cartProducts}
             productInfo={productInfo}
+            isStickyBarInCartIndicator={true}
           />
         }
         scrollPosition={scrollPosition}
