@@ -147,7 +147,8 @@ type CartType = {
   id: string;
   device_identifier: string;
   products: Array<{
-    id: string;
+    originalProductId: string;
+    variantId: string;
     size: string;
     color: string;
   }>;

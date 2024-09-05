@@ -41,7 +41,9 @@ export async function AddToCartAction({
 
       const newCartData = {
         device_identifier: newDeviceIdentifier,
-        products: [{ id, size, color }],
+        products: [
+          { baseProductId: id, size, color, variantId: generateId() },
+        ],
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
@@ -88,8 +90,10 @@ export async function AddToCartAction({
       const existingProducts = snapshot.docs[0].data().products;
 
       const productExists = existingProducts.some(
-        (product: { id: string; size: string; color: string }) =>
-          product.id === id && product.size === size && product.color === color
+        (product: { baseProductId: string; size: string; color: string }) =>
+          product.baseProductId === id &&
+          product.size === size &&
+          product.color === color
       );
 
       if (productExists) {
@@ -100,7 +104,12 @@ export async function AddToCartAction({
         };
       } else {
         // Product not in cart, add it to the existing products
-        existingProducts.push({ id, size, color });
+        existingProducts.push({
+          baseProductId: id,
+          size,
+          color,
+          variantId: generateId(),
+        });
 
         await runTransaction(database, async (transaction) => {
           transaction.update(cartDoc, {

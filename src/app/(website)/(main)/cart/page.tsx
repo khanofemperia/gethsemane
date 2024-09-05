@@ -1,6 +1,14 @@
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
-import { getCart, getDiscoveryProducts } from "@/lib/getData";
+import {
+  getCart,
+  getDiscoveryProducts,
+  getProducts,
+  getProductsByIds,
+} from "@/lib/getData";
 import { cookies } from "next/headers";
+import Image from "next/image";
+import { PiShieldCheckBold } from "react-icons/pi";
+import { TbLock, TbTruck } from "react-icons/tb";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -44,7 +52,8 @@ type CartType = {
   id: string;
   device_identifier: string;
   products: Array<{
-    id: string;
+    baseProductId: string;
+    variantId: string;
     size: string;
     color: string;
   }>;
@@ -54,68 +63,62 @@ export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
   const cart = await getCart(deviceIdentifier);
+
+  const productIds = cart
+    ? cart.products.map((product) => product.baseProductId)
+    : [];
+
+  const baseProducts = (await getProductsByIds({
+    ids: productIds,
+    fields: ["id", "name", "slug", "pricing", "images"],
+    visibility: "PUBLISHED",
+  })) as ProductType[];
+
+  const cartProducts = cart?.products
+    .map((cartProduct) => {
+      const baseProduct = baseProducts.find(
+        (product) => product.id === cartProduct.baseProductId
+      );
+
+      return baseProduct
+        ? {
+            baseProductId: baseProduct.id,
+            name: baseProduct.name,
+            slug: baseProduct.slug,
+            pricing: baseProduct.pricing,
+            images: baseProduct.images,
+            variantId: cartProduct.variantId,
+            size: cartProduct.size,
+            color: cartProduct.color,
+          }
+        : null;
+    })
+    .filter((product) => product !== null);
+
   const discoveryProducts = await getDiscoveryProducts({
     limit: 10,
   });
+
+  console.log(cartProducts);
 
   return (
     <div className="max-w-[968px] mx-auto mt-[68px]">
       <div className="w-[calc(100%-20px)] mx-auto">
         <div className="flex flex-col gap-2 items-center pt-8 pb-12">
-          {/* <CartIcon size={60} /> */}
-          <div>
-            <svg
-              height={80}
-              className="text-neutral-300"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 256 256"
-            >
-              <rect fill="none" height="256" width="256" />
-              <path
-                d="M184,184H69.8L41.9,30.6A8,8,0,0,0,34.1,24H16"
-                fill="none"
-                stroke="#d4d4d4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="8"
-              />
-              <circle
-                cx="80"
-                cy="204"
-                fill="none"
-                r="20"
-                stroke="#d4d4d4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="8"
-              />
-              <circle
-                cx="184"
-                cy="204"
-                fill="none"
-                r="20"
-                stroke="#d4d4d4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="8"
-              />
-              <path
-                d="M62.5,144H188.1a15.9,15.9,0,0,0,15.7-13.1L216,64H48"
-                fill="none"
-                stroke="#d4d4d4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="8"
-              />
-            </svg>
-          </div>
+          <Image
+            src="/icons/cart-thin.svg"
+            alt="Cart"
+            width={80}
+            height={80}
+            priority={true}
+          />
           <p className="font-medium">Your Cart is Empty</p>
         </div>
-        {/* <div className="relative flex flex-row gap-10">
+        <div className="relative flex flex-row gap-10">
           <div className="w-[580px] h-max">
             <div className="pt-[40px] font-semibold">Shopping cart</div>
             <div className="mt-4 flex flex-wrap gap-2">
-              {shoppingCart.products.map(
+              {/* {cartProducts.products.map(
                 ({ id, poster, name, price, color, size }, index) => (
                   <div
                     key={index}
@@ -150,7 +153,7 @@ export default async function Cart() {
                     </button>
                   </div>
                 )
-              )}
+              )} */}
             </div>
           </div>
           <div className="order-last w-[340px] min-w-[340px] sticky top-[68px] pt-[42px] h-max flex flex-col gap-4">
@@ -233,7 +236,7 @@ export default async function Cart() {
               </button>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
       <DiscoveryProducts
         heading="Add These to Your Cart"
