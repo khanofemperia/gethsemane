@@ -1,12 +1,16 @@
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
+import { CheckmarkIcon } from "@/icons";
 import {
   getCart,
   getDiscoveryProducts,
   getProducts,
   getProductsByIds,
 } from "@/lib/getData";
+import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
 import Image from "next/image";
+import { AiOutlineDelete } from "react-icons/ai";
+import { HiMiniChevronRight } from "react-icons/hi2";
 import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
 
@@ -99,12 +103,10 @@ export default async function Cart() {
     limit: 10,
   });
 
-  console.log(cartProducts);
-
   return (
-    <div className="max-w-[968px] mx-auto mt-[68px]">
+    <div className="max-w-[968px] mx-auto mt-16 flex flex-col gap-10">
       <div className="w-[calc(100%-20px)] mx-auto">
-        <div className="flex flex-col gap-2 items-center pt-8 pb-12">
+        {/* <div className="flex flex-col gap-2 items-center pt-8 pb-12">
           <Image
             src="/icons/cart-thin.svg"
             alt="Cart"
@@ -113,50 +115,35 @@ export default async function Cart() {
             priority={true}
           />
           <p className="font-medium">Your Cart is Empty</p>
-        </div>
+        </div> */}
         <div className="relative flex flex-row gap-10">
-          <div className="w-[580px] h-max">
-            <div className="pt-[40px] font-semibold">Shopping cart</div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {/* {cartProducts.products.map(
-                ({ id, poster, name, price, color, size }, index) => (
-                  <div
-                    key={index}
-                    className={`${style.product} w-full h-[200px] p-[10px] flex gap-4 rounded-2xl select-none relative ease-in-out hover:ease-out hover:duration-300 hover:before:content-[''] hover:before:absolute hover:before:top-0 hover:before:bottom-0 hover:before:left-0 hover:before:right-0 hover:before:rounded-2xl hover:before:shadow-custom3`}
-                  >
-                    <div className="min-w-[180px] w-[180px] h-[180px] rounded-xl flex items-center justify-center overflow-hidden">
-                      <Image
-                        src={poster}
-                        alt={name}
-                        width={180}
-                        height={180}
-                        priority={true}
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <div className="text-[0.938rem] leading-5 line-clamp-1 w-60">
-                        {name}
-                      </div>
-                      <div className="h-[30px] w-max px-3 font-medium text-base border rounded-full flex items-center justify-center">
-                        <span>
-                          {color}/{size}
-                        </span>
-                        <HiMiniChevronRight className="-mr-2" size={20} />
-                      </div>
-                      <div className="font-medium text-black">${price}</div>
-                    </div>
-                    <button className="w-[30px] h-[30px] rounded-full hidden absolute right-[6px] top-[6px] transition duration-300 ease-in-out hover:bg-gray2">
-                      <AiOutlineDelete
-                        className="fill-text-gray absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                        size={20}
-                      />
-                    </button>
+          <div className="w-[580px] h-max pt-8">
+            <div className="flex flex-col gap-5">
+              <div className="flex gap-5">
+                <div className="flex items-center">
+                  <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                    <CheckmarkIcon className="fill-white" size={16} />
                   </div>
-                )
-              )} */}
+                </div>
+                <span className="font-semibold">Select all (3)</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                {(cartProducts || []).map(
+                  ({ variantId, images, name, pricing, color, size }) => (
+                    <div key={variantId} className="flex gap-5">
+                      <div className="flex items-center">
+                        <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                          <CheckmarkIcon className="fill-white" size={16} />
+                        </div>
+                      </div>
+                      <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden flex items-center justify-center bg-slate-400"></div>
+                    </div>
+                  )
+                )}
+              </div>
             </div>
           </div>
-          <div className="order-last w-[340px] min-w-[340px] sticky top-[68px] pt-[42px] h-max flex flex-col gap-4">
+          <div className="w-[340px] min-w-[340px]S sticky top-16 pt-8 h-max flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <div className="flex gap-[6px] items-center">
                 <TbLock className="stroke-green-600 -ml-[1px]" size={20} />
@@ -167,12 +154,14 @@ export default async function Cart() {
               <div className="flex gap-[6px] items-center">
                 <PiShieldCheckBold className="fill-green-600" size={18} />
                 <span className="text-sm text-gray ml-[1px]">
-                  Safe Payment Methods
+                  Safe and Trusted Payment Methods
                 </span>
               </div>
               <div className="flex gap-[6px] items-center">
                 <TbTruck className="stroke-green-600" size={20} />
-                <span className="text-sm text-gray">Free Shipping</span>
+                <span className="text-sm text-gray">
+                  Free Shipping Just for You
+                </span>
               </div>
             </div>
             <div className="mb-2 flex items-center gap-1">
@@ -227,14 +216,9 @@ export default async function Cart() {
                 />
               </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <button className="w-full h-12 italic font-extrabold text-xl bg-sky-700 text-white rounded-full flex items-center justify-center">
-                PayPal
-              </button>
-              <button className="w-full h-12 bg-black text-white rounded-full flex items-center justify-center">
-                Debit or Credit Card
-              </button>
-            </div>
+            <button className="w-full h-12 italic font-extrabold text-xl bg-sky-700 text-white rounded-full flex items-center justify-center">
+              PayPal
+            </button>
           </div>
         </div>
       </div>
