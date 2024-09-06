@@ -1,5 +1,5 @@
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
-import { CheckmarkIcon } from "@/icons";
+import { CheckmarkIcon, ChevronRightIcon, TrashIcon } from "@/icons";
 import {
   getCart,
   getDiscoveryProducts,
@@ -9,6 +9,7 @@ import {
 import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
 import Image from "next/image";
+import Link from "next/link";
 import { AiOutlineDelete } from "react-icons/ai";
 import { HiMiniChevronRight } from "react-icons/hi2";
 import { PiShieldCheckBold } from "react-icons/pi";
@@ -67,6 +68,7 @@ export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
   const cart = await getCart(deviceIdentifier);
+  const discoveryProducts = await getDiscoveryProducts({ limit: 10 });
 
   const productIds = cart
     ? cart.products.map((product) => product.baseProductId)
@@ -74,7 +76,7 @@ export default async function Cart() {
 
   const baseProducts = (await getProductsByIds({
     ids: productIds,
-    fields: ["id", "name", "slug", "pricing", "images"],
+    fields: ["id", "name", "slug", "pricing", "images", "options"],
     visibility: "PUBLISHED",
   })) as ProductType[];
 
@@ -84,13 +86,17 @@ export default async function Cart() {
         (product) => product.id === cartProduct.baseProductId
       );
 
+      const colorImage = baseProduct?.options?.colors.find(
+        (colorOption) => colorOption.name === cartProduct.color
+      )?.image;
+
       return baseProduct
         ? {
             baseProductId: baseProduct.id,
             name: baseProduct.name,
             slug: baseProduct.slug,
             pricing: baseProduct.pricing,
-            images: baseProduct.images,
+            mainImage: colorImage || baseProduct.images.main,
             variantId: cartProduct.variantId,
             size: cartProduct.size,
             color: cartProduct.color,
@@ -98,10 +104,6 @@ export default async function Cart() {
         : null;
     })
     .filter((product) => product !== null);
-
-  const discoveryProducts = await getDiscoveryProducts({
-    limit: 10,
-  });
 
   return (
     <div className="max-w-[968px] mx-auto mt-16 flex flex-col gap-10">
@@ -129,14 +131,67 @@ export default async function Cart() {
               </div>
               <div className="flex flex-col gap-2">
                 {(cartProducts || []).map(
-                  ({ variantId, images, name, pricing, color, size }) => (
+                  ({
+                    baseProductId,
+                    variantId,
+                    name,
+                    slug,
+                    pricing,
+                    mainImage,
+                    color,
+                    size,
+                  }) => (
                     <div key={variantId} className="flex gap-5">
                       <div className="flex items-center">
                         <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
                           <CheckmarkIcon className="fill-white" size={16} />
                         </div>
                       </div>
-                      <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden flex items-center justify-center bg-slate-400"></div>
+                      <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden flex items-center justify-center">
+                        <Image
+                          src={mainImage}
+                          alt={name}
+                          width={128}
+                          height={128}
+                          priority
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <div className="h-5 flex items-center gap-3">
+                          <Link
+                            href={`${slug}-${baseProductId}`}
+                            className="text-sm line-clamp-1"
+                          >
+                            {name}
+                          </Link>
+                          <button className="min-w-8 max-w-8 min-h-8 max-h-8 rounded-full flex items-center justify-center ease-in-out duration-300 transition hover:bg-lightgray">
+                            <TrashIcon size={18} className="fill-gray" />
+                          </button>
+                        </div>
+                        <button className="w-max h-6 px-3 rounded-full text-sm flex items-center transition duration-200 ease-in-out border hover:border-[#8b95a6]">
+                          {color} / {size}
+                          <ChevronRightIcon size={18} className="-mr-[7px]" />
+                        </button>
+                        <div className="w-max flex items-center justify-center">
+                          {Number(pricing.salePrice) ? (
+                            <div className="flex items-center gap-[6px]">
+                              <span className="font-medium">
+                                ${formatThousands(Number(pricing.salePrice))}
+                              </span>
+                              <span className="text-xs text-gray line-through mt-[2px]">
+                                ${formatThousands(Number(pricing.basePrice))}
+                              </span>
+                              <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
+                                -{pricing.discountPercentage}%
+                              </span>
+                            </div>
+                          ) : (
+                            <p className="font-medium">
+                              ${formatThousands(Number(pricing.basePrice))}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   )
                 )}
