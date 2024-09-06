@@ -146,8 +146,8 @@ export default async function Cart() {
               />
             </div>
           ) : (
-            <div className="relative flex flex-row gap-10">
-              <div className="w-[580px] h-max pt-8">
+            <div className="relative flex flex-row gap-10 pt-8">
+              <div className="min-w-[580px] max-w-[580px] h-max">
                 <div className="flex flex-col gap-5">
                   <div className="flex gap-5">
                     <div className="flex items-center">
@@ -185,7 +185,7 @@ export default async function Cart() {
                             />
                           </div>
                           <div className="flex flex-col gap-2">
-                            <div className="h-5 flex items-center gap-3">
+                            <div className="h-5 flex items-center gap-5">
                               <Link
                                 href={`${slug}-${baseProductId}`}
                                 className="text-sm line-clamp-1"
@@ -231,7 +231,7 @@ export default async function Cart() {
                   </div>
                 </div>
               </div>
-              <div className="w-[340px] min-w-[340px]S sticky top-16 pt-8 h-max flex flex-col gap-4">
+              <div className="w-[340px] min-w-[340px]S sticky top-16 h-max flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-[6px] items-center">
                     <TbLock className="stroke-green -ml-[1px]" size={20} />
@@ -248,7 +248,7 @@ export default async function Cart() {
                   <div className="flex gap-[6px] items-center">
                     <TbTruck className="stroke-green" size={20} />
                     <span className="text-sm text-gray">
-                      Free Shipping Just for You
+                      Free Shipping for You
                     </span>
                   </div>
                 </div>
