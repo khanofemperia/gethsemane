@@ -121,10 +121,10 @@ export default async function Cart() {
           </Link>
           <div className="flex items-center gap-[10px] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
             {!cartProducts || cartProducts.length === 0 ? (
-              <h2 className="font-semibold">Your cart is empty</h2>
+              <h2 className="font-semibold text-lg">Your cart is empty</h2>
             ) : (
               <>
-                <h2 className="font-semibold">Cart</h2>
+                <h2 className="font-semibold text-lg">Cart</h2>
                 <span className="font-medium text-sm text-green">
                   Free shipping
                 </span>
@@ -157,7 +157,7 @@ export default async function Cart() {
                     </div>
                     <span className="font-semibold">Select all (3)</span>
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-5">
                     {(cartProducts || []).map(
                       ({
                         baseProductId,
@@ -184,8 +184,8 @@ export default async function Cart() {
                               priority
                             />
                           </div>
-                          <div className="flex flex-col gap-2">
-                            <div className="h-5 flex items-center gap-5">
+                          <div className="w-full flex flex-col gap-1">
+                            <div className="min-w-full h-5 flex items-center justify-between gap-5">
                               <Link
                                 href={`${slug}-${baseProductId}`}
                                 className="text-sm line-clamp-1"
@@ -196,14 +196,10 @@ export default async function Cart() {
                                 <TrashIcon size={18} className="fill-gray" />
                               </button>
                             </div>
-                            <button className="w-max h-6 px-3 rounded-full text-sm flex items-center transition duration-200 ease-in-out border hover:border-[#8b95a6]">
+                            <span className="text-sm text-gray">
                               {color} / {size}
-                              <ChevronRightIcon
-                                size={18}
-                                className="-mr-[7px]"
-                              />
-                            </button>
-                            <div className="w-max flex items-center justify-center">
+                            </span>
+                            <div className="mt-2 w-max flex items-center justify-center">
                               {Number(pricing.salePrice) ? (
                                 <div className="flex items-center gap-[6px]">
                                   <span className="font-medium">
