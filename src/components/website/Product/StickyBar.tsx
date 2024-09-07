@@ -1,6 +1,6 @@
 "use client";
 
-import { AddToCartAction } from "@/actions/add-to-cart";
+import { AddToCartAction } from "@/actions/shopping-cart";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { formatThousands } from "@/lib/utils";
 import { useAlertStore } from "@/zustand/website/alertStore";
@@ -62,20 +62,14 @@ export default function StickyBar({
   scrollPosition,
   hasColor,
   hasSize,
-  inCart,
-  cartProducts,
+  cart,
 }: {
   productInfo: ProductInfoType;
   optionsComponent: JSX.Element;
   scrollPosition: number;
   hasColor: boolean;
   hasSize: boolean;
-  inCart: boolean;
-  cartProducts: Array<{
-    id: string;
-    color: string;
-    size: string;
-  }>;
+  cart: CartType | null;
 }) {
   const [barIsHidden, setBarIsHidden] = useState(true);
   const [isPending, startTransition] = useTransition();
@@ -88,15 +82,14 @@ export default function StickyBar({
 
   useEffect(() => {
     setIsInCart(
-      inCart &&
-        cartProducts.some(
-          ({ id, color, size }) =>
-            id === productInfo.id &&
-            color === selectedColor &&
-            size === selectedSize
-        )
+      cart?.products.some(
+        ({ baseProductId, color, size }) =>
+          baseProductId === productInfo.id &&
+          color === selectedColor &&
+          size === selectedSize
+      ) ?? false
     );
-  }, [inCart, cartProducts, productInfo, selectedColor, selectedSize]);
+  }, [cart, productInfo.id, selectedColor, selectedSize]);
 
   const handleAddToCart = async () => {
     if (hasColor && !selectedColor) {

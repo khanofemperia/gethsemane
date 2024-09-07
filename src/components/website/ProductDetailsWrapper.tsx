@@ -57,19 +57,13 @@ type ProductInfoType = {
 
 export function ProductDetailsWrapper({
   children,
-  inCart,
-  cartProducts,
+  cart,
   hasColor,
   hasSize,
   productInfo,
 }: {
   readonly children: React.ReactNode;
-  inCart: boolean;
-  cartProducts: Array<{
-    id: string;
-    color: string;
-    size: string;
-  }>;
+  cart: CartType | null;
   hasColor: boolean;
   hasSize: boolean;
   productInfo: ProductInfoType;
@@ -106,8 +100,7 @@ export function ProductDetailsWrapper({
         productInfo={productInfo}
         optionsComponent={
           <Options
-            inCart={inCart}
-            cartProducts={cartProducts}
+            cart={cart}
             productInfo={productInfo}
             isStickyBarInCartIndicator={true}
           />
@@ -115,8 +108,7 @@ export function ProductDetailsWrapper({
         scrollPosition={scrollPosition}
         hasColor={hasColor}
         hasSize={hasSize}
-        inCart={inCart}
-        cartProducts={cartProducts}
+        cart={cart}
       />
     </div>
   );

@@ -53,17 +53,11 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
 export function QuickviewButton({
   onClick,
   product,
-  inCart,
-  cartProducts,
+  cart,
 }: {
   onClick?: (event: React.MouseEvent) => void;
   product: ProductWithUpsellType;
-  inCart: boolean;
-  cartProducts: Array<{
-    id: string;
-    color: string;
-    size: string;
-  }>;
+  cart: CartType | null;
 }) {
   const { showOverlay, setSelectedProduct } = useQuickviewStore();
 
@@ -73,7 +67,7 @@ export function QuickviewButton({
       onClick(event);
     }
 
-    setSelectedProduct(product, inCart, cartProducts);
+    setSelectedProduct(product, cart);
     showOverlay();
   };
 
@@ -96,7 +90,7 @@ export function QuickviewButton({
 export function QuickviewOverlay() {
   const { hideOverlay, isVisible } = useQuickviewStore();
 
-  const { inCart, cartProducts, selectedProduct } = useQuickviewStore();
+  const { cart, selectedProduct } = useQuickviewStore();
 
   useEffect(() => {
     if (isVisible) {
@@ -190,8 +184,8 @@ export function QuickviewOverlay() {
                         images: selectedProduct.images,
                         options: selectedProduct.options,
                       }}
-                      inCart={inCart}
-                      cartProducts={cartProducts}
+                      cart={cart}
+                      isStickyBarInCartIndicator={false}
                     />
                   </div>
                 </div>

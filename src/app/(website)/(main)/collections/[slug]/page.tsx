@@ -45,16 +45,6 @@ type CollectionWithProductsAndUpsellsType = Omit<CollectionType, "products"> & {
   products: ProductWithUpsellType[];
 };
 
-type CartType = {
-  id: string;
-  device_identifier: string;
-  products: Array<{
-    id: string;
-    size: string;
-    color: string;
-  }>;
-};
-
 export default async function Collections({
   params,
 }: {
@@ -62,7 +52,7 @@ export default async function Collections({
 }) {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
-  const cart = (await getCart(deviceIdentifier)) as CartType;
+  const cart = await getCart(deviceIdentifier);
 
   const collection = (await getCollectionWithProductsAndUpsells({
     id: params.slug.split("-").pop() as string,

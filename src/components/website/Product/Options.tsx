@@ -127,8 +127,7 @@ function ProductSizeChart({ sizeChart }: { sizeChart: SizeChartType }) {
 
 export default function ProductOptions({
   productInfo,
-  inCart,
-  cartProducts,
+  cart,
   isStickyBarInCartIndicator,
 }: {
   productInfo: {
@@ -151,12 +150,7 @@ export default function ProductOptions({
       sizes: SizeChartType;
     };
   };
-  inCart: boolean;
-  cartProducts: Array<{
-    id: string;
-    color: string;
-    size: string;
-  }>;
+  cart: CartType | null;
   isStickyBarInCartIndicator: boolean;
 }) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -174,15 +168,14 @@ export default function ProductOptions({
 
   useEffect(() => {
     setIsInCart(
-      inCart &&
-        cartProducts.some(
-          ({ id, color, size }) =>
-            id === productInfo.id &&
-            color === selectedColor &&
-            size === selectedSize
-        )
+      cart?.products.some(
+        ({ baseProductId, color, size }) =>
+          baseProductId === productInfo.id &&
+          color === selectedColor &&
+          size === selectedSize
+      ) ?? false
     );
-  }, [inCart, cartProducts, productInfo, selectedColor, selectedSize]);
+  }, [cart, productInfo.id, selectedColor, selectedSize]);
 
   useEffect(() => {
     const handleScroll = () => {

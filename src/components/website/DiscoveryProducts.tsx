@@ -40,17 +40,6 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   };
 };
 
-type CartType = {
-  id: string;
-  device_identifier: string;
-  products: Array<{
-    baseProductId: string;
-    variantId: string;
-    size: string;
-    color: string;
-  }>;
-};
-
 export function DiscoveryProducts({
   heading = "Explore Your Interests",
   products,
@@ -58,7 +47,7 @@ export function DiscoveryProducts({
 }: {
   heading?: string;
   products: ProductWithUpsellType[];
-  cart: CartType;
+  cart: CartType | null;
 }) {
   noStore();
 

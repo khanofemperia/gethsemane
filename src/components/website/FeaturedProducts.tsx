@@ -125,16 +125,6 @@ type UsePrevNextButtonsType = {
   onNextButtonClick: () => void;
 };
 
-type CartType = {
-  id: string;
-  device_identifier: string;
-  products: Array<{
-    id: string;
-    size: string;
-    color: string;
-  }>;
-};
-
 export const usePrevNextButtons = (
   emblaApi: EmblaCarouselType | undefined
 ): UsePrevNextButtonsType => {
@@ -208,7 +198,7 @@ export function FeaturedProducts({
   cart,
 }: {
   collection: EnrichedCollectionType;
-  cart: CartType;
+  cart: CartType | null;
 }) {
   const [emblaRef] = useEmblaCarousel({
     align: "start",

@@ -208,3 +208,14 @@ type ProductType = {
     price: number;
   }>;
 };
+
+type CartType = {
+  id: string;
+  device_identifier: string;
+  products: Array<{
+    baseProductId: string;
+    variantId: string;
+    size: string;
+    color: string;
+  }>;
+};

@@ -41,9 +41,7 @@ export async function AddToCartAction({
 
       const newCartData = {
         device_identifier: newDeviceIdentifier,
-        products: [
-          { baseProductId: id, size, color, variantId: generateId() },
-        ],
+        products: [{ baseProductId: id, size, color, variantId: generateId() }],
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
@@ -129,6 +127,62 @@ export async function AddToCartAction({
     }
   } catch (error) {
     console.error("Error adding product to cart:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Please reload the page and try again",
+    };
+  }
+}
+
+export async function RemoveFromCartAction({
+  variantId,
+}: {
+  variantId: string;
+}) {
+  const deviceIdentifier = cookies().get("device_identifier")?.value;
+
+  if (!deviceIdentifier) {
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Cart not found",
+    };
+  }
+
+  try {
+    const collectionRef = collection(database, "carts");
+    const snapshot = await getDocs(
+      query(collectionRef, where("device_identifier", "==", deviceIdentifier))
+    );
+
+    if (snapshot.empty) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Cart not found",
+      };
+    }
+
+    const cartDoc = snapshot.docs[0].ref;
+    const existingProducts = snapshot.docs[0].data().products;
+
+    const updatedProducts = existingProducts.filter(
+      (product: { variantId: string }) => product.variantId !== variantId
+    );
+
+    await runTransaction(database, async (transaction) => {
+      transaction.update(cartDoc, {
+        products: updatedProducts,
+        updatedAt: serverTimestamp(),
+      });
+    });
+
+    revalidatePath("/cart");
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Item removed from cart",
+    };
+  } catch (error) {
+    console.error("Error removing product from cart:", error);
     return {
       type: AlertMessageType.ERROR,
       message: "Please reload the page and try again",

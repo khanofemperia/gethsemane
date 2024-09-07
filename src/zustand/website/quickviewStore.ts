@@ -39,31 +39,15 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   };
 };
 
-type ProductInCartType = {
-  id: string;
-  color: string;
-  size: string;
-};
-
 type QuickviewStoreType = {
   isVisible: boolean;
   selectedProduct: ProductWithUpsellType | null;
-  inCart: boolean;
-  cartProducts: Array<{
-    id: string;
-    color: string;
-    size: string;
-  }>;
+  cart: CartType | null;
   showOverlay: () => void;
   hideOverlay: () => void;
   setSelectedProduct: (
     product: ProductWithUpsellType,
-    inCart: boolean,
-    cartProducts: Array<{
-      id: string;
-      color: string;
-      size: string;
-    }>
+    cart: CartType | null
   ) => void;
 };
 
@@ -71,19 +55,13 @@ export const useQuickviewStore = createWithEqualityFn<QuickviewStoreType>(
   (set) => ({
     isVisible: false,
     selectedProduct: null,
-    inCart: false,
-    cartProducts: [],
+    cart: null,
     showOverlay: () => set({ isVisible: true }),
     hideOverlay: () => set({ isVisible: false }),
     setSelectedProduct: (
       product: ProductWithUpsellType,
-      inCart: boolean,
-      cartProducts: Array<{
-        id: string;
-        color: string;
-        size: string;
-      }>
-    ) => set({ selectedProduct: product, inCart, cartProducts }),
+      cart: CartType | null
+    ) => set({ selectedProduct: product, cart }),
   }),
   shallow
 );

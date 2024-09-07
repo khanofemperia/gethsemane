@@ -4,26 +4,20 @@ import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { useState, useTransition, useEffect } from "react";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { AddToCartAction } from "@/actions/add-to-cart";
+import { AddToCartAction } from "@/actions/shopping-cart";
 import SpinnerGray from "@/ui/Spinners/Gray";
 import clsx from "clsx";
 
 type CartAndUpgradeButtonsType = {
   productId: string;
-  inCart: boolean;
-  cartProducts: Array<{
-    id: string;
-    color: string;
-    size: string;
-  }>;
+  cart: CartType | null;
   hasColor: boolean;
   hasSize: boolean;
 };
 
 export function CartAndUpgradeButtons({
   productId,
-  inCart,
-  cartProducts,
+  cart,
   hasColor,
   hasSize,
 }: CartAndUpgradeButtonsType) {
@@ -34,14 +28,24 @@ export function CartAndUpgradeButtons({
   const { showAlert } = useAlertStore();
 
   useEffect(() => {
-    setIsInCart(
-      inCart &&
-        cartProducts.some(
-          ({ id, color, size }) =>
-            id === productId && color === selectedColor && size === selectedSize
-        )
+    console.log(
+      cart?.products.some(
+        ({ baseProductId, color, size }) =>
+          baseProductId === productId &&
+          color === selectedColor &&
+          size === selectedSize
+      ) ?? false
     );
-  }, [inCart, cartProducts, productId, selectedColor, selectedSize]);
+
+    setIsInCart(
+      cart?.products.some(
+        ({ baseProductId, color, size }) =>
+          baseProductId === productId &&
+          color === selectedColor &&
+          size === selectedSize
+      ) ?? false
+    );
+  }, [cart, productId, selectedColor, selectedSize]);
 
   const handleAddToCart = async () => {
     if (hasColor && !selectedColor) {

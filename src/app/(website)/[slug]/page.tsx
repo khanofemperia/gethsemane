@@ -78,7 +78,6 @@ export default async function ProductDetails({
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
   const cart = await getCart(deviceIdentifier);
-  const itemsInCart = cart ? cart.products.length : 0;
 
   const product = (await getProductWithUpsell({
     id: params.slug.split("-").pop() as string,
@@ -97,20 +96,10 @@ export default async function ProductDetails({
   const hasColor = product.options.colors.length > 0;
   const hasSize = Object.keys(product.options.sizes).length > 0;
 
-  const productsInCart =
-    cart?.products.filter(
-      (item: { id: string; color: string; size: string }) =>
-        item.id === product.id
-    ) || [];
-
-  const inCart = productsInCart.length > 0;
-  const cartProducts = productsInCart;
-
   return (
     <>
       <ProductDetailsWrapper
-        inCart={inCart}
-        cartProducts={cartProducts}
+        cart={cart}
         hasColor={hasColor}
         hasSize={hasSize}
         productInfo={{
@@ -162,9 +151,9 @@ export default async function ProductDetails({
                 className="relative h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
               >
                 <CartIcon size={26} />
-                {itemsInCart > 0 && (
+                {cart && cart.products.length > 0 && (
                   <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
-                    {itemsInCart}
+                    {cart.products.length}
                   </span>
                 )}
               </Link>
@@ -245,8 +234,7 @@ export default async function ProductDetails({
                           images,
                           options,
                         }}
-                        inCart={inCart}
-                        cartProducts={cartProducts}
+                        cart={cart}
                         isStickyBarInCartIndicator={false}
                       />
                     </div>
@@ -335,8 +323,7 @@ export default async function ProductDetails({
                 <div className="max-w-[580px] mx-auto flex gap-[6px] min-[350px]:gap-2">
                   <CartAndUpgradeButtons
                     productId={product.id}
-                    inCart={inCart}
-                    cartProducts={cartProducts}
+                    cart={cart}
                     hasColor={hasColor}
                     hasSize={hasSize}
                   />
@@ -409,8 +396,7 @@ export default async function ProductDetails({
                             images,
                             options,
                           }}
-                          inCart={inCart}
-                          cartProducts={cartProducts}
+                          cart={cart}
                           isStickyBarInCartIndicator={false}
                         />
                       </div>
@@ -491,8 +477,7 @@ export default async function ProductDetails({
                     <div className="flex gap-2 min-[896px]:gap-3">
                       <CartAndUpgradeButtons
                         productId={product.id}
-                        inCart={inCart}
-                        cartProducts={cartProducts}
+                        cart={cart}
                         hasColor={hasColor}
                         hasSize={hasSize}
                       />

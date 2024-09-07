@@ -41,16 +41,6 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   };
 };
 
-type CartType = {
-  id: string;
-  device_identifier: string;
-  products: Array<{
-    id: string;
-    size: string;
-    color: string;
-  }>;
-};
-
 export default async function Categories({
   params,
 }: {
@@ -58,7 +48,7 @@ export default async function Categories({
 }) {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
-  const cart = (await getCart(deviceIdentifier)) as CartType;
+  const cart = await getCart(deviceIdentifier);
 
   const products = (await getProductsByCategoryWithUpsell({
     category: params.name,

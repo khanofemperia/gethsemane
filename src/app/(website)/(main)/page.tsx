@@ -293,7 +293,7 @@ export default async function Home() {
                       <div key={index}>
                         <FeaturedProducts
                           collection={collection as EnrichedCollectionType}
-                          cart={cart as CartType}
+                          cart={cart}
                         />
                       </div>
                     );
@@ -314,7 +314,7 @@ export default async function Home() {
             })}
           <DiscoveryProducts
             products={discoveryProducts as ProductWithUpsellType[]}
-            cart={cart as CartType}
+            cart={cart}
           />
         </div>
       </div>
