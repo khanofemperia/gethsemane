@@ -132,10 +132,6 @@ export default async function Cart() {
             </div>
           </div>
         </nav>
-        <div className="py-10 flex items-center justify-center">
-          <DashSpinner />
-          <DashSpinner size={50} color="#ff0000" />
-        </div>
         <div className="max-w-[968px] mx-auto flex flex-col gap-10">
           <div className="w-[calc(100%-20px)] mx-auto">
             {!cartProducts || cartProducts.length === 0 ? (
