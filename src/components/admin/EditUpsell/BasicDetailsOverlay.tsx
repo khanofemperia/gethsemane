@@ -4,8 +4,7 @@ import { UpdateUpsellAction } from "@/actions/upsells";
 import AlertMessage from "@/components/shared/AlertMessage";
 import { formatThousands, isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import GraySpinner from "@/ui/Spinners/Gray";
-import WhiteSpinner from "@/ui/Spinners/White";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import {
   ArrowLeftIcon,
@@ -406,7 +405,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                 >
                   {loadingSave ? (
                     <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <WhiteSpinner />
+                      <Spinner color="white" />
                       <span className="text-white">Saving</span>
                     </div>
                   ) : (
@@ -439,7 +438,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                         )}
                       >
                         {loadingProduct ? (
-                          <GraySpinner />
+                          <Spinner color="gray" />
                         ) : (
                           <PlusIcon size={22} />
                         )}
@@ -578,7 +577,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
             >
               {loadingSave ? (
                 <div className="flex gap-1 items-center justify-center w-full h-full">
-                  <WhiteSpinner />
+                  <Spinner color="white" />
                   <span className="text-white">Saving</span>
                 </div>
               ) : (

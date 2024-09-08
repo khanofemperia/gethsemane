@@ -1,7 +1,7 @@
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import ShowAlert from "@/components/website/ShowAlert";
-import { CheckmarkIcon, TrashIcon } from "@/icons";
+import { CheckmarkIcon } from "@/icons";
 import { getCart, getDiscoveryProducts, getProductsByIds } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
+import { DashSpinner } from "@/ui/Spinners/DashSpinner";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -131,6 +132,10 @@ export default async function Cart() {
             </div>
           </div>
         </nav>
+        <div className="py-10 flex items-center justify-center">
+          <DashSpinner />
+          <DashSpinner size={50} color="#ff0000" />
+        </div>
         <div className="max-w-[968px] mx-auto flex flex-col gap-10">
           <div className="w-[calc(100%-20px)] mx-auto">
             {!cartProducts || cartProducts.length === 0 ? (

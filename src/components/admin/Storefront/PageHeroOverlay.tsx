@@ -3,7 +3,7 @@
 import AlertMessage from "@/components/shared/AlertMessage";
 import { isGifImage, isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import Spinner from "@/ui/Spinners/White";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon } from "@/icons";
 import clsx from "clsx";
@@ -35,8 +35,7 @@ export function PageHeroButton({ visibility }: { visibility: string }) {
             "w-10 h-5 rounded-full relative cursor-pointer ease-in-out duration-200",
             {
               "bg-white border": visibility === HIDDEN,
-              "bg-blue border border-blue":
-                visibility === PUBLISHED,
+              "bg-blue border border-blue": visibility === PUBLISHED,
             }
           )}
         >
@@ -66,7 +65,6 @@ export function PageHeroOverlay({
 }) {
   const HIDDEN = "HIDDEN";
   const PUBLISHED = "PUBLISHED";
-  
 
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
@@ -216,7 +214,7 @@ export function PageHeroOverlay({
                 >
                   {loading ? (
                     <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
+                      <Spinner color="white" />
                       <span className="text-white">Saving</span>
                     </div>
                   ) : (
@@ -391,7 +389,7 @@ export function PageHeroOverlay({
               >
                 {loading ? (
                   <div className="flex gap-1 items-center justify-center w-full h-full">
-                    <Spinner />
+                    <Spinner color="white" />
                     <span className="text-white">Saving</span>
                   </div>
                 ) : (

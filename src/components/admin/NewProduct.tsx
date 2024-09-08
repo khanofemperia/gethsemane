@@ -4,7 +4,7 @@ import { CreateProductAction } from "@/actions/products";
 import AlertMessage from "@/components/shared/AlertMessage";
 import { capitalizeFirstLetter, isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
-import Spinner from "@/ui/Spinners/White";
+import {Spinner} from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { useNavbarMenuStore } from "@/zustand/admin/navbarMenuStore";
 import { ArrowLeftIcon, ChevronDownIcon, CloseIcon } from "@/icons";
@@ -265,7 +265,7 @@ export function NewProductOverlay() {
                 >
                   {loading ? (
                     <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
+                      <Spinner color="white" />
                       <span className="text-white">Saving</span>
                     </div>
                   ) : (
@@ -409,7 +409,7 @@ export function NewProductOverlay() {
               >
                 {loading ? (
                   <div className="flex gap-1 items-center justify-center w-full h-full">
-                    <Spinner />
+                    <Spinner color="white" />
                     <span className="text-white">Saving</span>
                   </div>
                 ) : (

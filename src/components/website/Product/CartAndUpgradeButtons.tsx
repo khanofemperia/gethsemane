@@ -5,7 +5,7 @@ import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { useState, useTransition, useEffect } from "react";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { AddToCartAction } from "@/actions/shopping-cart";
-import SpinnerGray from "@/ui/Spinners/Gray";
+import { Spinner } from "@/ui/Spinners/Default";
 import clsx from "clsx";
 
 type CartAndUpgradeButtonsType = {
@@ -93,7 +93,7 @@ export function CartAndUpgradeButtons({
             { "cursor-context-menu opacity-50": isPending }
           )}
         >
-          {isPending ? <SpinnerGray size={28} /> : "Add to cart"}
+          {isPending ? <Spinner size={28} color="gray" /> : "Add to cart"}
         </button>
       )}
       <button className="flex items-center justify-center w-full rounded-full cursor-pointer border border-[#b27100] text-white text-sm font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:text-base min-[896px]:h-12">

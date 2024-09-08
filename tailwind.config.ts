@@ -28,6 +28,27 @@ const customColors = {
   "glass-black": "#00000033", // used by Overlay.tsx
 };
 
+const spinnerAnimation = {
+  keyframes: {
+    rotate: {
+      "0%": { transform: "rotate(0deg)" },
+      "100%": { transform: "rotate(360deg)" },
+    },
+    dash: {
+      "0%": { strokeDasharray: "1px, 200px", strokeDashoffset: "0" },
+      "50%": { strokeDasharray: "100px, 200px", strokeDashoffset: "-15px" },
+      "100%": {
+        strokeDasharray: "100px, 200px",
+        strokeDashoffset: "-125px",
+      },
+    },
+  },
+  animation: {
+    rotate: "rotate 1.4s linear infinite",
+    dash: "dash 1.4s ease-in-out infinite",
+  },
+};
+
 const config: Config = {
   content: [
     "./src/ui/**/*.{js,ts,jsx,tsx,mdx}",
@@ -54,6 +75,8 @@ const config: Config = {
         "thick-bottom": "#21212140 0px 3px 2px 0px, #E5E5E5 0px 0px 1px 1px",
         dropdown: "#00000040 0px 4px 8px -2px, #00000014 0px 0px 0px 1px",
       },
+      keyframes: spinnerAnimation.keyframes,
+      animation: spinnerAnimation.animation,
     },
   },
   plugins: [],

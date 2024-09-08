@@ -2,8 +2,7 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
-import GraySpinner from "@/ui/Spinners/Gray";
-import WhiteSpinner from "@/ui/Spinners/White";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import {
   ArrowLeftIcon,
@@ -210,7 +209,7 @@ export function UpsellOverlay({ data }: { data: DataType }) {
                           className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
                         >
                           {loading ? (
-                            <WhiteSpinner />
+                            <Spinner color="white" />
                           ) : (
                             <MinusIcon className="fill-white" size={20} />
                           )}
@@ -257,7 +256,11 @@ export function UpsellOverlay({ data }: { data: DataType }) {
                             }
                           )}
                         >
-                          {loading ? <GraySpinner /> : <PlusIcon size={22} />}
+                          {loading ? (
+                            <Spinner color="gray" />
+                          ) : (
+                            <PlusIcon size={22} />
+                          )}
                         </button>
                       </div>
                     </div>

@@ -7,9 +7,8 @@ import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 import clsx from "clsx";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
-import SpinnerGray from "@/ui/Spinners/Gray";
+import { Spinner } from "@/ui/Spinners/Default";
 
 type UpsellType = {
   id: string;
@@ -188,7 +187,7 @@ export default function StickyBar({
                 { "cursor-context-menu opacity-50": isPending }
               )}
             >
-              {isPending ? <SpinnerGray size={28} /> : "Add to cart"}
+              {isPending ? <Spinner size={28} color="gray" /> : "Add to cart"}
             </button>
           )}
           <div className="w-full h-[44px] min-[840px]:h-12 relative rounded-full flex justify-end">

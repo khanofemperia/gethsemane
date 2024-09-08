@@ -3,7 +3,7 @@
 import AlertMessage from "@/components/shared/AlertMessage";
 import { isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import Spinner from "@/ui/Spinners/White";
+import {Spinner} from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon, MinusIcon } from "@/icons";
 import clsx from "clsx";
@@ -189,7 +189,7 @@ export function ImageGalleryOverlay({ data }: { data: DataType }) {
                 >
                   {loading ? (
                     <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
+                      <Spinner color="white" />
                       <span className="text-white">Saving</span>
                     </div>
                   ) : (
@@ -262,7 +262,7 @@ export function ImageGalleryOverlay({ data }: { data: DataType }) {
               >
                 {loading ? (
                   <div className="flex gap-1 items-center justify-center w-full h-full">
-                    <Spinner />
+                    <Spinner color="white" />
                     <span className="text-white">Saving</span>
                   </div>
                 ) : (

@@ -2,7 +2,7 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
-import Spinner from "@/ui/Spinners/White";
+import {Spinner} from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
@@ -156,7 +156,7 @@ export function VisibilityOverlay({
                 >
                   {loading ? (
                     <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
+                      <Spinner color="white" />
                       <span className="text-white">Saving</span>
                     </div>
                   ) : (

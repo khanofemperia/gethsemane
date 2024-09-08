@@ -1,13 +1,20 @@
 const DEFAULT_SIZE = 20;
+const DEFAULT_COLOR: SpinnerColor = "gray";
 
-export default function SpinnerGray({
+type SpinnerColor = "white" | "gray";
+
+export function Spinner({
   size = DEFAULT_SIZE,
+  color = DEFAULT_COLOR,
 }: {
   size?: number;
+  color?: SpinnerColor;
 }) {
+  const validColor = color === "white" || color === "gray" ? color : "gray";
+
   return (
     <svg
-      stroke="gray"
+      stroke={validColor}
       fill="none"
       strokeWidth="2"
       viewBox="0 0 24 24"

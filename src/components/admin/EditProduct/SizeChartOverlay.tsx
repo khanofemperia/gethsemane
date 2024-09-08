@@ -8,7 +8,7 @@ import { HiPlus, HiMinus } from "react-icons/hi";
 import SizesTable from "./SizesTable";
 import { clsx } from "clsx";
 import AlertMessage from "@/components/shared/AlertMessage";
-import Spinner from "@/ui/Spinners/White";
+import {Spinner} from "@/ui/Spinners/Default";
 import { ArrowLeftIcon } from "@/icons";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { UpdateProductAction } from "@/actions/products";
@@ -291,7 +291,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                 >
                   {loading ? (
                     <div className="flex gap-1 items-center justify-center w-full h-full">
-                      <Spinner />
+                      <Spinner color="white" />
                       <span className="text-white">Saving</span>
                     </div>
                   ) : (
@@ -383,7 +383,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
               >
                 {loading ? (
                   <div className="flex gap-1 items-center justify-center w-full h-full">
-                    <Spinner />
+                    <Spinner color="white" />
                     <span className="text-white">Saving</span>
                   </div>
                 ) : (

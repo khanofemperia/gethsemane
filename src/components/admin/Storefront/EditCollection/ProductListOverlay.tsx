@@ -2,7 +2,7 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
-import Spinner from "@/ui/Spinners/Gray";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import {
   ArrowLeftIcon,
@@ -374,7 +374,11 @@ export function ProductListOverlay({
                               }
                             )}
                           >
-                            {loading ? <Spinner /> : <PlusIcon size={22} />}
+                            {loading ? (
+                              <Spinner color="gray" />
+                            ) : (
+                              <PlusIcon size={22} />
+                            )}
                           </button>
                         </div>
                       </div>
@@ -569,7 +573,11 @@ export function ProductListOverlay({
                             }
                           )}
                         >
-                          {loading ? <Spinner /> : <PlusIcon size={22} />}
+                          {loading ? (
+                            <Spinner color="gray" />
+                          ) : (
+                            <PlusIcon size={22} />
+                          )}
                         </button>
                       </div>
                     </div>
