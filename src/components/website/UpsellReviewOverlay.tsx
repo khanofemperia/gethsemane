@@ -284,22 +284,7 @@ export function UpsellReviewOverlay() {
           <div className="w-max h-full pt-6 pb-[80px] flex flex-col relative">
             <div className="mb-2">
               <div className="w-max mx-auto flex flex-col gap-2 items-center">
-                <div className="flex gap-y-1 gap-x-3">
-                  {selectedProduct.upsell.products.map((product, index) => (
-                    <div
-                      key={product.id}
-                      className={clsx(
-                        "w-7 h-7 rounded-full flex items-center justify-center text-xs",
-                        {
-                          "bg-black text-white": isProductReady(product),
-                          "bg-lightgray text-black": !isProductReady(product),
-                        }
-                      )}
-                    >
-                      {index + 1}
-                    </div>
-                  ))}
-                </div>
+                <h2 className="font-semibold">Order upgrade</h2>
                 <p className="text-sm">
                   Select options for each product (e.g., color, size)
                 </p>
@@ -334,18 +319,13 @@ export function UpsellReviewOverlay() {
               ))}
             </div>
             <div className="absolute left-0 right-0 bottom-0">
-              <div className="h-[80px] px-10 flex items-start shadow-[0_-12px_16px_2px_white]">
+              <div className="h-[80px] px-8 flex items-start shadow-[0_-12px_16px_2px_white]">
                 <div className="w-full flex justify-between items-center">
-                  <div className="mt-1 text-xl text-center font-semibold">
-                    {selectedProduct.upsell.pricing.salePrice
-                      ? `$${formatThousands(
-                          Number(selectedProduct.upsell.pricing.salePrice)
-                        )} (${
-                          selectedProduct.upsell.pricing.discountPercentage
-                        }% Off)`
-                      : `$${formatThousands(
-                          Number(selectedProduct.upsell.pricing.basePrice)
-                        )} today`}
+                  <div className="mt-1 flex items-center gap-1">
+                    <span className="font-semibold text-xl">$71.99</span>
+                    <span className="text-amber font-medium">
+                      (Saved $24.00)
+                    </span>
                   </div>
                   <button className="cursor-not-allowed h-12 w-max px-8 inline-block text-center align-middle border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-100 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
                     All Set! Add Upgrade to Cart

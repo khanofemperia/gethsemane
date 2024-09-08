@@ -199,7 +199,7 @@ export function QuickviewOverlay() {
                           <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
                             UPGRADE MY ORDER
                           </h2>
-                          <div className="mt-1 text-center font-medium text-amber-dimmed">
+                          <div className="mt-1 text-center font-medium text-amber">
                             {selectedProduct.upsell.pricing.salePrice
                               ? `$${formatThousands(
                                   Number(
