@@ -281,9 +281,9 @@ export function UpsellReviewOverlay() {
     selectedProduct && (
       <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
         <div className="max-h-[764px] relative overflow-hidden shadow rounded-2xl bg-white">
-          <div className="w-max h-full pt-6 pb-[80px] flex flex-col relative">
-            <h2 className="text-center mb-8 font-semibold">Upgrade My Order</h2>
-            <div className="px-8 mb-2 flex gap-5">
+          <div className="w-max h-full pt-5 pb-[80px] flex flex-col relative">
+            <h2 className="text-center mb-5 font-semibold">Upgrade My Order</h2>
+            <div className="w-[calc(100%-64px)] mx-auto pb-4 flex gap-5 border-b">
               <div className="flex items-center">
                 <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
                   <CheckmarkIcon className="fill-white" size={16} />
@@ -291,7 +291,7 @@ export function UpsellReviewOverlay() {
               </div>
               <span className="font-semibold">Select all (3)</span>
             </div>
-            <div className="px-8 pb-5 pt-3 flex flex-col gap-5 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
+            <div className="px-8 py-5 flex flex-col gap-5 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
               {selectedProduct.upsell.products.map((product, index) => (
                 <div
                   key={index}
