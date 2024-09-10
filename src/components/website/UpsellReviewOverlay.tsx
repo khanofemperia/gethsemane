@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { useState } from "react";
-import { ChevronRightIcon, CloseIconThin } from "@/icons";
+import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
 import clsx from "clsx";
-import { formatThousands } from "@/lib/utils";
+import Link from "next/link";
 
 type UpsellReviewProductType = {
   id: string;
@@ -282,38 +282,96 @@ export function UpsellReviewOverlay() {
       <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
         <div className="max-h-[764px] relative overflow-hidden shadow rounded-2xl bg-white">
           <div className="w-max h-full pt-6 pb-[80px] flex flex-col relative">
-            <div className="mb-2">
-              <div className="w-max mx-auto flex flex-col gap-2 items-center">
-                <h2 className="font-semibold">Order upgrade</h2>
-                <p className="text-sm">
-                  Select options for each product (e.g., color, size)
-                </p>
+            {/* <h2 className="font-semibold text-center mb-5">Order upgrade</h2> */}
+            <div className="px-8 mb-5 flex gap-5">
+              <div className="flex items-center">
+                <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                  <CheckmarkIcon className="fill-white" size={16} />
+                </div>
               </div>
+              <span className="font-semibold">Select all (3)</span>
             </div>
-            <div className="px-8 pt-2 pb-5 flex flex-col gap-2 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
+            <div className="px-8 pb-5 flex flex-col gap-5 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
               {selectedProduct.upsell.products.map((product, index) => (
-                <div
-                  key={product.id}
-                  className="w-[522px] flex gap-5 border p-2 pr-5 rounded-2xl"
-                >
-                  <div className="min-w-36 max-w-36 min-h-36 max-h-36 rounded-xl overflow-hidden">
-                    <Image
-                      src={product.mainImage}
-                      alt={product.name}
-                      width={160}
-                      height={160}
-                      priority={true}
-                    />
+                // <div
+                //   key={product.id}
+                //   className="w-[522px] flex gap-5 border p-2 pr-5 rounded-2xl"
+                // >
+                //   <div className="min-w-36 max-w-36 min-h-36 max-h-36 rounded-xl overflow-hidden">
+                //     <Image
+                //       src={product.mainImage}
+                //       alt={product.name}
+                //       width={160}
+                //       height={160}
+                //       priority={true}
+                //     />
+                //   </div>
+                //   <div className="mt-1 flex flex-col gap-4">
+                //     <p className="text-sm text-gray">{product.name}</p>
+                //     <ProductOptions
+                //       product={product}
+                //       selectedOptions={selectedOptions[product.id] || {}}
+                //       onOptionSelect={(option: string, value: string) =>
+                //         updateSelectedOptions(product.id, option, value)
+                //       }
+                //     />
+                //   </div>
+                // </div>
+                <div key={index} className="w-full flex gap-5">
+                  <div className="flex items-center">
+                    <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                      <CheckmarkIcon className="fill-white" size={16} />
+                    </div>
                   </div>
-                  <div className="mt-1 flex flex-col gap-4">
-                    <p className="text-sm text-gray">{product.name}</p>
-                    <ProductOptions
-                      product={product}
-                      selectedOptions={selectedOptions[product.id] || {}}
-                      onOptionSelect={(option: string, value: string) =>
-                        updateSelectedOptions(product.id, option, value)
-                      }
-                    />
+                  <div className="w-full flex gap-5 border-b pb-5">
+                    <div className="min-w-32 max-w-32 min-h-32 max-h-32 relative">
+                      <div className="w-full h-full overflow-hidden flex items-center justify-center">
+                        <Image
+                          src={product.mainImage}
+                          alt={product.name}
+                          width={128}
+                          height={128}
+                          priority
+                        />
+                      </div>
+                      <button className="w-9 h-9 rounded-full absolute top-1 right-1 flex items-center justify-center bg-black/35">
+                        <svg
+                          aria-label="Carousel"
+                          // class="x1lliihq x1n2onr6 x9bdzbf"
+                          fill="currentColor"
+                          height="20"
+                          role="img"
+                          viewBox="0 0 48 48"
+                          width="20"
+                        >
+                          <title>Carousel</title>
+                          <path
+                            fill="white"
+                            d="M34.8 29.7V11c0-2.9-2.3-5.2-5.2-5.2H11c-2.9 0-5.2 2.3-5.2 5.2v18.7c0 2.9 2.3 5.2 5.2 5.2h18.7c2.8-.1 5.1-2.4 5.1-5.2zM39.2 15v16.1c0 4.5-3.7 8.2-8.2 8.2H14.9c-.6 0-.9.7-.5 1.1 1 1.1 2.4 1.8 4.1 1.8h13.4c5.7 0 10.3-4.6 10.3-10.3V18.5c0-1.6-.7-3.1-1.8-4.1-.5-.4-1.2 0-1.2.6z"
+                          ></path>
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="w-full flex flex-col gap-[14px]">
+                      <div>
+                        <Link
+                          href={`${product.slug}-${product.id}`}
+                          target="_blank"
+                          className="text-sm line-clamp-1 w-max flex items-center gap-1"
+                        >
+                          <span>{product.name}</span>
+                          <ChevronRightIcon size={18} className="stroke-gray" />
+                        </Link>
+                        <span className="text-sm line-through">$56.99</span>
+                      </div>
+                      <ProductOptions
+                        product={product}
+                        selectedOptions={selectedOptions[product.id] || {}}
+                        onOptionSelect={(option: string, value: string) =>
+                          updateSelectedOptions(product.id, option, value)
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
