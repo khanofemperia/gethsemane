@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
 import clsx from "clsx";
@@ -251,30 +251,58 @@ export function UpsellReviewOverlay() {
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: { color?: string; size?: string };
   }>({});
+  const [readyProducts, setReadyProducts] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (isVisible && selectedProduct) {
+      // Reset selections when overlay opens
+      setSelectedOptions({});
+      setReadyProducts([]);
+
+      // Auto-select products without options
+      const autoSelectedProducts = selectedProduct.upsell.products
+        .filter(
+          (product) =>
+            product.options.colors.length === 0 &&
+            Object.keys(product.options.sizes).length === 0
+        )
+        .map((product) => product.id);
+
+      setReadyProducts(autoSelectedProducts);
+    }
+  }, [isVisible, selectedProduct]);
 
   const updateSelectedOptions = (
     productId: string,
     option: string,
     value: string
   ) => {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [productId]: { ...prev[productId], [option]: value },
-    }));
+    const updatedOptions = {
+      ...selectedOptions,
+      [productId]: { ...selectedOptions[productId], [option]: value },
+    };
+    setSelectedOptions(updatedOptions);
+
+    // Check if all options for this product are selected
+    const product = selectedProduct?.upsell.products.find(
+      (p) => p.id === productId
+    );
+    if (product) {
+      const allOptionsSelected =
+        (!product.options.colors.length || updatedOptions[productId].color) &&
+        (!Object.keys(product.options.sizes).length ||
+          updatedOptions[productId].size);
+
+      if (allOptionsSelected && !readyProducts.includes(productId)) {
+        setReadyProducts([...readyProducts, productId]);
+      } else if (!allOptionsSelected && readyProducts.includes(productId)) {
+        setReadyProducts(readyProducts.filter((id) => id !== productId));
+      }
+    }
   };
 
-  const isProductReady = (
-    product: UpsellReviewProductType["upsell"]["products"][number]
-  ) => {
-    const productOptions = selectedOptions[product.id] || {};
-    const hasColor = product.options.colors.length > 0;
-    const hasSize = Object.keys(product.options.sizes).length > 0;
-
-    if (!hasColor && !hasSize) return true;
-    if (hasColor && !productOptions.color) return false;
-    if (hasSize && !productOptions.size) return false;
-    return true;
-  };
+  const isProductReady = (productId: string) =>
+    readyProducts.includes(productId);
 
   return (
     isVisible &&
@@ -296,8 +324,17 @@ export function UpsellReviewOverlay() {
                 >
                   <div className="w-full flex flex-start gap-5">
                     <div className="h-40 flex items-center">
-                      <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
-                        <CheckmarkIcon className="fill-white" size={16} />
+                      <div
+                        className={clsx(
+                          "w-5 h-5 rounded-full flex items-center justify-center",
+                          isProductReady(product.id)
+                            ? "bg-black"
+                            : "border border-gray"
+                        )}
+                      >
+                        {isProductReady(product.id) && (
+                          <CheckmarkIcon className="fill-white" size={16} />
+                        )}
                       </div>
                     </div>
                     <div className="flex gap-5 w-full">
@@ -352,12 +389,6 @@ export function UpsellReviewOverlay() {
             <div className="absolute left-0 right-0 bottom-0">
               <div className="h-[80px] px-8 flex items-start shadow-[0_-12px_16px_2px_white]">
                 <div className="w-full flex justify-between items-center">
-                  {/* <div className="mt-1 flex items-center gap-1">
-                    <span className="font-semibold text-xl">$71.99</span>
-                    <span className="text-amber font-medium">
-                      (Saved $24.00)
-                    </span>
-                  </div> */}
                   <div className="flex gap-5">
                     <div className="flex items-center">
                       <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
@@ -365,10 +396,22 @@ export function UpsellReviewOverlay() {
                       </div>
                     </div>
                     <span className="font-semibold">
-                      Confirm selections (3)
+                      Confirm selections ({readyProducts.length})
                     </span>
                   </div>
-                  <button className="cursor-not-allowed h-12 w-max px-8 inline-block text-center align-middle border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-100 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
+                  <button
+                    className={clsx(
+                      "h-12 w-max px-8 inline-block text-center align-middle border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-100 transition font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]",
+                      readyProducts.length ===
+                        selectedProduct.upsell.products.length
+                        ? "bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] cursor-pointer"
+                        : "bg-gray cursor-not-allowed"
+                    )}
+                    disabled={
+                      readyProducts.length !==
+                      selectedProduct.upsell.products.length
+                    }
+                  >
                     All Set! Add Upgrade to Cart
                   </button>
                 </div>
