@@ -255,11 +255,9 @@ export function UpsellReviewOverlay() {
 
   useEffect(() => {
     if (isVisible && selectedProduct) {
-      // Reset selections when overlay opens
       setSelectedOptions({});
       setReadyProducts([]);
 
-      // Auto-select products without options
       const autoSelectedProducts = selectedProduct.upsell.products
         .filter(
           (product) =>
@@ -283,10 +281,10 @@ export function UpsellReviewOverlay() {
     };
     setSelectedOptions(updatedOptions);
 
-    // Check if all options for this product are selected
     const product = selectedProduct?.upsell.products.find(
       (p) => p.id === productId
     );
+
     if (product) {
       const allOptionsSelected =
         (!product.options.colors.length || updatedOptions[productId].color) &&
