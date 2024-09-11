@@ -281,17 +281,14 @@ export function UpsellReviewOverlay() {
     selectedProduct && (
       <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
         <div className="max-h-[764px] relative overflow-hidden shadow rounded-2xl bg-white">
-          <div className="w-max h-full pt-5 pb-[80px] flex flex-col relative">
-            <h2 className="text-center mb-5 font-semibold">Upgrade My Order</h2>
-            <div className="w-[calc(100%-64px)] mx-auto pb-4 flex gap-5 border-b">
-              <div className="flex items-center">
-                <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
-                  <CheckmarkIcon className="fill-white" size={16} />
-                </div>
+          <div className="w-[600px] h-full pt-6 pb-[80px] flex flex-col relative">
+            <div className="pb-3 flex justify-center">
+              <div className="flex items-center gap-1">
+                <span className="font-semibold text-xl">$71.99</span>
+                <span className="text-amber font-medium">(Saved $24.00)</span>
               </div>
-              <span className="font-semibold">Select all (3)</span>
             </div>
-            <div className="px-8 py-5 flex flex-col gap-5 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
+            <div className="p-8 pt-4 flex flex-col gap-5 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
               {selectedProduct.upsell.products.map((product, index) => (
                 <div
                   key={index}
@@ -304,33 +301,25 @@ export function UpsellReviewOverlay() {
                       </div>
                     </div>
                     <div className="flex gap-5 w-full">
-                      <div className="flex gap-5 h-40">
-                        <div className="min-w-40 max-w-40 min-h-40 max-h-40 relative">
-                          <div className="min-w-40 max-w-40 min-h-40 max-h-40 overflow-hidden flex items-center justify-center">
-                            <Image
-                              src={product.mainImage}
-                              alt={product.name}
-                              width={160}
-                              height={160}
-                              priority
-                            />
-                          </div>
-                          <button className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center bg-black/40">
-                            <svg
-                              fill="currentColor"
-                              height="20"
-                              role="img"
-                              viewBox="0 0 48 48"
-                              width="20"
-                            >
-                              <title>Carousel</title>
-                              <path
-                                fill="white"
-                                d="M34.8 29.7V11c0-2.9-2.3-5.2-5.2-5.2H11c-2.9 0-5.2 2.3-5.2 5.2v18.7c0 2.9 2.3 5.2 5.2 5.2h18.7c2.8-.1 5.1-2.4 5.1-5.2zM39.2 15v16.1c0 4.5-3.7 8.2-8.2 8.2H14.9c-.6 0-.9.7-.5 1.1 1 1.1 2.4 1.8 4.1 1.8h13.4c5.7 0 10.3-4.6 10.3-10.3V18.5c0-1.6-.7-3.1-1.8-4.1-.5-.4-1.2 0-1.2.6z"
-                              ></path>
-                            </svg>
-                          </button>
+                      <div className="relative h-max cursor-pointer">
+                        <div className="min-w-40 max-w-40 min-h-40 max-h-40 overflow-hidden rounded-xl flex items-center justify-center">
+                          <Image
+                            src={product.mainImage}
+                            alt={product.name}
+                            width={160}
+                            height={160}
+                            priority
+                          />
                         </div>
+                        <button className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center bg-black/40">
+                          <Image
+                            src="/icons/carousel.svg"
+                            alt="Carousel"
+                            height={20}
+                            width={20}
+                            priority
+                          />
+                        </button>
                       </div>
                       <div className="w-full flex flex-col gap-4">
                         <div>
@@ -363,10 +352,20 @@ export function UpsellReviewOverlay() {
             <div className="absolute left-0 right-0 bottom-0">
               <div className="h-[80px] px-8 flex items-start shadow-[0_-12px_16px_2px_white]">
                 <div className="w-full flex justify-between items-center">
-                  <div className="mt-1 flex items-center gap-1">
+                  {/* <div className="mt-1 flex items-center gap-1">
                     <span className="font-semibold text-xl">$71.99</span>
                     <span className="text-amber font-medium">
                       (Saved $24.00)
+                    </span>
+                  </div> */}
+                  <div className="flex gap-5">
+                    <div className="flex items-center">
+                      <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                        <CheckmarkIcon className="fill-white" size={16} />
+                      </div>
+                    </div>
+                    <span className="font-semibold">
+                      Confirm selections (3)
                     </span>
                   </div>
                   <button className="cursor-not-allowed h-12 w-max px-8 inline-block text-center align-middle border border-[rgba(0,0,0,0.1)_rgba(0,0,0,0.1)_rgba(0,0,0,0.25)] rounded-full ease-in-out duration-100 transition bg-amber hover:bg-amber-dimmed active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.2)] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.05)]">
