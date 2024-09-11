@@ -302,7 +302,7 @@ export function UpsellReviewOverlay() {
                     </div>
                     <div className="flex gap-5 w-full">
                       <div className="relative h-max cursor-pointer">
-                        <div className="min-w-40 max-w-40 min-h-40 max-h-40 overflow-hidden rounded-xl flex items-center justify-center">
+                        <div className="min-w-40 max-w-40 min-h-40 max-h-40 overflow-hidden rounded-lg flex items-center justify-center">
                           <Image
                             src={product.mainImage}
                             alt={product.name}
