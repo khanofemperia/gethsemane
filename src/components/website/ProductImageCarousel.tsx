@@ -44,30 +44,30 @@ export function ProductImageCarousel({
   };
 
   return (
-    <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-40 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
-      <div className="h-max w-max max-w-[1024px] p-8 relative overflow-hidden shadow rounded-2xl bg-white">
-        <div className="grid grid-cols-[436px_320px] gap-5">
-          <div className="w-[436px] h-[436px] items-center justify-center rounded-3xl overflow-hidden">
+    <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-40 fixed top-0 bottom-0 left-0 right-0 bg-black/15">
+      <div className="max-h-[612px] w-max max-w-[1024px] p-8 relative overflow-hidden shadow rounded-2xl bg-white">
+        <div className="h-full flex gap-5">
+          <div className="h-full aspect-square items-center justify-center rounded-3xl overflow-hidden">
             <Image
               src={currentImage.src}
               alt={currentImage.alt}
-              width={480}
-              height={480}
+              width={544}
+              height={544}
               priority
-              className="object-cover w-full h-full"
             />
           </div>
           <div className="h-full w-[320px]">
-            <p className="font-semibold text-lg mb-4">{product.name}</p>
-            <div className="grid grid-cols-3 gap-2">
+            <p className="font-semibold mb-5">{product.name}</p>
+            <div className="flex gap-2 flex-wrap">
               {allImages.map((image, index) => (
                 <div
                   key={index}
                   className={clsx(
-                    "w-[100px] h-[100px] overflow-hidden rounded-lg cursor-pointer transition-all duration-200",
-                    currentImage.src === image.src
-                      ? "ring-2 ring-blue-500 ring-offset-2"
-                      : "hover:ring-2 hover:ring-gray-300 hover:ring-offset-2"
+                    "w-[74px] h-[74px] overflow-hidden rounded-md cursor-pointer",
+                    {
+                      "ring-1 ring-blue ring-offset-2":
+                        currentImage.src === image.src,
+                    }
                   )}
                   onClick={() => handleImageSelect(image)}
                   onMouseEnter={() => handleImageSelect(image)}
@@ -75,10 +75,9 @@ export function ProductImageCarousel({
                   <Image
                     src={image.src}
                     alt={image.alt}
-                    width={100}
-                    height={100}
+                    width={74}
+                    height={74}
                     priority
-                    className="object-cover w-full h-full"
                   />
                 </div>
               ))}

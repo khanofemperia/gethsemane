@@ -71,8 +71,11 @@ function ProductColors({
             key={index}
             className={clsx(
               "relative w-[40px] h-[40px] flex items-center justify-center rounded cursor-pointer overflow-hidden",
-              { "hover:shadow-[0_0_0_1.4px_#262626]": selectedColor !== name },
-              { "shadow-[0_0_0_1.4px_#0a5ddc]": selectedColor === name }
+              {
+                "hover:ring-1 hover:ring-black hover:ring-offset-2":
+                  selectedColor !== name,
+              },
+              { "ring-1 ring-blue ring-offset-2": selectedColor === name }
             )}
           >
             <Image src={image} alt={name} width={40} height={40} priority />
