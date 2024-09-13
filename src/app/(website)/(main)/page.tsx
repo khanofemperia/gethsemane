@@ -2,6 +2,7 @@ import { Banner } from "@/components/website/Banner";
 import { Categories } from "@/components/website/Categories";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { FeaturedProducts } from "@/components/website/FeaturedProducts";
+import { ProductImageCarousel } from "@/components/website/ProductImageCarousel";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import {
@@ -320,6 +321,7 @@ export default async function Home() {
       </div>
       <QuickviewOverlay />
       <UpsellReviewOverlay />
+      <ProductImageCarousel />
     </>
   );
 }
