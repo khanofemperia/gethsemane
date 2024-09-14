@@ -323,7 +323,7 @@ export function UpsellReviewOverlay() {
     <>
       {isVisible && selectedProduct && (
         <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
-          <div className="max-h-[764px] relative overflow-hidden shadow rounded-2xl bg-white">
+          <div className="max-h-[764px] relative overflow-hidden rounded-2xl shadow-[0px_0px_36px_0px_rgba(255,185,56,0.6)] bg-white">
             <div className="w-[600px] h-full pt-6 pb-[80px] flex flex-col relative">
               <div className="pb-3 flex justify-center">
                 <div className="flex items-center gap-1">
@@ -417,21 +417,31 @@ export function UpsellReviewOverlay() {
                         Confirm selections ({readyProducts.length})
                       </span>
                     </div>
-                    <button
-                      className={clsx(
-                        "flex items-center justify-center w-max h-12 px-8 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000]",
-                        readyProducts.length ===
+                    <div className="relative">
+                      <button
+                        className={clsx(
+                          "flex items-center justify-center w-max h-12 px-8 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000]",
+                          readyProducts.length ===
+                            selectedProduct.upsell.products.length
+                            ? "cursor-pointer hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
+                            : "opacity-50 cursor-context-menu"
+                        )}
+                        disabled={
+                          readyProducts.length !==
                           selectedProduct.upsell.products.length
-                          ? "cursor-pointer hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
-                          : "opacity-50 cursor-context-menu"
-                      )}
-                      disabled={
-                        readyProducts.length !==
-                        selectedProduct.upsell.products.length
-                      }
-                    >
-                      All Set! Add Upgrade to Cart
-                    </button>
+                        }
+                      >
+                        Add Upgrade to Cart
+                      </button>
+                      <div className="absolute right-0 bottom-14 w-[280px] py-3 px-4 rounded-xl bg-[#373737] before:content-[''] before:w-[10px] before:h-[10px] before:bg-[#373737] before:rounded-br-[2px] before:rotate-45 before:origin-bottom-left before:absolute before:-bottom-0 before:right-12">
+                        <p className="text-white text-sm">
+                          <span className="text-[#ffe6ba]">
+                            Congrats! Saved $21.99 -
+                          </span>{" "}
+                          <b>grab it before it's gone!</b>
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

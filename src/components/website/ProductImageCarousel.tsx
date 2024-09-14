@@ -8,7 +8,7 @@ type ProductImage = {
   alt: string;
 };
 
-type ProductImageCarouselProps = {
+type ProductImageCarouselType = {
   product: {
     name: string;
     mainImage: string;
@@ -25,7 +25,7 @@ type ProductImageCarouselProps = {
 export function ProductImageCarousel({
   product,
   onClose,
-}: ProductImageCarouselProps) {
+}: ProductImageCarouselType) {
   // Create an array of unique images
   const allImages: ProductImage[] = [
     { src: product.mainImage, alt: product.name },
