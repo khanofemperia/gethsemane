@@ -457,7 +457,11 @@ export function UpsellReviewOverlay() {
             </div>
             <button
               type="button"
-              onClick={hideOverlay}
+              onClick={() => {
+                setSelectedOptions({});
+                setReadyProducts([]);
+                hideOverlay();
+              }}
               className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center ease-in-out transition duration-300 hover:bg-lightgray"
             >
               <CloseIconThin size={24} className="stroke-gray" />
