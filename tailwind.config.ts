@@ -80,7 +80,7 @@ const config: Config = {
       animation: spinnerAnimation.animation,
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animated")],
 };
 
 export default config;

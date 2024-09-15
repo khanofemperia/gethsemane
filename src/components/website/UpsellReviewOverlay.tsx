@@ -433,7 +433,16 @@ export function UpsellReviewOverlay() {
                       >
                         Add Upgrade to Cart
                       </button>
-                      <div className="absolute right-0 bottom-14 w-[280px] py-3 px-4 rounded-xl bg-[#373737] before:content-[''] before:w-[10px] before:h-[10px] before:bg-[#373737] before:rounded-br-[2px] before:rotate-45 before:origin-bottom-left before:absolute before:-bottom-0 before:right-12">
+                      <div
+                        className={clsx(
+                          "animate-fade-right absolute right-0 bottom-14 w-[248px] py-3 px-4 rounded-xl bg-[#373737] before:content-[''] before:w-[10px] before:h-[10px] before:bg-[#373737] before:rounded-br-[2px] before:rotate-45 before:origin-bottom-left before:absolute before:-bottom-0 before:right-12",
+                          {
+                            hidden:
+                              readyProducts.length !==
+                              selectedProduct.upsell.products.length,
+                          }
+                        )}
+                      >
                         <p className="text-white text-sm">
                           <span className="text-[#ffe6ba]">
                             Congrats! Saved $21.99 -

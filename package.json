@@ -27,6 +27,7 @@
     "sharp": "^0.33.5",
     "slick-carousel": "^1.8.1",
     "sortablejs": "^1.15.2",
+    "tailwindcss-animated": "^1.1.2",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
