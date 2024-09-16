@@ -148,7 +148,7 @@ export default async function Cart() {
               <div className="relative flex flex-row gap-16 pt-8">
                 <div className="min-w-[560px] max-w-[560px] h-max">
                   <div className="flex flex-col gap-5">
-                    <div className="flex gap-5">
+                    <div className="flex gap-5 pl-5">
                       <div className="flex items-center">
                         <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
                           <CheckmarkIcon className="fill-white" size={16} />
@@ -157,6 +157,42 @@ export default async function Cart() {
                       <span className="font-semibold">Select all (3)</span>
                     </div>
                     <div className="flex flex-col gap-5">
+                      <div className="p-5 flex flex-col gap-5 rounded bg-[#fffbf6] border border-[#fceddf]">
+                        <div className="flex gap-5">
+                          <div className="flex items-center">
+                            <div className="-mt-5 w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                              <CheckmarkIcon className="fill-white" size={16} />
+                            </div>
+                          </div>
+                          <div className="h-full w-full pb-5 border-b border-[#fceddf]">
+                            <div className="mb-5 flex items-center gap-1">
+                              <span className="font-medium">$71.99</span>
+                              <span className="text-sm text-amber">
+                                (Saved $24.00)
+                              </span>
+                            </div>
+                            <div className="h-[140px]">
+                              <div className="h-full aspect-square flex items-center justify-center rounded-lg overflow-hidden">
+                                <Image
+                                  src="https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg"
+                                  alt="$71.99 (Saved $24.00)"
+                                  width={140}
+                                  height={140}
+                                  priority
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex gap-5">
+                          <div className="flex items-center">
+                            <div className="-mt-5 w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                              <CheckmarkIcon className="fill-white" size={16} />
+                            </div>
+                          </div>
+                          <div className="h-[140px] w-full"></div>
+                        </div>
+                      </div>
                       {(cartProducts || []).map(
                         ({
                           baseProductId,
@@ -168,7 +204,7 @@ export default async function Cart() {
                           color,
                           size,
                         }) => (
-                          <div key={variantId} className="flex gap-5">
+                          <div key={variantId} className="ml-5 flex gap-5">
                             <div className="flex items-center">
                               <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
                                 <CheckmarkIcon
