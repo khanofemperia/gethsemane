@@ -172,7 +172,7 @@ export default async function Cart() {
                               </span>
                             </div>
                             <div className="h-[140px]">
-                              <div className="h-full aspect-square flex items-center justify-center rounded-lg overflow-hidden">
+                              <div className="shadow-[#f6cba2_0px_1px_2.5px_0px] h-full aspect-square flex items-center justify-center rounded-lg overflow-hidden">
                                 <Image
                                   src="https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg"
                                   alt="$71.99 (Saved $24.00)"
@@ -213,7 +213,7 @@ export default async function Cart() {
                                 />
                               </div>
                             </div>
-                            <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden flex items-center justify-center">
+                            <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
                               <Image
                                 src={mainImage}
                                 alt={name}
