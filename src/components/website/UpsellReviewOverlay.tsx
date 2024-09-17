@@ -366,7 +366,7 @@ export function UpsellReviewOverlay() {
                               priority
                             />
                           </div>
-                          <button className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center bg-black/40">
+                          <div className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center bg-black/40">
                             <Image
                               src="/icons/carousel.svg"
                               alt="Carousel"
@@ -374,7 +374,7 @@ export function UpsellReviewOverlay() {
                               width={20}
                               priority
                             />
-                          </button>
+                          </div>
                         </div>
                         <div className="w-full flex flex-col gap-4">
                           <div>

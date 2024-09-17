@@ -133,7 +133,7 @@ export default async function Cart() {
           </div>
         </nav>
         <div className="max-w-[968px] mx-auto flex flex-col gap-10">
-          <div className="w-[calc(100%-20px)] mx-auto">
+          <div className="mx-auto">
             {!cartProducts || cartProducts.length === 0 ? (
               <div className="flex flex-col items-center py-16 text-lg">
                 <Image
@@ -148,7 +148,7 @@ export default async function Cart() {
               <div className="relative flex flex-row gap-16 pt-8">
                 <div className="min-w-[560px] max-w-[560px] h-max">
                   <div className="flex flex-col gap-5">
-                    <div className="flex gap-5 pl-5">
+                    <div className="flex gap-5">
                       <div className="flex items-center">
                         <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
                           <CheckmarkIcon className="fill-white" size={16} />
@@ -157,7 +157,7 @@ export default async function Cart() {
                       <span className="font-semibold">Select all (3)</span>
                     </div>
                     <div className="flex flex-col gap-5">
-                      <div className="p-5 flex flex-col gap-5 rounded bg-[#fffbf6] border border-[#fceddf]">
+                      {/* <div className="p-5 flex flex-col gap-5 rounded bg-[#fffbf6] border border-[#fceddf]">
                         <div className="flex gap-5">
                           <div className="flex items-center">
                             <div className="-mt-5 w-5 h-5 rounded-full bg-black flex items-center justify-center">
@@ -172,7 +172,7 @@ export default async function Cart() {
                               </span>
                             </div>
                             <div className="h-[140px]">
-                              <div className="shadow-[#f6cba2_0px_1px_2.5px_0px] h-full aspect-square flex items-center justify-center rounded-lg overflow-hidden">
+                              <div className="shadow-[#fbe6d3_0px_1px_2px_1px] h-full aspect-square flex items-center justify-center rounded-lg overflow-hidden">
                                 <Image
                                   src="https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg"
                                   alt="$71.99 (Saved $24.00)"
@@ -192,6 +192,40 @@ export default async function Cart() {
                           </div>
                           <div className="h-[140px] w-full"></div>
                         </div>
+                      </div> */}
+                      <div className="flex gap-5">
+                        <div className="flex items-center">
+                          <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                            <CheckmarkIcon className="fill-white" size={16} />
+                          </div>
+                        </div>
+                        <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
+                          <Image
+                            src="https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg"
+                            alt="$71.99 (Saved $24.00)"
+                            width={140}
+                            height={140}
+                            priority
+                          />
+                        </div>
+                        <div className="w-full flex flex-col gap-2">
+                          <div className="min-w-full h-5 flex items-center justify-between gap-5">
+                            <div className="flex items-center gap-1">
+                              <span className="font-medium">$71.99</span>
+                              <span className="text-sm text-amber">
+                                (Saved $24.00)
+                              </span>
+                            </div>
+                            <RemoveFromCartButton variantId={"78989"} />
+                          </div>
+                          <ul className="text-sm text-gray">
+                            <li>Cat Backpack</li>
+                            <li>Stripe Tee</li>
+                            <li>Button Skirt</li>
+                            {/* <li>Adidas Sneakers</li> */}
+                            {/* <li>Polo Cap</li> */}
+                          </ul>
+                        </div>
                       </div>
                       {(cartProducts || []).map(
                         ({
@@ -204,7 +238,7 @@ export default async function Cart() {
                           color,
                           size,
                         }) => (
-                          <div key={variantId} className="ml-5 flex gap-5">
+                          <div key={variantId} className="flex gap-5">
                             <div className="flex items-center">
                               <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
                                 <CheckmarkIcon
