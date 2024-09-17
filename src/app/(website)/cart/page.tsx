@@ -1,7 +1,7 @@
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import ShowAlert from "@/components/website/ShowAlert";
-import { CheckmarkIcon } from "@/icons";
+import { CheckmarkIcon, TrashIcon } from "@/icons";
 import { getCart, getDiscoveryProducts, getProductsByIds } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
@@ -10,6 +10,7 @@ import Link from "next/link";
 import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
 import { DashSpinner } from "@/ui/Spinners/DashSpinner";
+import clsx from "clsx";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -190,7 +191,7 @@ export default async function Cart() {
                               <CheckmarkIcon className="fill-white" size={16} />
                             </div>
                           </div>
-                          <div className="h-[140px] w-full"></div>
+                          <div className="h-[140px] w-full"></div> #fff5e9
                         </div>
                       </div> */}
                       <div className="flex gap-5">
@@ -199,32 +200,42 @@ export default async function Cart() {
                             <CheckmarkIcon className="fill-white" size={16} />
                           </div>
                         </div>
-                        <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
-                          <Image
-                            src="https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg"
-                            alt="$71.99 (Saved $24.00)"
-                            width={140}
-                            height={140}
-                            priority
-                          />
-                        </div>
-                        <div className="w-full flex flex-col gap-2">
-                          <div className="min-w-full h-5 flex items-center justify-between gap-5">
-                            <div className="flex items-center gap-1">
-                              <span className="font-medium">$71.99</span>
-                              <span className="text-sm text-amber">
-                                (Saved $24.00)
-                              </span>
-                            </div>
-                            <RemoveFromCartButton variantId={"78989"} />
+                        <div className="relative w-full p-5 flex gap-5 rounded bg-[#fffbf6] border border-[#fceddf]">
+                          <div className="shadow-[#fbe6d3_0px_0.5px_2px_1px] min-w-[180px] max-w-[180px] min-h-[180px] max-h-[180px] overflow-hidden rounded-lg flex items-center justify-center">
+                            <Image
+                              src="https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg"
+                              alt="$71.99 (Saved $24.00)"
+                              width={180}
+                              height={180}
+                              priority
+                            />
                           </div>
-                          <ul className="text-sm text-gray">
-                            <li>Cat Backpack</li>
-                            <li>Stripe Tee</li>
-                            <li>Button Skirt</li>
-                            {/* <li>Adidas Sneakers</li> */}
-                            {/* <li>Polo Cap</li> */}
-                          </ul>
+                          <div className="w-full flex flex-col gap-2">
+                            <div className="min-w-full h-5 flex items-center justify-between gap-5">
+                              <div className="flex items-center gap-1">
+                                <span className="font-medium">$71.99</span>
+                                <span className="text-sm text-amber">
+                                  (Saved $24.00)
+                                </span>
+                              </div>
+                            </div>
+                            <div className="text-gray text-xs leading-5">
+                              Cat Backpack{" "}
+                              <span className="text-[#cfcfcf]">•</span> Stripe
+                              Tee <span className="text-[#cfcfcf]">•</span>{" "}
+                              Button Skirt{" "}
+                              <span className="text-[#cfcfcf]">•</span> Adidas
+                              Sneakers <span className="text-[#cfcfcf]">•</span>{" "}
+                              Polo Cap
+                            </div>
+                          </div>
+                          <button
+                            className={clsx(
+                              "absolute right-3 top-3 min-w-8 max-w-8 min-h-8 max-h-8 rounded-full flex items-center justify-center ease-in-out duration-300 transition hover:bg-[#fceddf]"
+                            )}
+                          >
+                            <TrashIcon size={18} className="fill-gray" />
+                          </button>
                         </div>
                       </div>
                       {(cartProducts || []).map(
