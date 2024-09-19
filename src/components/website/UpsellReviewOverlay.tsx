@@ -354,7 +354,7 @@ export function UpsellReviewOverlay() {
                       <span className="font-semibold text-xl">
                         $
                         {formatThousands(
-                          Number(selectedProduct.upsell.pricing.salePrice)
+                          Number(selectedProduct.upsell.pricing.basePrice)
                         )}
                       </span>
                       <span className="text-amber text-sm font-medium border border-amber h-5 leading-none px-1 rounded flex items-center justify-center">
@@ -480,8 +480,11 @@ export function UpsellReviewOverlay() {
                       >
                         <p className="text-white text-sm">
                           <span className="text-[#ffe6ba]">
-                            Congrats! Saved $
-                            {calculateSavings(selectedProduct.upsell.pricing)} -
+                            {selectedProduct.upsell.pricing.salePrice
+                              ? `Congrats! Saved $${calculateSavings(
+                                  selectedProduct.upsell.pricing
+                                )} -`
+                              : `Congrats! You're all set -`}
                           </span>{" "}
                           <b>grab it before it's gone!</b>
                         </p>
