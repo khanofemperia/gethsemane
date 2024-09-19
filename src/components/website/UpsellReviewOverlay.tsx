@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
 import clsx from "clsx";
 import Link from "next/link";
 import { ProductImageCarousel } from "./ProductImageCarousel";
 import { formatThousands } from "@/lib/utils";
+import { AddToCartAction } from "@/actions/shopping-cart";
 
 type UpsellReviewProductType = {
   id: string;
@@ -260,6 +261,7 @@ export function UpsellReviewOverlay() {
   const [showCarousel, setShowCarousel] = useState(false);
   const [selectedProductForCarousel, setSelectedProductForCarousel] =
     useState<any>(null);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (isVisible && selectedProduct) {
@@ -326,6 +328,36 @@ export function UpsellReviewOverlay() {
     discountPercentage: number;
   }) => {
     return (Number(pricing.basePrice) - Number(pricing.salePrice)).toFixed(2);
+  };
+
+  const handleAddToCart = () => {
+    startTransition(async () => {
+      const productsToAdd = selectedProduct?.upsell.products
+        .filter((product) => readyProducts.includes(product.id))
+        .map((product) => ({
+          baseProductId: product.id,
+          color: selectedOptions[product.id]?.color || "",
+          size: selectedOptions[product.id]?.size || "",
+        }));
+
+      const upsellToAdd: {
+        type: "upsell";
+        upsellId: string | undefined;
+        products: Array<{
+          baseProductId: string;
+          color: string;
+          size: string;
+        }>;
+      } = {
+        type: "upsell",
+        upsellId: selectedProduct?.upsell.id,
+        products: productsToAdd || [],
+      };
+
+      const result = await AddToCartAction(upsellToAdd);
+
+      console.log(result);
+    });
   };
 
   return (
@@ -465,6 +497,7 @@ export function UpsellReviewOverlay() {
                           readyProducts.length !==
                           selectedProduct.upsell.products.length
                         }
+                        onClick={handleAddToCart}
                       >
                         Add Upgrade to Cart
                       </button>

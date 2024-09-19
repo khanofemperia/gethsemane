@@ -16,14 +16,13 @@ import { database } from "@/lib/firebase";
 import { generateId } from "@/lib/utils";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-export async function AddToCartAction({
-  id,
-  size,
-  color,
-}: {
-  id: string;
-  size: string;
-  color: string;
+export async function AddToCartAction(data: {
+  type: "product" | "upsell";
+  baseProductId?: string;
+  size?: string;
+  color?: string;
+  upsellId?: string;
+  products?: Array<{ baseProductId: string; size: string; color: string }>;
 }) {
   const generateNewCart = async () => {
     try {
@@ -41,7 +40,20 @@ export async function AddToCartAction({
 
       const newCartData = {
         device_identifier: newDeviceIdentifier,
-        products: [{ baseProductId: id, size, color, variantId: generateId() }],
+        products:
+          data.type === "product"
+            ? [
+                {
+                  baseProductId: data.baseProductId,
+                  size: data.size,
+                  color: data.color,
+                  variantId: generateId(),
+                },
+              ]
+            : data.products?.map((product) => ({
+                ...product,
+                variantId: generateId(),
+              })) || [],
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
@@ -80,50 +92,57 @@ export async function AddToCartAction({
     );
 
     if (snapshot.empty) {
-      // If cart not found, generate a new one
       return await generateNewCart();
     } else {
-      // If cart found, check if the product with the same size and color exists
       const cartDoc = snapshot.docs[0].ref;
       const existingProducts = snapshot.docs[0].data().products;
 
-      const productExists = existingProducts.some(
-        (product: { baseProductId: string; size: string; color: string }) =>
-          product.baseProductId === id &&
-          product.size === size &&
-          product.color === color
-      );
+      if (data.type === "product") {
+        const productExists = existingProducts.some(
+          (product: { baseProductId: string; size: string; color: string }) =>
+            product.baseProductId === data.baseProductId &&
+            product.size === data.size &&
+            product.color === data.color
+        );
 
-      if (productExists) {
-        // Item already exists in cart
-        return {
-          type: AlertMessageType.ERROR,
-          message: "Item already in cart",
-        };
-      } else {
-        // Product not in cart, add it to the existing products
-        existingProducts.push({
-          baseProductId: id,
-          size,
-          color,
-          variantId: generateId(),
-        });
-
-        await runTransaction(database, async (transaction) => {
-          transaction.update(cartDoc, {
-            products: existingProducts,
-            updatedAt: serverTimestamp(),
+        if (productExists) {
+          return {
+            type: AlertMessageType.ERROR,
+            message: "Item already in cart",
+          };
+        } else {
+          existingProducts.push({
+            baseProductId: data.baseProductId,
+            size: data.size,
+            color: data.color,
+            variantId: generateId(),
           });
-        });
-
-        revalidatePath("/");
-        revalidatePath("/[slug]", "page");
-
-        return {
-          type: AlertMessageType.SUCCESS,
-          message: "Item added to cart",
-        };
+        }
+      } else if (data.type === "upsell" && data.products) {
+        existingProducts.push(
+          ...data.products.map((product) => ({
+            baseProductId: product.baseProductId,
+            size: product.size,
+            color: product.color,
+            variantId: generateId(),
+          }))
+        );
       }
+
+      await runTransaction(database, async (transaction) => {
+        transaction.update(cartDoc, {
+          products: existingProducts,
+          updatedAt: serverTimestamp(),
+        });
+      });
+
+      revalidatePath("/");
+      revalidatePath("/[slug]", "page");
+
+      return {
+        type: AlertMessageType.SUCCESS,
+        message: "Item added to cart",
+      };
     }
   } catch (error) {
     console.error("Error adding product to cart:", error);

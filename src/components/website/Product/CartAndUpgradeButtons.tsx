@@ -28,15 +28,6 @@ export function CartAndUpgradeButtons({
   const { showAlert } = useAlertStore();
 
   useEffect(() => {
-    console.log(
-      cart?.products.some(
-        ({ baseProductId, color, size }) =>
-          baseProductId === productId &&
-          color === selectedColor &&
-          size === selectedSize
-      ) ?? false
-    );
-
     setIsInCart(
       cart?.products.some(
         ({ baseProductId, color, size }) =>
