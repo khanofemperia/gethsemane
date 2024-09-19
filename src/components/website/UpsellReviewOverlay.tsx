@@ -8,6 +8,7 @@ import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
 import clsx from "clsx";
 import Link from "next/link";
 import { ProductImageCarousel } from "./ProductImageCarousel";
+import { formatThousands } from "@/lib/utils";
 
 type UpsellReviewProductType = {
   id: string;
@@ -319,6 +320,14 @@ export function UpsellReviewOverlay() {
     setSelectedProductForCarousel(null);
   };
 
+  const calculateSavings = (pricing: {
+    salePrice: number;
+    basePrice: number;
+    discountPercentage: number;
+  }) => {
+    return (Number(pricing.basePrice) - Number(pricing.salePrice)).toFixed(2);
+  };
+
   return (
     <>
       {isVisible && selectedProduct && (
@@ -326,9 +335,33 @@ export function UpsellReviewOverlay() {
           <div className="max-h-[764px] relative overflow-hidden rounded-2xl shadow-[0px_0px_36px_0px_rgba(255,185,56,0.6)] bg-white">
             <div className="w-[600px] h-full pt-6 pb-[80px] flex flex-col relative">
               <div className="pb-3 flex justify-center">
-                <div className="flex items-center gap-1">
-                  <span className="font-semibold text-xl">$71.99</span>
-                  <span className="text-amber font-medium">(Saved $24.00)</span>
+                <div className="flex items-center gap-2">
+                  {selectedProduct.upsell.pricing.salePrice ? (
+                    <>
+                      <span className="font-semibold text-xl">
+                        $
+                        {formatThousands(
+                          Number(selectedProduct.upsell.pricing.salePrice)
+                        )}
+                      </span>
+                      <span className="text-amber font-medium">
+                        (Saved $
+                        {calculateSavings(selectedProduct.upsell.pricing)})
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-semibold text-xl">
+                        $
+                        {formatThousands(
+                          Number(selectedProduct.upsell.pricing.salePrice)
+                        )}
+                      </span>
+                      <span className="text-amber text-sm font-medium border border-amber h-5 leading-none px-1 rounded flex items-center justify-center">
+                        Limited time offer
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="p-8 pt-4 flex flex-col gap-5 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
@@ -389,7 +422,9 @@ export function UpsellReviewOverlay() {
                                 className="stroke-gray"
                               />
                             </Link>
-                            <span className="text-sm line-through">$56.99</span>
+                            <span className="text-sm line-through">
+                              ${formatThousands(product.basePrice)}
+                            </span>
                           </div>
                           <ProductOptions
                             product={product}
@@ -445,7 +480,8 @@ export function UpsellReviewOverlay() {
                       >
                         <p className="text-white text-sm">
                           <span className="text-[#ffe6ba]">
-                            Congrats! Saved $21.99 -
+                            Congrats! Saved $
+                            {calculateSavings(selectedProduct.upsell.pricing)} -
                           </span>{" "}
                           <b>grab it before it's gone!</b>
                         </p>

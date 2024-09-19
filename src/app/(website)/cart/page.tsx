@@ -102,6 +102,45 @@ export default async function Cart() {
     })
     .filter((product) => product !== null);
 
+  console.log(cartProducts);
+
+  /*
+
+[
+  {
+    baseProductId: '91468',
+    name: 'Regular Fit Crew Neck Lace Splicing Short Sleeve Top - Exaggerated Ruffle, Medium Stretch, Semi-Sheer, Polyester Knit Fabric - Perfect for Casual Spring and Summer Wear',
+    slug: 'crew-neck-lace-splicing-top-ruffle-stretch-semi-sheer-polyester',
+    pricing: { discountPercentage: 0, salePrice: 0, basePrice: 59.99 },
+    mainImage: 'https://img.kwcdn.com/product/fancy/af7d2c23-4766-4664-a553-e8805389396e.jpg?imageView2/2/w/800/q/70/format/webp',
+    variantId: '71351',
+    size: 'S',
+    color: 'Black'
+  },
+  {
+    baseProductId: '91062',
+    name: "Waterproof Windproof Women's Hiking Jacket",
+    slug: 'waterproof-windproof-womens-hiking-jacket',
+    pricing: { salePrice: 14.99, discountPercentage: 36, basePrice: 21.99 },
+    mainImage: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/1b9cc2ef7d0250bab4c916ece31c06ec.jpg?imageView2/2/w/800/q/70/format/webp',
+    variantId: '71967',
+    size: 'M',
+    color: 'Turquoise'
+  },
+  {
+    baseProductId: '91062',
+    name: "Waterproof Windproof Women's Hiking Jacket",
+    slug: 'waterproof-windproof-womens-hiking-jacket',
+    pricing: { salePrice: 14.99, discountPercentage: 36, basePrice: 21.99 },
+    mainImage: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/314892ee24b07a88b7417acbba9e0ae8.jpg?imageView2/2/w/800/q/70/format/webp',
+    variantId: '48046',
+    size: 'L',
+    color: 'Black'
+  }
+]
+
+*/
+
   return (
     <>
       <div className="h-screen overflow-x-hidden overflow-y-auto custom-scrollbar">
@@ -158,42 +197,6 @@ export default async function Cart() {
                       <span className="font-semibold">Select all (3)</span>
                     </div>
                     <div className="flex flex-col gap-5">
-                      {/* <div className="p-5 flex flex-col gap-5 rounded bg-[#fffbf6] border border-[#fceddf]">
-                        <div className="flex gap-5">
-                          <div className="flex items-center">
-                            <div className="-mt-5 w-5 h-5 rounded-full bg-black flex items-center justify-center">
-                              <CheckmarkIcon className="fill-white" size={16} />
-                            </div>
-                          </div>
-                          <div className="h-full w-full pb-5 border-b border-[#fceddf]">
-                            <div className="mb-5 flex items-center gap-1">
-                              <span className="font-medium">$71.99</span>
-                              <span className="text-sm text-amber">
-                                (Saved $24.00)
-                              </span>
-                            </div>
-                            <div className="h-[140px]">
-                              <div className="shadow-[#fbe6d3_0px_1px_2px_1px] h-full aspect-square flex items-center justify-center rounded-lg overflow-hidden">
-                                <Image
-                                  src="https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg"
-                                  alt="$71.99 (Saved $24.00)"
-                                  width={140}
-                                  height={140}
-                                  priority
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex gap-5">
-                          <div className="flex items-center">
-                            <div className="-mt-5 w-5 h-5 rounded-full bg-black flex items-center justify-center">
-                              <CheckmarkIcon className="fill-white" size={16} />
-                            </div>
-                          </div>
-                          <div className="h-[140px] w-full"></div> #fff5e9
-                        </div>
-                      </div> */}
                       <div className="flex gap-5">
                         <div className="flex items-center">
                           <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
