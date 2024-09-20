@@ -212,10 +212,12 @@ type ProductType = {
 type CartType = {
   id: string;
   device_identifier: string;
-  products: Array<{
-    baseProductId: string;
-    variantId: string;
-    size: string;
-    color: string;
+  items: Array<{
+    type: "product" | "upsell";
+    baseProductId?: string;
+    size?: string;
+    color?: string;
+    upsellId?: string;
+    products?: Array<{ id: string; size: string; color: string }>;
   }>;
 };

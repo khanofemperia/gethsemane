@@ -1096,7 +1096,7 @@ export async function getCart(
     const cart: CartType = {
       id: cartDoc.id,
       device_identifier: cartData.device_identifier,
-      products: cartData.products,
+      items: cartData.items,
     };
 
     return cart;

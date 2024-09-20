@@ -24,19 +24,6 @@ export async function AddToCartAction(data: {
   upsellId?: string;
   products?: Array<{ id: string; size: string; color: string }>;
 }) {
-  /*
-  console.log(data);
-
-  {
-    type: 'upsell',
-    upsellId: '72549',
-    products: [
-      { id: '91468', color: 'Orange', size: 'XXL' },
-      { id: '91062', color: 'Turquoise', size: 'M' },
-      { id: '48862', color: '', size: '' }
-    ]
-  }
-*/
   const setNewDeviceIdentifier = () => {
     const newDeviceIdentifier = nanoid();
     cookies().set({
