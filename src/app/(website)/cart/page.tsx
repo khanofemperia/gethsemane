@@ -143,12 +143,17 @@ export default async function Cart() {
   // Combine product and upsell items
   const combinedCartItems = [...cartProducts, ...upsellProducts];
 
-  // Sort combined items by index
   const sortedCartItems = combinedCartItems.sort(
-    (a, b) => (a.index || 0) - (b.index || 0)
+    (a, b) => a.index - (b.index || 0) /* */
   );
 
-  console.log(sortedCartItems[1].products);
+  const calculateSavings = (pricing: {
+    salePrice: number;
+    basePrice: number;
+    discountPercentage: number;
+  }) => {
+    return (Number(pricing.basePrice) - Number(pricing.salePrice)).toFixed(2);
+  };
 
   return (
     <>
@@ -183,7 +188,7 @@ export default async function Cart() {
         </nav>
         <div className="max-w-[968px] mx-auto flex flex-col gap-10">
           <div className="mx-auto">
-            {!cartProducts || cartProducts.length === 0 ? (
+            {!sortedCartItems || sortedCartItems.length === 0 ? (
               <div className="flex flex-col items-center py-16 text-lg">
                 <Image
                   src="/icons/cart-thin.svg"
@@ -203,125 +208,164 @@ export default async function Cart() {
                           <CheckmarkIcon className="fill-white" size={16} />
                         </div>
                       </div>
-                      <span className="font-semibold">Select all (3)</span>
+                      <span className="font-semibold">
+                        Select all ({sortedCartItems.length})
+                      </span>
                     </div>
                     <div className="flex flex-col gap-5">
-                      <div className="flex gap-5">
-                        <div className="flex items-center">
-                          <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
-                            <CheckmarkIcon className="fill-white" size={16} />
-                          </div>
-                        </div>
-                        <div className="relative w-full p-5 flex gap-5 rounded bg-[#fffbf6] border border-[#fceddf]">
-                          <div className="shadow-[#fbe6d3_0px_0.5px_2px_1px] min-w-[180px] max-w-[180px] min-h-[180px] max-h-[180px] overflow-hidden rounded-lg flex items-center justify-center">
-                            <Image
-                              src="https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg"
-                              alt="$71.99 (Saved $24.00)"
-                              width={180}
-                              height={180}
-                              priority
-                            />
-                          </div>
-                          <div className="w-full flex flex-col gap-2">
-                            <div className="min-w-full h-5 flex items-center justify-between gap-5">
-                              <div className="flex items-center gap-1">
-                                <span className="font-medium">$71.99</span>
-                                <span className="text-sm text-amber">
-                                  (Saved $24.00)
-                                </span>
+                      {sortedCartItems.map((item) => {
+                        if (item.type === "product") {
+                          return (
+                            <div key={item.index} className="flex gap-5">
+                              <div className="flex items-center">
+                                <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                                  <CheckmarkIcon
+                                    className="fill-white"
+                                    size={16}
+                                  />
+                                </div>
                               </div>
-                            </div>
-                            <div className="text-gray text-xs leading-5">
-                              Cat Backpack{" "}
-                              <span className="text-[#cfcfcf]">•</span> Stripe
-                              Tee <span className="text-[#cfcfcf]">•</span>{" "}
-                              Button Skirt{" "}
-                              <span className="text-[#cfcfcf]">•</span> Adidas
-                              Sneakers <span className="text-[#cfcfcf]">•</span>{" "}
-                              Polo Cap
-                            </div>
-                          </div>
-                          <button
-                            className={clsx(
-                              "absolute right-3 top-3 min-w-8 max-w-8 min-h-8 max-h-8 rounded-full flex items-center justify-center ease-in-out duration-300 transition hover:bg-[#fceddf]"
-                            )}
-                          >
-                            <TrashIcon size={18} className="fill-gray" />
-                          </button>
-                        </div>
-                      </div>
-                      {(cartProducts || []).map(
-                        ({
-                          baseProductId,
-                          variantId,
-                          name,
-                          slug,
-                          pricing,
-                          mainImage,
-                          color,
-                          size,
-                        }) => (
-                          <div key={variantId} className="flex gap-5">
-                            <div className="flex items-center">
-                              <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
-                                <CheckmarkIcon
-                                  className="fill-white"
-                                  size={16}
+                              <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
+                                <Image
+                                  src={item.mainImage}
+                                  alt={item.name}
+                                  width={128}
+                                  height={128}
+                                  priority
                                 />
                               </div>
-                            </div>
-                            <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
-                              <Image
-                                src={mainImage}
-                                alt={name}
-                                width={128}
-                                height={128}
-                                priority
-                              />
-                            </div>
-                            <div className="w-full flex flex-col gap-1">
-                              <div className="min-w-full h-5 flex items-center justify-between gap-5">
-                                <Link
-                                  href={`${slug}-${baseProductId}`}
-                                  className="text-sm line-clamp-1"
-                                >
-                                  {name}
-                                </Link>
-                                <RemoveFromCartButton variantId={variantId} />
+                              <div className="w-full pr-3 flex flex-col gap-1">
+                                <div className="min-w-full h-5 flex items-center justify-between gap-5">
+                                  <Link
+                                    href={`${item.slug}-${item.baseProductId}`}
+                                    className="text-sm line-clamp-1"
+                                  >
+                                    {item.name}
+                                  </Link>
+                                  <RemoveFromCartButton
+                                    variantId={item.variantId}
+                                  />
+                                </div>
+                                <span className="text-sm text-gray">
+                                  {item.color} / {item.size}
+                                </span>
+                                <div className="mt-2 w-max flex items-center justify-center">
+                                  {Number(item.pricing.salePrice) ? (
+                                    <div className="flex items-center gap-[6px]">
+                                      <span className="font-medium">
+                                        $
+                                        {formatThousands(
+                                          Number(item.pricing.salePrice)
+                                        )}
+                                      </span>
+                                      <span className="text-xs text-gray line-through mt-[2px]">
+                                        $
+                                        {formatThousands(
+                                          Number(item.pricing.basePrice)
+                                        )}
+                                      </span>
+                                      <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
+                                        -{item.pricing.discountPercentage}%
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <p className="font-medium">
+                                      $
+                                      {formatThousands(
+                                        Number(item.pricing.basePrice)
+                                      )}
+                                    </p>
+                                  )}
+                                </div>
                               </div>
-                              <span className="text-sm text-gray">
-                                {color} / {size}
-                              </span>
-                              <div className="mt-2 w-max flex items-center justify-center">
-                                {Number(pricing.salePrice) ? (
-                                  <div className="flex items-center gap-[6px]">
-                                    <span className="font-medium">
-                                      $
-                                      {formatThousands(
-                                        Number(pricing.salePrice)
+                            </div>
+                          );
+                        } else if (item.type === "upsell") {
+                          return (
+                            <div key={item.index} className="flex gap-5">
+                              <div className="flex items-center">
+                                <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                                  <CheckmarkIcon
+                                    className="fill-white"
+                                    size={16}
+                                  />
+                                </div>
+                              </div>
+                              <div className="relative w-full p-5 flex gap-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]">
+                                <div className="flex flex-col gap-2">
+                                  <div className="min-w-full h-5 flex items-center justify-between gap-5">
+                                    <div className="flex items-center gap-1">
+                                      {item.pricing.salePrice ? (
+                                        <>
+                                          <span className="font-medium">
+                                            $
+                                            {formatThousands(
+                                              Number(item.pricing.salePrice)
+                                            )}
+                                          </span>
+                                          <span className="text-amber text-sm">
+                                            (Saved $
+                                            {calculateSavings(item.pricing)})
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <span className="font-medium">
+                                            $
+                                            {formatThousands(
+                                              Number(item.pricing.basePrice)
+                                            )}
+                                          </span>
+                                          <span className="text-amber text-xs border border-amber ml-[2px] h-[18px] leading-none px-1 rounded flex items-center justify-center">
+                                            Limited time offer
+                                          </span>
+                                        </>
                                       )}
-                                    </span>
-                                    <span className="text-xs text-gray line-through mt-[2px]">
-                                      $
-                                      {formatThousands(
-                                        Number(pricing.basePrice)
-                                      )}
-                                    </span>
-                                    <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                                      -{pricing.discountPercentage}%
-                                    </span>
+                                    </div>
                                   </div>
-                                ) : (
-                                  <p className="font-medium">
-                                    $
-                                    {formatThousands(Number(pricing.basePrice))}
-                                  </p>
-                                )}
+                                  <div className="text-gray text-xs leading-5 max-w-[360px]">
+                                    {item.products.map((product, index) => (
+                                      <span key={product.id}>
+                                        {product.name}
+                                        {index < item.products.length - 1 && (
+                                          <span className="text-[#cfcfcf]">
+                                            {" "}
+                                            •{" "}
+                                          </span>
+                                        )}
+                                      </span>
+                                    ))}
+                                  </div>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    {item.products.map((product) => (
+                                      <div
+                                        key={product.id}
+                                        className="min-w-32 max-w-32 h-32 rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center"
+                                      >
+                                        <Image
+                                          src={product.mainImage}
+                                          alt={product.name}
+                                          width={128}
+                                          height={128}
+                                          priority
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                                <button
+                                  className={clsx(
+                                    "absolute right-3 top-3 min-w-8 max-w-8 min-h-8 max-h-8 rounded-full flex items-center justify-center ease-in-out duration-300 transition hover:bg-[#fceddf]"
+                                  )}
+                                >
+                                  <TrashIcon size={18} className="fill-gray" />
+                                </button>
                               </div>
                             </div>
-                          </div>
-                        )
-                      )}
+                          );
+                        }
+                        return null;
+                      })}
                     </div>
                   </div>
                 </div>
