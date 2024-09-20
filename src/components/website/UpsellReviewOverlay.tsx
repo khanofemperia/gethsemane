@@ -340,7 +340,7 @@ export function UpsellReviewOverlay() {
           size: selectedOptions[product.id]?.size || "",
         }));
 
-      const upsellToAdd: {
+      type UpsellToAddType = {
         type: "upsell";
         upsellId: string | undefined;
         products: Array<{
@@ -348,13 +348,19 @@ export function UpsellReviewOverlay() {
           color: string;
           size: string;
         }>;
-      } = {
+      };
+
+      const upsellToAdd: UpsellToAddType = {
         type: "upsell",
         upsellId: selectedProduct?.upsell.id,
         products: productsToAdd || [],
       };
 
       const result = await AddToCartAction(upsellToAdd);
+
+      
+
+        
 
       console.log(result);
     });
