@@ -335,7 +335,7 @@ export function UpsellReviewOverlay() {
       const productsToAdd = selectedProduct?.upsell.products
         .filter((product) => readyProducts.includes(product.id))
         .map((product) => ({
-          baseProductId: product.id,
+          id: product.id,
           color: selectedOptions[product.id]?.color || "",
           size: selectedOptions[product.id]?.size || "",
         }));
@@ -344,7 +344,7 @@ export function UpsellReviewOverlay() {
         type: "upsell";
         upsellId: string | undefined;
         products: Array<{
-          baseProductId: string;
+          id: string;
           color: string;
           size: string;
         }>;
@@ -357,10 +357,6 @@ export function UpsellReviewOverlay() {
       };
 
       const result = await AddToCartAction(upsellToAdd);
-
-      
-
-        
 
       console.log(result);
     });

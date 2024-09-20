@@ -22,8 +22,21 @@ export async function AddToCartAction(data: {
   size?: string;
   color?: string;
   upsellId?: string;
-  products?: Array<{ baseProductId: string; size: string; color: string }>;
+  products?: Array<{ id: string; size: string; color: string }>;
 }) {
+  /*
+  console.log(data);
+
+  {
+    type: 'upsell',
+    upsellId: '72549',
+    products: [
+      { id: '91468', color: 'Orange', size: 'XXL' },
+      { id: '91062', color: 'Turquoise', size: 'M' },
+      { id: '48862', color: '', size: '' }
+    ]
+  }
+*/
   const setNewDeviceIdentifier = () => {
     const newDeviceIdentifier = nanoid();
     cookies().set({
@@ -33,7 +46,7 @@ export async function AddToCartAction(data: {
       secure: true,
       sameSite: "strict",
       path: "/",
-      maxAge: 30 * 24 * 60 * 60, // 30 days
+      maxAge: 30 * 24 * 60 * 60, // expires in 30 days
     });
     return newDeviceIdentifier;
   };
@@ -51,10 +64,7 @@ export async function AddToCartAction(data: {
       return {
         type: "upsell",
         upsellId: data.upsellId,
-        products: data.products?.map((product) => ({
-          ...product,
-          variantId: generateId(),
-        })),
+        products: data.products?.map((product) => product),
       };
     }
   };
@@ -200,7 +210,7 @@ export async function RemoveFromCartAction({
     );
 
     await runTransaction(database, async (transaction) => {
-      return  transaction.update(cartDoc, {
+      return transaction.update(cartDoc, {
         products: updatedProducts,
         updatedAt: serverTimestamp(),
       });
