@@ -215,9 +215,11 @@ type CartType = {
   items: Array<{
     type: "product" | "upsell";
     baseProductId?: string;
+    variantId?: string;
+    index?: string;
     size?: string;
     color?: string;
-    upsellId?: string;
+    baseUpsellId?: string;
     products?: Array<{ id: string; size: string; color: string }>;
   }>;
 };

@@ -21,7 +21,7 @@ export async function AddToCartAction(data: {
   baseProductId?: string;
   size?: string;
   color?: string;
-  upsellId?: string;
+  baseUpsellId?: string;
   products?: Array<{ id: string; size: string; color: string }>;
 }) {
   const setNewDeviceIdentifier = () => {
@@ -38,7 +38,7 @@ export async function AddToCartAction(data: {
     return newDeviceIdentifier;
   };
 
-  const createCartItem = () => {
+  const createCartItem = (index: number) => {
     if (data.type === "product") {
       return {
         type: "product",
@@ -46,12 +46,15 @@ export async function AddToCartAction(data: {
         size: data.size,
         color: data.color,
         variantId: generateId(),
+        index,
       };
     } else {
       return {
         type: "upsell",
-        upsellId: data.upsellId,
-        products: data.products?.map((product) => product),
+        baseUpsellId: data.baseUpsellId,
+        variantId: generateId(),
+        index,
+        products: data.products,
       };
     }
   };
@@ -63,7 +66,7 @@ export async function AddToCartAction(data: {
         device_identifier: newDeviceIdentifier,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-        items: [createCartItem()],
+        items: [createCartItem(1)],
       };
 
       const newCartDocRef = doc(collection(database, "carts"), generateId());
@@ -88,6 +91,8 @@ export async function AddToCartAction(data: {
   };
 
   const updateExistingCart = async (cartDoc: any, existingCartItems: any[]) => {
+    const nextIndex = existingCartItems.length + 1;
+
     if (data.type === "product") {
       const productExists = existingCartItems.some(
         (product: { baseProductId: string; size: string; color: string }) =>
@@ -107,17 +112,45 @@ export async function AddToCartAction(data: {
           size: data.size,
           color: data.color,
           variantId: generateId(),
+          index: nextIndex,
         });
       }
     } else if (data.type === "upsell" && data.products) {
-      existingCartItems.push({
-        type: "upsell",
-        upsellId: data.upsellId,
-        products: data.products.map((product) => ({
-          ...product,
-          variantId: generateId(),
-        })),
+      const upsellExists = existingCartItems.some((item) => {
+        if (item.type === "upsell" && item.baseUpsellId === data.baseUpsellId) {
+          return item.products.every(
+            (
+              existingProduct: { color: string; size: string },
+              index: number
+            ) => {
+              const newProduct = data.products?.[index];
+              if (!newProduct) return false;
+              return (
+                existingProduct.color === newProduct.color &&
+                existingProduct.size === newProduct.size
+              );
+            }
+          );
+        }
+        return false;
       });
+
+      if (upsellExists) {
+        return {
+          type: AlertMessageType.ERROR,
+          message: "Item already in cart",
+        };
+      } else {
+        existingCartItems.push({
+          type: "upsell",
+          baseUpsellId: data.baseUpsellId,
+          index: nextIndex, // Set index
+          products: data.products.map((product) => ({
+            ...product,
+            variantId: generateId(),
+          })),
+        });
+      }
     }
 
     // Update cart with new items

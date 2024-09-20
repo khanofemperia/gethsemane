@@ -342,7 +342,7 @@ export function UpsellReviewOverlay() {
 
       type UpsellToAddType = {
         type: "upsell";
-        upsellId: string | undefined;
+        baseUpsellId: string | undefined;
         products: Array<{
           id: string;
           color: string;
@@ -352,7 +352,7 @@ export function UpsellReviewOverlay() {
 
       const upsellToAdd: UpsellToAddType = {
         type: "upsell",
-        upsellId: selectedProduct?.upsell.id,
+        baseUpsellId: selectedProduct?.upsell.id,
         products: productsToAdd || [],
       };
 

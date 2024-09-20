@@ -151,9 +151,9 @@ export default async function ProductDetails({
                 className="relative h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
               >
                 <CartIcon size={26} />
-                {cart && cart.products.length > 0 && (
+                {cart && cart.items.length > 0 && (
                   <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
-                    {cart.products.length}
+                    {cart.items.length}
                   </span>
                 )}
               </Link>

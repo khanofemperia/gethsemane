@@ -29,7 +29,7 @@ export function CartAndUpgradeButtons({
 
   useEffect(() => {
     setIsInCart(
-      cart?.products.some(
+      cart?.items.some(
         ({ baseProductId, color, size }) =>
           baseProductId === productId &&
           color === selectedColor &&
@@ -54,7 +54,8 @@ export function CartAndUpgradeButtons({
 
     startTransition(async () => {
       const result = await AddToCartAction({
-        id: productId,
+        type: "product",
+        baseProductId: productId,
         color: selectedColor,
         size: selectedSize,
       });

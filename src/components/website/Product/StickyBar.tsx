@@ -81,7 +81,7 @@ export default function StickyBar({
 
   useEffect(() => {
     setIsInCart(
-      cart?.products.some(
+      cart?.items.some(
         ({ baseProductId, color, size }) =>
           baseProductId === productInfo.id &&
           color === selectedColor &&
@@ -106,7 +106,8 @@ export default function StickyBar({
 
     startTransition(async () => {
       const result = await AddToCartAction({
-        id: productInfo.id,
+        type: "product",
+        baseProductId: productInfo.id,
         color: selectedColor,
         size: selectedSize,
       });

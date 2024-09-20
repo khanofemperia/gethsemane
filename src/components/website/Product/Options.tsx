@@ -168,7 +168,7 @@ export default function ProductOptions({
 
   useEffect(() => {
     setIsInCart(
-      cart?.products.some(
+      cart?.items.some(
         ({ baseProductId, color, size }) =>
           baseProductId === productInfo.id &&
           color === selectedColor &&

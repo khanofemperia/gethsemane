@@ -2,7 +2,12 @@ import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import ShowAlert from "@/components/website/ShowAlert";
 import { CheckmarkIcon, TrashIcon } from "@/icons";
-import { getCart, getDiscoveryProducts, getProductsByIds } from "@/lib/getData";
+import {
+  getCart,
+  getDiscoveryProducts,
+  getProductsByIds,
+  getUpsell,
+} from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
 import Image from "next/image";
@@ -65,11 +70,15 @@ export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
   const cart = await getCart(deviceIdentifier);
-  const discoveryProducts = await getDiscoveryProducts({ limit: 10 });
 
-  const productIds = cart
-    ? cart.products.map((product) => product.baseProductId)
-    : [];
+  const productItems =
+    cart?.items.filter((item) => item.type === "product") || [];
+  const upsellItems =
+    cart?.items.filter((item) => item.type === "upsell") || [];
+
+  const productIds = productItems
+    .map((product) => product.baseProductId)
+    .filter(Boolean) as string[];
 
   const baseProducts = (await getProductsByIds({
     ids: productIds,
@@ -77,7 +86,7 @@ export default async function Cart() {
     visibility: "PUBLISHED",
   })) as ProductType[];
 
-  const cartProducts = cart?.products
+  const cartProducts = productItems
     .map((cartProduct) => {
       const baseProduct = baseProducts.find(
         (product) => product.id === cartProduct.baseProductId
@@ -97,49 +106,49 @@ export default async function Cart() {
             variantId: cartProduct.variantId,
             size: cartProduct.size,
             color: cartProduct.color,
+            index: cartProduct.index || 0,
+            type: cartProduct.type,
           }
         : null;
     })
     .filter((product) => product !== null);
 
-  console.log(cartProducts);
+  const upsellProducts = await Promise.all(
+    upsellItems.map(async (upsell) => {
+      const upsellData = await getUpsell({ id: upsell.baseUpsellId });
 
-  /*
+      const detailedProducts = upsell.products.map((selectedProduct) => {
+        const baseProduct = upsellData?.products.find(
+          (product) => product.id === selectedProduct.id
+        );
 
-[
-  {
-    baseProductId: '91468',
-    name: 'Regular Fit Crew Neck Lace Splicing Short Sleeve Top - Exaggerated Ruffle, Medium Stretch, Semi-Sheer, Polyester Knit Fabric - Perfect for Casual Spring and Summer Wear',
-    slug: 'crew-neck-lace-splicing-top-ruffle-stretch-semi-sheer-polyester',
-    pricing: { discountPercentage: 0, salePrice: 0, basePrice: 59.99 },
-    mainImage: 'https://img.kwcdn.com/product/fancy/af7d2c23-4766-4664-a553-e8805389396e.jpg?imageView2/2/w/800/q/70/format/webp',
-    variantId: '71351',
-    size: 'S',
-    color: 'Black'
-  },
-  {
-    baseProductId: '91062',
-    name: "Waterproof Windproof Women's Hiking Jacket",
-    slug: 'waterproof-windproof-womens-hiking-jacket',
-    pricing: { salePrice: 14.99, discountPercentage: 36, basePrice: 21.99 },
-    mainImage: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/1b9cc2ef7d0250bab4c916ece31c06ec.jpg?imageView2/2/w/800/q/70/format/webp',
-    variantId: '71967',
-    size: 'M',
-    color: 'Turquoise'
-  },
-  {
-    baseProductId: '91062',
-    name: "Waterproof Windproof Women's Hiking Jacket",
-    slug: 'waterproof-windproof-womens-hiking-jacket',
-    pricing: { salePrice: 14.99, discountPercentage: 36, basePrice: 21.99 },
-    mainImage: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/314892ee24b07a88b7417acbba9e0ae8.jpg?imageView2/2/w/800/q/70/format/webp',
-    variantId: '48046',
-    size: 'L',
-    color: 'Black'
-  }
-]
+        return {
+          ...baseProduct,
+          size: selectedProduct.size,
+          color: selectedProduct.color,
+        };
+      });
 
-*/
+      return {
+        baseUpsellId: upsell.baseUpsellId,
+        index: upsell.index,
+        type: upsell.type,
+        mainImage: upsellData?.mainImage,
+        pricing: upsellData?.pricing,
+        products: detailedProducts,
+      };
+    })
+  );
+
+  // Combine product and upsell items
+  const combinedCartItems = [...cartProducts, ...upsellProducts];
+
+  // Sort combined items by index
+  const sortedCartItems = combinedCartItems.sort(
+    (a, b) => (a.index || 0) - (b.index || 0)
+  );
+
+  console.log(sortedCartItems[1].products);
 
   return (
     <>
@@ -396,11 +405,11 @@ export default async function Cart() {
               </div>
             )}
           </div>
-          <DiscoveryProducts
+          {/* <DiscoveryProducts
             heading="Add These to Your Cart"
             products={discoveryProducts as ProductWithUpsellType[]}
             cart={cart as CartType}
-          />
+          /> */}
         </div>
       </div>
       <ShowAlert />
