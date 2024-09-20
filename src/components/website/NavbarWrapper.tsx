@@ -7,6 +7,5 @@ export async function NavbarWrapper() {
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
   const cart = await getCart(deviceIdentifier);
 
-  console.log(cart);
   return <Navbar itemsInCart={cart ? cart.items.length : 0} />;
 }
