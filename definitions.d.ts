@@ -209,17 +209,30 @@ type ProductType = {
   }>;
 };
 
-type CartType = {
-  id: string;
-  device_identifier: string;
-  items: Array<{
-    type: "product" | "upsell";
-    baseProductId?: string;
-    variantId?: string;
-    index?: string;
-    size?: string;
-    color?: string;
-    baseUpsellId?: string;
-    products?: Array<{ id: string; size: string; color: string }>;
+/////////////////////////////////////////////////////
+type CartProductItemType = {
+  index: number;
+  baseProductId: string;
+  variantId: string;
+  color: string;
+  size: string;
+  type: "product";
+};
+
+type CartUpsellItemType = {
+  index: number;
+  baseUpsellId: string;
+  products: Array<{
+    id: string;
+    color: string;
+    size: string;
   }>;
+  type: "upsell";
+};
+
+type CartType = {
+  createdAt: string;
+  updatedAt: string;
+  device_identifier: string;
+  items: (CartProductItemType | CartUpsellItemType)[];
 };

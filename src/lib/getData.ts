@@ -1073,6 +1073,12 @@ export async function getDiscoveryProducts(
   return allProducts.slice(0, limit);
 }
 
+type CartType = {
+  id: string;
+  device_identifier: any;
+  items: (CartProductItemType | CartUpsellItemType)[];
+};
+
 export async function getCart(
   deviceIdentifier: string | undefined
 ): Promise<CartType | null> {
@@ -1093,7 +1099,7 @@ export async function getCart(
     const cartDoc = snapshot.docs[0]; // Assume there's only one cart per device identifier
     const cartData = cartDoc.data();
 
-    const cart: CartType = {
+    const cart = {
       id: cartDoc.id,
       device_identifier: cartData.device_identifier,
       items: cartData.items,

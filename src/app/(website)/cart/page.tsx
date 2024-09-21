@@ -1,159 +1,38 @@
-import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import ShowAlert from "@/components/website/ShowAlert";
 import { CheckmarkIcon, TrashIcon } from "@/icons";
-import {
-  getCart,
-  getDiscoveryProducts,
-  getProductsByIds,
-  getUpsell,
-} from "@/lib/getData";
+import { getCart, getProductsByIds, getUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
-import { DashSpinner } from "@/ui/Spinners/DashSpinner";
 import clsx from "clsx";
-
-type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
-  upsell: {
-    id: string;
-    mainImage: string;
-    pricing: {
-      salePrice: number;
-      basePrice: number;
-      discountPercentage: number;
-    };
-    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-    createdAt: string;
-    updatedAt: string;
-    products: {
-      id: string;
-      name: string;
-      slug: string;
-      mainImage: string;
-      basePrice: number;
-      options: {
-        colors: Array<{
-          name: string;
-          image: string;
-        }>;
-        sizes: {
-          inches: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-          centimeters: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-        };
-      };
-    }[];
-  };
-};
-
-type CartType = {
-  id: string;
-  device_identifier: string;
-  products: Array<{
-    baseProductId: string;
-    variantId: string;
-    size: string;
-    color: string;
-  }>;
-};
 
 export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
-  const cart = await getCart(deviceIdentifier);
 
-  const productItems =
-    cart?.items.filter((item) => item.type === "product") || [];
-  const upsellItems =
-    cart?.items.filter((item) => item.type === "upsell") || [];
+  const { productItems, upsellItems } = await getCartItems(deviceIdentifier);
 
   const productIds = productItems
     .map((product) => product.baseProductId)
     .filter(Boolean) as string[];
 
-  const baseProducts = (await getProductsByIds({
-    ids: productIds,
-    fields: ["id", "name", "slug", "pricing", "images", "options"],
-    visibility: "PUBLISHED",
-  })) as ProductType[];
+  const [baseProducts, cartUpsells] = await Promise.all([
+    getBaseProducts(productIds),
+    getCartUpsells(upsellItems),
+  ]);
 
-  const cartProducts = productItems
-    .map((cartProduct) => {
-      const baseProduct = baseProducts.find(
-        (product) => product.id === cartProduct.baseProductId
-      );
-
-      const colorImage = baseProduct?.options?.colors.find(
-        (colorOption) => colorOption.name === cartProduct.color
-      )?.image;
-
-      return baseProduct
-        ? {
-            baseProductId: baseProduct.id,
-            name: baseProduct.name,
-            slug: baseProduct.slug,
-            pricing: baseProduct.pricing,
-            mainImage: colorImage || baseProduct.images.main,
-            variantId: cartProduct.variantId,
-            size: cartProduct.size,
-            color: cartProduct.color,
-            index: cartProduct.index || 0,
-            type: cartProduct.type,
-          }
-        : null;
-    })
-    .filter((product) => product !== null);
-
-  const upsellProducts = await Promise.all(
-    upsellItems.map(async (upsell) => {
-      const upsellData = await getUpsell({ id: upsell.baseUpsellId });
-
-      const detailedProducts = upsell.products.map((selectedProduct) => {
-        const baseProduct = upsellData?.products.find(
-          (product) => product.id === selectedProduct.id
-        );
-
-        return {
-          ...baseProduct,
-          size: selectedProduct.size,
-          color: selectedProduct.color,
-        };
-      });
-
-      return {
-        baseUpsellId: upsell.baseUpsellId,
-        index: upsell.index,
-        type: upsell.type,
-        mainImage: upsellData?.mainImage,
-        pricing: upsellData?.pricing,
-        products: detailedProducts,
-      };
-    })
+  const cartProducts = mapCartProductsToBaseProducts(
+    productItems,
+    baseProducts
   );
 
-  // Combine product and upsell items
-  const combinedCartItems = [...cartProducts, ...upsellProducts];
-
-  const sortedCartItems = combinedCartItems.sort(
-    (a, b) => a.index - (b.index || 0) /* */
+  const sortedCartItems = [...cartProducts, ...cartUpsells].sort(
+    (a, b) => a.index - b.index
   );
-
-  const calculateSavings = (pricing: {
-    salePrice: number;
-    basePrice: number;
-    discountPercentage: number;
-  }) => {
-    return (Number(pricing.basePrice) - Number(pricing.salePrice)).toFixed(2);
-  };
 
   return (
     <>
@@ -173,7 +52,7 @@ export default async function Cart() {
               />
             </Link>
             <div className="flex items-center gap-[10px] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
-              {!cartProducts || cartProducts.length === 0 ? (
+              {!sortedCartItems || sortedCartItems.length === 0 ? (
                 <h2 className="font-semibold text-lg">Your cart is empty</h2>
               ) : (
                 <>
@@ -460,3 +339,125 @@ export default async function Cart() {
     </>
   );
 }
+
+const calculateSavings = (pricing: ProductType["pricing"]) =>
+  (Number(pricing.basePrice) - Number(pricing.salePrice)).toFixed(2);
+
+const getCartItems = async (deviceIdentifier: string | undefined) => {
+  const cart = await getCart(deviceIdentifier);
+
+  return {
+    productItems: cart?.items.filter((item) => item.type === "product") || [],
+    upsellItems: cart?.items.filter((item) => item.type === "upsell") || [],
+  };
+};
+
+const getBaseProducts = async (productIds: string[]) =>
+  getProductsByIds({
+    ids: productIds,
+    fields: ["id", "name", "slug", "pricing", "images", "options"],
+    visibility: "PUBLISHED",
+  }) as Promise<ProductType[]>;
+
+[
+  {
+    variantId: "27694",
+    index: 1,
+    baseProductId: "91062",
+    size: "S",
+    type: "product",
+    color: "Pink",
+  },
+];
+
+const mapCartProductsToBaseProducts = (
+  cartProducts: Array<{
+    index: number;
+    type: "product";
+    variantId: string;
+    baseProductId: string;
+    size: string;
+    color: string;
+  }>,
+  baseProducts: ProductType[]
+) =>
+  cartProducts
+    .map((cartProduct) => {
+      const baseProduct = baseProducts.find(
+        (product) => product.id === cartProduct.baseProductId
+      );
+
+      if (!baseProduct) return null;
+
+      const colorImage = baseProduct.options?.colors.find(
+        (colorOption) => colorOption.name === cartProduct.color
+      )?.image;
+
+      return {
+        baseProductId: baseProduct.id,
+        name: baseProduct.name,
+        slug: baseProduct.slug,
+        pricing: baseProduct.pricing,
+        mainImage: colorImage || baseProduct.images.main,
+        variantId: cartProduct.variantId,
+        size: cartProduct.size,
+        color: cartProduct.color,
+        index: cartProduct.index || 0,
+        type: cartProduct.type,
+      };
+    })
+    .filter(
+      (product): product is NonNullable<typeof product> => product !== null
+    );
+
+const getCartUpsells = async (
+  upsellItems: Array<{
+    type: "upsell";
+    index: number;
+    baseUpsellId: string;
+    products: Array<{
+      id: string;
+      size: string;
+      color: string;
+    }>;
+  }>
+) =>
+  Promise.all(
+    upsellItems.map(async (upsell) => {
+      const upsellData = (await getUpsell({
+        id: upsell.baseUpsellId,
+      })) as UpsellType;
+
+      const detailedProducts = upsell.products
+        .map((selectedProduct) => {
+          const baseProduct = upsellData.products.find(
+            (product) => product.id === selectedProduct.id
+          );
+
+          if (!baseProduct) {
+            return null;
+          }
+
+          return {
+            index: baseProduct.index,
+            id: baseProduct.id,
+            slug: baseProduct.slug,
+            name: baseProduct.name,
+            mainImage: baseProduct.mainImage,
+            basePrice: baseProduct.basePrice,
+            size: selectedProduct.size,
+            color: selectedProduct.color,
+          };
+        })
+        .filter((product) => product !== null);
+
+      return {
+        baseUpsellId: upsell.baseUpsellId,
+        index: upsell.index,
+        type: upsell.type,
+        mainImage: upsellData?.mainImage,
+        pricing: upsellData?.pricing,
+        products: detailedProducts,
+      };
+    })
+  );
