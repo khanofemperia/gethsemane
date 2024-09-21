@@ -1,7 +1,12 @@
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import ShowAlert from "@/components/website/ShowAlert";
 import { CheckmarkIcon, TrashIcon } from "@/icons";
-import { getCart, getProductsByIds, getUpsell } from "@/lib/getData";
+import {
+  getCart,
+  getDiscoveryProducts,
+  getProductsByIds,
+  getUpsell,
+} from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
 import Image from "next/image";
@@ -9,16 +14,62 @@ import Link from "next/link";
 import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
 import clsx from "clsx";
+import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
+
+type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: {
+      salePrice: number;
+      basePrice: number;
+      discountPercentage: number;
+    };
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: {
+      id: string;
+      name: string;
+      slug: string;
+      mainImage: string;
+      basePrice: number;
+      options: {
+        colors: Array<{
+          name: string;
+          image: string;
+        }>;
+        sizes: {
+          inches: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+          centimeters: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+        };
+      };
+    }[];
+  };
+};
 
 export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
 
-  const { productItems, upsellItems } = await getCartItems(deviceIdentifier);
+  const [cart, discoveryProducts] = await Promise.all([
+    getCart(deviceIdentifier),
+    getDiscoveryProducts({ limit: 10 }),
+  ]);
 
-  const productIds = productItems
-    .map((product) => product.baseProductId)
-    .filter(Boolean) as string[];
+  const items = cart?.items || [];
+  const productItems = items.filter((item) => item.type === "product");
+  const upsellItems = items.filter((item) => item.type === "upsell");
+
+  const productIds = productItems.length
+    ? productItems.map((product) => product.baseProductId).filter(Boolean)
+    : [];
 
   const [baseProducts, cartUpsells] = await Promise.all([
     getBaseProducts(productIds),
@@ -328,11 +379,11 @@ export default async function Cart() {
               </div>
             )}
           </div>
-          {/* <DiscoveryProducts
+          <DiscoveryProducts
             heading="Add These to Your Cart"
             products={discoveryProducts as ProductWithUpsellType[]}
             cart={cart as CartType}
-          /> */}
+          />
         </div>
       </div>
       <ShowAlert />
@@ -342,15 +393,6 @@ export default async function Cart() {
 
 const calculateSavings = (pricing: ProductType["pricing"]) =>
   (Number(pricing.basePrice) - Number(pricing.salePrice)).toFixed(2);
-
-const getCartItems = async (deviceIdentifier: string | undefined) => {
-  const cart = await getCart(deviceIdentifier);
-
-  return {
-    productItems: cart?.items.filter((item) => item.type === "product") || [],
-    upsellItems: cart?.items.filter((item) => item.type === "upsell") || [],
-  };
-};
 
 const getBaseProducts = async (productIds: string[]) =>
   getProductsByIds({

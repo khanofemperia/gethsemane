@@ -231,8 +231,7 @@ type CartUpsellItemType = {
 };
 
 type CartType = {
-  createdAt: string;
-  updatedAt: string;
+  id: string;
   device_identifier: string;
-  items: (CartProductItemType | CartUpsellItemType)[];
+  items: Array<(CartProductItemType | CartUpsellItemType)>;
 };

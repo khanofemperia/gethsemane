@@ -49,7 +49,7 @@ export function DiscoveryProducts({
   products: ProductWithUpsellType[];
   cart: CartType | null;
 }) {
-  noStore();
+  noStore(); // prevents this component from being cached
 
   const shuffledProducts = shuffleDiscoveryProducts([...products]);
   return (
