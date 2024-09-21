@@ -81,12 +81,16 @@ export default function StickyBar({
 
   useEffect(() => {
     setIsInCart(
-      cart?.items.some(
-        ({ baseProductId, color, size }) =>
-          baseProductId === productInfo.id &&
-          color === selectedColor &&
-          size === selectedSize
-      ) ?? false
+      cart?.items.some((item) => {
+        if (item.type === "product") {
+          return (
+            item.baseProductId === productInfo.id &&
+            item.color === selectedColor &&
+            item.size === selectedSize
+          );
+        }
+        return false;
+      }) ?? false
     );
   }, [cart, productInfo.id, selectedColor, selectedSize]);
 

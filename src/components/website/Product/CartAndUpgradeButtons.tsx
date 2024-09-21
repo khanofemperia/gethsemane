@@ -29,12 +29,16 @@ export function CartAndUpgradeButtons({
 
   useEffect(() => {
     setIsInCart(
-      cart?.items.some(
-        ({ baseProductId, color, size }) =>
-          baseProductId === productId &&
-          color === selectedColor &&
-          size === selectedSize
-      ) ?? false
+      cart?.items.some((item) => {
+        if (item.type === "product") {
+          return (
+            item.baseProductId === productId &&
+            item.color === selectedColor &&
+            item.size === selectedSize
+          );
+        }
+        return false;
+      }) ?? false
     );
   }, [cart, productId, selectedColor, selectedSize]);
 
