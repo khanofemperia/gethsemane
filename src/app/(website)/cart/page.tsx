@@ -1,12 +1,7 @@
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import ShowAlert from "@/components/website/ShowAlert";
 import { CheckmarkIcon, TrashIcon } from "@/icons";
-import {
-  getCart,
-  getDiscoveryProducts,
-  getProductsByIds,
-  getUpsell,
-} from "@/lib/getData";
+import { getCart, getDiscoveryProducts, getProductsByIds } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
 import Image from "next/image";
@@ -15,6 +10,8 @@ import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
 import clsx from "clsx";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
+import { database } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -494,3 +491,51 @@ const getCartUpsells = async (
       };
     })
   );
+
+const getUpsell = async ({
+  id,
+}: {
+  id: string;
+}): Promise<Partial<UpsellType> | null> => {
+  const documentRef = doc(database, "upsells", id);
+  const snapshot = await getDoc(documentRef);
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  const data = snapshot.data();
+
+  const productIds = data.products
+    ? data.products.map((p: { id: string }) => p.id)
+    : [];
+
+  const products: ProductType[] | null =
+    productIds.length > 0
+      ? await getProductsByIds({
+          ids: productIds,
+          fields: ["options"],
+          visibility: "PUBLISHED",
+        })
+      : null;
+
+  const updatedProducts = data.products.map((product: any) => {
+    const matchedProduct = products?.find((p) => p.id === product.id);
+    return {
+      ...product,
+      options: matchedProduct?.options ?? [],
+    };
+  });
+
+  const sortedProducts = updatedProducts.sort(
+    (a: any, b: any) => a.index - b.index
+  );
+
+  const upsell: Partial<UpsellType> = {
+    id: snapshot.id,
+    ...data,
+    products: sortedProducts,
+  };
+
+  return upsell;
+};
