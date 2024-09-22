@@ -465,16 +465,18 @@ const getCartUpsells = async (
             (product) => product.id === selectedProduct.id
           );
 
-          if (!baseProduct) {
-            return null;
-          }
+          if (!baseProduct) return null;
+
+          const colorImage = baseProduct.options?.colors.find(
+            (colorOption) => colorOption.name === selectedProduct.color
+          )?.image;
 
           return {
             index: baseProduct.index,
             id: baseProduct.id,
             slug: baseProduct.slug,
             name: baseProduct.name,
-            mainImage: baseProduct.mainImage,
+            mainImage: colorImage || baseProduct.mainImage,
             basePrice: baseProduct.basePrice,
             size: selectedProduct.size,
             color: selectedProduct.color,
