@@ -401,17 +401,6 @@ const getBaseProducts = async (productIds: string[]) =>
     visibility: "PUBLISHED",
   }) as Promise<ProductType[]>;
 
-[
-  {
-    variantId: "27694",
-    index: 1,
-    baseProductId: "91062",
-    size: "S",
-    type: "product",
-    color: "Pink",
-  },
-];
-
 const mapCartProductsToBaseProducts = (
   cartProducts: Array<{
     index: number;

@@ -108,6 +108,7 @@ export async function AddToCartAction(data: {
         };
       } else {
         existingCartItems.push({
+          type: data.type,
           baseProductId: data.baseProductId,
           size: data.size,
           color: data.color,

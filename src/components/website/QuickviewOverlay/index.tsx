@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
@@ -9,8 +9,7 @@ import { formatThousands } from "@/lib/utils";
 import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
 import { UpsellReviewButton } from "../UpsellReviewOverlay";
-import Link from "next/link";
-import { useOptionsStore } from "@/zustand/website/optionsStore";
+import { useRouter } from "next/navigation";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -88,9 +87,13 @@ export function QuickviewButton({
 }
 
 export function QuickviewOverlay() {
-  const { hideOverlay, isVisible } = useQuickviewStore();
+  const router = useRouter();
 
-  const { cart, selectedProduct } = useQuickviewStore();
+  const { hideOverlay, isVisible, cart, selectedProduct } = useQuickviewStore();
+
+  useEffect(() => {
+    hideOverlay();
+  }, []);
 
   useEffect(() => {
     if (isVisible) {
@@ -284,13 +287,17 @@ export function QuickviewOverlay() {
                   />
                 </div>
                 <div className="mt-5">
-                  <Link
+                  <button
                     className="flex items-center text-sm hover:underline"
-                    href={`${selectedProduct.slug}-${selectedProduct.id}`}
+                    onClick={() =>
+                      router.push(
+                        `/${selectedProduct.slug}-${selectedProduct.id}`
+                      )
+                    }
                   >
                     <span>All details</span>
                     <ChevronRightIcon size={20} />
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
