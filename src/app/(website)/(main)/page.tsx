@@ -3,6 +3,7 @@ import { Categories } from "@/components/website/Categories";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { FeaturedProducts } from "@/components/website/FeaturedProducts";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
+import ShowAlert from "@/components/website/ShowAlert";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import {
   getCart,
@@ -308,7 +309,8 @@ export default async function Home() {
         </div>
       </div>
       <QuickviewOverlay />
-      <UpsellReviewOverlay />
+      <UpsellReviewOverlay cart={cart} />
+      <ShowAlert />
     </>
   );
 }

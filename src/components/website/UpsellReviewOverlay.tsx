@@ -1,15 +1,17 @@
 "use client";
 
-import Image from "next/image";
-import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { useEffect, useState, useTransition } from "react";
-import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
-import clsx from "clsx";
-import Link from "next/link";
+import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
+import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { ProductImageCarousel } from "./ProductImageCarousel";
-import { formatThousands } from "@/lib/utils";
+import { useAlertStore } from "@/zustand/website/alertStore";
+import { useEffect, useState, useTransition } from "react";
 import { AddToCartAction } from "@/actions/shopping-cart";
+import { AlertMessageType } from "@/lib/sharedTypes";
+import { formatThousands } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
+import clsx from "clsx";
 
 type UpsellReviewProductType = {
   id: string;
@@ -252,8 +254,10 @@ export function UpsellReviewButton({
   );
 }
 
-export function UpsellReviewOverlay() {
+export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
   const { hideOverlay, isVisible, selectedProduct } = useUpsellReviewStore();
+  const { showAlert } = useAlertStore();
+
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: { color?: string; size?: string };
   }>({});
@@ -262,6 +266,35 @@ export function UpsellReviewOverlay() {
   const [selectedProductForCarousel, setSelectedProductForCarousel] =
     useState<any>(null);
   const [isPending, startTransition] = useTransition();
+  const [isInCart, setIsInCart] = useState(false);
+
+  useEffect(() => {
+    if (cart && selectedProduct) {
+      const upsells = cart.items.filter(
+        (cartItem): cartItem is CartUpsellItemType => cartItem.type === "upsell"
+      );
+
+      const sameBaseUpsells = upsells.filter(
+        (upsell) => upsell.baseUpsellId === selectedProduct.upsell.id
+      );
+
+      // Check if the current selection matches any upsell in the cart
+      const upsellInCart = sameBaseUpsells.some((cartUpsell) => {
+        return selectedProduct.upsell.products.every((product, index) => {
+          const cartProduct = cartUpsell.products[index];
+          const selectedOption = selectedOptions[product.id];
+
+          return (
+            cartProduct.id === product.id &&
+            cartProduct.color === (selectedOption?.color || "") &&
+            cartProduct.size === (selectedOption?.size || "")
+          );
+        });
+      });
+
+      setIsInCart(upsellInCart);
+    }
+  }, [cart, selectedProduct, selectedOptions]);
 
   useEffect(() => {
     if (isVisible && selectedProduct) {
@@ -358,7 +391,13 @@ export function UpsellReviewOverlay() {
 
       const result = await AddToCartAction(upsellToAdd);
 
-      console.log(result);
+      showAlert({
+        message: result.message,
+        type:
+          result.type === AlertMessageType.ERROR
+            ? AlertMessageType.ERROR
+            : AlertMessageType.NEUTRAL,
+      });
     });
   };
 
@@ -493,7 +532,8 @@ export function UpsellReviewOverlay() {
                           readyProducts.length ===
                             selectedProduct.upsell.products.length
                             ? "cursor-pointer hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
-                            : "opacity-50 cursor-context-menu"
+                            : "opacity-50 cursor-context-menu",
+                          isInCart && "hidden"
                         )}
                         disabled={
                           readyProducts.length !==
