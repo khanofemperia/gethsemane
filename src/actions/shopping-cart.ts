@@ -145,11 +145,9 @@ export async function AddToCartAction(data: {
         existingCartItems.push({
           type: "upsell",
           baseUpsellId: data.baseUpsellId,
-          index: nextIndex, // Set index
-          products: data.products.map((product) => ({
-            ...product,
-            variantId: generateId(),
-          })),
+          variantId: generateId(),
+          index: nextIndex,
+          products: data.products,
         });
       }
     }
@@ -197,9 +195,11 @@ export async function AddToCartAction(data: {
 }
 
 export async function RemoveFromCartAction({
-  variantId,
+  type,
+  id,
 }: {
-  variantId: string;
+  type: "product" | "upsell";
+  id: string;
 }) {
   const deviceIdentifier = cookies().get("device_identifier")?.value;
 
@@ -224,15 +224,22 @@ export async function RemoveFromCartAction({
     }
 
     const cartDoc = snapshot.docs[0].ref;
-    const existingCartItems = snapshot.docs[0].data().products;
+    const existingCartItems = snapshot.docs[0].data().items;
 
-    const updatedProducts = existingCartItems.filter(
-      (product: { variantId: string }) => product.variantId !== variantId
+    const updatedItems = existingCartItems.filter(
+      (item: CartProductItemType | CartUpsellItemType) => {
+        if (type === "product" && item.type === "product") {
+          return item.variantId !== id;
+        } else if (type === "upsell" && item.type === "upsell") {
+          return item.baseUpsellId !== id;
+        }
+        return true;
+      }
     );
 
     await runTransaction(database, async (transaction) => {
       return transaction.update(cartDoc, {
-        products: updatedProducts,
+        items: updatedItems,
         updatedAt: serverTimestamp(),
       });
     });
@@ -244,7 +251,7 @@ export async function RemoveFromCartAction({
       message: "Item removed from cart",
     };
   } catch (error) {
-    console.error("Error removing product from cart:", error);
+    console.error("Error removing item from cart:", error);
     return {
       type: AlertMessageType.ERROR,
       message: "Please reload the page and try again",

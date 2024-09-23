@@ -8,14 +8,20 @@ import { useAlertStore } from "@/zustand/website/alertStore";
 import { DashSpinner } from "@/ui/Spinners/DashSpinner";
 import clsx from "clsx";
 
-export function RemoveFromCartButton({ variantId }: { variantId: string }) {
+export function RemoveFromCartButton({
+  type,
+  id,
+}: {
+  type: "product" | "upsell";
+  id: string;
+}) {
   const [isPending, startTransition] = useTransition();
 
   const { showAlert } = useAlertStore();
 
   const handleRemove = () => {
     startTransition(async () => {
-      const result = await RemoveFromCartAction({ variantId });
+      const result = await RemoveFromCartAction({ type, id });
       showAlert({
         message: result.message,
         type:
@@ -31,8 +37,11 @@ export function RemoveFromCartButton({ variantId }: { variantId: string }) {
       onClick={handleRemove}
       disabled={isPending}
       className={clsx(
-        "min-w-8 max-w-8 min-h-8 max-h-8 rounded-full flex items-center justify-center",
-        { "ease-in-out duration-300 transition hover:bg-lightgray": !isPending }
+        "min-w-8 max-w-8 min-h-8 max-h-8 rounded-full flex items-center justify-center ease-in-out duration-300 transition",
+        type === "upsell" && "absolute right-3 top-3",
+        type === "upsell" && !isPending && "hover:bg-[#fceddf]",
+        type === "product" && !isPending && "hover:bg-lightgray",
+        isPending && "cursor-context-menu"
       )}
     >
       {isPending ? (

@@ -170,7 +170,8 @@ export default async function Cart() {
                                     {item.name}
                                   </Link>
                                   <RemoveFromCartButton
-                                    variantId={item.variantId}
+                                    type="product"
+                                    id={item.variantId}
                                   />
                                 </div>
                                 <span className="text-sm text-gray">
@@ -280,13 +281,10 @@ export default async function Cart() {
                                     ))}
                                   </div>
                                 </div>
-                                <button
-                                  className={clsx(
-                                    "absolute right-3 top-3 min-w-8 max-w-8 min-h-8 max-h-8 rounded-full flex items-center justify-center ease-in-out duration-300 transition hover:bg-[#fceddf]"
-                                  )}
-                                >
-                                  <TrashIcon size={18} className="fill-gray" />
-                                </button>
+                                <RemoveFromCartButton
+                                  type="upsell"
+                                  id={item.variantId}
+                                />
                               </div>
                             </div>
                           );
@@ -443,6 +441,7 @@ const getCartUpsells = async (
     type: "upsell";
     index: number;
     baseUpsellId: string;
+    variantId: string;
     products: Array<{
       id: string;
       size: string;
@@ -483,6 +482,7 @@ const getCartUpsells = async (
 
       return {
         baseUpsellId: upsell.baseUpsellId,
+        variantId: upsell.variantId,
         index: upsell.index,
         type: upsell.type,
         mainImage: upsellData?.mainImage,

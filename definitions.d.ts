@@ -222,12 +222,13 @@ type CartProductItemType = {
 type CartUpsellItemType = {
   index: number;
   baseUpsellId: string;
+  variantId: string;
+  type: "upsell";
   products: Array<{
     id: string;
     color: string;
     size: string;
   }>;
-  type: "upsell";
 };
 
 type CartType = {
