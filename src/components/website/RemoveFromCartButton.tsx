@@ -10,10 +10,10 @@ import clsx from "clsx";
 
 export function RemoveFromCartButton({
   type,
-  id,
+  variantId,
 }: {
   type: "product" | "upsell";
-  id: string;
+  variantId: string;
 }) {
   const [isPending, startTransition] = useTransition();
 
@@ -21,7 +21,7 @@ export function RemoveFromCartButton({
 
   const handleRemove = () => {
     startTransition(async () => {
-      const result = await RemoveFromCartAction({ type, id });
+      const result = await RemoveFromCartAction({ variantId });
       showAlert({
         message: result.message,
         type:

@@ -195,11 +195,9 @@ export async function AddToCartAction(data: {
 }
 
 export async function RemoveFromCartAction({
-  type,
-  id,
+  variantId,
 }: {
-  type: "product" | "upsell";
-  id: string;
+  variantId: string;
 }) {
   const deviceIdentifier = cookies().get("device_identifier")?.value;
 
@@ -226,20 +224,25 @@ export async function RemoveFromCartAction({
     const cartDoc = snapshot.docs[0].ref;
     const existingCartItems = snapshot.docs[0].data().items;
 
-    const updatedItems = existingCartItems.filter(
-      (item: CartProductItemType | CartUpsellItemType) => {
-        if (type === "product" && item.type === "product") {
-          return item.variantId !== id;
-        } else if (type === "upsell" && item.type === "upsell") {
-          return item.baseUpsellId !== id;
-        }
-        return true;
-      }
+    const filteredItems = existingCartItems.filter(
+      (item: CartProductItemType | CartUpsellItemType) =>
+        item.variantId !== variantId
+    );
+
+    const sortedItems = filteredItems.sort(
+      (a: any, b: any) => a.index - b.index
+    );
+
+    const reindexedItems = sortedItems.map(
+      (item: CartProductItemType | CartUpsellItemType, index: number) => ({
+        ...item,
+        index: index + 1,
+      })
     );
 
     await runTransaction(database, async (transaction) => {
       return transaction.update(cartDoc, {
-        items: updatedItems,
+        items: reindexedItems,
         updatedAt: serverTimestamp(),
       });
     });

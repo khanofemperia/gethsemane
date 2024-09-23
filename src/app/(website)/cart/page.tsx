@@ -171,7 +171,7 @@ export default async function Cart() {
                                   </Link>
                                   <RemoveFromCartButton
                                     type="product"
-                                    id={item.variantId}
+                                    variantId={item.variantId}
                                   />
                                 </div>
                                 <span className="text-sm text-gray">
@@ -283,7 +283,7 @@ export default async function Cart() {
                                 </div>
                                 <RemoveFromCartButton
                                   type="upsell"
-                                  id={item.variantId}
+                                  variantId={item.variantId}
                                 />
                               </div>
                             </div>
