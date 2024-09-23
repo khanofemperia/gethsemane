@@ -1,6 +1,6 @@
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import ShowAlert from "@/components/website/ShowAlert";
-import { CheckmarkIcon, TrashIcon } from "@/icons";
+import { CheckmarkIcon } from "@/icons";
 import { getCart, getDiscoveryProducts, getProductsByIds } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
@@ -8,7 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
-import clsx from "clsx";
+import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
+import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { database } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -81,6 +82,21 @@ export default async function Cart() {
   const sortedCartItems = [...cartProducts, ...cartUpsells].sort(
     (a, b) => a.index - b.index
   );
+
+  const calculateTotal = () => {
+    const totalBasePrice = sortedCartItems.reduce((total, item) => {
+      const itemPrice = item.pricing.salePrice || item.pricing.basePrice;
+      const price =
+        typeof itemPrice === "number" ? itemPrice : parseFloat(itemPrice);
+      return isNaN(price) ? total : total + price;
+    }, 0);
+
+    // Round down to the nearest .99
+    const roundedTotal =
+      totalBasePrice === 0 ? 0 : Math.floor(totalBasePrice) + 0.99;
+
+    return Number(roundedTotal.toFixed(2));
+  };
 
   return (
     <>
@@ -165,6 +181,7 @@ export default async function Cart() {
                                 <div className="min-w-full h-5 flex items-center justify-between gap-5">
                                   <Link
                                     href={`${item.slug}-${item.baseProductId}`}
+                                    target="_blank"
                                     className="text-sm line-clamp-1"
                                   >
                                     {item.name}
@@ -316,8 +333,12 @@ export default async function Cart() {
                     </div>
                   </div>
                   <div className="mb-2 flex items-center gap-1">
-                    <span className="font-medium">Total (5 Items):</span>
-                    <span className="font-bold text-xl">$108.99</span>
+                    <span className="font-medium">
+                      Total ({sortedCartItems.length} Items):
+                    </span>
+                    <span className="font-bold text-xl">
+                      ${formatThousands(calculateTotal())}
+                    </span>
                   </div>
                   <div className="flex items-center mb-2">
                     <div className="h-[20px] rounded-[3px] flex items-center justify-center">
@@ -382,6 +403,8 @@ export default async function Cart() {
         </div>
       </div>
       <ShowAlert />
+      <QuickviewOverlay />
+      <UpsellReviewOverlay />
     </>
   );
 }

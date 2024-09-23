@@ -143,17 +143,6 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   };
 };
 
-type CartType = {
-  id: string;
-  device_identifier: string;
-  products: Array<{
-    originalProductId: string;
-    variantId: string;
-    size: string;
-    color: string;
-  }>;
-};
-
 export default async function Home() {
   const [pageHero, categories, collections, discoveryProducts] =
     await Promise.all([
