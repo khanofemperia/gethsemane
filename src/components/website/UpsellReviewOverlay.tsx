@@ -12,6 +12,7 @@ import { formatThousands } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
+import { InCartButton } from "./InCartButton";
 
 type UpsellReviewProductType = {
   id: string;
@@ -255,13 +256,17 @@ export function UpsellReviewButton({
 }
 
 export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
-  const { hideOverlay, isVisible, selectedProduct } = useUpsellReviewStore();
+  const {
+    selectedOptions,
+    readyProducts,
+    setSelectedOptions,
+    setReadyProducts,
+    hideOverlay,
+    isVisible,
+    selectedProduct,
+  } = useUpsellReviewStore();
   const { showAlert } = useAlertStore();
 
-  const [selectedOptions, setSelectedOptions] = useState<{
-    [key: string]: { color?: string; size?: string };
-  }>({});
-  const [readyProducts, setReadyProducts] = useState<string[]>([]);
   const [showCarousel, setShowCarousel] = useState(false);
   const [selectedProductForCarousel, setSelectedProductForCarousel] =
     useState<any>(null);
@@ -514,7 +519,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
               </div>
               <div className="absolute left-0 right-0 bottom-0">
                 <div className="h-[80px] px-8 flex items-start shadow-[0_-12px_16px_2px_white]">
-                  <div className="w-full flex justify-between items-center">
+                  <div className="w-full h-12 flex justify-between items-center">
                     <div className="flex gap-5">
                       <div className="flex items-center">
                         <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
@@ -526,6 +531,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                       </span>
                     </div>
                     <div className="relative">
+                      <InCartButton isInCart={isInCart} />
                       <button
                         className={clsx(
                           "flex items-center justify-center w-max h-12 px-8 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000]",
@@ -549,8 +555,26 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                           {
                             hidden:
                               readyProducts.length !==
-                              selectedProduct.upsell.products.length,
+                                selectedProduct.upsell.products.length ||
+                              isInCart,
                           }
+                        )}
+                      >
+                        <p className="text-white text-sm">
+                          <span className="text-[#ffe6ba]">
+                            {selectedProduct.upsell.pricing.salePrice
+                              ? `Congrats! Saved $${calculateSavings(
+                                  selectedProduct.upsell.pricing
+                                )} -`
+                              : `Congrats! You're all set -`}
+                          </span>{" "}
+                          <b>grab it before it's gone!</b>
+                        </p>
+                      </div>
+                      <div
+                        className={clsx(
+                          "animate-fade-right absolute right-0 bottom-14 w-[248px] py-3 px-4 rounded-xl bg-[#373737] before:content-[''] before:w-[10px] before:h-[10px] before:bg-[#373737] before:rounded-br-[2px] before:rotate-45 before:origin-bottom-left before:absolute before:-bottom-0 before:right-12",
+                          !isInCart && "hidden"
                         )}
                       >
                         <p className="text-white text-sm">
@@ -571,11 +595,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
             </div>
             <button
               type="button"
-              onClick={() => {
-                setSelectedOptions({});
-                setReadyProducts([]);
-                hideOverlay();
-              }}
+              onClick={hideOverlay}
               className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center ease-in-out transition duration-300 hover:bg-lightgray"
             >
               <CloseIconThin size={24} className="stroke-gray" />

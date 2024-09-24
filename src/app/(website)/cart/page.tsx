@@ -13,6 +13,7 @@ import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { database } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
 
 type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
   upsell: {
@@ -405,6 +406,7 @@ export default async function Cart() {
       <ShowAlert />
       <QuickviewOverlay />
       <UpsellReviewOverlay cart={cart} />
+      <ResetUpsellReview />
     </>
   );
 }
