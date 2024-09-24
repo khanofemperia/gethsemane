@@ -404,7 +404,7 @@ export default async function Cart() {
       </div>
       <ShowAlert />
       <QuickviewOverlay />
-      <UpsellReviewOverlay />
+      <UpsellReviewOverlay cart={cart} />
     </>
   );
 }
