@@ -12,7 +12,8 @@ import { formatThousands } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
-import { InCartButton } from "./InCartButton";
+import { usePathname, useRouter } from "next/navigation";
+import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 
 type UpsellReviewProductType = {
   id: string;
@@ -259,14 +260,16 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
   const {
     selectedOptions,
     readyProducts,
+    isVisible,
+    selectedProduct,
     setSelectedOptions,
     setReadyProducts,
     hideOverlay,
-    isVisible,
-    selectedProduct,
   } = useUpsellReviewStore();
+  const { hideOverlay: hideQuickviewOverlay } = useQuickviewStore();
   const { showAlert } = useAlertStore();
-
+  const pathname = usePathname();
+  const router = useRouter();
   const [showCarousel, setShowCarousel] = useState(false);
   const [selectedProductForCarousel, setSelectedProductForCarousel] =
     useState<any>(null);
@@ -406,10 +409,27 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
     });
   };
 
+  const handleInCartButtonClick = () => {
+    if (pathname === "/cart") {
+      hideOverlay();
+      hideQuickviewOverlay();
+      // if (scrollableContainerRef.current) {
+      //   scrollableContainerRef.current.scrollTo({
+      //     top: 0,
+      //     behavior: "smooth",
+      //   });
+      // }
+    } else {
+      router.push("/cart");
+    }
+  };
+
   return (
     <>
       {isVisible && selectedProduct && (
-        <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
+        <div
+          className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm"
+        >
           <div className="max-h-[764px] relative overflow-hidden rounded-2xl shadow-[0px_0px_36px_0px_rgba(255,185,56,0.6)] bg-white">
             <div className="w-[600px] h-full pt-6 pb-[80px] flex flex-col relative">
               <div className="pb-3 flex justify-center">
@@ -531,7 +551,15 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                       </span>
                     </div>
                     <div className="relative">
-                      <InCartButton isInCart={isInCart} />
+                      <button
+                        onClick={handleInCartButtonClick}
+                        className={clsx(
+                          "px-8 flex items-center justify-center w-full rounded-full cursor-pointer border border-[#c5c3c0] text-blue font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:h-12",
+                          !isInCart && "hidden"
+                        )}
+                      >
+                        In Cart - See Now
+                      </button>
                       <button
                         className={clsx(
                           "flex items-center justify-center w-max h-12 px-8 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000]",
