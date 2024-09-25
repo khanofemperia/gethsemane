@@ -10,7 +10,6 @@ export function ResetUpsellReview() {
     if (isVisible) {
       hideOverlay();
     }
-  }, [isVisible, hideOverlay]);
-
+  }, []);
   return null;
 }
