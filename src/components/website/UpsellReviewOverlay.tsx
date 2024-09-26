@@ -14,6 +14,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
+import { Spinner } from "@/ui/Spinners/Default";
 
 type UpsellReviewProductType = {
   id: string;
@@ -275,6 +276,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
     useState<any>(null);
   const [isPending, startTransition] = useTransition();
   const [isInCart, setIsInCart] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
     if (cart && selectedProduct) {
@@ -372,6 +374,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
   };
 
   const handleAddToCart = () => {
+    setIsAddingToCart(true);
     startTransition(async () => {
       const productsToAdd = selectedProduct?.upsell.products
         .filter((product) => readyProducts.includes(product.id))
@@ -406,6 +409,11 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
             ? AlertMessageType.ERROR
             : AlertMessageType.NEUTRAL,
       });
+
+      setIsAddingToCart(false);
+      if (result.type !== AlertMessageType.ERROR) {
+        setIsInCart(true);
+      }
     });
   };
 
@@ -551,63 +559,51 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                       </span>
                     </div>
                     <div className="relative">
-                      <button
-                        onClick={handleInCartButtonClick}
-                        className={clsx(
-                          "animate-fade px-8 flex items-center justify-center w-full rounded-full cursor-pointer border border-[#c5c3c0] text-blue font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:h-12",
-                          !isInCart && "hidden"
-                        )}
-                      >
-                        In Cart - See Now
-                      </button>
-                      <button
-                        className={clsx(
-                          "flex items-center justify-center w-max h-12 px-8 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000]",
-                          readyProducts.length ===
-                            selectedProduct.upsell.products.length
-                            ? "cursor-pointer hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
-                            : "opacity-50 cursor-context-menu",
-                          isInCart && "hidden"
-                        )}
-                        disabled={
-                          readyProducts.length !==
-                          selectedProduct.upsell.products.length
-                        }
-                        onClick={handleAddToCart}
-                      >
-                        Add Upgrade to Cart
-                      </button>
+                      {isInCart ? (
+                        <button
+                          onClick={handleInCartButtonClick}
+                          className="animate-fade px-8 flex items-center justify-center w-full rounded-full cursor-pointer border border-[#c5c3c0] text-blue font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:h-12"
+                        >
+                          In Cart - See Now
+                        </button>
+                      ) : (
+                        <button
+                          className={clsx(
+                            "flex items-center justify-center w-[220px] h-12 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] transition-opacity duration-200",
+                            readyProducts.length !==
+                              selectedProduct?.upsell.products.length ||
+                              isAddingToCart
+                              ? "opacity-50 cursor-context-menu"
+                              : "cursor-pointer hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
+                          )}
+                          disabled={
+                            readyProducts.length !==
+                              selectedProduct?.upsell.products.length ||
+                            isAddingToCart
+                          }
+                          onClick={handleAddToCart}
+                        >
+                          {isAddingToCart ? (
+                            <Spinner size={24} color="white" />
+                          ) : (
+                            "Add Upgrade to Cart"
+                          )}
+                        </button>
+                      )}
                       <div
                         className={clsx(
                           "animate-fade-right absolute right-0 bottom-14 w-[248px] py-3 px-4 rounded-xl bg-[#373737] before:content-[''] before:w-[10px] before:h-[10px] before:bg-[#373737] before:rounded-br-[2px] before:rotate-45 before:origin-bottom-left before:absolute before:-bottom-0 before:right-12",
                           {
                             hidden:
                               readyProducts.length !==
-                                selectedProduct.upsell.products.length ||
+                                selectedProduct?.upsell.products.length ||
                               isInCart,
                           }
                         )}
                       >
                         <p className="text-white text-sm">
                           <span className="text-[#ffe6ba]">
-                            {selectedProduct.upsell.pricing.salePrice
-                              ? `Congrats! Saved $${calculateSavings(
-                                  selectedProduct.upsell.pricing
-                                )} -`
-                              : `Congrats! You're all set -`}
-                          </span>{" "}
-                          <b>grab it before it's gone!</b>
-                        </p>
-                      </div>
-                      <div
-                        className={clsx(
-                          "animate-fade-right absolute right-0 bottom-14 w-[248px] py-3 px-4 rounded-xl bg-[#373737] before:content-[''] before:w-[10px] before:h-[10px] before:bg-[#373737] before:rounded-br-[2px] before:rotate-45 before:origin-bottom-left before:absolute before:-bottom-0 before:right-12",
-                          !isInCart && "hidden"
-                        )}
-                      >
-                        <p className="text-white text-sm">
-                          <span className="text-[#ffe6ba]">
-                            {selectedProduct.upsell.pricing.salePrice
+                            {selectedProduct?.upsell.pricing.salePrice
                               ? `Congrats! Saved $${calculateSavings(
                                   selectedProduct.upsell.pricing
                                 )} -`
