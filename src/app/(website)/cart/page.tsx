@@ -201,7 +201,7 @@ export default async function Cart() {
                                 <div className="mt-2 w-max flex items-center justify-center">
                                   {Number(item.pricing.salePrice) ? (
                                     <div className="flex items-center gap-[6px]">
-                                      <span className="font-medium">
+                                      <span className="font-semibold">
                                         $
                                         {formatThousands(
                                           Number(item.pricing.salePrice)
@@ -218,7 +218,7 @@ export default async function Cart() {
                                       </span>
                                     </div>
                                   ) : (
-                                    <p className="font-medium">
+                                    <p className="font-semibold">
                                       $
                                       {formatThousands(
                                         Number(item.pricing.basePrice)
@@ -246,7 +246,7 @@ export default async function Cart() {
                                     <div className="flex items-center gap-1">
                                       {item.pricing.salePrice ? (
                                         <>
-                                          <span className="font-medium">
+                                          <span className="font-semibold">
                                             $
                                             {formatThousands(
                                               Number(item.pricing.salePrice)
@@ -259,7 +259,7 @@ export default async function Cart() {
                                         </>
                                       ) : (
                                         <>
-                                          <span className="font-medium">
+                                          <span className="font-semibold">
                                             $
                                             {formatThousands(
                                               Number(item.pricing.basePrice)
@@ -277,9 +277,8 @@ export default async function Cart() {
                                       <span key={product.id}>
                                         {product.name}
                                         {index < item.products.length - 1 && (
-                                          <span className="text-[#cfcfcf]">
-                                            {" "}
-                                            •{" "}
+                                          <span className="text-[rgb(206,206,206)] px-[6px]">
+                                            •
                                           </span>
                                         )}
                                       </span>
@@ -289,15 +288,28 @@ export default async function Cart() {
                                     {item.products.map((product) => (
                                       <div
                                         key={product.id}
-                                        className="min-w-32 max-w-32 h-32 rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center"
+                                        className="flex flex-col items-center"
                                       >
-                                        <Image
-                                          src={product.mainImage}
-                                          alt={product.name}
-                                          width={128}
-                                          height={128}
-                                          priority
-                                        />
+                                        <div className="min-w-32 max-w-32 h-32 rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
+                                          <Image
+                                            src={product.mainImage}
+                                            alt={product.name}
+                                            width={128}
+                                            height={128}
+                                            priority
+                                          />
+                                        </div>
+                                        <div className="text-xs font-medium mt-1">
+                                          <span>
+                                            {product.color && product.size
+                                              ? `${product.color} / ${product.size}`
+                                              : product.color
+                                              ? product.color
+                                              : product.size
+                                              ? product.size
+                                              : ""}
+                                          </span>
+                                        </div>
                                       </div>
                                     ))}
                                   </div>
