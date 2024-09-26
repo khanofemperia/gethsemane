@@ -5,44 +5,6 @@ import { formatThousands } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
-  upsell: {
-    id: string;
-    mainImage: string;
-    pricing: {
-      salePrice: number;
-      basePrice: number;
-      discountPercentage: number;
-    };
-    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-    createdAt: string;
-    updatedAt: string;
-    products: {
-      id: string;
-      name: string;
-      slug: string;
-      mainImage: string;
-      basePrice: number;
-      options: {
-        colors: Array<{
-          name: string;
-          image: string;
-        }>;
-        sizes: {
-          inches: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-          centimeters: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-        };
-      };
-    }[];
-  };
-};
-
 export function ProductCard({
   product,
   cart,

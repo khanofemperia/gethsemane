@@ -15,44 +15,6 @@ import { database } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
 
-type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
-  upsell: {
-    id: string;
-    mainImage: string;
-    pricing: {
-      salePrice: number;
-      basePrice: number;
-      discountPercentage: number;
-    };
-    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-    createdAt: string;
-    updatedAt: string;
-    products: {
-      id: string;
-      name: string;
-      slug: string;
-      mainImage: string;
-      basePrice: number;
-      options: {
-        colors: Array<{
-          name: string;
-          image: string;
-        }>;
-        sizes: {
-          inches: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-          centimeters: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-        };
-      };
-    }[];
-  };
-};
-
 export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
@@ -488,49 +450,64 @@ const getCartUpsells = async (
       color: string;
     }>;
   }>
-) =>
-  Promise.all(
-    upsellItems.map(async (upsell) => {
-      const upsellData = (await getUpsell({
-        id: upsell.baseUpsellId,
-      })) as UpsellType;
+) => {
+  const upsellPromises = upsellItems.map(async (upsell) => {
+    const upsellData = (await getUpsell({
+      id: upsell.baseUpsellId,
+    })) as UpsellType;
 
-      const detailedProducts = upsell.products
-        .map((selectedProduct) => {
-          const baseProduct = upsellData.products.find(
-            (product) => product.id === selectedProduct.id
-          );
+    if (!upsellData || !upsellData.products) {
+      return null;
+    }
 
-          if (!baseProduct) return null;
+    const detailedProducts = upsell.products
+      .map((selectedProduct) => {
+        const baseProduct = upsellData.products.find(
+          (product) => product.id === selectedProduct.id
+        );
 
-          const colorImage = baseProduct.options?.colors.find(
-            (colorOption) => colorOption.name === selectedProduct.color
-          )?.image;
+        if (!baseProduct) return null;
 
-          return {
-            index: baseProduct.index,
-            id: baseProduct.id,
-            slug: baseProduct.slug,
-            name: baseProduct.name,
-            mainImage: colorImage || baseProduct.mainImage,
-            basePrice: baseProduct.basePrice,
-            size: selectedProduct.size,
-            color: selectedProduct.color,
-          };
-        })
-        .filter((product) => product !== null);
+        const colorImage = baseProduct.options?.colors.find(
+          (colorOption) => colorOption.name === selectedProduct.color
+        )?.image;
 
-      return {
-        baseUpsellId: upsell.baseUpsellId,
-        variantId: upsell.variantId,
-        index: upsell.index,
-        type: upsell.type,
-        mainImage: upsellData?.mainImage,
-        pricing: upsellData?.pricing,
-        products: detailedProducts,
-      };
-    })
+        return {
+          index: baseProduct.index,
+          id: baseProduct.id,
+          slug: baseProduct.slug,
+          name: baseProduct.name,
+          mainImage: colorImage || baseProduct.images.main,
+          basePrice: baseProduct.basePrice,
+          size: selectedProduct.size,
+          color: selectedProduct.color,
+        };
+      })
+      .filter(
+        (product): product is NonNullable<typeof product> => product !== null
+      );
+
+    if (detailedProducts.length === 0) {
+      console.warn(`No valid products found for upsell ${upsell.baseUpsellId}`);
+      return null;
+    }
+
+    return {
+      baseUpsellId: upsell.baseUpsellId,
+      variantId: upsell.variantId,
+      index: upsell.index,
+      type: upsell.type,
+      mainImage: upsellData.mainImage,
+      pricing: upsellData.pricing,
+      products: detailedProducts,
+    };
+  });
+
+  const results = await Promise.all(upsellPromises);
+  return results.filter(
+    (result): result is NonNullable<typeof result> => result !== null
   );
+};
 
 const getUpsell = async ({
   id,
@@ -554,18 +531,27 @@ const getUpsell = async ({
     productIds.length > 0
       ? await getProductsByIds({
           ids: productIds,
-          fields: ["options"],
+          fields: ["options", "images"],
           visibility: "PUBLISHED",
         })
       : null;
 
-  const updatedProducts = data.products.map((product: any) => {
-    const matchedProduct = products?.find((p) => p.id === product.id);
-    return {
-      ...product,
-      options: matchedProduct?.options ?? [],
-    };
-  });
+  if (!products || products.length === 0) {
+    console.warn(`No valid products found for upsell ${id}`);
+    return null;
+  }
+
+  const updatedProducts = data.products
+    .map((product: any) => {
+      const matchedProduct = products.find((p) => p.id === product.id);
+      return matchedProduct
+        ? {
+            ...product,
+            options: matchedProduct.options ?? [],
+          }
+        : null;
+    })
+    .filter((product: any) => product !== null);
 
   const sortedProducts = updatedProducts.sort(
     (a: any, b: any) => a.index - b.index
@@ -576,6 +562,8 @@ const getUpsell = async ({
     ...data,
     products: sortedProducts,
   };
+
+  console.log("upsell:", upsell);
 
   return upsell;
 };

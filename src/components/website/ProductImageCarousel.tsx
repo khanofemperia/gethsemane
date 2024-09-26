@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { useState } from "react";
 import { CloseIconThin } from "@/icons";
@@ -26,11 +28,10 @@ export function ProductImageCarousel({
   product,
   onClose,
 }: ProductImageCarouselType) {
-  // Create an array of unique images
   const allImages: ProductImage[] = [
     { src: product.mainImage, alt: product.name },
     ...product.options.colors
-      .filter((color) => color.image !== product.mainImage) // Remove duplicates
+      .filter((color) => color.image !== product.mainImage)
       .map((color) => ({
         src: color.image,
         alt: color.name,

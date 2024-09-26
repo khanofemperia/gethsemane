@@ -15,45 +15,7 @@ import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { Spinner } from "@/ui/Spinners/Default";
-
-type UpsellReviewProductType = {
-  id: string;
-  upsell: {
-    id: string;
-    mainImage: string;
-    pricing: {
-      salePrice: number;
-      basePrice: number;
-      discountPercentage: number;
-    };
-    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-    createdAt: string;
-    updatedAt: string;
-    products: {
-      id: string;
-      name: string;
-      slug: string;
-      mainImage: string;
-      basePrice: number;
-      options: {
-        colors: Array<{
-          name: string;
-          image: string;
-        }>;
-        sizes: {
-          inches: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-          centimeters: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-        };
-      };
-    }[];
-  };
-};
+import { BiExpandAlt } from "react-icons/bi";
 
 type ProductColorsType = {
   colors: Array<{
@@ -274,7 +236,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
   const [showCarousel, setShowCarousel] = useState(false);
   const [selectedProductForCarousel, setSelectedProductForCarousel] =
     useState<any>(null);
-  const [isPending, startTransition] = useTransition();
+  const [_isPending, startTransition] = useTransition();
   const [isInCart, setIsInCart] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
@@ -493,26 +455,20 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                       </div>
                       <div className="flex gap-5 w-full">
                         <div
-                          className="relative h-max cursor-pointer"
+                          className="relative h-max min-w-40 max-w-40 cursor-pointer overflow-hidden rounded-lg"
                           onClick={() => openCarousel(product)}
                         >
-                          <div className="min-w-40 max-w-40 min-h-40 max-h-40 overflow-hidden rounded-lg flex items-center justify-center">
+                          <div className="min-w-40 max-w-40 min-h-40 max-h-40 overflow-hidden flex items-center justify-center">
                             <Image
-                              src={product.mainImage}
+                              src={product.images.main}
                               alt={product.name}
                               width={160}
                               height={160}
                               priority
                             />
                           </div>
-                          <div className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center bg-black/40">
-                            <Image
-                              src="/icons/carousel.svg"
-                              alt="Carousel"
-                              height={20}
-                              width={20}
-                              priority
-                            />
+                          <div className="w-6 h-6 absolute top-0 right-0 rounded-bl-lg flex items-center justify-center bg-black/40">
+                            <BiExpandAlt size={14} className="fill-white" />
                           </div>
                         </div>
                         <div className="w-full flex flex-col gap-4">

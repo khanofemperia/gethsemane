@@ -26,8 +26,11 @@ type ProductType = {
   id: string;
   slug: string;
   name: string;
-  mainImage: string;
   basePrice: number;
+  images: {
+    main: string;
+    gallery: string[];
+  };
 };
 
 type DataType = {
@@ -151,12 +154,12 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
           discountPercentage !== "" ? parseInt(discountPercentage, 10) : 0,
       },
       products: products.map(
-        ({ id, slug, name, mainImage, basePrice }, index) => ({
+        ({ id, slug, name, images, basePrice }, index) => ({
           index: index + 1,
           id,
           slug,
           name,
-          mainImage,
+          images,
           basePrice,
         })
       ),
@@ -285,7 +288,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
           id: product.id,
           slug: product.slug,
           name: product.name,
-          mainImage: product.images?.main ?? "",
+          images: product.images,
           basePrice: product.pricing?.basePrice ?? 0,
         };
 
@@ -454,7 +457,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                         animation={150}
                         ghostClass="opacity-50"
                       >
-                        {products.map(({ id, mainImage, name, basePrice }) => (
+                        {products.map(({ id, images, name, basePrice }) => (
                           <div
                             key={id}
                             className="w-[calc(50%-10px)] cursor-move"
@@ -462,10 +465,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                             <div className="w-full border rounded-md overflow-hidden">
                               <div className="w-full aspect-square relative">
                                 <div className="w-full h-full flex items-center justify-center overflow-hidden">
-                                  {mainImage &&
-                                    isValidRemoteImage(mainImage) && (
+                                  {images &&
+                                    isValidRemoteImage(images.main) && (
                                       <Image
-                                        src={mainImage}
+                                        src={images.main}
                                         alt="Upsell"
                                         width={200}
                                         height={200}

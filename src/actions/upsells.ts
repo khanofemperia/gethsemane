@@ -11,8 +11,11 @@ type ProductWithoutOptions = {
   id: string;
   slug: string;
   name: string;
-  mainImage: string;
   basePrice: number;
+  images: {
+    main: string;
+    gallery: string[];
+  };
 };
 
 export async function CreateUpsellAction(

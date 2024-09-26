@@ -4,11 +4,14 @@ import {
   getDoc,
   getDocs,
   query,
+  runTransaction,
+  serverTimestamp,
   setDoc,
   where,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 import { capitalizeFirstLetter } from "./utils";
+import { revalidatePath } from "next/cache";
 
 type BaseOptionsType = {
   fields?: string[];
@@ -65,8 +68,11 @@ type ProductWithUpsellType = Partial<Omit<ProductType, "upsell">> & {
       id: string;
       name: string;
       slug: string;
-      mainImage: string;
       basePrice: number;
+      images: {
+        main: string;
+        gallery: string[];
+      };
     }[];
   };
 };
@@ -384,7 +390,7 @@ export async function getProductWithUpsell(
         name: productItem.name,
         id: productData.id,
         slug: productData.slug,
-        mainImage: productData.images.main,
+        images: productData.images,
         basePrice: productData.pricing.basePrice,
       };
     })
@@ -482,7 +488,7 @@ export async function getProductsWithUpsells(
                 name: productItem.name,
                 id: productData.id,
                 slug: productData.slug,
-                mainImage: productData.images.main,
+                images: productData.images,
                 basePrice: productData.pricing.basePrice,
                 options: productData.options,
               };
@@ -581,7 +587,7 @@ export async function getProductsByIdsWithUpsells(
                 name: productItem.name,
                 id: productData.id,
                 slug: productData.slug,
-                mainImage: productData.images.main,
+                images: productData.images,
                 basePrice: productData.pricing.basePrice,
                 options: productData.options,
               };
@@ -693,7 +699,7 @@ export async function getProductsByCategoryWithUpsell(
                 name: productItem.name,
                 id: productData.id,
                 slug: productData.slug,
-                mainImage: productData.images.main,
+                images: productData.images,
                 basePrice: productData.pricing.basePrice,
               };
             })
@@ -922,8 +928,11 @@ export async function getCollectionWithProductsAndUpsells(
             id: string;
             name: string;
             slug: string;
-            mainImage: string;
             basePrice: number;
+            images: {
+              main: string;
+              gallery: string[];
+            };
           }[];
         };
       }[];
@@ -1096,13 +1105,33 @@ export async function getCart(
       return null;
     }
 
-    const cartDoc = snapshot.docs[0]; // Assume there's only one cart per device identifier
+    const cartDoc = snapshot.docs[0];
     const cartData = cartDoc.data();
+
+    // Validate and filter cart items
+    const validatedItems = await validateCartItems(cartData.items);
+
+    // Update the cart if items were removed
+    if (validatedItems.length !== cartData.items.length) {
+      const reindexedItems = validatedItems.map((item, index) => ({
+        ...item,
+        index: index + 1,
+      }));
+
+      await runTransaction(database, async (transaction) => {
+        return transaction.update(cartDoc.ref, {
+          items: reindexedItems,
+          updatedAt: serverTimestamp(),
+        });
+      });
+
+      revalidatePath("/cart");
+    }
 
     const cart = {
       id: cartDoc.id,
       device_identifier: cartData.device_identifier,
-      items: cartData.items,
+      items: validatedItems,
     };
 
     return cart;
@@ -1110,4 +1139,24 @@ export async function getCart(
     console.error("Error fetching cart:", error);
     return null;
   }
+}
+
+async function validateCartItems(items: any[]): Promise<any[]> {
+  const validatedItems = await Promise.all(
+    items.map(async (item) => {
+      if (item.type === "product") {
+        const product = await getProduct({
+          id: item.baseProductId,
+          fields: ["name"],
+        });
+        return product ? item : null;
+      } else if (item.type === "upsell") {
+        const upsell = await getUpsell({ id: item.baseUpsellId });
+        return upsell ? item : null;
+      }
+      return null;
+    })
+  );
+
+  return validatedItems.filter((item) => item !== null);
 }

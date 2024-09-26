@@ -8,8 +8,11 @@ type UpsellProductType = {
   id: string;
   name: string;
   slug: string;
-  mainImage: string;
   basePrice: number;
+  images: {
+    main: string;
+    gallery: string[];
+  };
 };
 
 type PricingType = {
