@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
@@ -10,6 +10,7 @@ import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
 import { UpsellReviewButton } from "../UpsellReviewOverlay";
 import { useRouter } from "next/navigation";
+import { CartAndUpgradeButtons } from "../Product/CartAndUpgradeButtons";
 
 export function QuickviewButton({
   onClick,
@@ -52,6 +53,16 @@ export function QuickviewOverlay() {
   const router = useRouter();
 
   const { hideOverlay, isVisible, cart, selectedProduct } = useQuickviewStore();
+
+  const [hasSize, setHasSize] = useState(false);
+  const [hasColor, setHasColor] = useState(false);
+
+  useEffect(() => {
+    if (selectedProduct) {
+      setHasColor(selectedProduct.options.colors.length > 0);
+      setHasSize(Object.keys(selectedProduct.options.sizes).length > 0);
+    }
+  }, [selectedProduct]);
 
   useEffect(() => {
     hideOverlay();
@@ -238,14 +249,11 @@ export function QuickviewOverlay() {
               </div>
               <div className="sticky left-0 right-0 bottom-0 z-10 mt-6 pt-1 pb-0 shadow-[0_-12px_16px_2px_white] bg-white">
                 <div className="flex gap-2 min-[896px]:gap-3">
-                  <button className="text-sm min-[896px]:text-base font-semibold w-full h-[44px] min-[896px]:h-12  rounded-full ease-in-out duration-150 transition border border-[rgb(150,150,150)] hover:border-[rgb(80,80,80)] active:border-[rgb(150,150,150)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.16)]">
-                    Add to Cart
-                  </button>
-                  <UpsellReviewButton
-                    product={{
-                      id: selectedProduct.id,
-                      upsell: selectedProduct.upsell,
-                    }}
+                  <CartAndUpgradeButtons
+                    product={selectedProduct}
+                    cart={cart}
+                    hasColor={hasColor}
+                    hasSize={hasSize}
                   />
                 </div>
                 <div className="mt-5">

@@ -154,17 +154,23 @@ export default function ProductOptions({
   isStickyBarInCartIndicator: boolean;
 }) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [isInCart, setIsInCart] = useState<boolean>(false);
 
-  const { selectedColor, selectedSize } = useOptionsStore.getState();
-  const { resetOptions } = useOptionsStore();
+  const {
+    selectedColor,
+    selectedSize,
+    isInCart,
+    setIsInCart,
+    setProductId,
+    resetOptions,
+  } = useOptionsStore();
 
   const hasColor = productInfo.options.colors.length > 0;
   const hasSize = Object.keys(productInfo.options.sizes).length > 0;
 
   useEffect(() => {
+    setProductId(productInfo.id);
     resetOptions();
-  }, [productInfo.id, resetOptions]);
+  }, [productInfo.id, setProductId, resetOptions]);
 
   useEffect(() => {
     setIsInCart(
@@ -179,7 +185,7 @@ export default function ProductOptions({
         return false;
       }) ?? false
     );
-  }, [cart, productInfo.id, selectedColor, selectedSize]);
+  }, [cart, productInfo.id, selectedColor, selectedSize, setIsInCart]);
 
   useEffect(() => {
     const handleScroll = () => {

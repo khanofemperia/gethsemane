@@ -7,32 +7,33 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 import { AddToCartAction } from "@/actions/shopping-cart";
 import { Spinner } from "@/ui/Spinners/Default";
 import clsx from "clsx";
+import { UpsellReviewButton } from "../UpsellReviewOverlay";
 
 type CartAndUpgradeButtonsType = {
-  productId: string;
+  product: ProductWithUpsellType;
   cart: CartType | null;
   hasColor: boolean;
   hasSize: boolean;
 };
 
 export function CartAndUpgradeButtons({
-  productId,
+  product,
   cart,
   hasColor,
   hasSize,
 }: CartAndUpgradeButtonsType) {
   const [isPending, startTransition] = useTransition();
-  const [isInCart, setIsInCart] = useState<boolean>(false);
 
-  const { selectedColor, selectedSize } = useOptionsStore();
   const { showAlert } = useAlertStore();
+  const { selectedColor, selectedSize, isInCart, setIsInCart } =
+    useOptionsStore();
 
   useEffect(() => {
     setIsInCart(
       cart?.items.some((item) => {
         if (item.type === "product") {
           return (
-            item.baseProductId === productId &&
+            item.baseProductId === product.id &&
             item.color === selectedColor &&
             item.size === selectedSize
           );
@@ -40,7 +41,7 @@ export function CartAndUpgradeButtons({
         return false;
       }) ?? false
     );
-  }, [cart, productId, selectedColor, selectedSize]);
+  }, [cart, product.id, selectedColor, selectedSize, setIsInCart]);
 
   const handleAddToCart = async () => {
     if (hasColor && !selectedColor) {
@@ -59,7 +60,7 @@ export function CartAndUpgradeButtons({
     startTransition(async () => {
       const result = await AddToCartAction({
         type: "product",
-        baseProductId: productId,
+        baseProductId: product.id,
         color: selectedColor,
         size: selectedSize,
       });
@@ -92,9 +93,12 @@ export function CartAndUpgradeButtons({
           {isPending ? <Spinner size={28} color="gray" /> : "Add to cart"}
         </button>
       )}
-      <button className="flex items-center justify-center w-full rounded-full cursor-pointer border border-[#b27100] text-white text-sm font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:text-base min-[896px]:h-12">
-        Yes, let's upgrade
-      </button>
+      <UpsellReviewButton
+        product={{
+          id: product.id,
+          upsell: product.upsell,
+        }}
+      />
     </>
   );
 }

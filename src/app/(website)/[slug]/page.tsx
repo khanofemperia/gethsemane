@@ -83,7 +83,7 @@ export default async function ProductDetails({
 
   const product = (await getProductWithUpsell({
     id: params.slug.split("-").pop() as string,
-  })) as ProductType;
+  })) as ProductWithUpsellType;
   const {
     id,
     name,
@@ -324,7 +324,7 @@ export default async function ProductDetails({
               <div className="h-[72px] pt-2 pb-5 px-[6px] min-[350px]:px-2 bg-white">
                 <div className="max-w-[580px] mx-auto flex gap-[6px] min-[350px]:gap-2">
                   <CartAndUpgradeButtons
-                    productId={product.id}
+                    product={product}
                     cart={cart}
                     hasColor={hasColor}
                     hasSize={hasSize}
@@ -480,7 +480,7 @@ export default async function ProductDetails({
                   <div className="sticky left-0 right-0 bottom-0 z-10 mt-6 pt-1 pb-5 shadow-[0_-12px_16px_2px_white] bg-white">
                     <div className="flex gap-2 min-[896px]:gap-3">
                       <CartAndUpgradeButtons
-                        productId={product.id}
+                        product={product}
                         cart={cart}
                         hasColor={hasColor}
                         hasSize={hasSize}
