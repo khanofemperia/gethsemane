@@ -1,7 +1,5 @@
-"use client";
-
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
-import { useState } from "react";
 import { CloseIconThin } from "@/icons";
 import clsx from "clsx";
 
@@ -13,7 +11,10 @@ type ProductImage = {
 type ProductImageCarouselType = {
   product: {
     name: string;
-    mainImage: string;
+    images: {
+      main: string;
+      gallery: string[];
+    };
     options: {
       colors: Array<{
         name: string;
@@ -28,15 +29,26 @@ export function ProductImageCarousel({
   product,
   onClose,
 }: ProductImageCarouselType) {
-  const allImages: ProductImage[] = [
-    { src: product.mainImage, alt: product.name },
-    ...product.options.colors
-      .filter((color) => color.image !== product.mainImage)
+  const allImages = useMemo(() => {
+    const primaryImages: ProductImage[] = [
+      { src: product.images.main, alt: product.name },
+      ...product.images.gallery.map((src) => ({ src, alt: product.name })),
+    ];
+
+    const colorImages: ProductImage[] = product.options.colors
+      .filter((color) => color.image !== product.images.main)
       .map((color) => ({
         src: color.image,
         alt: color.name,
-      })),
-  ];
+      }));
+
+    return [...primaryImages, ...colorImages];
+  }, [
+    product.images.main,
+    product.images.gallery,
+    product.options.colors,
+    product.name,
+  ]);
 
   const [currentImage, setCurrentImage] = useState<ProductImage>(allImages[0]);
 
@@ -55,6 +67,7 @@ export function ProductImageCarousel({
               width={544}
               height={544}
               priority
+              loading="eager"
             />
           </div>
           <div className="h-full w-[320px]">
@@ -78,7 +91,7 @@ export function ProductImageCarousel({
                     alt={image.alt}
                     width={74}
                     height={74}
-                    priority
+                    loading="eager"
                   />
                 </div>
               ))}

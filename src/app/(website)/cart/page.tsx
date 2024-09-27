@@ -488,7 +488,6 @@ const getCartUpsells = async (
       );
 
     if (detailedProducts.length === 0) {
-      console.warn(`No valid products found for upsell ${upsell.baseUpsellId}`);
       return null;
     }
 
@@ -537,7 +536,6 @@ const getUpsell = async ({
       : null;
 
   if (!products || products.length === 0) {
-    console.warn(`No valid products found for upsell ${id}`);
     return null;
   }
 
@@ -562,8 +560,6 @@ const getUpsell = async ({
     ...data,
     products: sortedProducts,
   };
-
-  console.log("upsell:", upsell);
 
   return upsell;
 };
