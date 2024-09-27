@@ -17,7 +17,7 @@ import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
 
 export default async function Cart() {
   const cookieStore = cookies();
-  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
 
   const [cart, discoveryProducts] = await Promise.all([
     getCart(deviceIdentifier),
@@ -377,6 +377,7 @@ export default async function Cart() {
             heading="Add These to Your Cart"
             products={discoveryProducts as ProductWithUpsellType[]}
             cart={cart as CartType}
+            deviceIdentifier={deviceIdentifier}
           />
         </div>
       </div>

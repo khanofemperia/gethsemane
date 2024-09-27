@@ -196,7 +196,7 @@ export default async function Home() {
   ].sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 
   const cookieStore = cookies();
-  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);
 
   return (
@@ -249,6 +249,7 @@ export default async function Home() {
                         <FeaturedProducts
                           collection={collection as EnrichedCollectionType}
                           cart={cart}
+                          deviceIdentifier={deviceIdentifier}
                         />
                       </div>
                     );
@@ -269,6 +270,7 @@ export default async function Home() {
             })}
           <DiscoveryProducts
             products={discoveryProducts as ProductWithUpsellType[]}
+            deviceIdentifier={deviceIdentifier}
             cart={cart}
           />
         </div>

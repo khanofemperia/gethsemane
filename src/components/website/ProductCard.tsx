@@ -8,9 +8,11 @@ import Link from "next/link";
 export function ProductCard({
   product,
   cart,
+  deviceIdentifier,
 }: {
   product: ProductWithUpsellType;
   cart: CartType | null;
+  deviceIdentifier: string;
 }) {
   return (
     <div className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]">
@@ -52,6 +54,7 @@ export function ProductCard({
             onClick={(event) => event.stopPropagation()}
             product={product}
             cart={cart}
+            deviceIdentifier={deviceIdentifier}
           />
         </div>
       </div>

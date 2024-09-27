@@ -13,7 +13,7 @@ export default async function Collections({
   params: { slug: string };
 }) {
   const cookieStore = cookies();
-  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);
 
   const collection = (await getCollectionWithProductsAndUpsells({
@@ -27,7 +27,12 @@ export default async function Collections({
       <div className="max-w-[968px] mx-auto pt-10">
         <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
           {products.map((product, index) => (
-            <ProductCard key={index} product={product} cart={cart} />
+            <ProductCard
+              key={index}
+              product={product}
+              cart={cart}
+              deviceIdentifier={deviceIdentifier}
+            />
           ))}
         </div>
       </div>

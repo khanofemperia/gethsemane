@@ -6,10 +6,12 @@ export function DiscoveryProducts({
   heading = "Explore Your Interests",
   products,
   cart,
+  deviceIdentifier,
 }: {
   heading?: string;
   products: ProductWithUpsellType[];
   cart: CartType | null;
+  deviceIdentifier: string;
 }) {
   noStore(); // prevents this component from being cached
 
@@ -21,7 +23,12 @@ export function DiscoveryProducts({
       </h2>
       <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
         {shuffledProducts.map((product) => (
-          <ProductCard key={product.id} product={product} cart={cart} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            cart={cart}
+            deviceIdentifier={deviceIdentifier}
+          />
         ))}
       </div>
     </div>

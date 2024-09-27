@@ -61,12 +61,14 @@ type ProductInfoType = {
 export function ProductDetailsWrapper({
   children,
   cart,
+  deviceIdentifier,
   hasColor,
   hasSize,
   productInfo,
 }: {
   readonly children: React.ReactNode;
   cart: CartType | null;
+  deviceIdentifier: string;
   hasColor: boolean;
   hasSize: boolean;
   productInfo: ProductInfoType;
@@ -103,9 +105,9 @@ export function ProductDetailsWrapper({
         productInfo={productInfo}
         optionsComponent={
           <Options
-            cart={cart}
             productInfo={productInfo}
             isStickyBarInCartIndicator={true}
+            deviceIdentifier={deviceIdentifier}
           />
         }
         scrollPosition={scrollPosition}

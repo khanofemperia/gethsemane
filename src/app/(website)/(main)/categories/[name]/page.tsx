@@ -9,7 +9,7 @@ export default async function Categories({
   params: { name: string };
 }) {
   const cookieStore = cookies();
-  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);
 
   const products = (await getProductsByCategoryWithUpsell({
@@ -21,7 +21,12 @@ export default async function Categories({
       <div className="max-w-[968px] mx-auto pt-10">
         <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
           {products.map((product, index) => (
-            <ProductCard key={index} product={product} cart={cart} />
+            <ProductCard
+              key={index}
+              product={product}
+              cart={cart}
+              deviceIdentifier={deviceIdentifier}
+            />
           ))}
         </div>
       </div>

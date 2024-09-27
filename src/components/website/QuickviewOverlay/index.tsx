@@ -8,7 +8,6 @@ import Images from "../Product/Images";
 import { formatThousands } from "@/lib/utils";
 import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
-import { UpsellReviewButton } from "../UpsellReviewOverlay";
 import { useRouter } from "next/navigation";
 import { CartAndUpgradeButtons } from "../Product/CartAndUpgradeButtons";
 
@@ -16,10 +15,12 @@ export function QuickviewButton({
   onClick,
   product,
   cart,
+  deviceIdentifier,
 }: {
   onClick?: (event: React.MouseEvent) => void;
   product: ProductWithUpsellType;
   cart: CartType | null;
+  deviceIdentifier: string;
 }) {
   const { showOverlay, setSelectedProduct } = useQuickviewStore();
 
@@ -29,7 +30,7 @@ export function QuickviewButton({
       onClick(event);
     }
 
-    setSelectedProduct(product, cart);
+    setSelectedProduct(product, cart, deviceIdentifier);
     showOverlay();
   };
 
@@ -52,7 +53,8 @@ export function QuickviewButton({
 export function QuickviewOverlay() {
   const router = useRouter();
 
-  const { hideOverlay, isVisible, cart, selectedProduct } = useQuickviewStore();
+  const { hideOverlay, isVisible, cart, selectedProduct, deviceIdentifier } =
+    useQuickviewStore();
 
   const [hasSize, setHasSize] = useState(false);
   const [hasColor, setHasColor] = useState(false);
@@ -160,8 +162,8 @@ export function QuickviewOverlay() {
                         images: selectedProduct.images,
                         options: selectedProduct.options,
                       }}
-                      cart={cart}
                       isStickyBarInCartIndicator={false}
+                      deviceIdentifier={deviceIdentifier}
                     />
                   </div>
                 </div>

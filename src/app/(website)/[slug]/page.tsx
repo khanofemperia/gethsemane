@@ -14,71 +14,13 @@ import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgra
 import ShowAlert from "@/components/website/ShowAlert";
 import { ProductDetailsWrapper } from "@/components/website/ProductDetailsWrapper";
 
-type ProductType = {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  highlights: {
-    headline: string;
-    keyPoints: { index: number; text: string }[];
-  };
-  pricing: {
-    salePrice: number;
-    basePrice: number;
-    discountPercentage: number;
-  };
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  options: {
-    colors: Array<{
-      name: string;
-      image: string;
-    }>;
-    sizes: {
-      inches: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-      centimeters: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-    };
-  };
-  upsell: {
-    id: string;
-    mainImage: string;
-    pricing: {
-      salePrice: number;
-      basePrice: number;
-      discountPercentage: number;
-    };
-    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-    createdAt: string;
-    updatedAt: string;
-    products: {
-      id: string;
-      name: string;
-      slug: string;
-      basePrice: number;
-      images: {
-        main: string;
-        gallery: string[];
-      };
-    }[];
-  };
-};
-
 export default async function ProductDetails({
   params,
 }: {
   params: { slug: string };
 }) {
   const cookieStore = cookies();
-  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);
 
   const product = (await getProductWithUpsell({
@@ -102,6 +44,7 @@ export default async function ProductDetails({
     <>
       <ProductDetailsWrapper
         cart={cart}
+        deviceIdentifier={deviceIdentifier}
         hasColor={hasColor}
         hasSize={hasSize}
         productInfo={{
@@ -236,8 +179,8 @@ export default async function ProductDetails({
                           images,
                           options,
                         }}
-                        cart={cart}
                         isStickyBarInCartIndicator={false}
+                        deviceIdentifier={deviceIdentifier}
                       />
                     </div>
                   </div>
@@ -398,8 +341,8 @@ export default async function ProductDetails({
                             images,
                             options,
                           }}
-                          cart={cart}
                           isStickyBarInCartIndicator={false}
+                          deviceIdentifier={deviceIdentifier}
                         />
                       </div>
                     </div>

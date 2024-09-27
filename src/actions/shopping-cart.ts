@@ -75,6 +75,7 @@ export async function AddToCartAction(data: {
       });
 
       revalidatePath("/");
+      revalidatePath("/cart");
       revalidatePath("/[slug]", "page");
 
       return {
@@ -161,6 +162,7 @@ export async function AddToCartAction(data: {
     });
 
     revalidatePath("/");
+    revalidatePath("/cart");
     revalidatePath("/[slug]", "page");
 
     return {

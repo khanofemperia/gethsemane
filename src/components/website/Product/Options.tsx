@@ -8,6 +8,7 @@ import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { InCartIndicator } from "./InCartIndicator";
 import clsx from "clsx";
 import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
+import { getCart } from "@/lib/getData";
 
 type ProductColorsType = {
   colors: Array<{
@@ -127,8 +128,8 @@ function ProductSizeChart({ sizeChart }: { sizeChart: SizeChartType }) {
 
 export default function ProductOptions({
   productInfo,
-  cart,
   isStickyBarInCartIndicator,
+  deviceIdentifier,
 }: {
   productInfo: {
     id: string;
@@ -150,10 +151,11 @@ export default function ProductOptions({
       sizes: SizeChartType;
     };
   };
-  cart: CartType | null;
   isStickyBarInCartIndicator: boolean;
+  deviceIdentifier: string;
 }) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [cart, setCart] = useState<CartType | null>(null);
 
   const {
     selectedColor,
@@ -173,6 +175,12 @@ export default function ProductOptions({
   }, [productInfo.id, setProductId, resetOptions]);
 
   useEffect(() => {
+    const fetchCart = async () => {
+      const cart = await getCart(deviceIdentifier);
+      setCart(cart);
+    };
+    fetchCart();
+
     setIsInCart(
       cart?.items.some((item) => {
         if (item.type === "product") {

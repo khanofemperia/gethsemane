@@ -161,9 +161,11 @@ export const NextButton: React.FC<PropType> = (props) => {
 export function FeaturedProducts({
   collection,
   cart,
+  deviceIdentifier,
 }: {
   collection: EnrichedCollectionType;
   cart: CartType | null;
+  deviceIdentifier: string;
 }) {
   const [emblaRef] = useEmblaCarousel({
     align: "start",
@@ -190,7 +192,12 @@ export function FeaturedProducts({
       <div className="embla relative select-none" ref={emblaRef}>
         <div className="embla__container w-full flex gap-1 md:gap-0">
           {products.slice(0, 3).map((product) => (
-            <ProductCard key={product.id} product={product} cart={cart} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              cart={cart}
+              deviceIdentifier={deviceIdentifier}
+            />
           ))}
         </div>
       </div>
