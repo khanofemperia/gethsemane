@@ -3,7 +3,7 @@
 import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
 import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { ProductImageCarousel } from "./ProductImageCarousel";
+import { ProductImageCarouselOverlay } from "./ProductImageCarouselOverlay";
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useEffect, useState, useTransition } from "react";
 import { AddToCartAction } from "@/actions/shopping-cart";
@@ -584,7 +584,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
         </div>
       )}
       {showCarousel && selectedProductForCarousel && (
-        <ProductImageCarousel
+        <ProductImageCarouselOverlay
           product={selectedProductForCarousel}
           onClose={closeCarousel}
         />

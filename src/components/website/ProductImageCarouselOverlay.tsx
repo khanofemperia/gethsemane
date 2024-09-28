@@ -8,7 +8,7 @@ type ProductImage = {
   alt: string;
 };
 
-type ProductImageCarouselType = {
+type ProductImageCarouselOverlayType = {
   product: {
     name: string;
     images: {
@@ -25,10 +25,10 @@ type ProductImageCarouselType = {
   onClose: () => void;
 };
 
-export function ProductImageCarousel({
+export function ProductImageCarouselOverlay({
   product,
   onClose,
-}: ProductImageCarouselType) {
+}: ProductImageCarouselOverlayType) {
   const allImages = useMemo(() => {
     const primaryImages: ProductImage[] = [
       { src: product.images.main, alt: product.name },
