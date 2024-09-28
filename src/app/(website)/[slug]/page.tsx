@@ -5,7 +5,6 @@ import Images from "@/components/website/Product/Images";
 import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import SizeChartOverlay from "@/components/website/Product/SizeChartOverlay";
 import styles from "./styles.module.css";
 import { getCart, getProductWithUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
@@ -13,6 +12,7 @@ import "@/components/shared/TextEditor/theme/index.css";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
 import ShowAlert from "@/components/website/ShowAlert";
 import { ProductDetailsWrapper } from "@/components/website/ProductDetailsWrapper";
+import { SizeChartOverlay } from "@/components/website/Product/SizeChartOverlay";
 
 export default async function ProductDetails({
   params,

@@ -1,12 +1,12 @@
 "use client";
 
-import { CloseIcon } from "@/icons";
+import { CloseIcon, CloseIconThin } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { productInternationalSizes } from "@/lib/utils";
 import { useEffect } from "react";
 import Overlay from "@/ui/Overlay";
 
-type OptionsOverlayType = {
+type SizeChartOverlayType = {
   id: string;
   name: string;
   pricing: {
@@ -27,12 +27,13 @@ type OptionsOverlayType = {
   };
 };
 
-type SizeChartTableProps = {
+function Chart({
+  sizeChart,
+  unit,
+}: {
   sizeChart: SizeChartType;
   unit: "inches" | "centimeters";
-};
-
-function SizeChartTable({ sizeChart, unit }: SizeChartTableProps) {
+}) {
   const chartData = sizeChart[unit === "inches" ? "inches" : "centimeters"];
 
   return (
@@ -82,10 +83,10 @@ function SizeChartTable({ sizeChart, unit }: SizeChartTableProps) {
   );
 }
 
-export default function OptionsOverlay({
+export function SizeChartOverlay({
   productInfo,
 }: {
-  productInfo: OptionsOverlayType;
+  productInfo: SizeChartOverlayType;
 }) {
   const { hideOverlay } = useOverlayStore();
 
@@ -112,35 +113,32 @@ export default function OptionsOverlay({
   return (
     <>
       {isOverlayVisible && productInfo.options.sizes && (
-        <Overlay>
-          <div className="size-chart-container w-full h-[calc(100%-60px)] rounded-t-2xl absolute bottom-0 overflow-hidden bg-white">
-            <div className="flex items-center justify-center pt-5 pb-2">
-              <h2 className="font-semibold">Product measurements</h2>
-              <button
-                onClick={() => {
-                  hideOverlay({
-                    pageName,
-                    overlayName: overlayName,
-                  });
-                }}
-                className="h-7 w-7 rounded-full absolute right-5 flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
-                type="button"
-              >
-                <CloseIcon size={18} />
-              </button>
-            </div>
-            <div className="w-full h-[calc(100%-52px)] px-5 pt-2 pb-[240px] invisible-scrollbar overflow-x-hidden overflow-y-visible">
-              <div className="w-full max-w-[620px] mx-auto flex flex-col gap-6 mt-6">
+        <div className="overlay fixed top-0 bottom-0 left-0 right-0 z-50 transition duration-300 ease-in-out bg-glass-black backdrop-blur-sm md:overflow-x-hidden md:overflow-y-visible md:custom-scrollbar">
+          <div className="size-chart-container absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl overflow-hidden bg-white md:w-max md:min-w-[516px] md:max-w-[740px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
+            <h2 className="font-semibold text-center pt-5 pb-2">
+              Product measurements
+            </h2>
+            <button
+              onClick={() => {
+                hideOverlay({
+                  pageName,
+                  overlayName: overlayName,
+                });
+              }}
+              className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
+              type="button"
+            >
+              <CloseIconThin size={24} className="stroke-gray" />
+            </button>
+            <div className="w-full h-[calc(100%-52px)] px-5 pb-10 invisible-scrollbar overflow-x-hidden overflow-y-visible">
+              <div className="w-full max-w-[602px] mx-auto flex flex-col gap-6 mt-6">
                 <div>
                   <h3 className="font-semibold mb-4">Inches</h3>
-                  <SizeChartTable
-                    sizeChart={productInfo.options.sizes}
-                    unit="inches"
-                  />
+                  <Chart sizeChart={productInfo.options.sizes} unit="inches" />
                 </div>
                 <div>
                   <h3 className="font-semibold mb-4">Centimeters</h3>
-                  <SizeChartTable
+                  <Chart
                     sizeChart={productInfo.options.sizes}
                     unit="centimeters"
                   />
@@ -222,7 +220,7 @@ export default function OptionsOverlay({
               </div>
             </div>
           </div>
-        </Overlay>
+        </div>
       )}
     </>
   );
