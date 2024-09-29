@@ -172,10 +172,7 @@ export default function StickyBar({
                       !upsell && "text-[rgb(168,100,0)]"
                     )}
                   >
-                    <span
-                      className="text-[0.813rem] leading-3 font-semibold"
-                      aria-hidden="true"
-                    >
+                    <span className="text-[0.813rem] leading-3 font-semibold">
                       $
                     </span>
                     <span className="text-lg font-bold">
@@ -191,10 +188,7 @@ export default function StickyBar({
                 </div>
               ) : (
                 <div className="flex items-baseline">
-                  <span
-                    className="text-[0.813rem] leading-3 font-semibold"
-                    aria-hidden="true"
-                  >
+                  <span className="text-[0.813rem] leading-3 font-semibold">
                     $
                   </span>
                   <span className="text-lg font-bold">
@@ -239,10 +233,7 @@ export default function StickyBar({
                           {Number(upsell.pricing.salePrice) ? (
                             <div className="flex items-center gap-[6px]">
                               <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                <span
-                                  className="text-[0.813rem] leading-3 font-semibold"
-                                  aria-hidden="true"
-                                >
+                                <span className="text-[0.813rem] leading-3 font-semibold">
                                   $
                                 </span>
                                 <span className="text-lg font-bold">
@@ -263,10 +254,7 @@ export default function StickyBar({
                             </div>
                           ) : (
                             <div className="flex items-baseline text-[rgb(168,100,0)]">
-                              <span
-                                className="text-[0.813rem] leading-3 font-semibold"
-                                aria-hidden="true"
-                              >
+                              <span className="text-[0.813rem] leading-3 font-semibold">
                                 $
                               </span>
                               <span className="text-lg font-bold">
