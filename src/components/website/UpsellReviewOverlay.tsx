@@ -401,20 +401,31 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
       {isVisible && selectedProduct && (
         <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
           <div className="max-h-[764px] relative overflow-hidden rounded-2xl shadow-[0px_0px_36px_0px_rgba(255,185,56,0.6)] bg-white">
-            <div className="w-[600px] h-full pt-6 pb-[80px] flex flex-col relative">
+            <div className="w-[600px] h-full pt-5 pb-[80px] flex flex-col relative">
               <div className="pb-3">
                 <div className="w-max mx-auto flex items-center justify-center">
                   {Number(selectedProduct.upsell.pricing.salePrice) ? (
                     <div className="flex items-center gap-[6px]">
-                      <span className="font-bold text-xl text-amber">
-                        $
-                        {formatThousands(
-                          Number(selectedProduct.upsell.pricing.salePrice)
-                        )}
-                      </span>
-                      <span className="border border-[rgb(178,110,0)] rounded-[3px] font-medium h-4 text-[rgb(178,110,0)] text-xs px-1 flex items-center justify-center">
-                        -{selectedProduct.upsell.pricing.discountPercentage}%
-                      </span>
+                      <div className="flex items-baseline text-[rgb(168,100,0)]">
+                        <span
+                          className="text-[0.813rem] leading-3 font-semibold"
+                          aria-hidden="true"
+                        >
+                          $
+                        </span>
+                        <span className="text-xl font-bold">
+                          {Math.floor(
+                            Number(selectedProduct.upsell.pricing.salePrice)
+                          )}
+                        </span>
+                        <span className="text-[0.813rem] leading-3 font-semibold">
+                          {(
+                            Number(selectedProduct.upsell.pricing.salePrice) % 1
+                          )
+                            .toFixed(2)
+                            .substring(1)}
+                        </span>
+                      </div>
                       <span className="text-[0.813rem] leading-3 text-gray line-through">
                         $
                         {formatThousands(
@@ -423,13 +434,27 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                       </span>
                     </div>
                   ) : (
-                    <span className="font-bold text-xl text-amber">
-                      $
-                      {formatThousands(
-                        Number(selectedProduct.upsell.pricing.basePrice)
-                      )}{" "}
-                      today
-                    </span>
+                    <div className="flex items-baseline text-[rgb(168,100,0)]">
+                      <span
+                        className="text-[0.813rem] leading-3 font-semibold"
+                        aria-hidden="true"
+                      >
+                        $
+                      </span>
+                      <span className="text-lg font-bold">
+                        {Math.floor(
+                          Number(selectedProduct.upsell.pricing.basePrice)
+                        )}
+                      </span>
+                      <span className="text-[0.813rem] leading-3 font-semibold">
+                        {(Number(selectedProduct.upsell.pricing.basePrice) % 1)
+                          .toFixed(2)
+                          .substring(1)}
+                      </span>
+                      <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                        today
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>

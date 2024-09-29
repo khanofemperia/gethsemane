@@ -11,6 +11,7 @@ import styles from "./styles.module.css";
 import { useRouter } from "next/navigation";
 import { CartAndUpgradeButtons } from "../Product/CartAndUpgradeButtons";
 import { SizeChartOverlay } from "../Product/SizeChartOverlay";
+import clsx from "clsx";
 
 export function QuickviewButton({
   onClick,
@@ -134,29 +135,56 @@ export function QuickviewOverlay() {
                       <div className="w-max flex items-center justify-center">
                         {Number(selectedProduct.pricing.salePrice) ? (
                           <div className="flex items-center gap-[6px]">
-                            <span className="font-bold">
-                              $
-                              {formatThousands(
-                                Number(selectedProduct.pricing.salePrice)
+                            <div
+                              className={clsx(
+                                "flex items-baseline",
+                                !selectedProduct.upsell &&
+                                  "text-[rgb(168,100,0)]"
                               )}
-                            </span>
-                            <span className="text-xs text-gray line-through mt-[2px]">
+                            >
+                              <span
+                                className="text-[0.813rem] leading-3 font-semibold"
+                                aria-hidden="true"
+                              >
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(
+                                  Number(selectedProduct.pricing.salePrice)
+                                )}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(Number(selectedProduct.pricing.salePrice) % 1)
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
+                            <span className="text-[0.813rem] leading-3 text-gray line-through">
                               $
                               {formatThousands(
                                 Number(selectedProduct.pricing.basePrice)
                               )}
                             </span>
-                            <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                              -{selectedProduct.pricing.discountPercentage}%
-                            </span>
                           </div>
                         ) : (
-                          <p className="font-bold">
-                            $
-                            {formatThousands(
-                              Number(selectedProduct.pricing.basePrice)
-                            )}
-                          </p>
+                          <div className="flex items-baseline">
+                            <span
+                              className="text-[0.813rem] leading-3 font-semibold"
+                              aria-hidden="true"
+                            >
+                              $
+                            </span>
+                            <span className="text-lg font-bold">
+                              {Math.floor(
+                                Number(selectedProduct.pricing.basePrice)
+                              )}
+                            </span>
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              {(Number(selectedProduct.pricing.basePrice) % 1)
+                                .toFixed(2)
+                                .substring(1)}
+                            </span>
+                          </div>
                         )}
                       </div>
                       <Options
@@ -187,22 +215,32 @@ export function QuickviewOverlay() {
                                 selectedProduct.upsell.pricing.salePrice
                               ) ? (
                                 <div className="flex items-center gap-[6px]">
-                                  <span className="font-bold text-amber">
-                                    $
-                                    {formatThousands(
-                                      Number(
-                                        selectedProduct.upsell.pricing.salePrice
+                                  <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                    <span
+                                      className="text-[0.813rem] leading-3 font-semibold"
+                                      aria-hidden="true"
+                                    >
+                                      $
+                                    </span>
+                                    <span className="text-lg font-bold">
+                                      {Math.floor(
+                                        Number(
+                                          selectedProduct.upsell.pricing
+                                            .salePrice
+                                        )
+                                      )}
+                                    </span>
+                                    <span className="text-[0.813rem] leading-3 font-semibold">
+                                      {(
+                                        Number(
+                                          selectedProduct.upsell.pricing
+                                            .salePrice
+                                        ) % 1
                                       )
-                                    )}
-                                  </span>
-                                  <span className="border border-[rgb(178,110,0)] rounded-[3px] font-medium h-4 text-[rgb(178,110,0)] text-xs px-1 flex items-center justify-center">
-                                    -
-                                    {
-                                      selectedProduct.upsell.pricing
-                                        .discountPercentage
-                                    }
-                                    %
-                                  </span>
+                                        .toFixed(2)
+                                        .substring(1)}
+                                    </span>
+                                  </div>
                                   <span className="text-[0.813rem] leading-3 text-gray line-through">
                                     $
                                     {formatThousands(
@@ -213,15 +251,33 @@ export function QuickviewOverlay() {
                                   </span>
                                 </div>
                               ) : (
-                                <span className="font-bold text-amber">
-                                  $
-                                  {formatThousands(
-                                    Number(
-                                      selectedProduct.upsell.pricing.basePrice
+                                <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                  <span
+                                    className="text-[0.813rem] leading-3 font-semibold"
+                                    aria-hidden="true"
+                                  >
+                                    $
+                                  </span>
+                                  <span className="text-lg font-bold">
+                                    {Math.floor(
+                                      Number(
+                                        selectedProduct.upsell.pricing.basePrice
+                                      )
+                                    )}
+                                  </span>
+                                  <span className="text-[0.813rem] leading-3 font-semibold">
+                                    {(
+                                      Number(
+                                        selectedProduct.upsell.pricing.basePrice
+                                      ) % 1
                                     )
-                                  )}{" "}
-                                  today
-                                </span>
+                                      .toFixed(2)
+                                      .substring(1)}
+                                  </span>
+                                  <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                    today
+                                  </span>
+                                </div>
                               )}
                             </div>
                           </div>

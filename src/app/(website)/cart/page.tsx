@@ -163,29 +163,50 @@ export default async function Cart() {
                                 <div className="mt-2 w-max flex items-center justify-center">
                                   {Number(item.pricing.salePrice) ? (
                                     <div className="flex items-center gap-[6px]">
-                                      <span className="font-semibold">
-                                        $
-                                        {formatThousands(
-                                          Number(item.pricing.salePrice)
-                                        )}
-                                      </span>
-                                      <span className="text-xs text-gray line-through mt-[2px]">
+                                      <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                        <span
+                                          className="text-[0.813rem] leading-3 font-semibold"
+                                          aria-hidden="true"
+                                        >
+                                          $
+                                        </span>
+                                        <span className="text-lg font-bold">
+                                          {Math.floor(
+                                            Number(item.pricing.salePrice)
+                                          )}
+                                        </span>
+                                        <span className="text-[0.813rem] leading-3 font-semibold">
+                                          {(Number(item.pricing.salePrice) % 1)
+                                            .toFixed(2)
+                                            .substring(1)}
+                                        </span>
+                                      </div>
+                                      <span className="text-[0.813rem] leading-3 text-gray line-through">
                                         $
                                         {formatThousands(
                                           Number(item.pricing.basePrice)
                                         )}
                                       </span>
-                                      <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                                        -{item.pricing.discountPercentage}%
-                                      </span>
                                     </div>
                                   ) : (
-                                    <p className="font-semibold">
-                                      $
-                                      {formatThousands(
-                                        Number(item.pricing.basePrice)
-                                      )}
-                                    </p>
+                                    <div className="flex items-baseline">
+                                      <span
+                                        className="text-[0.813rem] leading-3 font-semibold"
+                                        aria-hidden="true"
+                                      >
+                                        $
+                                      </span>
+                                      <span className="text-lg font-bold">
+                                        {Math.floor(
+                                          Number(item.pricing.basePrice)
+                                        )}
+                                      </span>
+                                      <span className="text-[0.813rem] leading-3 font-semibold">
+                                        {(Number(item.pricing.basePrice) % 1)
+                                          .toFixed(2)
+                                          .substring(1)}
+                                      </span>
+                                    </div>
                                   )}
                                 </div>
                               </div>
@@ -208,15 +229,27 @@ export default async function Cart() {
                                     <div className="w-max flex items-center justify-center">
                                       {Number(item.pricing.salePrice) ? (
                                         <div className="flex items-center gap-[6px]">
-                                          <span className="font-bold text-amber">
-                                            $
-                                            {formatThousands(
-                                              Number(item.pricing.salePrice)
-                                            )}
-                                          </span>
-                                          <span className="border border-[rgb(178,110,0)] rounded-[3px] font-medium h-4 text-[rgb(178,110,0)] text-xs px-1 flex items-center justify-center">
-                                            -{item.pricing.discountPercentage}%
-                                          </span>
+                                          <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                            <span
+                                              className="text-[0.813rem] leading-3 font-semibold"
+                                              aria-hidden="true"
+                                            >
+                                              $
+                                            </span>
+                                            <span className="text-xl font-bold">
+                                              {Math.floor(
+                                                Number(item.pricing.salePrice)
+                                              )}
+                                            </span>
+                                            <span className="text-[0.813rem] leading-3 font-semibold">
+                                              {(
+                                                Number(item.pricing.salePrice) %
+                                                1
+                                              )
+                                                .toFixed(2)
+                                                .substring(1)}
+                                            </span>
+                                          </div>
                                           <span className="text-[0.813rem] leading-3 text-gray line-through">
                                             $
                                             {formatThousands(
@@ -225,13 +258,29 @@ export default async function Cart() {
                                           </span>
                                         </div>
                                       ) : (
-                                        <span className="font-bold text-amber">
-                                          $
-                                          {formatThousands(
-                                            Number(item.pricing.salePrice)
-                                          )}{" "}
-                                          today
-                                        </span>
+                                        <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                          <span
+                                            className="text-[0.813rem] leading-3 font-semibold"
+                                            aria-hidden="true"
+                                          >
+                                            $
+                                          </span>
+                                          <span className="text-lg font-bold">
+                                            {Math.floor(
+                                              Number(item.pricing.basePrice)
+                                            )}
+                                          </span>
+                                          <span className="text-[0.813rem] leading-3 font-semibold">
+                                            {(
+                                              Number(item.pricing.basePrice) % 1
+                                            )
+                                              .toFixed(2)
+                                              .substring(1)}
+                                          </span>
+                                          <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                            today
+                                          </span>
+                                        </div>
                                       )}
                                     </div>
                                   </div>
@@ -315,9 +364,20 @@ export default async function Cart() {
                     <span className="font-medium">
                       Total ({sortedCartItems.length} Items):
                     </span>
-                    <span className="font-bold text-xl">
-                      ${formatThousands(calculateTotal())}
-                    </span>
+                    <div className="flex items-baseline">
+                      <span
+                        className="text-sm font-semibold"
+                        aria-hidden="true"
+                      >
+                        $
+                      </span>
+                      <span className="text-xl font-bold">
+                        {Math.floor(Number(calculateTotal()))}
+                      </span>
+                      <span className="text-sm font-semibold">
+                        {(Number(calculateTotal()) % 1).toFixed(2).substring(1)}
+                      </span>
+                    </div>
                   </div>
                   <div className="flex items-center mb-2">
                     <div className="h-[20px] rounded-[3px] flex items-center justify-center">
