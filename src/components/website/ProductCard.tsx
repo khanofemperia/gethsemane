@@ -34,20 +34,43 @@ export function ProductCard({
           <div className="w-max flex items-center justify-center">
             {Number(product.pricing.salePrice) ? (
               <div className="flex items-center gap-[6px]">
-                <span className="font-medium">
-                  ${formatThousands(Number(product.pricing.salePrice))}
-                </span>
-                <span className="text-xs text-gray line-through mt-[2px]">
+                <div className="flex items-baseline text-[rgb(168,100,0)]">
+                  <span
+                    className="text-[0.813rem] leading-3 font-semibold"
+                    aria-hidden="true"
+                  >
+                    $
+                  </span>
+                  <span className="text-lg font-bold">
+                    {Math.floor(Number(product.pricing.salePrice))}
+                  </span>
+                  <span className="text-[0.813rem] leading-3 font-semibold">
+                    {(Number(product.pricing.salePrice) % 1)
+                      .toFixed(2)
+                      .substring(1)}
+                  </span>
+                </div>
+                <span className="text-[0.813rem] leading-3 text-gray line-through">
                   ${formatThousands(Number(product.pricing.basePrice))}
-                </span>
-                <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                  -{product.pricing.discountPercentage}%
                 </span>
               </div>
             ) : (
-              <p className="font-medium">
-                ${formatThousands(Number(product.pricing.basePrice))}
-              </p>
+              <div className="flex items-baseline">
+                <span
+                  className="text-[0.813rem] leading-3 font-semibold"
+                  aria-hidden="true"
+                >
+                  $
+                </span>
+                <span className="text-lg font-bold">
+                  {Math.floor(Number(product.pricing.basePrice))}
+                </span>
+                <span className="text-[0.813rem] leading-3 font-semibold">
+                  {(Number(product.pricing.basePrice) % 1)
+                    .toFixed(2)
+                    .substring(1)}
+                </span>
+              </div>
             )}
           </div>
           <QuickviewButton

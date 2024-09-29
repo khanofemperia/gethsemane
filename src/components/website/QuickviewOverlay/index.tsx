@@ -217,7 +217,7 @@ export function QuickviewOverlay() {
                                   $
                                   {formatThousands(
                                     Number(
-                                      selectedProduct.upsell.pricing.salePrice
+                                      selectedProduct.upsell.pricing.basePrice
                                     )
                                   )}{" "}
                                   today

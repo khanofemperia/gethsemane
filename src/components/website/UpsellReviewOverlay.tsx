@@ -426,7 +426,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                     <span className="font-bold text-xl text-amber">
                       $
                       {formatThousands(
-                        Number(selectedProduct.upsell.pricing.salePrice)
+                        Number(selectedProduct.upsell.pricing.basePrice)
                       )}{" "}
                       today
                     </span>
