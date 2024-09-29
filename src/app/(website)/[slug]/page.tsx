@@ -190,17 +190,37 @@ export default async function ProductDetails({
                     >
                       <div className="w-full">
                         <div>
-                          <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                          <h2 className="mb-1 font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
                             UPGRADE MY ORDER
                           </h2>
-                          <div className="mt-1 text-center font-medium text-amber-dimmed">
-                            {upsell.pricing.salePrice
-                              ? `$${formatThousands(
+                          <div className="w-max mx-auto flex items-center justify-center">
+                            {Number(upsell.pricing.salePrice) ? (
+                              <div className="flex items-center gap-[6px]">
+                                <span className="font-bold text-amber">
+                                  $
+                                  {formatThousands(
+                                    Number(upsell.pricing.salePrice)
+                                  )}
+                                </span>
+                                <span className="border border-[rgb(178,110,0)] rounded-[3px] font-medium h-4 text-[rgb(178,110,0)] text-xs px-1 flex items-center justify-center">
+                                  -{upsell.pricing.discountPercentage}%
+                                </span>
+                                <span className="text-[0.813rem] leading-3 text-gray line-through">
+                                  $
+                                  {formatThousands(
+                                    Number(upsell.pricing.basePrice)
+                                  )}
+                                </span>
+                              </div>
+                            ) : (
+                              <span className="font-bold text-amber">
+                                $
+                                {formatThousands(
                                   Number(upsell.pricing.salePrice)
-                                )} (${upsell.pricing.discountPercentage}% Off)`
-                              : `$${formatThousands(
-                                  Number(upsell.pricing.basePrice)
-                                )} today`}
+                                )}{" "}
+                                today
+                              </span>
+                            )}
                           </div>
                         </div>
                         <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
@@ -354,19 +374,37 @@ export default async function ProductDetails({
                         >
                           <div className="w-full">
                             <div>
-                              <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                              <h2 className="mb-1 font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
                                 UPGRADE MY ORDER
                               </h2>
-                              <div className="mt-1 text-center font-medium text-amber">
-                                {upsell.pricing.salePrice
-                                  ? `$${formatThousands(
+                              <div className="w-max mx-auto flex items-center justify-center">
+                                {Number(upsell.pricing.salePrice) ? (
+                                  <div className="flex items-center gap-[6px]">
+                                    <span className="font-bold text-amber">
+                                      $
+                                      {formatThousands(
+                                        Number(upsell.pricing.salePrice)
+                                      )}
+                                    </span>
+                                    <span className="border border-[rgb(178,110,0)] rounded-[3px] font-medium h-4 text-[rgb(178,110,0)] text-xs px-1 flex items-center justify-center">
+                                      -{upsell.pricing.discountPercentage}%
+                                    </span>
+                                    <span className="text-[0.813rem] leading-3 text-gray line-through">
+                                      $
+                                      {formatThousands(
+                                        Number(upsell.pricing.basePrice)
+                                      )}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="font-bold text-amber">
+                                    $
+                                    {formatThousands(
                                       Number(upsell.pricing.salePrice)
-                                    )} (${
-                                      upsell.pricing.discountPercentage
-                                    }% Off)`
-                                  : `$${formatThousands(
-                                      Number(upsell.pricing.basePrice)
-                                    )} today`}
+                                    )}{" "}
+                                    today
+                                  </span>
+                                )}
                               </div>
                             </div>
                             <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">

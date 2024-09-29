@@ -402,33 +402,34 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
         <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
           <div className="max-h-[764px] relative overflow-hidden rounded-2xl shadow-[0px_0px_36px_0px_rgba(255,185,56,0.6)] bg-white">
             <div className="w-[600px] h-full pt-6 pb-[80px] flex flex-col relative">
-              <div className="pb-3 flex justify-center">
-                <div className="flex items-center gap-2">
-                  {selectedProduct.upsell.pricing.salePrice ? (
-                    <>
-                      <span className="font-semibold text-xl">
+              <div className="pb-3">
+                <div className="w-max mx-auto flex items-center justify-center">
+                  {Number(selectedProduct.upsell.pricing.salePrice) ? (
+                    <div className="flex items-center gap-[6px]">
+                      <span className="font-bold text-xl text-amber">
                         $
                         {formatThousands(
                           Number(selectedProduct.upsell.pricing.salePrice)
                         )}
                       </span>
-                      <span className="text-amber font-medium">
-                        (Saved $
-                        {calculateSavings(selectedProduct.upsell.pricing)})
+                      <span className="border border-[rgb(178,110,0)] rounded-[3px] font-medium h-4 text-[rgb(178,110,0)] text-xs px-1 flex items-center justify-center">
+                        -{selectedProduct.upsell.pricing.discountPercentage}%
                       </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="font-semibold text-xl">
+                      <span className="text-[0.813rem] leading-3 text-gray line-through">
                         $
                         {formatThousands(
                           Number(selectedProduct.upsell.pricing.basePrice)
                         )}
                       </span>
-                      <span className="text-amber text-sm font-medium border border-amber h-5 leading-none px-1 rounded flex items-center justify-center">
-                        Limited time offer
-                      </span>
-                    </>
+                    </div>
+                  ) : (
+                    <span className="font-bold text-xl text-amber">
+                      $
+                      {formatThousands(
+                        Number(selectedProduct.upsell.pricing.salePrice)
+                      )}{" "}
+                      today
+                    </span>
                   )}
                 </div>
               </div>

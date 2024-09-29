@@ -205,32 +205,33 @@ export default async function Cart() {
                               <div className="relative w-full p-5 flex gap-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]">
                                 <div className="flex flex-col gap-2">
                                   <div className="min-w-full h-5 flex items-center justify-between gap-5">
-                                    <div className="flex items-center gap-1">
-                                      {item.pricing.salePrice ? (
-                                        <>
-                                          <span className="font-semibold">
+                                    <div className="w-max flex items-center justify-center">
+                                      {Number(item.pricing.salePrice) ? (
+                                        <div className="flex items-center gap-[6px]">
+                                          <span className="font-bold text-amber">
                                             $
                                             {formatThousands(
                                               Number(item.pricing.salePrice)
                                             )}
                                           </span>
-                                          <span className="text-amber text-sm">
-                                            (Saved $
-                                            {calculateSavings(item.pricing)})
+                                          <span className="border border-[rgb(178,110,0)] rounded-[3px] font-medium h-4 text-[rgb(178,110,0)] text-xs px-1 flex items-center justify-center">
+                                            -{item.pricing.discountPercentage}%
                                           </span>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <span className="font-semibold">
+                                          <span className="text-[0.813rem] leading-3 text-gray line-through">
                                             $
                                             {formatThousands(
                                               Number(item.pricing.basePrice)
                                             )}
                                           </span>
-                                          <span className="text-amber text-xs border border-amber ml-[2px] h-[18px] leading-none px-1 rounded flex items-center justify-center">
-                                            Limited time offer
-                                          </span>
-                                        </>
+                                        </div>
+                                      ) : (
+                                        <span className="font-bold text-amber">
+                                          $
+                                          {formatThousands(
+                                            Number(item.pricing.salePrice)
+                                          )}{" "}
+                                          today
+                                        </span>
                                       )}
                                     </div>
                                   </div>
