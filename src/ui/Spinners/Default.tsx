@@ -14,7 +14,7 @@ export function Spinner({
 
   return (
     <svg
-      stroke={validColor}
+      stroke={validColor === "gray" ? "#737373" : validColor}
       fill="none"
       strokeWidth="2"
       viewBox="0 0 24 24"

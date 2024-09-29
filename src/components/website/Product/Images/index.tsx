@@ -13,7 +13,11 @@ type ProductImagesType = {
 };
 
 export default function Images({ images, productName }: ProductImagesType) {
-  const [hoveredImage, setHoveredImage] = useState("");
+  const [currentImage, setCurrentImage] = useState(images.main);
+
+  const handleImageSelect = (image: string) => {
+    setCurrentImage(image);
+  };
 
   const productImages = [images.main, ...(images.gallery ?? [])];
 
@@ -24,7 +28,8 @@ export default function Images({ images, productName }: ProductImagesType) {
       >
         {productImages.map((image, index) => (
           <div
-            onMouseEnter={() => setHoveredImage(image)}
+            onMouseEnter={() => handleImageSelect(image)}
+            onClick={() => handleImageSelect(image)}
             key={index}
             className="w-[56px] h-[56px] relative min-h-[56px] min-w-[56px] rounded-md flex items-center justify-center overflow-hidden"
           >
@@ -42,7 +47,7 @@ export default function Images({ images, productName }: ProductImagesType) {
       <div className="w-full max-w-[580px] h-full flex flex-col gap-5">
         <div className="w-full aspect-square relative flex items-center justify-center bg-lightgray overflow-hidden rounded-3xl [box-shadow:0px_1.6px_3.6px_rgb(0,_0,_0,_0.4),_0px_0px_2.9px_rgb(0,_0,_0,_0.1)]">
           <Image
-            src={hoveredImage || productImages[0]}
+            src={currentImage}
             alt={productName}
             width={510}
             height={510}

@@ -1,5 +1,6 @@
 import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
+import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { getCart, getCollectionWithProductsAndUpsells } from "@/lib/getData";
 import { cookies } from "next/headers";
 
@@ -37,6 +38,7 @@ export default async function Collections({
         </div>
       </div>
       <QuickviewOverlay />
+      <UpsellReviewOverlay cart={cart} />
     </>
   );
 }
