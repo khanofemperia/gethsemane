@@ -166,20 +166,44 @@ export default function StickyBar({
             <div className="w-max flex items-center justify-center">
               {Number(pricing.salePrice) ? (
                 <div className="flex items-center gap-[6px]">
-                  <span className="font-bold">
-                    ${formatThousands(Number(pricing.salePrice))}
-                  </span>
-                  <span className="text-xs text-gray line-through mt-[2px]">
+                  <div
+                    className={clsx(
+                      "flex items-baseline",
+                      !upsell && "text-[rgb(168,100,0)]"
+                    )}
+                  >
+                    <span
+                      className="text-[0.813rem] leading-3 font-semibold"
+                      aria-hidden="true"
+                    >
+                      $
+                    </span>
+                    <span className="text-lg font-bold">
+                      {Math.floor(Number(pricing.salePrice))}
+                    </span>
+                    <span className="text-[0.813rem] leading-3 font-semibold">
+                      {(Number(pricing.salePrice) % 1).toFixed(2).substring(1)}
+                    </span>
+                  </div>
+                  <span className="text-[0.813rem] leading-3 text-gray line-through">
                     ${formatThousands(Number(pricing.basePrice))}
-                  </span>
-                  <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                    -{pricing.discountPercentage}%
                   </span>
                 </div>
               ) : (
-                <p className="font-bold">
-                  ${formatThousands(Number(pricing.basePrice))}
-                </p>
+                <div className="flex items-baseline">
+                  <span
+                    className="text-[0.813rem] leading-3 font-semibold"
+                    aria-hidden="true"
+                  >
+                    $
+                  </span>
+                  <span className="text-lg font-bold">
+                    {Math.floor(Number(pricing.basePrice))}
+                  </span>
+                  <span className="text-[0.813rem] leading-3 font-semibold">
+                    {(Number(pricing.basePrice) % 1).toFixed(2).substring(1)}
+                  </span>
+                </div>
               )}
             </div>
             {optionsComponent}
@@ -211,14 +235,53 @@ export default function StickyBar({
                         <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
                           UPGRADE MY ORDER
                         </h2>
-                        <div className="mt-1 text-center font-medium text-amber-dimmed">
-                          {upsell.pricing.salePrice
-                            ? `$${formatThousands(
-                                Number(upsell.pricing.salePrice)
-                              )} (${upsell.pricing.discountPercentage}% Off)`
-                            : `$${formatThousands(
-                                Number(upsell.pricing.basePrice)
-                              )} today`}
+                        <div className="mt-1 w-max mx-auto flex items-center justify-center">
+                          {Number(upsell.pricing.salePrice) ? (
+                            <div className="flex items-center gap-[6px]">
+                              <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                <span
+                                  className="text-[0.813rem] leading-3 font-semibold"
+                                  aria-hidden="true"
+                                >
+                                  $
+                                </span>
+                                <span className="text-lg font-bold">
+                                  {Math.floor(Number(upsell.pricing.salePrice))}
+                                </span>
+                                <span className="text-[0.813rem] leading-3 font-semibold">
+                                  {(Number(upsell.pricing.salePrice) % 1)
+                                    .toFixed(2)
+                                    .substring(1)}
+                                </span>
+                              </div>
+                              <span className="text-[0.813rem] leading-3 text-gray line-through">
+                                $
+                                {formatThousands(
+                                  Number(upsell.pricing.basePrice)
+                                )}
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="flex items-baseline text-[rgb(168,100,0)]">
+                              <span
+                                className="text-[0.813rem] leading-3 font-semibold"
+                                aria-hidden="true"
+                              >
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(Number(upsell.pricing.basePrice))}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(Number(upsell.pricing.basePrice) % 1)
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                              <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                today
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">

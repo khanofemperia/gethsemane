@@ -13,6 +13,7 @@ import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgra
 import ShowAlert from "@/components/website/ShowAlert";
 import { ProductDetailsWrapper } from "@/components/website/ProductDetailsWrapper";
 import { SizeChartOverlay } from "@/components/website/Product/SizeChartOverlay";
+import clsx from "clsx";
 
 export default async function ProductDetails({
   params,
@@ -155,20 +156,48 @@ export default async function ProductDetails({
                       <div className="w-max flex items-center justify-center">
                         {Number(pricing.salePrice) ? (
                           <div className="flex items-center gap-[6px]">
-                            <span className="font-bold">
-                              ${formatThousands(Number(pricing.salePrice))}
-                            </span>
-                            <span className="text-xs text-gray line-through mt-[2px]">
+                            <div
+                              className={clsx(
+                                "flex items-baseline",
+                                !upsell && "text-[rgb(168,100,0)]"
+                              )}
+                            >
+                              <span
+                                className="text-[0.813rem] leading-3 font-semibold"
+                                aria-hidden="true"
+                              >
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(Number(pricing.salePrice))}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(Number(pricing.salePrice) % 1)
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
+                            <span className="text-[0.813rem] leading-3 text-gray line-through">
                               ${formatThousands(Number(pricing.basePrice))}
-                            </span>
-                            <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                              -{pricing.discountPercentage}%
                             </span>
                           </div>
                         ) : (
-                          <p className="font-bold">
-                            ${formatThousands(Number(pricing.basePrice))}
-                          </p>
+                          <div className="flex items-baseline">
+                            <span
+                              className="text-[0.813rem] leading-3 font-semibold"
+                              aria-hidden="true"
+                            >
+                              $
+                            </span>
+                            <span className="text-lg font-bold">
+                              {Math.floor(Number(pricing.basePrice))}
+                            </span>
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              {(Number(pricing.basePrice) % 1)
+                                .toFixed(2)
+                                .substring(1)}
+                            </span>
+                          </div>
                         )}
                       </div>
                       <Options
@@ -196,15 +225,24 @@ export default async function ProductDetails({
                           <div className="w-max mx-auto flex items-center justify-center">
                             {Number(upsell.pricing.salePrice) ? (
                               <div className="flex items-center gap-[6px]">
-                                <span className="font-bold text-amber">
-                                  $
-                                  {formatThousands(
-                                    Number(upsell.pricing.salePrice)
-                                  )}
-                                </span>
-                                <span className="border border-[rgb(178,110,0)] rounded-[3px] font-medium h-4 text-[rgb(178,110,0)] text-xs px-1 flex items-center justify-center">
-                                  -{upsell.pricing.discountPercentage}%
-                                </span>
+                                <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                  <span
+                                    className="text-[0.813rem] leading-3 font-semibold"
+                                    aria-hidden="true"
+                                  >
+                                    $
+                                  </span>
+                                  <span className="text-lg font-bold">
+                                    {Math.floor(
+                                      Number(upsell.pricing.salePrice)
+                                    )}
+                                  </span>
+                                  <span className="text-[0.813rem] leading-3 font-semibold">
+                                    {(Number(upsell.pricing.salePrice) % 1)
+                                      .toFixed(2)
+                                      .substring(1)}
+                                  </span>
+                                </div>
                                 <span className="text-[0.813rem] leading-3 text-gray line-through">
                                   $
                                   {formatThousands(
@@ -213,13 +251,25 @@ export default async function ProductDetails({
                                 </span>
                               </div>
                             ) : (
-                              <span className="font-bold text-amber">
-                                $
-                                {formatThousands(
-                                  Number(upsell.pricing.salePrice)
-                                )}{" "}
-                                today
-                              </span>
+                              <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                <span
+                                  className="text-[0.813rem] leading-3 font-semibold"
+                                  aria-hidden="true"
+                                >
+                                  $
+                                </span>
+                                <span className="text-lg font-bold">
+                                  {Math.floor(Number(upsell.pricing.basePrice))}
+                                </span>
+                                <span className="text-[0.813rem] leading-3 font-semibold">
+                                  {(Number(upsell.pricing.basePrice) % 1)
+                                    .toFixed(2)
+                                    .substring(1)}
+                                </span>
+                                <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                  today
+                                </span>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -337,20 +387,48 @@ export default async function ProductDetails({
                         <div className="w-max flex items-center justify-center">
                           {Number(pricing.salePrice) ? (
                             <div className="flex items-center gap-[6px]">
-                              <span className="font-bold">
-                                ${formatThousands(Number(pricing.salePrice))}
-                              </span>
-                              <span className="text-xs text-gray line-through mt-[2px]">
+                              <div
+                                className={clsx(
+                                  "flex items-baseline",
+                                  !upsell && "text-[rgb(168,100,0)]"
+                                )}
+                              >
+                                <span
+                                  className="text-[0.813rem] leading-3 font-semibold"
+                                  aria-hidden="true"
+                                >
+                                  $
+                                </span>
+                                <span className="text-lg font-bold">
+                                  {Math.floor(Number(pricing.salePrice))}
+                                </span>
+                                <span className="text-[0.813rem] leading-3 font-semibold">
+                                  {(Number(pricing.salePrice) % 1)
+                                    .toFixed(2)
+                                    .substring(1)}
+                                </span>
+                              </div>
+                              <span className="text-[0.813rem] leading-3 text-gray line-through">
                                 ${formatThousands(Number(pricing.basePrice))}
-                              </span>
-                              <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                                -{pricing.discountPercentage}%
                               </span>
                             </div>
                           ) : (
-                            <p className="font-bold">
-                              ${formatThousands(Number(pricing.basePrice))}
-                            </p>
+                            <div className="flex items-baseline">
+                              <span
+                                className="text-[0.813rem] leading-3 font-semibold"
+                                aria-hidden="true"
+                              >
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(Number(pricing.basePrice))}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(Number(pricing.basePrice) % 1)
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
                           )}
                         </div>
                         <Options
@@ -380,15 +458,24 @@ export default async function ProductDetails({
                               <div className="w-max mx-auto flex items-center justify-center">
                                 {Number(upsell.pricing.salePrice) ? (
                                   <div className="flex items-center gap-[6px]">
-                                    <span className="font-bold text-amber">
-                                      $
-                                      {formatThousands(
-                                        Number(upsell.pricing.salePrice)
-                                      )}
-                                    </span>
-                                    <span className="border border-[rgb(178,110,0)] rounded-[3px] font-medium h-4 text-[rgb(178,110,0)] text-xs px-1 flex items-center justify-center">
-                                      -{upsell.pricing.discountPercentage}%
-                                    </span>
+                                    <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                      <span
+                                        className="text-[0.813rem] leading-3 font-semibold"
+                                        aria-hidden="true"
+                                      >
+                                        $
+                                      </span>
+                                      <span className="text-lg font-bold">
+                                        {Math.floor(
+                                          Number(upsell.pricing.salePrice)
+                                        )}
+                                      </span>
+                                      <span className="text-[0.813rem] leading-3 font-semibold">
+                                        {(Number(upsell.pricing.salePrice) % 1)
+                                          .toFixed(2)
+                                          .substring(1)}
+                                      </span>
+                                    </div>
                                     <span className="text-[0.813rem] leading-3 text-gray line-through">
                                       $
                                       {formatThousands(
@@ -397,13 +484,27 @@ export default async function ProductDetails({
                                     </span>
                                   </div>
                                 ) : (
-                                  <span className="font-bold text-amber">
-                                    $
-                                    {formatThousands(
-                                      Number(upsell.pricing.salePrice)
-                                    )}{" "}
-                                    today
-                                  </span>
+                                  <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                    <span
+                                      className="text-[0.813rem] leading-3 font-semibold"
+                                      aria-hidden="true"
+                                    >
+                                      $
+                                    </span>
+                                    <span className="text-lg font-bold">
+                                      {Math.floor(
+                                        Number(upsell.pricing.basePrice)
+                                      )}
+                                    </span>
+                                    <span className="text-[0.813rem] leading-3 font-semibold">
+                                      {(Number(upsell.pricing.basePrice) % 1)
+                                        .toFixed(2)
+                                        .substring(1)}
+                                    </span>
+                                    <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                      today
+                                    </span>
+                                  </div>
                                 )}
                               </div>
                             </div>

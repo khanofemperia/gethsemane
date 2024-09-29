@@ -149,23 +149,48 @@ export default async function EditProduct({
                 </div>
                 <div className="p-5">
                   <h3 className="text-xs text-gray mb-2">Price</h3>
-                  {Number(pricing.salePrice) ? (
-                    <div className="flex items-center gap-[6px]">
-                      <span className="font-medium">
-                        ${formatThousands(Number(pricing.salePrice))}
-                      </span>
-                      <span className="text-xs text-gray line-through mt-[2px]">
-                        ${formatThousands(Number(pricing.basePrice))}
-                      </span>
-                      <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                        -{pricing.discountPercentage}%
-                      </span>
-                    </div>
-                  ) : (
-                    <p className="font-medium">
-                      ${formatThousands(Number(pricing.basePrice))}
-                    </p>
-                  )}
+                  <div className="w-max flex items-center justify-center">
+                    {Number(pricing.salePrice) ? (
+                      <div className="flex items-center gap-[6px]">
+                        <div className="flex items-baseline">
+                          <span
+                            className="text-[0.813rem] leading-3 font-semibold"
+                            aria-hidden="true"
+                          >
+                            $
+                          </span>
+                          <span className="text-lg font-bold">
+                            {Math.floor(Number(pricing.salePrice))}
+                          </span>
+                          <span className="text-[0.813rem] leading-3 font-semibold">
+                            {(Number(pricing.salePrice) % 1)
+                              .toFixed(2)
+                              .substring(1)}
+                          </span>
+                        </div>
+                        <span className="text-[0.813rem] leading-3 text-gray line-through">
+                          ${formatThousands(Number(pricing.basePrice))}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-baseline">
+                        <span
+                          className="text-[0.813rem] leading-3 font-semibold"
+                          aria-hidden="true"
+                        >
+                          $
+                        </span>
+                        <span className="text-lg font-bold">
+                          {Math.floor(Number(pricing.basePrice))}
+                        </span>
+                        <span className="text-[0.813rem] leading-3 font-semibold">
+                          {(Number(pricing.basePrice) % 1)
+                            .toFixed(2)
+                            .substring(1)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="p-5">
                   <h3 className="text-xs text-gray mb-2">Slug</h3>

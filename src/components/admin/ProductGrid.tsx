@@ -207,23 +207,46 @@ export default function ProductGrid({ products }: { products: ProductType[] }) {
                     </div>
                     <div className="w-full h-full absolute top-0 bottom-0 left-0 right-0 ease-in-out duration-300 transition group-hover:bg-black/20"></div>
                   </div>
-                  <div className="flex items-center justify-center mt-2">
+                  <div className="mt-2 w-max mx-auto flex items-center justify-center">
                     {Number(pricing.salePrice) ? (
                       <div className="flex items-center gap-[6px]">
-                        <span className="font-medium">
-                          ${formatThousands(Number(pricing.salePrice))}
-                        </span>
-                        <span className="text-xs text-gray line-through mt-[2px]">
+                        <div className="flex items-baseline">
+                          <span
+                            className="text-[0.813rem] leading-3 font-semibold"
+                            aria-hidden="true"
+                          >
+                            $
+                          </span>
+                          <span className="text-lg font-bold">
+                            {Math.floor(Number(pricing.salePrice))}
+                          </span>
+                          <span className="text-[0.813rem] leading-3 font-semibold">
+                            {(Number(pricing.salePrice) % 1)
+                              .toFixed(2)
+                              .substring(1)}
+                          </span>
+                        </div>
+                        <span className="text-[0.813rem] leading-3 text-gray line-through">
                           ${formatThousands(Number(pricing.basePrice))}
-                        </span>
-                        <span className="border border-black rounded-[3px] font-medium h-5 text-xs leading-[10px] px-[5px] flex items-center justify-center">
-                          -{pricing.discountPercentage}%
                         </span>
                       </div>
                     ) : (
-                      <p className="font-medium">
-                        ${formatThousands(Number(pricing.basePrice))}
-                      </p>
+                      <div className="flex items-baseline">
+                        <span
+                          className="text-[0.813rem] leading-3 font-semibold"
+                          aria-hidden="true"
+                        >
+                          $
+                        </span>
+                        <span className="text-lg font-bold">
+                          {Math.floor(Number(pricing.basePrice))}
+                        </span>
+                        <span className="text-[0.813rem] leading-3 font-semibold">
+                          {(Number(pricing.basePrice) % 1)
+                            .toFixed(2)
+                            .substring(1)}
+                        </span>
+                      </div>
                     )}
                   </div>
                 </Link>
