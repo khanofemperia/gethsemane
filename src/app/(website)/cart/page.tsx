@@ -164,10 +164,7 @@ export default async function Cart() {
                                   {Number(item.pricing.salePrice) ? (
                                     <div className="flex items-center gap-[6px]">
                                       <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                        <span
-                                          className="text-[0.813rem] leading-3 font-semibold"
-                                          aria-hidden="true"
-                                        >
+                                        <span className="text-[0.813rem] leading-3 font-semibold">
                                           $
                                         </span>
                                         <span className="text-lg font-bold">
@@ -190,10 +187,7 @@ export default async function Cart() {
                                     </div>
                                   ) : (
                                     <div className="flex items-baseline">
-                                      <span
-                                        className="text-[0.813rem] leading-3 font-semibold"
-                                        aria-hidden="true"
-                                      >
+                                      <span className="text-[0.813rem] leading-3 font-semibold">
                                         $
                                       </span>
                                       <span className="text-lg font-bold">
@@ -230,10 +224,7 @@ export default async function Cart() {
                                       {Number(item.pricing.salePrice) ? (
                                         <div className="flex items-center gap-[6px]">
                                           <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                            <span
-                                              className="text-[0.813rem] leading-3 font-semibold"
-                                              aria-hidden="true"
-                                            >
+                                            <span className="text-[0.813rem] leading-3 font-semibold">
                                               $
                                             </span>
                                             <span className="text-xl font-bold">
@@ -259,10 +250,7 @@ export default async function Cart() {
                                         </div>
                                       ) : (
                                         <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                          <span
-                                            className="text-[0.813rem] leading-3 font-semibold"
-                                            aria-hidden="true"
-                                          >
+                                          <span className="text-[0.813rem] leading-3 font-semibold">
                                             $
                                           </span>
                                           <span className="text-lg font-bold">
@@ -365,12 +353,7 @@ export default async function Cart() {
                       Total ({sortedCartItems.length} Items):
                     </span>
                     <div className="flex items-baseline">
-                      <span
-                        className="text-sm font-semibold"
-                        aria-hidden="true"
-                      >
-                        $
-                      </span>
+                      <span className="text-sm font-semibold">$</span>
                       <span className="text-xl font-bold">
                         {Math.floor(Number(calculateTotal()))}
                       </span>
