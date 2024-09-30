@@ -14,6 +14,8 @@ import ShowAlert from "@/components/website/ShowAlert";
 import { ProductDetailsWrapper } from "@/components/website/ProductDetailsWrapper";
 import { SizeChartOverlay } from "@/components/website/Product/SizeChartOverlay";
 import clsx from "clsx";
+import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
+import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 
 export default async function ProductDetails({
   params,
@@ -573,6 +575,8 @@ export default async function ProductDetails({
           }}
         />
       </ProductDetailsWrapper>
+      <QuickviewOverlay />
+      <UpsellReviewOverlay cart={cart} />
       <ShowAlert />
       {/* <PostAddToCartOverlay /> */}
     </>

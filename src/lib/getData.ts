@@ -41,7 +41,7 @@ type SanitizedMultiItemOptionsType = {
 };
 
 type GetProductsByCategoryOptionsType = {
-  category: string; // Category is required
+  category: string;
   fields?: string[];
   visibility?: VisibilityType;
 };
@@ -391,6 +391,7 @@ export async function getProductWithUpsell(
         id: productData.id,
         slug: productData.slug,
         images: productData.images,
+        options: productData.options,
         basePrice: productData.pricing.basePrice,
       };
     })
@@ -626,7 +627,7 @@ export async function getProductsByIdsWithUpsells(
  */
 export async function getProductsByCategoryWithUpsell(
   options: GetProductsByCategoryOptionsType
-): Promise<ProductWithUpsellType[] | ProductType[] | null> {
+): Promise<(ProductType | ProductWithUpsellType)[] | null> {
   const sanitizedOptions = sanitizeGetProductsByCategoryOptions(options);
   const { category, fields, visibility } = sanitizedOptions;
 
@@ -654,74 +655,23 @@ export async function getProductsByCategoryWithUpsell(
     return null;
   }
 
-  const products = await Promise.all(
-    snapshot.docs.map(async (docSnapshot) => {
-      const data = docSnapshot.data();
-      let selectedFields: Partial<ProductType> = {};
+  const productIds = snapshot.docs.map((doc) => doc.id);
 
-      if (fields.length) {
-        fields.forEach((field) => {
-          if (data.hasOwnProperty(field)) {
-            selectedFields[field as keyof ProductType] = data[field];
-          }
-        });
-      } else {
-        selectedFields = data;
-      }
+  const productsWithUpsells = await getProductsByIdsWithUpsells({
+    ids: productIds,
+    fields: fields,
+    visibility: visibility,
+  });
 
-      const product: Partial<ProductType> = {
-        id: docSnapshot.id,
-        ...selectedFields,
-        updatedAt: data["updatedAt"],
-        visibility: data["visibility"],
-      };
+  if (!productsWithUpsells) {
+    return null;
+  }
 
-      let upsell = undefined;
-      if (product.upsell && product.upsell.trim()) {
-        const upsellDocRef = doc(database, "upsells", product.upsell);
-        const upsellSnapshot = await getDoc(upsellDocRef);
-
-        if (upsellSnapshot.exists()) {
-          const upsellData = upsellSnapshot.data() as UpsellType;
-
-          const productsInUpsell = await Promise.all(
-            upsellData.products.map(async (productItem) => {
-              const productDocRef = doc(database, "products", productItem.id);
-              const productSnapshot = await getDoc(productDocRef);
-
-              if (!productSnapshot.exists()) {
-                return null;
-              }
-
-              const productData = productSnapshot.data() as ProductType;
-              return {
-                index: productItem.index,
-                name: productItem.name,
-                id: productData.id,
-                slug: productData.slug,
-                images: productData.images,
-                basePrice: productData.pricing.basePrice,
-              };
-            })
-          );
-
-          upsell = {
-            ...upsellData,
-            products: productsInUpsell.filter(
-              (item): item is UpsellType["products"][number] => item !== null
-            ),
-          };
-        }
-      }
-
-      return {
-        ...product,
-        upsell: upsell || "",
-      } as ProductWithUpsellType;
-    })
+  const filteredProducts = productsWithUpsells.filter(
+    (product) => product.category === capitalizeFirstLetter(category)
   );
 
-  const sortedProducts = sortItems(products, "updatedAt", true);
+  const sortedProducts = sortItems(filteredProducts, "updatedAt", true);
   return sortedProducts;
 }
 
@@ -877,69 +827,27 @@ export async function getCollectionWithProductsAndUpsells(
     selectedFields = collectionData;
   }
 
-  const productsWithUpsells = await Promise.all(
-    collectionData.products.map(
-      async ({ id, index }: { id: string; index: number }) => {
-        const productWithUpsell = await getProductWithUpsell({
-          id,
-          fields,
-        });
-
-        if (productWithUpsell && productWithUpsell.id) {
-          return { ...productWithUpsell, index };
-        } else {
-          return null;
-        }
-      }
-    )
+  const productIds = collectionData.products.map(
+    ({ id }: { id: string }) => id
   );
 
-  const filteredProducts = productsWithUpsells.filter((item) => item !== null);
+  const productsWithUpsells = await getProductsByIdsWithUpsells({
+    ids: productIds,
+    fields: fields,
+  });
+
+  const filteredProducts = productsWithUpsells
+    ? productsWithUpsells.map((product, index) => ({
+        ...product,
+        index: collectionData.products[index].index,
+      }))
+    : [];
 
   const collectionWithProducts = {
     id: collectionSnapshot.id,
     ...selectedFields,
     products: filteredProducts as ProductWithUpsellType[],
-  } as {
-    id: string;
-    index: number;
-    title: string;
-    slug: string;
-    campaignDuration: DateRangeType;
-    collectionType: string;
-    bannerImages?: {
-      desktopImage: string;
-      mobileImage: string;
-    };
-    products: Omit<ProductType, "upsell"> &
-      {
-        upsell: {
-          id: string;
-          mainImage: string;
-          pricing: {
-            salePrice: number;
-            basePrice: number;
-            discountPercentage: number;
-          };
-          visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-          createdAt: string;
-          updatedAt: string;
-          products: {
-            id: string;
-            name: string;
-            slug: string;
-            basePrice: number;
-            images: {
-              main: string;
-              gallery: string[];
-            };
-          }[];
-        };
-      }[];
-    visibility: VisibilityType;
-    createdAt: string;
-    updatedAt: string;
-  };
+  } as CollectionWithProductsAndUpsellsType;
 
   return collectionWithProducts;
 }
