@@ -10,11 +10,11 @@ export function Spinner({
   size?: number;
   color?: SpinnerColor;
 }) {
-  const validColor = color === "white" || color === "gray" ? color : "gray";
+  const validColor = color === "gray" ? "#737373" : "white";
 
   return (
     <svg
-      stroke={validColor === "gray" ? "#737373" : validColor}
+      stroke={validColor}
       fill="none"
       strokeWidth="2"
       viewBox="0 0 24 24"

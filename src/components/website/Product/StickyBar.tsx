@@ -9,25 +9,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useEffect, useState, useTransition } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
-
-type UpsellType = {
-  id: string;
-  mainImage: string;
-  pricing: PricingType;
-  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-  createdAt: string;
-  updatedAt: string;
-  products: Array<{
-    id: string;
-    name: string;
-    slug: string;
-    basePrice: number;
-    images: {
-      main: string;
-      gallery: string[];
-    };
-  }>;
-};
+import { UpsellReviewButton } from "../UpsellReviewOverlay";
 
 type ProductInfoType = {
   id: string;
@@ -53,12 +35,45 @@ type ProductInfoType = {
       };
     };
   };
-  upsell: UpsellType;
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: PricingType;
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: Array<{
+      id: string;
+      name: string;
+      slug: string;
+      basePrice: number;
+      images: {
+        main: string;
+        gallery: string[];
+      };
+      options: {
+        colors: Array<{
+          name: string;
+          image: string;
+        }>;
+        sizes: {
+          inches: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+          centimeters: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+        };
+      };
+    }>;
+  };
 };
 
 const SCROLL_THRESHOLD = 1040;
 
-export default function StickyBar({
+export function StickyBar({
   productInfo,
   optionsComponent,
   scrollPosition,
@@ -66,12 +81,12 @@ export default function StickyBar({
   hasSize,
   cart,
 }: {
-  productInfo: ProductInfoType;
   optionsComponent: JSX.Element;
   scrollPosition: number;
   hasColor: boolean;
   hasSize: boolean;
   cart: CartType | null;
+  productInfo: ProductInfoType;
 }) {
   const [barIsHidden, setBarIsHidden] = useState(true);
   const [isPending, startTransition] = useTransition();
@@ -217,11 +232,21 @@ export default function StickyBar({
             </button>
           )}
           <div className="w-full h-[44px] min-[840px]:h-12 relative rounded-full flex justify-end">
-            <button className="peer flex items-center justify-center w-full max-w-[198px] rounded-full cursor-pointer border border-[#b27100] text-white text-sm font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:text-base min-[896px]:h-12">
-              Yes, let's upgrade
-            </button>
+            <div className="peer w-full">
+              <UpsellReviewButton
+                product={{
+                  id: productInfo.id,
+                  upsell: productInfo.upsell,
+                }}
+              />
+            </div>
             {!barIsHidden && (
-              <div className="peer-hover:block hidden absolute top-[58px] -right-2 py-[18px] px-6 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:right-20 min-[840px]:before:right-24">
+              <div
+                className={clsx(
+                  "peer-hover:block hidden py-[18px] px-6 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:right-20 min-[840px]:before:right-24 absolute top-[58px]",
+                  !isInCart ? "-right-2" : "left-1/2 -translate-x-1/2"
+                )}
+              >
                 {upsell && upsell.products.length > 0 && (
                   <div className="w-max rounded-md pb-[10px] bg-white">
                     <div className="w-full">

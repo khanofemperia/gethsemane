@@ -195,7 +195,7 @@ type UpsellReviewProductType = {
     visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
     createdAt: string;
     updatedAt: string;
-    products: {
+    products: Array<{
       id: string;
       name: string;
       slug: string;
@@ -220,7 +220,7 @@ type UpsellReviewProductType = {
           };
         };
       };
-    }[];
+    }>;
   };
 };
 
@@ -320,5 +320,5 @@ type CartUpsellItemType = {
 type CartType = {
   id: string;
   device_identifier: string;
-  items: Array<(CartProductItemType | CartUpsellItemType)>;
+  items: Array<CartProductItemType | CartUpsellItemType>;
 };
