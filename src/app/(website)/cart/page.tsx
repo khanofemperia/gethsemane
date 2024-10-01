@@ -14,6 +14,7 @@ import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { database } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
+import { PayPalButton } from "@/components/website/PayPalButton";
 
 export default async function Cart() {
   const cookieStore = cookies();
@@ -60,6 +61,9 @@ export default async function Cart() {
 
     return Number(roundedTotal.toFixed(2));
   };
+
+  console.log("cart:", cart);
+  console.log("sortedCartItems:", sortedCartItems);
 
   return (
     <>
@@ -410,9 +414,7 @@ export default async function Cart() {
                       />
                     </div>
                   </div>
-                  <button className="w-full h-12 italic font-extrabold text-xl bg-sky-700 text-white rounded-full flex items-center justify-center">
-                    PayPal
-                  </button>
+                  <PayPalButton cart={cart} />
                 </div>
               </div>
             )}
@@ -432,9 +434,6 @@ export default async function Cart() {
     </>
   );
 }
-
-const calculateSavings = (pricing: ProductType["pricing"]) =>
-  (Number(pricing.basePrice) - Number(pricing.salePrice)).toFixed(2);
 
 const getBaseProducts = async (productIds: string[]) =>
   getProductsByIds({
