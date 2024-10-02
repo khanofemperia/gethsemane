@@ -62,9 +62,6 @@ export default async function Cart() {
     return Number(roundedTotal.toFixed(2));
   };
 
-  console.log("cart:", cart);
-  console.log("sortedCartItems:", sortedCartItems);
-
   return (
     <>
       <div

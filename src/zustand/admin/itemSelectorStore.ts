@@ -1,5 +1,4 @@
-import { createWithEqualityFn } from "zustand/traditional";
-import { shallow } from "zustand/shallow";
+import { create } from "zustand";
 
 type SeletedItemType = {
   id: string;
@@ -13,12 +12,9 @@ type StoreType = {
   setSelectedItem: (item: SeletedItemType) => void;
 };
 
-export const useItemSelectorStore = createWithEqualityFn<StoreType>(
-  (set) => ({
-    selectedItem: { id: "", index: "", name: "", title: "" },
-    setSelectedItem: (item) => {
-      set({ selectedItem: item });
-    },
-  }),
-  shallow
-);
+export const useItemSelectorStore = create<StoreType>((set) => ({
+  selectedItem: { id: "", index: "", name: "", title: "" },
+  setSelectedItem: (item) => {
+    set({ selectedItem: item });
+  },
+}));

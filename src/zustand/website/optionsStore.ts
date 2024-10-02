@@ -1,5 +1,4 @@
-import { createWithEqualityFn } from "zustand/traditional";
-import { shallow } from "zustand/shallow";
+import { create } from "zustand";
 
 type OptionsStoreType = {
   selectedColor: string;
@@ -13,23 +12,20 @@ type OptionsStoreType = {
   resetOptions: () => void;
 };
 
-export const useOptionsStore = createWithEqualityFn<OptionsStoreType>(
-  (set) => ({
-    selectedColor: "",
-    selectedSize: "",
-    isInCart: false,
-    productId: null,
-    setSelectedColor: (color) => set({ selectedColor: color }),
-    setSelectedSize: (size) => set({ selectedSize: size }),
-    setIsInCart: (isInCart) => set({ isInCart }),
-    setProductId: (productId) => set({ productId }),
-    resetOptions: () =>
-      set({
-        selectedColor: "",
-        selectedSize: "",
-        isInCart: false,
-        productId: null,
-      }),
-  }),
-  shallow
-);
+export const useOptionsStore = create<OptionsStoreType>((set) => ({
+  selectedColor: "",
+  selectedSize: "",
+  isInCart: false,
+  productId: null,
+  setSelectedColor: (color) => set({ selectedColor: color }),
+  setSelectedSize: (size) => set({ selectedSize: size }),
+  setIsInCart: (isInCart) => set({ isInCart }),
+  setProductId: (productId) => set({ productId }),
+  resetOptions: () =>
+    set({
+      selectedColor: "",
+      selectedSize: "",
+      isInCart: false,
+      productId: null,
+    }),
+}));

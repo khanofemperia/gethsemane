@@ -1,5 +1,4 @@
-import { createWithEqualityFn } from "zustand/traditional";
-import { shallow } from "zustand/shallow";
+import { create } from "zustand";
 
 type AlertStoreType = {
   isVisible: boolean;
@@ -15,14 +14,11 @@ type AlertStoreType = {
   hideAlert: () => void;
 };
 
-export const useAlertStore = createWithEqualityFn<AlertStoreType>(
-  (set) => ({
-    isVisible: false,
-    message: "",
-    type: "NEUTRAL",
-    showAlert: ({ message, type = "NEUTRAL" }) =>
-      set({ isVisible: true, message, type }),
-    hideAlert: () => set({ isVisible: false, message: "", type: "NEUTRAL" }),
-  }),
-  shallow
-);
+export const useAlertStore = create<AlertStoreType>((set) => ({
+  isVisible: false,
+  message: "",
+  type: "NEUTRAL",
+  showAlert: ({ message, type = "NEUTRAL" }) =>
+    set({ isVisible: true, message, type }),
+  hideAlert: () => set({ isVisible: false, message: "", type: "NEUTRAL" }),
+}));

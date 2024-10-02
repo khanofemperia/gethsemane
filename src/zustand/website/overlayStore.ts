@@ -1,5 +1,4 @@
-import { createWithEqualityFn } from "zustand/traditional";
-import { shallow } from "zustand/shallow";
+import { create } from "zustand";
 
 type OverlayType = {
   pageName: string;
@@ -26,43 +25,40 @@ type OverlayStoreProps = {
   hideOverlay: ({ pageName, overlayName }: OverlayType) => void;
 };
 
-export const useOverlayStore = createWithEqualityFn<OverlayStoreProps>(
-  (set) => ({
-    pages: {
-      productDetails: {
-        name: "productDetails",
-        overlays: {
-          options: {
-            name: "options",
-            isVisible: false,
-          },
-          sizeChart: {
-            name: "sizeChart",
-            isVisible: false,
-          },
+export const useOverlayStore = create<OverlayStoreProps>((set) => ({
+  pages: {
+    productDetails: {
+      name: "productDetails",
+      overlays: {
+        options: {
+          name: "options",
+          isVisible: false,
+        },
+        sizeChart: {
+          name: "sizeChart",
+          isVisible: false,
         },
       },
     },
-    showOverlay: ({ pageName, overlayName }: OverlayType) => {
-      set((state) => {
-        const updatedState: PageType = { ...state.pages };
-        const overlay = updatedState[pageName]?.overlays[overlayName];
-        if (overlay) {
-          overlay.isVisible = true;
-        }
-        return { pages: updatedState };
-      });
-    },
-    hideOverlay: ({ pageName, overlayName }: OverlayType) => {
-      set((state) => {
-        const updatedState: PageType = { ...state.pages };
-        const overlay = updatedState[pageName]?.overlays[overlayName];
-        if (overlay) {
-          overlay.isVisible = false;
-        }
-        return { pages: updatedState };
-      });
-    },
-  }),
-  shallow
-);
+  },
+  showOverlay: ({ pageName, overlayName }: OverlayType) => {
+    set((state) => {
+      const updatedState: PageType = { ...state.pages };
+      const overlay = updatedState[pageName]?.overlays[overlayName];
+      if (overlay) {
+        overlay.isVisible = true;
+      }
+      return { pages: updatedState };
+    });
+  },
+  hideOverlay: ({ pageName, overlayName }: OverlayType) => {
+    set((state) => {
+      const updatedState: PageType = { ...state.pages };
+      const overlay = updatedState[pageName]?.overlays[overlayName];
+      if (overlay) {
+        overlay.isVisible = false;
+      }
+      return { pages: updatedState };
+    });
+  },
+}));

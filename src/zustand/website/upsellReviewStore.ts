@@ -1,5 +1,4 @@
-import { createWithEqualityFn } from "zustand/traditional";
-import { shallow } from "zustand/shallow";
+import { create } from "zustand";
 
 type UpsellReviewStoreType = {
   isVisible: boolean;
@@ -15,23 +14,20 @@ type UpsellReviewStoreType = {
   setReadyProducts: (products: string[]) => void;
 };
 
-export const useUpsellReviewStore = createWithEqualityFn<UpsellReviewStoreType>(
-  (set) => ({
-    isVisible: false,
-    selectedProduct: null,
-    selectedOptions: {},
-    readyProducts: [],
-    showOverlay: () => set({ isVisible: true }),
-    hideOverlay: () =>
-      set({
-        isVisible: false,
-        selectedOptions: {},
-        readyProducts: [],
-      }),
-    setSelectedProduct: (product: UpsellReviewProductType) =>
-      set({ selectedProduct: product }),
-    setSelectedOptions: (options) => set({ selectedOptions: options }),
-    setReadyProducts: (products) => set({ readyProducts: products }),
-  }),
-  shallow
-);
+export const useUpsellReviewStore = create<UpsellReviewStoreType>((set) => ({
+  isVisible: false,
+  selectedProduct: null,
+  selectedOptions: {},
+  readyProducts: [],
+  showOverlay: () => set({ isVisible: true }),
+  hideOverlay: () =>
+    set({
+      isVisible: false,
+      selectedOptions: {},
+      readyProducts: [],
+    }),
+  setSelectedProduct: (product: UpsellReviewProductType) =>
+    set({ selectedProduct: product }),
+  setSelectedOptions: (options) => set({ selectedOptions: options }),
+  setReadyProducts: (products) => set({ readyProducts: products }),
+}));

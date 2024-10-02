@@ -1,5 +1,4 @@
-import { createWithEqualityFn } from "zustand/traditional";
-import { shallow } from "zustand/shallow";
+import { create } from "zustand";
 
 type SelectedProductType = {
   id: string;
@@ -13,18 +12,14 @@ type ProductStoreType = {
   setSelectedProduct: (product: SelectedProductType) => void;
 };
 
-export const useChangeProductIndexStore =
-  createWithEqualityFn<ProductStoreType>(
-    (set) => ({
-      selectedProduct: {
-        id: "",
-        index: "",
-        name: "",
-        collectionId: "",
-      },
-      setSelectedProduct: (product) => {
-        set({ selectedProduct: product });
-      },
-    }),
-    shallow
-  );
+export const useChangeProductIndexStore = create<ProductStoreType>((set) => ({
+  selectedProduct: {
+    id: "",
+    index: "",
+    name: "",
+    collectionId: "",
+  },
+  setSelectedProduct: (product) => {
+    set({ selectedProduct: product });
+  },
+}));

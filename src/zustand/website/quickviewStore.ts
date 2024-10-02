@@ -1,5 +1,4 @@
-import { createWithEqualityFn } from "zustand/traditional";
-import { shallow } from "zustand/shallow";
+import { create } from "zustand";
 
 type QuickviewStoreType = {
   isVisible: boolean;
@@ -15,7 +14,7 @@ type QuickviewStoreType = {
   ) => void;
 };
 
-export const useQuickviewStore = createWithEqualityFn<QuickviewStoreType>(
+export const useQuickviewStore = create<QuickviewStoreType>(
   (set) => ({
     isVisible: false,
     selectedProduct: null,
@@ -33,6 +32,5 @@ export const useQuickviewStore = createWithEqualityFn<QuickviewStoreType>(
         cart,
         deviceIdentifier,
       }),
-  }),
-  shallow
+  })
 );
