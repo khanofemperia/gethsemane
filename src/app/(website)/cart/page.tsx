@@ -55,11 +55,7 @@ export default async function Cart() {
       return isNaN(price) ? total : total + price;
     }, 0);
 
-    // Round down to the nearest .99
-    const roundedTotal =
-      totalBasePrice === 0 ? 0 : Math.floor(totalBasePrice) + 0.99;
-
-    return Number(roundedTotal.toFixed(2));
+    return Number(totalBasePrice.toFixed(2));
   };
 
   return (
