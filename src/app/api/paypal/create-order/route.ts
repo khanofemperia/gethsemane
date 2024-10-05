@@ -5,76 +5,25 @@ const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.NEXT_PAYPAL_CLIENT_SECRET;
 const PAYPAL_API_BASE = "https://api-m.sandbox.paypal.com";
 
-type ProductOption = {
-  name: string; // e.g., "Size", "Color"
-  values: string[]; // e.g., ["S", "M", "L", "XL"]
-};
-
 type CartItem = {
   name: string;
-  description: string;
   sku: string;
   unit_amount: {
     currency_code: string;
     value: string;
   };
   quantity: number;
-  options?: ProductOption[];
 };
 
 export async function POST(request: NextRequest) {
   try {
-    const testCart: CartItem[] = [
-      {
-        name: "Women's Floral Dress",
-        description: "A beautiful summer dress with floral patterns",
-        sku: "DRESS-123",
-        unit_amount: {
-          currency_code: "USD",
-          value: "49.99",
-        },
-        quantity: 1,
-      },
-      {
-        name: "Women's Denim Mini Skirt",
-        description: "A stylish denim mini skirt perfect for summer outings",
-        sku: "SKIRT-456",
-        unit_amount: {
-          currency_code: "USD",
-          value: "39.99",
-        },
-        quantity: 1,
-        options: [
-          {
-            name: "Size",
-            values: ["S", "M", "L", "XL"],
-          },
-        ],
-      },
-      {
-        name: "Women's Leather Jacket",
-        description: "A chic leather jacket for a fashionable winter look",
-        sku: "JACKET-789",
-        unit_amount: {
-          currency_code: "USD",
-          value: "89.99",
-        },
-        quantity: 1,
-        options: [
-          {
-            name: "Size",
-            values: ["S", "M", "L", "XL"],
-          },
-          {
-            name: "Color",
-            values: ["Black", "Brown", "Burgundy"],
-          },
-        ],
-      },
-    ];
+    const { cart } = await request.json();
 
-    const totalAmount = calculateTotalAmount(testCart);
+    if (!cart || !Array.isArray(cart)) {
+      return NextResponse.json({ error: "Invalid cart data" }, { status: 400 });
+    }
 
+    const totalAmount = calculateTotalAmount(cart);
     const accessToken = await generateAccessToken();
     const url = `${PAYPAL_API_BASE}/v2/checkout/orders`;
 
@@ -92,19 +41,7 @@ export async function POST(request: NextRequest) {
               },
             },
           },
-          items: testCart.map((item) => ({
-            name: item.name,
-            description:
-              item.description +
-              (item.options && item.options.length > 0
-                ? ` (${item.options
-                    .map((opt) => `${opt.name}: ${opt.values.join(", ")}`)
-                    .join("; ")})`
-                : ""),
-            sku: item.sku,
-            unit_amount: item.unit_amount,
-            quantity: item.quantity,
-          })),
+          items: cart,
         },
       ],
     };
@@ -119,11 +56,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (!response.ok) {
+      const errorData = await response.json();
+      console.error("PayPal API error:", errorData);
       throw new Error("Failed to create PayPal order");
     }
 
     const data = await response.json();
-
     return NextResponse.json(data);
   } catch (error) {
     console.error("Failed to create PayPal order:", error);

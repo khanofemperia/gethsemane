@@ -411,7 +411,7 @@ export default async function Cart() {
                       />
                     </div>
                   </div>
-                  <PayPalButton cart={cart} />
+                  <PayPalButton cart={sortedCartItems} />
                 </div>
               </div>
             )}
