@@ -3,7 +3,7 @@
 import AlertMessage from "@/components/shared/AlertMessage";
 import { isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon, MinusIcon } from "@/icons";
 import clsx from "clsx";
@@ -22,12 +22,11 @@ type DataType = {
 };
 
 export function ImageGalleryButton() {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editProduct.name,
-    overlayName: state.pages.editProduct.overlays.imageGallery.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.imageGallery.name
+  );
 
   return (
     <button
@@ -49,14 +48,13 @@ export function ImageGalleryOverlay({ data }: { data: DataType }) {
   );
   const [images, setImages] = useState(data?.images.gallery ?? []);
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editProduct.name,
-      overlayName: state.pages.editProduct.overlays.imageGallery.name,
-      isOverlayVisible: state.pages.editProduct.overlays.imageGallery.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.imageGallery.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.imageGallery.isVisible
   );
 
   useEffect(() => {

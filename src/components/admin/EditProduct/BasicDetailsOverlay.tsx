@@ -24,12 +24,11 @@ type DataType = {
 };
 
 export function BasicDetailsButton({ className }: { className: string }) {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editProduct.name,
-    overlayName: state.pages.editProduct.overlays.basicDetails.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.basicDetails.name
+  );
 
   return (
     <button
@@ -64,14 +63,13 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
 
   const categoryRef = useRef<HTMLDivElement>(null);
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editProduct.name,
-      overlayName: state.pages.editProduct.overlays.basicDetails.name,
-      isOverlayVisible: state.pages.editProduct.overlays.basicDetails.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.basicDetails.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.basicDetails.isVisible
   );
 
   useEffect(() => {

@@ -2,7 +2,7 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState } from "react";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, ChangeIndexIcon, CloseIcon } from "@/icons";
 import clsx from "clsx";
@@ -22,17 +22,14 @@ export function ChangeProductIndexButton({
     index: number;
   };
 }) {
-  const { showOverlay } = useOverlayStore();
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
   const setSelectedProduct = useChangeProductIndexStore(
     (state) => state.setSelectedProduct
   );
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.storefront.name,
-    overlayName: state.pages.storefront.overlays.changeProductIndex.name,
-    isOverlayVisible:
-      state.pages.storefront.overlays.changeProductIndex.isVisible,
-  }));
+  const pageName = useOverlayStore((state) => state.pages.storefront.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.storefront.overlays.changeProductIndex.name
+  );
 
   const handleClick = () => {
     setSelectedProduct({
@@ -62,22 +59,19 @@ export function ChangeProductIndexOverlay() {
     AlertMessageType.NEUTRAL
   );
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { selectedProduct, setSelectedProduct } = useChangeProductIndexStore(
-    (state) => ({
-      selectedProduct: state.selectedProduct,
-      setSelectedProduct: state.setSelectedProduct,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const selectedProduct = useChangeProductIndexStore(
+    (state) => state.selectedProduct
   );
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.storefront.name,
-      overlayName: state.pages.storefront.overlays.changeProductIndex.name,
-      isOverlayVisible:
-        state.pages.storefront.overlays.changeProductIndex.isVisible,
-    })
+  const setSelectedProduct = useChangeProductIndexStore(
+    (state) => state.setSelectedProduct
+  );
+  const pageName = useOverlayStore((state) => state.pages.storefront.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.storefront.overlays.changeProductIndex.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.storefront.overlays.changeProductIndex.isVisible
   );
 
   const onHideOverlay = () => {

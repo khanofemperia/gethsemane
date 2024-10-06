@@ -2,7 +2,7 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect, useRef } from "react";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
@@ -28,12 +28,11 @@ type ItemType = {
 };
 
 export function HighlightsButton({ className }: { className?: string }) {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editProduct.name,
-    overlayName: state.pages.editProduct.overlays.highlights.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.highlights.name
+  );
 
   return (
     <button
@@ -67,14 +66,13 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
     setKeyPoints(initialKeyPoints);
   }, []);
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editProduct.name,
-      overlayName: state.pages.editProduct.overlays.highlights.name,
-      isOverlayVisible: state.pages.editProduct.overlays.highlights.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.highlights.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.highlights.isVisible
   );
 
   useEffect(() => {

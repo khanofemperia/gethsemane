@@ -22,17 +22,14 @@ export function ChangeCollectionIndexButton({
 }: {
   data: ButtonDataType;
 }) {
-  const { showOverlay } = useOverlayStore();
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
   const setSelectedItem = useItemSelectorStore(
     (state) => state.setSelectedItem
   );
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.storefront.name,
-    overlayName: state.pages.storefront.overlays.changeCollectionIndex.name,
-    isOverlayVisible:
-      state.pages.storefront.overlays.changeCollectionIndex.isVisible,
-  }));
+  const pageName = useOverlayStore((state) => state.pages.storefront.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.storefront.overlays.changeCollectionIndex.name
+  );
 
   const handleClick = () => {
     setSelectedItem({ ...data });
@@ -57,20 +54,17 @@ export function ChangeCollectionIndexOverlay() {
     AlertMessageType.NEUTRAL
   );
 
-  const { hideOverlay, showOverlay } = useOverlayStore();
-
-  const { selectedItem, setSelectedItem } = useItemSelectorStore((state) => ({
-    selectedItem: state.selectedItem,
-    setSelectedItem: state.setSelectedItem,
-  }));
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.storefront.name,
-      overlayName: state.pages.storefront.overlays.changeCollectionIndex.name,
-      isOverlayVisible:
-        state.pages.storefront.overlays.changeCollectionIndex.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const selectedItem = useItemSelectorStore((state) => state.selectedItem);
+  const setSelectedItem = useItemSelectorStore(
+    (state) => state.setSelectedItem
+  );
+  const pageName = useOverlayStore((state) => state.pages.storefront.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.storefront.overlays.changeCollectionIndex.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.storefront.overlays.changeCollectionIndex.isVisible
   );
 
   useEffect(() => {

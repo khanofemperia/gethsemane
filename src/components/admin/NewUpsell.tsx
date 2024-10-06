@@ -28,13 +28,12 @@ type ProductType = {
 };
 
 export function NewUpsellMenuButton() {
-  const { showOverlay } = useOverlayStore();
-  const { setNavbarMenu } = useNavbarMenuStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.upsells.name,
-    overlayName: state.pages.upsells.overlays.newUpsell.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
+  const pageName = useOverlayStore((state) => state.pages.upsells.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.upsells.overlays.newUpsell.name
+  );
 
   const openOverlay = () => {
     setNavbarMenu(false);
@@ -53,13 +52,12 @@ export function NewUpsellMenuButton() {
 }
 
 export function NewUpsellEmptyGridButton() {
-  const { showOverlay } = useOverlayStore();
-  const { setNavbarMenu } = useNavbarMenuStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.upsells.name,
-    overlayName: state.pages.upsells.overlays.newUpsell.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
+  const pageName = useOverlayStore((state) => state.pages.upsells.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.upsells.overlays.newUpsell.name
+  );
 
   const openOverlay = () => {
     setNavbarMenu(false);
@@ -92,14 +90,13 @@ export function NewUpsellOverlay() {
   const [salePrice, setSalePrice] = useState<number>(0);
   const [discountPercentage, setDiscountPercentage] = useState<string>("");
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.upsells.name,
-      overlayName: state.pages.upsells.overlays.newUpsell.name,
-      isOverlayVisible: state.pages.upsells.overlays.newUpsell.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.upsells.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.upsells.overlays.newUpsell.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.upsells.overlays.newUpsell.isVisible
   );
 
   useEffect(() => {

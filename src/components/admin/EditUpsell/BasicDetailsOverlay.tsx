@@ -18,7 +18,6 @@ import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { getProduct } from "@/lib/getData";
-import { MdOutlineDragIndicator } from "react-icons/md";
 import { ReactSortable } from "react-sortablejs";
 
 type ProductType = {
@@ -45,12 +44,11 @@ type DataType = {
 };
 
 export function BasicDetailsButton({ className }: { className: string }) {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editUpsell.name,
-    overlayName: state.pages.editUpsell.overlays.basicDetails.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editUpsell.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editUpsell.overlays.basicDetails.name
+  );
 
   return (
     <button
@@ -84,14 +82,13 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     data.pricing.discountPercentage?.toString() || ""
   );
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editUpsell.name,
-      overlayName: state.pages.editUpsell.overlays.basicDetails.name,
-      isOverlayVisible: state.pages.editUpsell.overlays.basicDetails.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editUpsell.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editUpsell.overlays.basicDetails.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editUpsell.overlays.basicDetails.isVisible
   );
 
   useEffect(() => {

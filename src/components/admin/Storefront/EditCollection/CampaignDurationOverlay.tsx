@@ -3,7 +3,7 @@
 import AlertMessage from "@/components/shared/AlertMessage";
 import { formatDate } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
@@ -14,12 +14,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function CampaignDurationButton({ className }: { className: string }) {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editCollection.name,
-    overlayName: state.pages.editCollection.overlays.campaignDuration.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.campaignDuration.name
+  );
 
   return (
     <button
@@ -53,15 +52,13 @@ export function CampaignDurationOverlay({
     new Date(data.campaignDuration.endDate)
   );
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editCollection.name,
-      overlayName: state.pages.editCollection.overlays.campaignDuration.name,
-      isOverlayVisible:
-        state.pages.editCollection.overlays.campaignDuration.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.campaignDuration.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.campaignDuration.isVisible
   );
 
   useEffect(() => {
@@ -92,7 +89,8 @@ export function CampaignDurationOverlay({
   const isValidDateRange =
     launchDate &&
     endDate &&
-    launchDate.toISOString().split("T")[0] < endDate.toISOString().split("T")[0];
+    launchDate.toISOString().split("T")[0] <
+      endDate.toISOString().split("T")[0];
 
   const handleSave = async () => {
     if (!isValidDateRange) {

@@ -11,7 +11,11 @@ import { NewCollectionMenuButton } from "../Storefront/NewCollection";
 import { NewUpsellMenuButton } from "../NewUpsell";
 
 export default function Menu() {
-  const { navbarMenuVisible, setNavbarMenu } = useNavbarMenuStore();
+  const navbarMenuVisible = useNavbarMenuStore(
+    (state) => state.navbarMenuVisible
+  );
+  const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
+
   const pathname = usePathname();
 
   useEffect(() => {

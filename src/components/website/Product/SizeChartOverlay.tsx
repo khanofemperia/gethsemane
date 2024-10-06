@@ -1,10 +1,9 @@
 "use client";
 
-import { CloseIcon, CloseIconThin } from "@/icons";
+import { CloseIconThin } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { productInternationalSizes } from "@/lib/utils";
 import { useEffect } from "react";
-import Overlay from "@/ui/Overlay";
 
 type SizeChartOverlayType = {
   id: string;
@@ -88,15 +87,10 @@ export function SizeChartOverlay({
 }: {
   productInfo: SizeChartOverlayType;
 }) {
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, overlayName, isOverlayVisible } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.productDetails.name,
-      overlayName: state.pages.productDetails.overlays.sizeChart.name,
-      isOverlayVisible: state.pages.productDetails.overlays.sizeChart.isVisible,
-    })
-  );
+  const pageName = useOverlayStore(state => state.pages.productDetails.name);
+  const overlayName = useOverlayStore(state => state.pages.productDetails.overlays.sizeChart.name);
+  const isOverlayVisible = useOverlayStore(state => state.pages.productDetails.overlays.sizeChart.isVisible);
+  const hideOverlay = useOverlayStore(state => state.hideOverlay);
 
   useEffect(() => {
     if (isOverlayVisible) {

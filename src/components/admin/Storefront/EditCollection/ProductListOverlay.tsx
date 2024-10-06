@@ -31,12 +31,11 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 type ProductWithIndex = ProductType & { index: number };
 
 export function ProductListButton({ className }: { className: string }) {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editCollection.name,
-    overlayName: state.pages.editCollection.overlays.productList.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.productList.name
+  );
 
   return (
     <button
@@ -72,15 +71,13 @@ export function ProductListOverlay({
   const [pageJumpValue, setPageJumpValue] = useState("1");
   const [isPageInRange, setIsPageInRange] = useState(true);
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editCollection.name,
-      overlayName: state.pages.editCollection.overlays.productList.name,
-      isOverlayVisible:
-        state.pages.editCollection.overlays.productList.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.productList.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.productList.isVisible
   );
 
   useEffect(() => {

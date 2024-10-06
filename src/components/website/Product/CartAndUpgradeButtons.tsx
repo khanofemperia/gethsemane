@@ -2,7 +2,7 @@
 
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
-import { useState, useTransition, useEffect } from "react";
+import { useTransition, useEffect } from "react";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { AddToCartAction } from "@/actions/shopping-cart";
 import { Spinner } from "@/ui/Spinners/Default";
@@ -24,9 +24,11 @@ export function CartAndUpgradeButtons({
 }: CartAndUpgradeButtonsType) {
   const [isPending, startTransition] = useTransition();
 
-  const { showAlert } = useAlertStore();
-  const { selectedColor, selectedSize, isInCart, setIsInCart } =
-    useOptionsStore();
+  const showAlert = useAlertStore(state => state.showAlert);
+  const selectedColor = useOptionsStore(state => state.selectedColor);
+  const selectedSize = useOptionsStore(state => state.selectedSize);
+  const isInCart = useOptionsStore(state => state.isInCart);
+  const setIsInCart = useOptionsStore(state => state.setIsInCart);
 
   useEffect(() => {
     setIsInCart(

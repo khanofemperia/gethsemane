@@ -2,7 +2,7 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState } from "react";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
@@ -12,15 +12,14 @@ import { useItemSelectorStore } from "@/zustand/admin/itemSelectorStore";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function RemoveProductButton({ id }: { id: string }) {
-  const { showOverlay } = useOverlayStore();
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
   const setSelectedItem = useItemSelectorStore(
     (state) => state.setSelectedItem
   );
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editCollection.name,
-    overlayName: state.pages.editCollection.overlays.removeProduct.name,
-  }));
+  const pageName = useOverlayStore((state) => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.removeProduct.name
+  );
 
   const handleClick = () => {
     setSelectedItem({ id });
@@ -49,18 +48,14 @@ export function RemoveProductOverlay({
     AlertMessageType.NEUTRAL
   );
 
-  const { hideOverlay } = useOverlayStore();
-  const { selectedItem } = useItemSelectorStore((state) => ({
-    selectedItem: state.selectedItem,
-  }));
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editCollection.name,
-      overlayName: state.pages.editCollection.overlays.removeProduct.name,
-      isOverlayVisible:
-        state.pages.editCollection.overlays.removeProduct.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const selectedItem = useItemSelectorStore((state) => state.selectedItem);
+  const pageName = useOverlayStore((state) => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.removeProduct.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.removeProduct.isVisible
   );
 
   const hideAlertMessage = () => {
@@ -76,7 +71,7 @@ export function RemoveProductOverlay({
       const result = await RemoveProductAction({
         collectionId,
         productId: selectedItem.id,
-      })
+      });
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
       setShowAlert(true);

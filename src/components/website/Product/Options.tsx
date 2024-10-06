@@ -18,7 +18,8 @@ type ProductColorsType = {
 };
 
 function ProductColors({ colors }: ProductColorsType) {
-  const { selectedColor, setSelectedColor } = useOptionsStore();
+  const selectedColor = useOptionsStore((state) => state.selectedColor);
+  const setSelectedColor = useOptionsStore((state) => state.setSelectedColor);
 
   return (
     <div className="w-full">
@@ -42,13 +43,15 @@ function ProductColors({ colors }: ProductColorsType) {
   );
 }
 
-function ProductSizeChart({ sizeChart }: { sizeChart: SizeChartType }) {
-  const { selectedSize, setSelectedSize } = useOptionsStore();
-  const { showOverlay } = useOverlayStore();
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.productDetails.name,
-    overlayName: state.pages.productDetails.overlays.sizeChart.name,
-  }));
+function ProductSizeChart({
+  sizeChart,
+  onSizeChartClick,
+}: {
+  sizeChart: SizeChartType;
+  onSizeChartClick: () => void;
+}) {
+  const selectedSize = useOptionsStore((state) => state.selectedSize);
+  const setSelectedSize = useOptionsStore((state) => state.setSelectedSize);
 
   const { columns, rows } = sizeChart.inches;
   const sizes = rows.map((row) => row[columns[0].label]);
@@ -75,9 +78,7 @@ function ProductSizeChart({ sizeChart }: { sizeChart: SizeChartType }) {
       </div>
       {selectedSize && (
         <div
-          onClick={() => {
-            showOverlay({ pageName, overlayName });
-          }}
+          onClick={onSizeChartClick}
           className="w-full py-3 pl-[14px] pr-8 mt-2 rounded-lg relative cursor-pointer bg-lightgray"
         >
           <div>
@@ -157,14 +158,17 @@ export default function ProductOptions({
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [cart, setCart] = useState<CartType | null>(null);
 
-  const {
-    selectedColor,
-    selectedSize,
-    isInCart,
-    setIsInCart,
-    setProductId,
-    resetOptions,
-  } = useOptionsStore();
+  const selectedColor = useOptionsStore((state) => state.selectedColor);
+  const selectedSize = useOptionsStore((state) => state.selectedSize);
+  const isInCart = useOptionsStore((state) => state.isInCart);
+  const setIsInCart = useOptionsStore((state) => state.setIsInCart);
+  const setProductId = useOptionsStore((state) => state.setProductId);
+  const resetOptions = useOptionsStore((state) => state.resetOptions);
+
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const productDetailsPage = useOverlayStore(
+    (state) => state.pages.productDetails
+  );
 
   const hasColor = productInfo.options.colors.length > 0;
   const hasSize = Object.keys(productInfo.options.sizes).length > 0;
@@ -180,7 +184,9 @@ export default function ProductOptions({
       setCart(cart);
     };
     fetchCart();
+  }, [deviceIdentifier]);
 
+  useEffect(() => {
     setIsInCart(
       cart?.items.some((item) => {
         if (item.type === "product") {
@@ -274,6 +280,13 @@ export default function ProductOptions({
     return "";
   };
 
+  const handleSizeChartClick = () => {
+    showOverlay({
+      pageName: productDetailsPage.name,
+      overlayName: productDetailsPage.overlays.sizeChart.name,
+    });
+  };
+
   return (
     <div
       className={clsx(
@@ -298,14 +311,20 @@ export default function ProductOptions({
             {hasColor && hasSize && (
               <div className="flex flex-col gap-4 select-none">
                 <ProductColors colors={productInfo.options.colors} />
-                <ProductSizeChart sizeChart={productInfo.options.sizes} />
+                <ProductSizeChart
+                  sizeChart={productInfo.options.sizes}
+                  onSizeChartClick={handleSizeChartClick}
+                />
               </div>
             )}
             {hasColor && !hasSize && (
               <ProductColors colors={productInfo.options.colors} />
             )}
-            {!hasSize && hasSize && (
-              <ProductSizeChart sizeChart={productInfo.options.sizes} />
+            {!hasColor && hasSize && (
+              <ProductSizeChart
+                sizeChart={productInfo.options.sizes}
+                onSizeChartClick={handleSizeChartClick}
+              />
             )}
           </div>
         )}

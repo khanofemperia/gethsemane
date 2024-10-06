@@ -17,7 +17,7 @@ export function RemoveFromCartButton({
 }) {
   const [isPending, startTransition] = useTransition();
 
-  const { showAlert } = useAlertStore();
+  const showAlert = useAlertStore(state => state.showAlert);
 
   const handleRemove = () => {
     startTransition(async () => {

@@ -17,11 +17,11 @@ export function PageHeroButton({ visibility }: { visibility: string }) {
   const HIDDEN = "HIDDEN";
   const PUBLISHED = "PUBLISHED";
 
-  const { showOverlay } = useOverlayStore();
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.storefront.name,
-    overlayName: state.pages.storefront.overlays.editPageHero.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.storefront.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.storefront.overlays.editPageHero.name
+  );
 
   return (
     <button
@@ -86,14 +86,13 @@ export function PageHeroOverlay({
     pageHero.destinationUrl || ""
   );
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.storefront.name,
-      overlayName: state.pages.storefront.overlays.editPageHero.name,
-      isOverlayVisible: state.pages.storefront.overlays.editPageHero.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.storefront.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.storefront.overlays.editPageHero.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.storefront.overlays.editPageHero.isVisible
   );
 
   useEffect(() => {

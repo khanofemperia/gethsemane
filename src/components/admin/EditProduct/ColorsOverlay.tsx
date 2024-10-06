@@ -24,12 +24,11 @@ type DataType = {
 };
 
 export function ColorsButton() {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editProduct.name,
-    overlayName: state.pages.editProduct.overlays.colors.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.colors.name
+  );
 
   return (
     <button
@@ -52,14 +51,13 @@ export function ColorsOverlay({ data }: { data: DataType }) {
   const [colors, setColors] = useState<ColorProps[]>([...(data.colors || [])]);
   const [newColor, setNewColor] = useState<ColorProps>({ name: "", image: "" });
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editProduct.name,
-      overlayName: state.pages.editProduct.overlays.colors.name,
-      isOverlayVisible: state.pages.editProduct.overlays.colors.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.colors.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.colors.isVisible
   );
 
   useEffect(() => {

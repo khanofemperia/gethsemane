@@ -2,7 +2,7 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
@@ -14,12 +14,11 @@ import { isGifImage, isValidRemoteImage } from "@/lib/utils";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function BannerImagesButton({ className }: { className: string }) {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editCollection.name,
-    overlayName: state.pages.editCollection.overlays.bannerImages.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.bannerImages.name
+  );
 
   return (
     <button
@@ -56,15 +55,13 @@ export function BannerImagesOverlay({
     data.bannerImages.mobileImage
   );
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editCollection.name,
-      overlayName: state.pages.editCollection.overlays.bannerImages.name,
-      isOverlayVisible:
-        state.pages.editCollection.overlays.bannerImages.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.bannerImages.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.bannerImages.isVisible
   );
 
   useEffect(() => {

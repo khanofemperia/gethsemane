@@ -14,7 +14,6 @@ import {
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import Link from "next/link";
 import Image from "next/image";
 import { RemoveUpsellAction, SetUpsellAction } from "@/actions/products";
 
@@ -28,12 +27,11 @@ type DataType = {
 };
 
 export function UpsellButton({ className }: { className: string }) {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editProduct.name,
-    overlayName: state.pages.editProduct.overlays.upsell.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.upsell.name
+  );
 
   return (
     <button
@@ -57,14 +55,13 @@ export function UpsellOverlay({ data }: { data: DataType }) {
 
   const { upsell, upsellDetails } = data;
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editProduct.name,
-      overlayName: state.pages.editProduct.overlays.upsell.name,
-      isOverlayVisible: state.pages.editProduct.overlays.upsell.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.upsell.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.upsell.isVisible
   );
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import { CreateProductAction } from "@/actions/products";
 import AlertMessage from "@/components/shared/AlertMessage";
 import { capitalizeFirstLetter, isValidRemoteImage } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { useNavbarMenuStore } from "@/zustand/admin/navbarMenuStore";
 import { ArrowLeftIcon, ChevronDownIcon, CloseIcon } from "@/icons";
@@ -15,13 +15,12 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 import { getCategories } from "@/lib/getData";
 
 export function NewProductMenuButton() {
-  const { showOverlay } = useOverlayStore();
-  const { setNavbarMenu } = useNavbarMenuStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.products.name,
-    overlayName: state.pages.products.overlays.newProduct.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
+  const pageName = useOverlayStore((state) => state.pages.products.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.products.overlays.newProduct.name
+  );
 
   const openOverlay = () => {
     setNavbarMenu(false);
@@ -40,13 +39,12 @@ export function NewProductMenuButton() {
 }
 
 export function NewProductEmptyGridButton() {
-  const { showOverlay } = useOverlayStore();
-  const { setNavbarMenu } = useNavbarMenuStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.products.name,
-    overlayName: state.pages.products.overlays.newProduct.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
+  const pageName = useOverlayStore((state) => state.pages.products.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.products.overlays.newProduct.name
+  );
 
   const openOverlay = () => {
     setNavbarMenu(false);
@@ -91,14 +89,13 @@ export function NewProductOverlay() {
     })();
   }, []);
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.products.name,
-      overlayName: state.pages.products.overlays.newProduct.name,
-      isOverlayVisible: state.pages.products.overlays.newProduct.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.products.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.products.overlays.newProduct.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.products.overlays.newProduct.isVisible
   );
 
   useEffect(() => {

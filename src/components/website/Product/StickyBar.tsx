@@ -92,8 +92,9 @@ export function StickyBar({
   const [isPending, startTransition] = useTransition();
   const [isInCart, setIsInCart] = useState<boolean>(false);
 
-  const { selectedColor, selectedSize } = useOptionsStore();
-  const { showAlert } = useAlertStore();
+  const selectedColor = useOptionsStore(state => state.selectedColor);
+  const selectedSize = useOptionsStore(state => state.selectedSize);
+  const showAlert = useAlertStore(state => state.showAlert);
 
   const { pricing, upsell, images, name } = productInfo;
 

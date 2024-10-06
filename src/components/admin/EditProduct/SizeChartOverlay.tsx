@@ -8,18 +8,17 @@ import { HiPlus, HiMinus } from "react-icons/hi";
 import SizesTable from "./SizesTable";
 import { clsx } from "clsx";
 import AlertMessage from "@/components/shared/AlertMessage";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { ArrowLeftIcon } from "@/icons";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { UpdateProductAction } from "@/actions/products";
 
 export function SizeChartButton() {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editProduct.name,
-    overlayName: state.pages.editProduct.overlays.sizes.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.sizes.name
+  );
 
   return (
     <button
@@ -192,14 +191,13 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
     });
   };
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editProduct.name,
-      overlayName: state.pages.editProduct.overlays.sizes.name,
-      isOverlayVisible: state.pages.editProduct.overlays.sizes.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.sizes.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.sizes.isVisible
   );
 
   useEffect(() => {

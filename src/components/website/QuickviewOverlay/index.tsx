@@ -24,7 +24,10 @@ export function QuickviewButton({
   cart: CartType | null;
   deviceIdentifier: string;
 }) {
-  const { showOverlay, setSelectedProduct } = useQuickviewStore();
+  const showOverlay = useQuickviewStore((state) => state.showOverlay);
+  const setSelectedProduct = useQuickviewStore(
+    (state) => state.setSelectedProduct
+  );
 
   const handleClick = (event: React.MouseEvent) => {
     if (onClick) {
@@ -55,8 +58,11 @@ export function QuickviewButton({
 export function QuickviewOverlay() {
   const router = useRouter();
 
-  const { hideOverlay, isVisible, cart, selectedProduct, deviceIdentifier } =
-    useQuickviewStore();
+  const hideOverlay = useQuickviewStore((state) => state.hideOverlay);
+  const isVisible = useQuickviewStore((state) => state.isVisible);
+  const cart = useQuickviewStore((state) => state.cart);
+  const selectedProduct = useQuickviewStore((state) => state.selectedProduct);
+  const deviceIdentifier = useQuickviewStore((state) => state.deviceIdentifier);
 
   const [hasSize, setHasSize] = useState(false);
   const [hasColor, setHasColor] = useState(false);

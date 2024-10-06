@@ -8,7 +8,7 @@ import {
   isValidRemoteImage,
 } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { useNavbarMenuStore } from "@/zustand/admin/navbarMenuStore";
 import { ArrowLeftIcon, ChevronDownIcon, CloseIcon } from "@/icons";
@@ -38,13 +38,12 @@ type RequestDataType = {
 };
 
 export function NewCollectionMenuButton() {
-  const { showOverlay } = useOverlayStore();
-  const { setNavbarMenu } = useNavbarMenuStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.storefront.name,
-    overlayName: state.pages.storefront.overlays.newCollection.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
+  const pageName = useOverlayStore((state) => state.pages.storefront.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.storefront.overlays.newCollection.name
+  );
 
   const openOverlay = () => {
     setNavbarMenu(false);
@@ -63,13 +62,12 @@ export function NewCollectionMenuButton() {
 }
 
 export function NewCollectionEmptyTableButton() {
-  const { showOverlay } = useOverlayStore();
-  const { setNavbarMenu } = useNavbarMenuStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.storefront.name,
-    overlayName: state.pages.storefront.overlays.newCollection.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
+  const pageName = useOverlayStore((state) => state.pages.storefront.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.storefront.overlays.newCollection.name
+  );
 
   const openOverlay = () => {
     setNavbarMenu(false);
@@ -114,14 +112,13 @@ export function NewCollectionOverlay() {
 
   const collectionTypeRef = useRef(null);
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.storefront.name,
-      overlayName: state.pages.storefront.overlays.newCollection.name,
-      isOverlayVisible: state.pages.storefront.overlays.newCollection.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.storefront.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.storefront.overlays.newCollection.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.storefront.overlays.newCollection.isVisible
   );
 
   useEffect(() => {

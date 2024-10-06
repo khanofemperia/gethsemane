@@ -2,7 +2,7 @@
 
 import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
-import {Spinner} from "@/ui/Spinners/Default";
+import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
 import clsx from "clsx";
@@ -11,12 +11,11 @@ import { UpdateCollectionAction } from "@/actions/collections";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function BasicDetailsButton({ className }: { className: string }) {
-  const { showOverlay } = useOverlayStore();
-
-  const { pageName, overlayName } = useOverlayStore((state) => ({
-    pageName: state.pages.editCollection.name,
-    overlayName: state.pages.editCollection.overlays.basicDetails.name,
-  }));
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editCollection.overlays.basicDetails.name
+  );
 
   return (
     <button
@@ -48,16 +47,10 @@ export function BasicDetailsOverlay({
   const [title, setTitle] = useState<string>(data.title);
   const [slug, setSlug] = useState<string>(data.slug);
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editCollection.name,
-      overlayName: state.pages.editCollection.overlays.basicDetails.name,
-      isOverlayVisible:
-        state.pages.editCollection.overlays.basicDetails.isVisible,
-    })
-  );
+  const hideOverlay = useOverlayStore(state => state.hideOverlay);
+  const pageName = useOverlayStore(state => state.pages.editCollection.name);
+  const overlayName = useOverlayStore(state => state.pages.editCollection.overlays.basicDetails.name);
+  const isOverlayVisible = useOverlayStore(state => state.pages.editCollection.overlays.basicDetails.isVisible);  
 
   useEffect(() => {
     if (isOverlayVisible || showAlert) {
