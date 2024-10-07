@@ -58,8 +58,6 @@ export function PayPalButton({ cart }: { cart: Cart }) {
   const cartItems = generateCartItems(cart);
 
   const createOrder = useCallback(async () => {
-    console.log(cartItems);
-
     try {
       const response = await fetch("/api/paypal/create-order", {
         method: "POST",
