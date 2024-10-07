@@ -1,7 +1,7 @@
 "use client";
 
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 type CartItem = {
   name: string;
@@ -46,19 +46,20 @@ const initialOptions = {
   clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
   currency: "USD",
   intent: "capture",
-};
+} as const;
 
-export function PayPalButton({ cart }: { cart: any }) {
-  const [key, setKey] = useState(cart.length);
+export function PayPalButton({ cart }: { cart: Cart }) {
+  const [key, setKey] = useState(() => cart.length);
 
   useEffect(() => {
-    // Update the key when the cart changes, forcing a re-render of PayPal buttons
     setKey(cart.length);
   }, [cart]);
 
   const cartItems = generateCartItems(cart);
 
-  const createOrder = async () => {
+  const createOrder = useCallback(async () => {
+    console.log(cartItems);
+
     try {
       const response = await fetch("/api/paypal/create-order", {
         method: "POST",
@@ -68,15 +69,19 @@ export function PayPalButton({ cart }: { cart: any }) {
         body: JSON.stringify({ cart: cartItems }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const orderData = await response.json();
       return orderData.id;
     } catch (error) {
       console.error("Failed to create order:", error);
       throw error;
     }
-  };
+  }, [cartItems]);
 
-  const onApprove = async (data: any) => {
+  const onApprove = useCallback(async (data: { orderID: string }) => {
     try {
       const response = await fetch(
         `/api/paypal/capture-order/${data.orderID}`,
@@ -85,13 +90,18 @@ export function PayPalButton({ cart }: { cart: any }) {
         }
       );
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const orderData = await response.json();
       console.log("Payment captured:", orderData);
+      return orderData;
     } catch (error) {
       console.error("Failed to capture order:", error);
       throw error;
     }
-  };
+  }, []);
 
   if (!initialOptions.clientId) {
     console.error("PayPal Client ID is not set");
@@ -116,21 +126,17 @@ export function PayPalButton({ cart }: { cart: any }) {
 
 function generateCartItems(cart: Cart): CartItem[] {
   const skuCounters: Record<string, number> = {};
-  const cartItems: CartItem[] = [];
 
   function generateSku(baseId: string): string {
-    if (!skuCounters[baseId]) {
-      skuCounters[baseId] = 1;
-    } else {
-      skuCounters[baseId]++;
-    }
+    skuCounters[baseId] = (skuCounters[baseId] || 0) + 1;
     return `${baseId}-${String(skuCounters[baseId]).padStart(2, "0")}`;
   }
 
   function formatProductName(item: ProductCartItem): string {
-    const attributes = [];
-    if (item.size) attributes.push(`Size: ${item.size}`);
-    if (item.color) attributes.push(`Color: ${item.color}`);
+    const attributes = [
+      item.size && `${item.size}`,
+      item.color && `${item.color}`,
+    ].filter(Boolean);
 
     const attributeString =
       attributes.length > 0 ? `[${attributes.join(", ")}] - ` : "";
@@ -139,44 +145,39 @@ function generateCartItems(cart: Cart): CartItem[] {
     return fullName.length > 127 ? `${fullName.slice(0, 124)}...` : fullName;
   }
 
-  cart.forEach((item) => {
+  return cart.map((item): CartItem => {
     if (item.type === "product") {
-      const productItem = item as ProductCartItem;
-      cartItems.push({
-        name: formatProductName(productItem),
-        sku: generateSku(productItem.baseProductId),
+      return {
+        name: formatProductName(item),
+        sku: generateSku(item.baseProductId),
         unit_amount: {
           currency_code: "USD",
-          value: productItem.pricing.salePrice.toFixed(2),
+          value: item.pricing.salePrice.toFixed(2),
         },
         quantity: 1,
-      });
-    } else if (item.type === "upsell") {
-      const upsellItem = item as UpsellCartItem;
-
-      const productDetails = upsellItem.products
+      };
+    } else {
+      const productDetails = item.products
         .map((product) => {
-          const details = [product.id];
-          if (product.size) details.push(product.size);
-          if (product.color) details.push(product.color);
+          const details = [product.id, product.size, product.color].filter(
+            Boolean
+          );
           return `[${details.join(", ")}]`;
         })
         .join(" + ");
 
-      cartItems.push({
+      return {
         name:
           productDetails.length > 127
             ? `${productDetails.slice(0, 124)}...`
             : productDetails,
-        sku: generateSku(upsellItem.baseUpsellId),
+        sku: generateSku(item.baseUpsellId),
         unit_amount: {
           currency_code: "USD",
-          value: upsellItem.pricing.basePrice.toFixed(2),
+          value: item.pricing.basePrice.toFixed(2),
         },
         quantity: 1,
-      });
+      };
     }
   });
-
-  return cartItems;
 }
