@@ -1,6 +1,7 @@
 "use client";
 
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { useEffect, useState } from "react";
 
 type CartItem = {
   name: string;
@@ -48,10 +49,12 @@ const initialOptions = {
 };
 
 export function PayPalButton({ cart }: { cart: any }) {
-  if (!initialOptions.clientId) {
-    console.error("PayPal Client ID is not set");
-    return null;
-  }
+  const [key, setKey] = useState(cart.length);
+
+  useEffect(() => {
+    // Update the key when the cart changes, forcing a re-render of PayPal buttons
+    setKey(cart.length);
+  }, [cart]);
 
   const cartItems = generateCartItems(cart);
 
@@ -90,8 +93,13 @@ export function PayPalButton({ cart }: { cart: any }) {
     }
   };
 
+  if (!initialOptions.clientId) {
+    console.error("PayPal Client ID is not set");
+    return null;
+  }
+
   return (
-    <PayPalScriptProvider options={initialOptions}>
+    <PayPalScriptProvider key={key} options={initialOptions}>
       <PayPalButtons
         style={{
           shape: "pill",
