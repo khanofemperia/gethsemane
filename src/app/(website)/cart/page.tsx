@@ -44,8 +44,8 @@ export default async function Cart() {
   );
 
   const sortedCartItems = [...cartProducts, ...cartUpsells].sort(
-    (a, b) => a.index - b.index
-  );
+    (a, b) => b.index - a.index
+  );  
 
   const calculateTotal = () => {
     const totalBasePrice = sortedCartItems.reduce((total, item) => {

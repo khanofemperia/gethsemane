@@ -17,6 +17,7 @@ type UpsellCartItem = {
   baseUpsellId: string;
   type: "upsell";
   pricing: {
+    salePrice: number;
     basePrice: number;
   };
   products: Array<{
@@ -143,6 +144,10 @@ function generateCartItems(cart: Cart): CartItem[] {
     return fullName.length > 127 ? `${fullName.slice(0, 124)}...` : fullName;
   }
 
+  function getPrice(pricing: { salePrice: number; basePrice: number }): number {
+    return pricing.salePrice > 0 ? pricing.salePrice : pricing.basePrice;
+  }
+
   return cart.map((item): CartItem => {
     if (item.type === "product") {
       return {
@@ -150,7 +155,7 @@ function generateCartItems(cart: Cart): CartItem[] {
         sku: generateSku(item.baseProductId),
         unit_amount: {
           currency_code: "USD",
-          value: item.pricing.salePrice.toFixed(2),
+          value: getPrice(item.pricing).toFixed(2),
         },
         quantity: 1,
       };
@@ -172,7 +177,7 @@ function generateCartItems(cart: Cart): CartItem[] {
         sku: generateSku(item.baseUpsellId),
         unit_amount: {
           currency_code: "USD",
-          value: item.pricing.basePrice.toFixed(2),
+          value: getPrice(item.pricing).toFixed(2),
         },
         quantity: 1,
       };
