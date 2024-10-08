@@ -132,8 +132,8 @@ function generateCartItems(cart: Cart): CartItem[] {
 
   function formatProductName(item: ProductCartItem): string {
     const attributes = [
-      item.size && `${item.size}`,
-      item.color && `${item.color}`,
+      item.size && item.size,
+      item.color && item.color,
     ].filter(Boolean);
 
     const attributeString =
