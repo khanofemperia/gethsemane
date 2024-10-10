@@ -990,6 +990,33 @@ export async function getDiscoveryProducts(
   return allProducts.slice(0, limit);
 }
 
+/**
+ * Get all orders.
+ *
+ * @example
+ * const orders = await getOrders();
+ */
+export async function getOrders(): Promise<OrderType[] | null> {
+  const collectionRef = collection(database, "orders");
+
+  const firestoreQuery = query(collectionRef);
+  const snapshot = await getDocs(firestoreQuery);
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  const orders = snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+    } as OrderType;
+  });
+
+  return orders;
+}
+
 type CartType = {
   id: string;
   device_identifier: any;

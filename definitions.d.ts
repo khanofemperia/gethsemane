@@ -322,3 +322,33 @@ type CartType = {
   device_identifier: string;
   items: Array<CartProductItemType | CartUpsellItemType>;
 };
+
+// 
+type OrderType = {
+  id: string;
+  status: string;
+  payer: {
+    email: string;
+    payerId: string;
+    name: {
+      firstName: string;
+      lastName: string;
+    };
+  };
+  amount: {
+    value: string;
+    currency: string;
+  };
+  shipping: {
+    name: string;
+    address: {
+      line1: string;
+      city: string;
+      state: string;
+      postalCode: string;
+      country: string;
+    };
+  };
+  transactionId: string;
+  timestamp: string;
+};
