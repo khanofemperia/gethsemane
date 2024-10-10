@@ -36,6 +36,7 @@ export async function POST(
     }
 
     const orderData = await response.json();
+
     return NextResponse.json(orderData);
   } catch (error) {
     console.error("Failed to capture order:", error);

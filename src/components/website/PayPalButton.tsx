@@ -94,7 +94,7 @@ export function PayPalButton({ cart }: { cart: Cart }) {
       }
 
       const orderData = await response.json();
-      console.log("Payment captured:", orderData);
+
       return orderData;
     } catch (error) {
       console.error("Failed to capture order:", error);
