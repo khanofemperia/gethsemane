@@ -144,7 +144,8 @@ export default function OrdersTable({
                           </td>
                           <td className="px-3 w-[120px] min-w-[120px]">
                             <p className="font-medium">
-                              {formatTime(timestamp)}
+                              {/* {formatTime(timestamp)} */}
+                              14:10
                             </p>
                           </td>
                           <td className="px-3 w-[140px] min-w-[140px]">
