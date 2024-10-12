@@ -48,14 +48,13 @@ export function VisibilityOverlay({ data }: { data: DataType }) {
     AlertMessageType.NEUTRAL
   );
 
-  const { hideOverlay } = useOverlayStore();
-
-  const { pageName, isOverlayVisible, overlayName } = useOverlayStore(
-    (state) => ({
-      pageName: state.pages.editProduct.name,
-      overlayName: state.pages.editProduct.overlays.visibility.name,
-      isOverlayVisible: state.pages.editProduct.overlays.visibility.isVisible,
-    })
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.editProduct.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.visibility.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.editProduct.overlays.visibility.isVisible
   );
 
   useEffect(() => {
