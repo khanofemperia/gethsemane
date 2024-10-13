@@ -209,44 +209,45 @@ export default async function OrderDetails({
     <>
       <div className="w-full max-w-[768px] relative flex items-center justify-between shadow rounded-xl bg-white">
         <div className="w-full flex flex-col px-5">
-          <div className="flex flex-col gap-3 py-5 border-b">
+          <div className="flex flex-col gap-2 py-5 border-b">
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[66px] max-w-[66px] text-gray">Order</h3>
-              <div className="flex gap-2 justify-center">
-                <span className="w-full font-medium">{order.id}</span>
-                <div className="px-2 rounded-full h-5 w-max flex items-center bg-green/10 border border-green/15 text-green">
-                  {capitalizeFirstLetter(order.status)}
-                </div>
+              <h3 className="min-w-[70px] max-w-[66px] text-gray">ID</h3>
+              <span className="w-full font-medium">{order.id}</span>
+            </div>
+            <div className="flex gap-5 text-sm">
+              <h3 className="min-w-[70px] max-w-[66px] text-gray">Status</h3>
+              <div className="px-2 rounded-full h-5 w-max flex items-center bg-green/10 border border-green/15 text-green">
+                {capitalizeFirstLetter(order.status)}
               </div>
             </div>
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[66px] max-w-[66px] text-gray">Placed on</h3>
+              <h3 className="min-w-[70px] max-w-[66px] text-gray">Purchased</h3>
               <span className="w-full font-medium">{orderPlacedDate}</span>
             </div>
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[66px] max-w-[66px] text-gray">Total</h3>
+              <h3 className="min-w-[70px] max-w-[66px] text-gray">Total</h3>
               <span className="w-full font-medium">
                 ${order.purchase_units[0].amount.value}
               </span>
             </div>
           </div>
-          <div className="flex flex-col gap-3 py-5 border-b">
+          <div className="flex flex-col gap-2 py-5 border-b">
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[66px] max-w-[66px] text-gray">Customer</h3>
+              <h3 className="min-w-[70px] max-w-[66px] text-gray">Customer</h3>
               <span className="w-full font-medium">
                 {order.payer.name.given_name} {order.payer.name.surname}
               </span>
             </div>
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[66px] max-w-[66px] text-gray">Email</h3>
+              <h3 className="min-w-[70px] max-w-[66px] text-gray">Email</h3>
               <span className="w-full font-medium">
                 {order.payer.email_address}
               </span>
             </div>
           </div>
-          <div className="flex flex-col gap-3 py-5">
+          <div className="flex flex-col gap-2 py-5">
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[66px] max-w-[66px] text-gray">Shipping</h3>
+              <h3 className="min-w-[70px] max-w-[66px] text-gray">Shipping</h3>
               <div className="flex flex-col gap-2 font-medium">
                 <span>
                   {order.purchase_units[0].shipping.address.address_line_1},{" "}
