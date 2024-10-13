@@ -1,5 +1,6 @@
 import config from "@/lib/config";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import Link from "next/link";
 
 type OrderDetailsType = {
   id: string;
@@ -160,6 +161,9 @@ type OrderDetailsType = {
   }>;
 };
 
+const PAYPAL_BASE_URL =
+  "https://www.sandbox.paypal.com/unifiedtransactions/details/payment/";
+
 export default async function OrderDetails({
   params,
 }: {
@@ -200,10 +204,16 @@ export default async function OrderDetails({
       .split(" ")
       .pop();
 
-    return `${datePart}, at ${timePart.trim()} (${timezone})`;
+    return `${datePart}, ${timePart.trim()} (${timezone})`;
+  }
+
+  function getPayPalUrl(captureId: string) {
+    return `${PAYPAL_BASE_URL}${captureId}`;
   }
 
   const orderPlacedDate = formatOrderPlacedDate(order);
+  const captureId = order.purchase_units[0].payments.captures[0].id;
+  const paypalUrl = getPayPalUrl(captureId);
 
   return (
     <>
@@ -211,21 +221,19 @@ export default async function OrderDetails({
         <div className="w-full flex flex-col px-5">
           <div className="flex flex-col gap-2 py-5 border-b">
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[70px] max-w-[66px] text-gray">ID</h3>
-              <span className="w-full font-medium">{order.id}</span>
-            </div>
-            <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[70px] max-w-[66px] text-gray">Status</h3>
+              <h3 className="min-w-[78px] max-w-[78px] text-gray">
+                Transaction
+              </h3>
               <div className="px-2 rounded-full h-5 w-max flex items-center bg-green/10 border border-green/15 text-green">
                 {capitalizeFirstLetter(order.status)}
               </div>
             </div>
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[70px] max-w-[66px] text-gray">Purchased</h3>
+              <h3 className="min-w-[78px] max-w-[78px] text-gray">Purchased</h3>
               <span className="w-full font-medium">{orderPlacedDate}</span>
             </div>
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[70px] max-w-[66px] text-gray">Total</h3>
+              <h3 className="min-w-[78px] max-w-[78px] text-gray">Total</h3>
               <span className="w-full font-medium">
                 ${order.purchase_units[0].amount.value}
               </span>
@@ -233,21 +241,7 @@ export default async function OrderDetails({
           </div>
           <div className="flex flex-col gap-2 py-5 border-b">
             <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[70px] max-w-[66px] text-gray">Customer</h3>
-              <span className="w-full font-medium">
-                {order.payer.name.given_name} {order.payer.name.surname}
-              </span>
-            </div>
-            <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[70px] max-w-[66px] text-gray">Email</h3>
-              <span className="w-full font-medium">
-                {order.payer.email_address}
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 py-5">
-            <div className="flex gap-5 text-sm">
-              <h3 className="min-w-[70px] max-w-[66px] text-gray">Shipping</h3>
+              <h3 className="min-w-[78px] max-w-[78px] text-gray">Shipping</h3>
               <div className="flex flex-col gap-2 font-medium">
                 <span>
                   {order.purchase_units[0].shipping.address.address_line_1},{" "}
@@ -262,6 +256,28 @@ export default async function OrderDetails({
                   {order.purchase_units[0].shipping.address.country_code}
                 </span>
               </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 py-5 border-b">
+            <div className="flex gap-5 text-sm">
+              <h3 className="min-w-[78px] max-w-[78px] text-gray">Customer</h3>
+              <span className="w-full font-medium">
+                {order.payer.name.given_name} {order.payer.name.surname}
+              </span>
+            </div>
+            <div className="flex gap-5 text-sm">
+              <h3 className="min-w-[78px] max-w-[78px] text-gray">Email</h3>
+              <span className="w-full font-medium">
+                {order.payer.email_address}
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 py-5">
+            <div className="flex gap-5 text-sm">
+              <h3 className="min-w-[78px] max-w-[78px] text-gray">ID</h3>
+              <Link href={paypalUrl} target="_blank">
+                <span className="w-full text-blue hover:underline">{captureId}</span>
+              </Link>
             </div>
           </div>
         </div>
