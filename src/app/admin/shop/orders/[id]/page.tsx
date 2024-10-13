@@ -247,9 +247,20 @@ export default async function OrderDetails({
           <div className="flex flex-col gap-3 py-5">
             <div className="flex gap-5 text-sm">
               <h3 className="min-w-[66px] max-w-[66px] text-gray">Shipping</h3>
-              <span className="w-full font-medium">
-                {order.payer.name.given_name} {order.payer.name.surname}
-              </span>
+              <div className="flex flex-col gap-2 font-medium">
+                <span>
+                  {order.purchase_units[0].shipping.address.address_line_1},{" "}
+                  {order.purchase_units[0].shipping.address.address_line_2}
+                </span>
+                <span>
+                  {order.purchase_units[0].shipping.address.admin_area_2},{" "}
+                  {order.purchase_units[0].shipping.address.admin_area_1}{" "}
+                  {order.purchase_units[0].shipping.address.postal_code}
+                </span>
+                <span>
+                  {order.purchase_units[0].shipping.address.country_code}
+                </span>
+              </div>
             </div>
           </div>
         </div>

@@ -30,12 +30,6 @@ export async function GET(
       },
     });
 
-    console.log("PayPal API Response:", {
-      status: response.status,
-      statusText: response.statusText,
-      headers: Object.fromEntries(response.headers.entries()),
-    });
-
     if (!response.ok) {
       const errorData = await response.text();
       console.error("PayPal API Error:", errorData);
