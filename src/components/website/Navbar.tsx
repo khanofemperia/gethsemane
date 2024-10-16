@@ -45,38 +45,34 @@ export default function Navbar({ itemsInCart }: { itemsInCart: number }) {
           }
         )}
       >
-        <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex gap-1 flex-col md:flex-row">
-          <Link
-            href="/"
-            className="h-12 min-w-[168px] w-[168px] pl-2 flex items-center"
-          >
-            <Image
-              src="/images/logos/cherlygood_wordmark.svg"
-              alt="Cherly Good"
-              width={160}
-              height={40}
-              priority
-            />
-          </Link>
-          <div className="w-full flex items-center justify-center md:pl-6 lg:pl-0 overflow-hidden">
+        <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex justify-between gap-1 flex-col md:flex-row">
+          <div className="flex items-center gap-7">
             <Link
               href="/"
-              className="flex items-center gap-[10px] px-5 w-full md:max-w-[560px] h-12 rounded-full ease-in-out transition duration-300 bg-[#e9eff6] active:bg-[#c4f8d6] lg:hover:bg-[#c4f8d6]"
+              className="h-12 min-w-[168px] w-[168px] pl-2 flex items-center"
             >
               <Image
-                src="/images/other/waving_hand.webp"
+                src="/images/logos/cherlygood_wordmark.svg"
                 alt="Cherly Good"
-                width={28}
-                height={28}
+                width={160}
+                height={40}
                 priority
               />
-              <span className="min-[480px]:hidden md:block min-[820px]:hidden font-medium text-gray">
-                Browse the store
-              </span>
-              <span className="hidden min-[480px]:block md:hidden min-[820px]:block font-medium text-gray">
-                Click here to browse the store
-              </span>
             </Link>
+            <div className="flex gap-7 h-max *:text-sm *:font-semibold">
+              <Link href="#" className="">
+                New Arrivals
+              </Link>
+              <Link href="#" className="">
+                Categories
+              </Link>
+              <Link href="#" className="">
+                Track Order
+              </Link>
+              <Link href="#" className="">
+                Contact
+              </Link>
+            </div>
           </div>
           <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-12 flex items-center justify-end">
             <Link
