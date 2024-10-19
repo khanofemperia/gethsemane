@@ -51,7 +51,7 @@ export default function Footer() {
                 type="text"
                 placeholder="Enter your email"
               />
-              <button className="w-48 h-11 rounded font-semibold text-amber bg-[#f6ecdb] border border-[#e4cfc1]">
+              <button className="w-48 h-11 rounded font-semibold text-amber bg-[#f6ecdb] border border-[#eddbca]">
                 Subscribe
               </button>
             </div>
