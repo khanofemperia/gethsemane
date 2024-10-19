@@ -3,28 +3,28 @@ import Link from "next/link";
 export default function Footer() {
   const sections = [
     {
-      title: "Customer Service",
+      title: "Get Help",
       links: [
-        { name: "Track Your Order", href: "#" },
+        { name: "Track order", href: "#" },
         { name: "FAQs", href: "#" },
-        { name: "Shipping", href: "#" },
-        { name: "Returns", href: "#" },
-        { name: "Contact Us", href: "#" },
+        { name: "Shipping info", href: "#" },
+        { name: "Returns & refunds", href: "#" },
+        { name: "Contact us", href: "#" },
       ],
     },
     {
       title: "Company",
       links: [
-        { name: "About Us", href: "#" },
-        { name: "Privacy Policy", href: "#" },
-        { name: "Terms of Service", href: "#" },
+        { name: "About us", href: "#" },
+        { name: "Privacy policy", href: "#" },
+        { name: "Terms of service", href: "#" },
       ],
     },
   ];
 
   return (
     <footer className="w-full p-10 mt-10 bg-lightgray">
-      <div className="w-[948px] h-[600px] mx-auto">
+      <div className="w-[948px] mx-auto">
         <div className="grid grid-cols-3 gap-10">
           {sections.map((section, idx) => (
             <div key={idx}>
@@ -33,7 +33,7 @@ export default function Footer() {
                 <Link
                   key={index}
                   href={link.href}
-                  className="block text-sm text-gray mb-2 hover:underline"
+                  className="block w-max text-sm text-gray mb-2 hover:underline"
                 >
                   {link.name}
                 </Link>
@@ -45,7 +45,16 @@ export default function Footer() {
             <span className="block text-sm text-gray mb-2">
               Subscribe to our newsletter for exclusive deals and updates.
             </span>
-            <input type="text" placeholder="you@domain" />
+            <div>
+              <input
+                className="mb-2 w-48 h-11 px-3 border rounded"
+                type="text"
+                placeholder="Enter your email"
+              />
+              <button className="w-48 h-11 rounded font-semibold text-amber bg-[#f6ecdb] border border-[#e4cfc1]">
+                Subscribe
+              </button>
+            </div>
           </div>
         </div>
       </div>
