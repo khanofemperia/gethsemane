@@ -183,7 +183,7 @@ export function FeaturedProducts({
           {title}
         </h2>
         <Link
-          href={`/collections/${slug}-${id}`}
+          href={`/collection/${slug}-${id}`}
           className="text-sm rounded-full px-3 h-8 text-nowrap flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
         >
           See more

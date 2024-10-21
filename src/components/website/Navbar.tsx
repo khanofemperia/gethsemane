@@ -2,14 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import clsx from "clsx";
 import { CartIcon } from "@/icons";
 import { HiMiniChevronDown } from "react-icons/hi2";
 
-export default function Navbar({ itemsInCart }: { itemsInCart: number }) {
+export default function Navbar({
+  itemsInCart,
+  categories,
+}: {
+  itemsInCart: number;
+  categories: CategoryType[] | null;
+}) {
   const [isScrollingUp, setIsScrollingUp] = useState(true);
   const [prevScrollPosition, setPrevScrollPosition] = useState(0);
+  const [isCategoriesDropdownVisible, setCategoriesDropdownVisible] =
+    useState(false);
+  const categoriesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,17 +33,33 @@ export default function Navbar({ itemsInCart }: { itemsInCart: number }) {
         }
 
         setPrevScrollPosition(currentScrollPosition);
+        setCategoriesDropdownVisible(false);
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        categoriesRef.current &&
+        !categoriesRef.current.contains(event.target as Node)
+      ) {
+        setCategoriesDropdownVisible(false);
       }
     };
 
     if (typeof window !== "undefined") {
       window.addEventListener("scroll", handleScroll);
+      document.addEventListener("mousedown", handleClickOutside);
 
       return () => {
         window.removeEventListener("scroll", handleScroll);
+        document.removeEventListener("mousedown", handleClickOutside);
       };
     }
   }, [prevScrollPosition]);
+
+  const toggleCategoriesDropdown = () => {
+    setCategoriesDropdownVisible(!isCategoriesDropdownVisible);
+  };
 
   return (
     <>
@@ -60,15 +85,41 @@ export default function Navbar({ itemsInCart }: { itemsInCart: number }) {
                 priority
               />
             </Link>
-            <div className="flex gap-3 h-12 *:text-sm *:font-semibold *:px-2 *:rounded-full *:flex *:items-center *:transition *:duration-300 *:ease-in-out">
-              <Link href="/new-arrivals" className="hover:bg-lightgray">
+            <div className="flex gap-3 h-12">
+              <Link
+                href="/new-arrivals"
+                className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
+              >
                 New Arrivals
               </Link>
-              <button className="hover:bg-lightgray flex items-center">
-                <span>Categories</span>
-                <HiMiniChevronDown size={18} className="-mr-1" />
-              </button>
-              <Link href="#" className="hover:bg-lightgray">
+              {categories && categories.length > 0 && (
+                <div className="relative" ref={categoriesRef}>
+                  <button
+                    onClick={toggleCategoriesDropdown}
+                    className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
+                  >
+                    <span>Categories</span>
+                    <HiMiniChevronDown size={18} className="-mr-1" />
+                  </button>
+                  {isCategoriesDropdownVisible && (
+                    <div className="w-40 absolute top-[56px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-12 min-[840px]:before:right-24">
+                      {categories.map((category, index) => (
+                        <Link
+                          key={index}
+                          href={`/category/${category.name.toLowerCase()}`}
+                          className="block px-5 py-2 text-sm font-semibold transition duration-300 ease-in-out hover:bg-lightgray"
+                        >
+                          {category.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              <Link
+                href="#"
+                className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
+              >
                 Track Order
               </Link>
             </div>
