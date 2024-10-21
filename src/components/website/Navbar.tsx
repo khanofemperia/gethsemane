@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { CartIcon } from "@/icons";
+import { HiMiniChevronDown } from "react-icons/hi2";
 
 export default function Navbar({ itemsInCart }: { itemsInCart: number }) {
   const [isScrollingUp, setIsScrollingUp] = useState(true);
@@ -46,7 +47,7 @@ export default function Navbar({ itemsInCart }: { itemsInCart: number }) {
         )}
       >
         <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex justify-between gap-1 flex-col md:flex-row">
-          <div className="flex items-center gap-7">
+          <div className="flex items-center gap-5">
             <Link
               href="/"
               className="h-12 min-w-[168px] w-[168px] pl-2 flex items-center"
@@ -59,18 +60,16 @@ export default function Navbar({ itemsInCart }: { itemsInCart: number }) {
                 priority
               />
             </Link>
-            <div className="flex gap-7 h-max *:text-sm *:font-semibold">
-              <Link href="#" className="">
+            <div className="flex gap-3 h-12 *:text-sm *:font-semibold *:px-2 *:rounded-full *:flex *:items-center *:transition *:duration-300 *:ease-in-out">
+              <Link href="/new-arrivals" className="hover:bg-lightgray">
                 New Arrivals
               </Link>
-              <Link href="#" className="">
-                Categories
-              </Link>
-              <Link href="#" className="">
+              <button className="hover:bg-lightgray flex items-center">
+                <span>Categories</span>
+                <HiMiniChevronDown size={18} className="-mr-1" />
+              </button>
+              <Link href="#" className="hover:bg-lightgray">
                 Track Order
-              </Link>
-              <Link href="#" className="">
-                Contact
               </Link>
             </div>
           </div>

@@ -410,16 +410,6 @@ export async function getProductWithUpsell(
   };
 }
 
-/**
- * Get multiple products by their IDs with their upsell details.
- *
- * @example
- * const productsWithUpsells = await getProductsWithUpsells({
- *   ids: ["1", "2", "3"],
- *   fields: ['id', 'name', 'pricing'],
- *   visibility: 'PUBLISHED'
- * });
- */
 export async function getProductsWithUpsells(
   options: BaseOptionsType = {}
 ): Promise<ProductWithUpsellType[] | null> {

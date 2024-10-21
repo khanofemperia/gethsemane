@@ -5,11 +5,11 @@ export default function Footer() {
     {
       title: "Get Help",
       links: [
-        { name: "Track order", href: "#" },
-        { name: "FAQs", href: "#" },
-        { name: "Shipping info", href: "#" },
-        { name: "Returns & refunds", href: "#" },
         { name: "Contact us", href: "#" },
+        { name: "Track order", href: "#" },
+        { name: "Returns & refunds", href: "#" },
+        { name: "Shipping info", href: "#" },
+        { name: "FAQs", href: "#" },
       ],
     },
     {
@@ -42,18 +42,20 @@ export default function Footer() {
           ))}
           <div>
             <h3 className="font-semibold mb-4">Stay Connected</h3>
-            <span className="block text-sm text-gray mb-2">
-              Subscribe to our newsletter for exclusive deals and updates.
+            <span className="block text-sm text-gray mb-3">
+              Subscribe to our newsletter <br /> for exclusive deals and updates
             </span>
-            <div>
-              <input
-                className="mb-2 w-48 h-11 px-3 border rounded"
-                type="text"
-                placeholder="Enter your email"
-              />
-              <button className="w-48 h-11 rounded font-semibold text-amber bg-[#f5ead8] border border-[#eddbca]">
+            <div className="relative h-11 w-[270px]">
+              <button className="peer w-[104px] h-[40px] absolute left-[164px] top-1/2 -translate-y-1/2 rounded font-semibold text-white">
                 Subscribe
               </button>
+              <div className="peer-hover:bg-[#cc8100] peer-hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] peer-active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] w-full h-full p-[2px] rounded-lg shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000]">
+                <input
+                  className="w-40 h-[40px] px-3 rounded-md"
+                  type="text"
+                  placeholder="Enter your email"
+                />
+              </div>
             </div>
           </div>
         </div>
