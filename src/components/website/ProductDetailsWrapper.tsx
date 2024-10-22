@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { StickyBar } from "./Product/StickyBar";
 import Options from "@/components/website/Product/Options";
+import Footer from "./Footer";
 
 type ProductInfoType = {
   id: string;
@@ -121,6 +122,7 @@ export function ProductDetailsWrapper({
         hasSize={hasSize}
         cart={cart}
       />
+      <Footer />
     </div>
   );
 }

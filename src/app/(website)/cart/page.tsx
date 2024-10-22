@@ -62,7 +62,7 @@ export default async function Cart() {
     <>
       <div
         id="scrollable-parent"
-        className="h-screen overflow-x-hidden overflow-y-auto custom-scrollbar"
+        className="pb-32 h-screen overflow-x-hidden overflow-y-auto custom-scrollbar"
       >
         <nav className="h-16 border-b">
           <div className="w-full max-w-[1080px] mx-auto py-2 px-5 min-[1120px]:px-0 relative flex gap-1 flex-col md:flex-row">

@@ -23,7 +23,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="w-full p-10 pb-16 mt-10 bg-lightgray">
+    <footer className="w-full p-10 pb-16 mt-20 bg-lightgray">
       <div className="w-[948px] mx-auto">
         <div className="grid grid-cols-3 gap-10">
           {sections.map((section, idx) => (
