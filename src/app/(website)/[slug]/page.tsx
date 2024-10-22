@@ -1,12 +1,11 @@
 import Options from "@/components/website/Product/Options";
 import ImageCarousel from "@/components/website/Product/ImageCarousel";
-import { CartIcon, CheckmarkIcon, ChevronLeftIcon } from "@/icons";
+import { CheckmarkIcon, ChevronLeftIcon } from "@/icons";
 import Images from "@/components/website/Product/Images";
 import Image from "next/image";
-import Link from "next/link";
 import { cookies } from "next/headers";
 import styles from "./styles.module.css";
-import { getCart, getProductWithUpsell } from "@/lib/getData";
+import { getCart, getCategories, getProductWithUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import "@/components/shared/TextEditor/theme/index.css";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
@@ -24,11 +23,15 @@ export default async function ProductDetails({
 }) {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
-  const cart = await getCart(deviceIdentifier);
 
-  const product = (await getProductWithUpsell({
-    id: params.slug.split("-").pop() as string,
-  })) as ProductWithUpsellType;
+  const [cart, categories, product] = await Promise.all([
+    getCart(deviceIdentifier),
+    getCategories(),
+    (await getProductWithUpsell({
+      id: params.slug.split("-").pop() as string,
+    })) as ProductWithUpsellType,
+  ]);
+
   const {
     id,
     name,
@@ -38,7 +41,7 @@ export default async function ProductDetails({
     highlights,
     upsell,
     description,
-  } = product;
+  } = product as ProductWithUpsellType;
 
   const hasColor = product.options.colors.length > 0;
   const hasSize = Object.keys(product.options.sizes).length > 0;
@@ -50,6 +53,7 @@ export default async function ProductDetails({
         deviceIdentifier={deviceIdentifier}
         hasColor={hasColor}
         hasSize={hasSize}
+        categories={categories}
         productInfo={{
           id,
           name,
@@ -59,55 +63,6 @@ export default async function ProductDetails({
           upsell,
         }}
       >
-        <nav className="hidden md:block w-full max-h-[116px] md:max-h-16 border-b bg-white">
-          <div className="w-full max-w-[1080px] mx-auto py-2 px-5 min-[1120px]:px-0 relative flex gap-1 flex-col md:flex-row">
-            <Link
-              href="/"
-              className="h-12 min-w-[168px] w-[168px] pl-2 md:pl-0 flex items-center"
-            >
-              <Image
-                src="/images/logos/cherlygood_wordmark.svg"
-                alt="Cherly Good"
-                width={160}
-                height={40}
-                priority
-              />
-            </Link>
-            <div className="w-full flex items-center justify-center md:pl-6 lg:pl-0 overflow-hidden">
-              <Link
-                href="/"
-                className="flex items-center gap-[10px] px-5 w-full md:max-w-[560px] h-12 rounded-full ease-in-out transition duration-300 bg-[#e9eff6] active:bg-[#c4f8d6] lg:hover:bg-[#c4f8d6]"
-              >
-                <Image
-                  src="/images/other/waving_hand.webp"
-                  alt="Cherly Good"
-                  width={28}
-                  height={28}
-                  priority
-                />
-                <span className="min-[480px]:hidden md:block min-[820px]:hidden font-medium text-gray">
-                  Browse the store
-                </span>
-                <span className="hidden min-[480px]:block md:hidden min-[820px]:block font-medium text-gray">
-                  Click here to browse the store
-                </span>
-              </Link>
-            </div>
-            <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-12 flex items-center justify-end">
-              <Link
-                href="/cart"
-                className="relative h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
-              >
-                <CartIcon size={26} />
-                {cart && cart.items.length > 0 && (
-                  <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
-                    {cart.items.length}
-                  </span>
-                )}
-              </Link>
-            </div>
-          </div>
-        </nav>
         <main>
           <div className="md:hidden">
             <div className="w-full min-h-screen max-h-screen overflow-hidden flex flex-col">
@@ -336,8 +291,8 @@ export default async function ProductDetails({
               </div>
             </div>
           </div>
-          <div className="hidden md:block">
-            <div className="w-full max-w-5xl mx-auto pt-5 pb-16 px-5 min-[1120px]:px-0 flex flex-col gap-16">
+          <div className="hidden md:block w-max mx-auto">
+            <div className="w-full max-w-[945px] pt-5 px-5 min-[1120px]:px-0 flex flex-col gap-16">
               <div className="flex gap-5 items-start justify-start relative">
                 <div className="sticky top-5 max-w-[650px] flex flex-col gap-16">
                   <Images images={images} productName={name} />
@@ -549,7 +504,7 @@ export default async function ProductDetails({
                   </div>
                 </div>
               </div>
-              <div className="w-full px-[70px] mx-auto">
+              <div className="w-full pr-[70px] mx-auto">
                 <div className="w-[580px]">
                   <div
                     className={`

@@ -57,6 +57,31 @@ export default function Navbar({
     }
   }, [prevScrollPosition]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        categoriesRef.current &&
+        !categoriesRef.current.contains(event.target as Node)
+      ) {
+        setCategoriesDropdownVisible(false);
+      }
+    };
+
+    const handleScroll = () => {
+      if (isCategoriesDropdownVisible) {
+        setCategoriesDropdownVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll, true);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [isCategoriesDropdownVisible]);
+
   const toggleCategoriesDropdown = () => {
     setCategoriesDropdownVisible(!isCategoriesDropdownVisible);
   };
@@ -99,7 +124,12 @@ export default function Navbar({
                     className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
                   >
                     <span>Categories</span>
-                    <HiMiniChevronDown size={18} className="-mr-1" />
+                    <HiMiniChevronDown
+                      size={18}
+                      className={`-mr-1 transition-transform duration-300 ${
+                        isCategoriesDropdownVisible ? "rotate-180" : ""
+                      }`}
+                    />
                   </button>
                   {isCategoriesDropdownVisible && (
                     <div className="w-40 absolute top-[56px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-12 min-[840px]:before:right-24">

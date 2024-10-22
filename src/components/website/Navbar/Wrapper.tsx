@@ -1,6 +1,6 @@
 import { getCart, getCategories } from "@/lib/getData";
 import { cookies } from "next/headers";
-import Navbar from "./Navbar";
+import Navbar from ".";
 
 export async function NavbarWrapper() {
   const cookieStore = cookies();
