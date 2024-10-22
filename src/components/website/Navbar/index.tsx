@@ -132,7 +132,7 @@ export default function Navbar({
                     />
                   </button>
                   {isCategoriesDropdownVisible && (
-                    <div className="w-40 absolute top-[56px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-12 min-[840px]:before:right-24">
+                    <div className="w-36 absolute top-[56px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-12 min-[840px]:before:right-24">
                       {categories.map((category, index) => (
                         <Link
                           key={index}
