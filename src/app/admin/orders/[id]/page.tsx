@@ -293,68 +293,6 @@ export default async function OrderDetails({
   const paypalUrl = getPayPalUrl(captureId);
 
   console.log(order.items);
-  /* GET /api/paypal/orders/32230968BF850945W 200 in 1468ms
-[
-  {
-    pricing: { discountPercentage: 0, salePrice: 0, basePrice: 144.99 },
-    variantId: '17279',
-    products: [ [Object], [Object], [Object] ],
-    type: 'upsell',
-    mainImage: 'https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg',
-    index: 5,
-    baseUpsellId: '49915'
-  },
-  {
-    mainImage: 'https://img.kwcdn.com/product/fancy/1a8820c9-2029-49f4-9eca-040c7aa433c7.jpg?imageView2/2/w/800/q/70/format/webp',
-    index: 4,
-    name: 'Regular Fit Crew Neck Lace Splicing Short Sleeve Top - Exaggerated Ruffle, Medium Stretch, Semi-Sheer, Polyester Knit Fabric - Perfect for Casual Spring and Summer Wear',
-    color: 'Orange',
-    pricing: { discountPercentage: 0, salePrice: 0, basePrice: 59.99 },
-    slug: 'crew-neck-lace-splicing-top-ruffle-stretch-semi-sheer-polyester',
-    variantId: '84717',
-    baseProductId: '91468',
-    size: 'M',
-    type: 'product'
-  },
-  {
-    mainImage: 'https://img.kwcdn.com/product/fancy/82edfb34-c115-43a9-b4fa-b25288aa08ea.jpg?imageView2/2/w/800/q/70/format/webp',
-    pricing: { basePrice: 59.99, discountPercentage: 0, salePrice: 0 },
-    slug: 'crew-neck-lace-splicing-top-ruffle-stretch-semi-sheer-polyester',
-    variantId: '04830',
-    color: 'Khaki',
-    baseProductId: '91468',
-    size: 'XL',
-    type: 'product',
-    name: 'Regular Fit Crew Neck Lace Splicing Short Sleeve Top - Exaggerated Ruffle, Medium Stretch, Semi-Sheer, Polyester Knit Fabric - Perfect for Casual Spring and Summer Wear',
-    index: 3
-  },
-  {
-    variantId: '91923',
-    products: [ [Object], [Object], [Object] ],
-    pricing: { discountPercentage: 0, salePrice: 0, basePrice: 144.99 },
-    mainImage: 'https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg',
-    baseUpsellId: '49915',
-    index: 2,
-    type: 'upsell'
-  },
-  {
-    slug: 'waterproof-windproof-womens-hiking-jacket',
-    type: 'product',
-    name: "Waterproof Windproof Women's Hiking Jacket",
-    variantId: '90712',
-    size: 'M',
-    baseProductId: '91062',
-    mainImage: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/314892ee24b07a88b7417acbba9e0ae8.jpg?imageView2/2/w/800/q/70/format/webp',
-    color: 'Black',
-    pricing: { discountPercentage: 36, salePrice: 14.99, basePrice: 21.99 },
-    index: 1
-  }
-]
- GET /admin/orders/32230968BF850945W 200 in 3528ms
- ○ Compiling /favicon.ico ...
- ✓ Compiled /favicon.ico in 621ms (515 modules)
- GET /favicon.ico 200 in 877ms
- */
 
   return (
     <>
