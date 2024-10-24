@@ -405,16 +405,14 @@ export default async function OrderDetails({
                             />
                           </div>
                           <div className="w-full pr-3 flex flex-col gap-1">
-                            <div className="min-w-full h-5 flex items-center justify-between gap-5">
-                              <Link
-                                href={`${item.slug}-${item.baseProductId}`}
-                                target="_blank"
-                                className="text-sm line-clamp-1"
-                              >
-                                {item.name}
-                              </Link>
-                            </div>
-                            <span className="text-sm text-gray">
+                            <Link
+                              href={`${item.slug}-${item.baseProductId}`}
+                              target="_blank"
+                              className="text-xs text-blue line-clamp-1"
+                            >
+                              {item.name}
+                            </Link>
+                            <span className="text-xs font-medium">
                               {item.color} / {item.size}
                             </span>
                             <div className="mt-2 w-max flex items-center justify-center">
@@ -513,13 +511,13 @@ export default async function OrderDetails({
                                 )}
                               </div>
                             </div>
-                            <div>
+                            <div className="flex gap-5">
                               {item.products.map((product) => (
                                 <div
                                   key={product.id}
-                                  className="mb-5 last:mb-0 flex gap-5"
+                                  className="last:mb-0 w-32"
                                 >
-                                  <div className="min-w-32 max-w-32 h-32 rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
+                                  <div className="mb-2 w-full h-32 rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
                                     <Image
                                       src={product.mainImage}
                                       alt={product.name}
@@ -528,17 +526,17 @@ export default async function OrderDetails({
                                       priority
                                     />
                                   </div>
-                                  <div className="w-full flex flex-col gap-1">
-                                    <div className="min-w-full h-5 flex items-center justify-between gap-5">
-                                      <Link
-                                        href={`${product.slug}-${product.id}`}
-                                        target="_blank"
-                                        className="text-sm line-clamp-1"
-                                      >
-                                        {product.name}
-                                      </Link>
-                                    </div>
-                                    <span className="text-sm text-gray">
+                                  <div className="flex flex-col gap-[2px]">
+                                    <Link
+                                      href={`${product.slug}-${product.id}`}
+                                      target="_blank"
+                                      className="text-xs text-blue"
+                                    >
+                                      {product.name.length > 18
+                                        ? `${product.name.slice(0, 18)}...`
+                                        : product.name}
+                                    </Link>
+                                    <span className="text-xs font-medium">
                                       {product.color && product.size
                                         ? `${product.color} / ${product.size}`
                                         : product.color
