@@ -292,8 +292,6 @@ export default async function OrderDetails({
   const captureId = paypalOrder.purchase_units[0].payments.captures[0].id;
   const paypalUrl = getPayPalUrl(captureId);
 
-  console.log(order.items);
-
   return (
     <>
       <div className="w-full max-w-[768px] flex flex-col gap-6">
@@ -465,98 +463,93 @@ export default async function OrderDetails({
                       );
                     } else if (item.type === "upsell") {
                       return (
-                        <div key={item.index} className="flex gap-5">
-                          <div className="relative w-full p-5 flex gap-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]">
-                            <div className="flex flex-col gap-2">
-                              <div className="min-w-full h-5 flex items-center justify-between gap-5">
-                                <div className="w-max flex items-center justify-center">
-                                  {Number(item.pricing.salePrice) ? (
-                                    <div className="flex items-center gap-[6px]">
-                                      <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                        <span className="text-[0.813rem] leading-3 font-semibold">
-                                          $
-                                        </span>
-                                        <span className="text-xl font-bold">
-                                          {Math.floor(
-                                            Number(item.pricing.salePrice)
-                                          )}
-                                        </span>
-                                        <span className="text-[0.813rem] leading-3 font-semibold">
-                                          {(Number(item.pricing.salePrice) % 1)
-                                            .toFixed(2)
-                                            .substring(1)}
-                                        </span>
-                                      </div>
-                                      <span className="text-[0.813rem] leading-3 text-gray line-through">
-                                        $
-                                        {formatThousands(
-                                          Number(item.pricing.basePrice)
-                                        )}
-                                      </span>
-                                    </div>
-                                  ) : (
+                        <div key={item.index}>
+                          <div className="relative w-full p-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]">
+                            <div className="mb-5 min-w-full h-5 flex gap-5 items-center justify-between">
+                              <div className="w-max flex items-center justify-center">
+                                {Number(item.pricing.salePrice) ? (
+                                  <div className="flex items-center gap-[6px]">
                                     <div className="flex items-baseline text-[rgb(168,100,0)]">
                                       <span className="text-[0.813rem] leading-3 font-semibold">
                                         $
                                       </span>
-                                      <span className="text-lg font-bold">
+                                      <span className="text-xl font-bold">
                                         {Math.floor(
-                                          Number(item.pricing.basePrice)
+                                          Number(item.pricing.salePrice)
                                         )}
                                       </span>
                                       <span className="text-[0.813rem] leading-3 font-semibold">
-                                        {(Number(item.pricing.basePrice) % 1)
+                                        {(Number(item.pricing.salePrice) % 1)
                                           .toFixed(2)
                                           .substring(1)}
                                       </span>
-                                      <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
-                                        today
-                                      </span>
                                     </div>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="text-gray text-xs leading-5 max-w-[360px]">
-                                {item.products.map((product, index) => (
-                                  <span key={product.id}>
-                                    {product.name}
-                                    {index < item.products.length - 1 && (
-                                      <span className="text-[rgb(206,206,206)] px-[6px]">
-                                        •
-                                      </span>
-                                    )}
-                                  </span>
-                                ))}
-                              </div>
-                              <div className="mt-3 flex flex-wrap gap-2">
-                                {item.products.map((product) => (
-                                  <div
-                                    key={product.id}
-                                    className="flex flex-col items-center"
-                                  >
-                                    <div className="min-w-32 max-w-32 h-32 rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
-                                      <Image
-                                        src={product.mainImage}
-                                        alt={product.name}
-                                        width={128}
-                                        height={128}
-                                        priority
-                                      />
-                                    </div>
-                                    <div className="text-xs font-medium mt-1">
-                                      <span>
-                                        {product.color && product.size
-                                          ? `${product.color} / ${product.size}`
-                                          : product.color
-                                          ? product.color
-                                          : product.size
-                                          ? product.size
-                                          : ""}
-                                      </span>
-                                    </div>
+                                    <span className="text-[0.813rem] leading-3 text-gray line-through">
+                                      $
+                                      {formatThousands(
+                                        Number(item.pricing.basePrice)
+                                      )}
+                                    </span>
                                   </div>
-                                ))}
+                                ) : (
+                                  <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                    <span className="text-[0.813rem] leading-3 font-semibold">
+                                      $
+                                    </span>
+                                    <span className="text-lg font-bold">
+                                      {Math.floor(
+                                        Number(item.pricing.basePrice)
+                                      )}
+                                    </span>
+                                    <span className="text-[0.813rem] leading-3 font-semibold">
+                                      {(Number(item.pricing.basePrice) % 1)
+                                        .toFixed(2)
+                                        .substring(1)}
+                                    </span>
+                                    <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                      today
+                                    </span>
+                                  </div>
+                                )}
                               </div>
+                            </div>
+                            <div>
+                              {item.products.map((product) => (
+                                <div
+                                  key={product.id}
+                                  className="mb-5 last:mb-0 flex gap-5"
+                                >
+                                  <div className="min-w-32 max-w-32 h-32 rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
+                                    <Image
+                                      src={product.mainImage}
+                                      alt={product.name}
+                                      width={128}
+                                      height={128}
+                                      priority
+                                    />
+                                  </div>
+                                  <div className="w-full flex flex-col gap-1">
+                                    <div className="min-w-full h-5 flex items-center justify-between gap-5">
+                                      <Link
+                                        href={`${product.slug}-${product.id}`}
+                                        target="_blank"
+                                        className="text-sm line-clamp-1"
+                                      >
+                                        {product.name}
+                                      </Link>
+                                    </div>
+                                    <span className="text-sm text-gray">
+                                      {product.color && product.size
+                                        ? `${product.color} / ${product.size}`
+                                        : product.color
+                                        ? product.color
+                                        : product.size
+                                        ? product.size
+                                        : ""}
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
                         </div>
