@@ -1,5 +1,6 @@
 import config from "@/lib/config";
 import { database } from "@/lib/firebase";
+import { getProductsByIds } from "@/lib/getData";
 import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
@@ -237,26 +238,6 @@ type PaymentTransaction = {
 const PAYPAL_BASE_URL =
   "https://www.sandbox.paypal.com/unifiedtransactions/details/payment/";
 
-async function getOrderById(id: string): Promise<OrderType | null> {
-  if (!id) {
-    return null;
-  }
-
-  const documentRef = doc(database, "orders", id);
-  const snapshot = await getDoc(documentRef);
-
-  if (!snapshot.exists()) {
-    return null;
-  }
-
-  const order = {
-    id: snapshot.id,
-    ...snapshot.data(),
-  } as OrderType;
-
-  return order;
-}
-
 export default async function OrderDetails({
   params,
 }: {
@@ -276,6 +257,8 @@ export default async function OrderDetails({
 
   const paypalOrder: OrderDetailsType = await response.json();
   const order = (await getOrderById(paypalOrder.id)) as PaymentTransaction;
+
+  await updateUpsellProductNames(order);
 
   function formatOrderPlacedDate(order: OrderDetailsType): string {
     const dateObj = new Date(
@@ -308,6 +291,70 @@ export default async function OrderDetails({
   const orderPlacedDate = formatOrderPlacedDate(paypalOrder);
   const captureId = paypalOrder.purchase_units[0].payments.captures[0].id;
   const paypalUrl = getPayPalUrl(captureId);
+
+  console.log(order.items);
+  /* GET /api/paypal/orders/32230968BF850945W 200 in 1468ms
+[
+  {
+    pricing: { discountPercentage: 0, salePrice: 0, basePrice: 144.99 },
+    variantId: '17279',
+    products: [ [Object], [Object], [Object] ],
+    type: 'upsell',
+    mainImage: 'https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg',
+    index: 5,
+    baseUpsellId: '49915'
+  },
+  {
+    mainImage: 'https://img.kwcdn.com/product/fancy/1a8820c9-2029-49f4-9eca-040c7aa433c7.jpg?imageView2/2/w/800/q/70/format/webp',
+    index: 4,
+    name: 'Regular Fit Crew Neck Lace Splicing Short Sleeve Top - Exaggerated Ruffle, Medium Stretch, Semi-Sheer, Polyester Knit Fabric - Perfect for Casual Spring and Summer Wear',
+    color: 'Orange',
+    pricing: { discountPercentage: 0, salePrice: 0, basePrice: 59.99 },
+    slug: 'crew-neck-lace-splicing-top-ruffle-stretch-semi-sheer-polyester',
+    variantId: '84717',
+    baseProductId: '91468',
+    size: 'M',
+    type: 'product'
+  },
+  {
+    mainImage: 'https://img.kwcdn.com/product/fancy/82edfb34-c115-43a9-b4fa-b25288aa08ea.jpg?imageView2/2/w/800/q/70/format/webp',
+    pricing: { basePrice: 59.99, discountPercentage: 0, salePrice: 0 },
+    slug: 'crew-neck-lace-splicing-top-ruffle-stretch-semi-sheer-polyester',
+    variantId: '04830',
+    color: 'Khaki',
+    baseProductId: '91468',
+    size: 'XL',
+    type: 'product',
+    name: 'Regular Fit Crew Neck Lace Splicing Short Sleeve Top - Exaggerated Ruffle, Medium Stretch, Semi-Sheer, Polyester Knit Fabric - Perfect for Casual Spring and Summer Wear',
+    index: 3
+  },
+  {
+    variantId: '91923',
+    products: [ [Object], [Object], [Object] ],
+    pricing: { discountPercentage: 0, salePrice: 0, basePrice: 144.99 },
+    mainImage: 'https://i.pinimg.com/564x/0b/ff/5a/0bff5a0842dd5613e2573efc6de143f8.jpg',
+    baseUpsellId: '49915',
+    index: 2,
+    type: 'upsell'
+  },
+  {
+    slug: 'waterproof-windproof-womens-hiking-jacket',
+    type: 'product',
+    name: "Waterproof Windproof Women's Hiking Jacket",
+    variantId: '90712',
+    size: 'M',
+    baseProductId: '91062',
+    mainImage: 'https://img.kwcdn.com/product/Fancyalgo/VirtualModelMatting/314892ee24b07a88b7417acbba9e0ae8.jpg?imageView2/2/w/800/q/70/format/webp',
+    color: 'Black',
+    pricing: { discountPercentage: 36, salePrice: 14.99, basePrice: 21.99 },
+    index: 1
+  }
+]
+ GET /admin/orders/32230968BF850945W 200 in 3528ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 621ms (515 modules)
+ GET /favicon.ico 200 in 877ms
+ */
 
   return (
     <>
@@ -586,4 +633,64 @@ export default async function OrderDetails({
       </div>
     </>
   );
+}
+
+async function getOrderById(id: string): Promise<OrderType | null> {
+  if (!id) {
+    return null;
+  }
+
+  const documentRef = doc(database, "orders", id);
+  const snapshot = await getDoc(documentRef);
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  const order = {
+    id: snapshot.id,
+    ...snapshot.data(),
+  } as OrderType;
+
+  return order;
+}
+
+async function updateUpsellProductNames(order: PaymentTransaction) {
+  const upsellProductIds: string[] = [];
+
+  order.items.forEach((item) => {
+    if (item.type === "upsell") {
+      item.products.forEach((product) => {
+        upsellProductIds.push(product.id);
+      });
+    }
+  });
+
+  let upsellProducts;
+  if (upsellProductIds.length > 0) {
+    try {
+      upsellProducts = await getProductsByIds({
+        ids: upsellProductIds,
+        fields: ["name"],
+        visibility: "PUBLISHED",
+      });
+    } catch (error) {
+      console.error("Failed to fetch upsell product names", error);
+      return;
+    }
+  }
+
+  const productNameMap =
+    upsellProducts?.reduce((map, product) => {
+      map[product.id] = product.name;
+      return map;
+    }, {} as { [key: string]: string }) || {};
+
+  order.items.forEach((item) => {
+    if (item.type === "upsell") {
+      item.products.forEach((product) => {
+        product.name = productNameMap[product.id] || product.name;
+      });
+    }
+  });
 }
