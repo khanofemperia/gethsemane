@@ -131,12 +131,12 @@ export default async function Cart() {
                                   />
                                 </div>
                               </div>
-                              <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
+                              <div className="min-w-[146px] max-w-[146px] min-h-[146px] max-h-[146px] overflow-hidden rounded-lg flex items-center justify-center">
                                 <Image
                                   src={item.mainImage}
                                   alt={item.name}
-                                  width={128}
-                                  height={128}
+                                  width={146}
+                                  height={146}
                                   priority
                                 />
                               </div>
@@ -145,7 +145,7 @@ export default async function Cart() {
                                   <Link
                                     href={`${item.slug}-${item.baseProductId}`}
                                     target="_blank"
-                                    className="text-sm line-clamp-1"
+                                    className="text-gray text-xs line-clamp-1 hover:underline"
                                   >
                                     {item.name}
                                   </Link>
@@ -154,7 +154,7 @@ export default async function Cart() {
                                     variantId={item.variantId}
                                   />
                                 </div>
-                                <span className="text-sm text-gray">
+                                <span className="text-xs font-medium">
                                   {item.color} / {item.size}
                                 </span>
                                 <div className="mt-2 w-max flex items-center justify-center">
@@ -214,102 +214,94 @@ export default async function Cart() {
                                   />
                                 </div>
                               </div>
-                              <div className="relative w-full p-5 flex gap-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]">
-                                <div className="flex flex-col gap-2">
-                                  <div className="min-w-full h-5 flex items-center justify-between gap-5">
-                                    <div className="w-max flex items-center justify-center">
-                                      {Number(item.pricing.salePrice) ? (
-                                        <div className="flex items-center gap-[6px]">
-                                          <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                            <span className="text-[0.813rem] leading-3 font-semibold">
-                                              $
-                                            </span>
-                                            <span className="text-xl font-bold">
-                                              {Math.floor(
-                                                Number(item.pricing.salePrice)
-                                              )}
-                                            </span>
-                                            <span className="text-[0.813rem] leading-3 font-semibold">
-                                              {(
-                                                Number(item.pricing.salePrice) %
-                                                1
-                                              )
-                                                .toFixed(2)
-                                                .substring(1)}
-                                            </span>
-                                          </div>
-                                          <span className="text-[0.813rem] leading-3 text-gray line-through">
-                                            $
-                                            {formatThousands(
-                                              Number(item.pricing.basePrice)
-                                            )}
-                                          </span>
-                                        </div>
-                                      ) : (
+                              <div className="relative w-full p-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]">
+                                <div className="mb-5 min-w-full h-5 flex gap-5 items-center justify-between">
+                                  <div className="w-max flex items-center justify-center">
+                                    {Number(item.pricing.salePrice) ? (
+                                      <div className="flex items-center gap-[6px]">
                                         <div className="flex items-baseline text-[rgb(168,100,0)]">
                                           <span className="text-[0.813rem] leading-3 font-semibold">
                                             $
                                           </span>
-                                          <span className="text-lg font-bold">
+                                          <span className="text-xl font-bold">
                                             {Math.floor(
-                                              Number(item.pricing.basePrice)
+                                              Number(item.pricing.salePrice)
                                             )}
                                           </span>
                                           <span className="text-[0.813rem] leading-3 font-semibold">
                                             {(
-                                              Number(item.pricing.basePrice) % 1
+                                              Number(item.pricing.salePrice) % 1
                                             )
                                               .toFixed(2)
                                               .substring(1)}
                                           </span>
-                                          <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
-                                            today
-                                          </span>
                                         </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                  <div className="text-gray text-xs leading-5 max-w-[360px]">
-                                    {item.products.map((product, index) => (
-                                      <span key={product.id}>
-                                        {product.name}
-                                        {index < item.products.length - 1 && (
-                                          <span className="text-[rgb(206,206,206)] px-[6px]">
-                                            •
-                                          </span>
-                                        )}
-                                      </span>
-                                    ))}
-                                  </div>
-                                  <div className="mt-3 flex flex-wrap gap-2">
-                                    {item.products.map((product) => (
-                                      <div
-                                        key={product.id}
-                                        className="flex flex-col items-center"
-                                      >
-                                        <div className="min-w-32 max-w-32 h-32 rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
-                                          <Image
-                                            src={product.mainImage}
-                                            alt={product.name}
-                                            width={128}
-                                            height={128}
-                                            priority
-                                          />
-                                        </div>
-                                        <div className="text-xs font-medium mt-1">
-                                          <span>
-                                            {product.color && product.size
-                                              ? `${product.color} / ${product.size}`
-                                              : product.color
-                                              ? product.color
-                                              : product.size
-                                              ? product.size
-                                              : ""}
-                                          </span>
-                                        </div>
+                                        <span className="text-[0.813rem] leading-3 text-gray line-through">
+                                          $
+                                          {formatThousands(
+                                            Number(item.pricing.basePrice)
+                                          )}
+                                        </span>
                                       </div>
-                                    ))}
+                                    ) : (
+                                      <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                        <span className="text-[0.813rem] leading-3 font-semibold">
+                                          $
+                                        </span>
+                                        <span className="text-lg font-bold">
+                                          {Math.floor(
+                                            Number(item.pricing.basePrice)
+                                          )}
+                                        </span>
+                                        <span className="text-[0.813rem] leading-3 font-semibold">
+                                          {(Number(item.pricing.basePrice) % 1)
+                                            .toFixed(2)
+                                            .substring(1)}
+                                        </span>
+                                        <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                          today
+                                        </span>
+                                      </div>
+                                    )}
                                   </div>
+                                </div>
+                                <div className="flex flex-wrap gap-5">
+                                  {item.products.map((product) => (
+                                    <div
+                                      key={product.id}
+                                      className="last:mb-0 w-[146px]"
+                                    >
+                                      <div className="mb-2 w-full h-[146px] rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
+                                        <Image
+                                          src={product.mainImage}
+                                          alt={product.name}
+                                          width={146}
+                                          height={146}
+                                          priority
+                                        />
+                                      </div>
+                                      <div className="flex flex-col gap-[2px]">
+                                        <Link
+                                          href={`${product.slug}-${product.id}`}
+                                          target="_blank"
+                                          className="text-gray text-xs hover:underline w-max"
+                                        >
+                                          {product.name.length > 18
+                                            ? `${product.name.slice(0, 18)}...`
+                                            : product.name}
+                                        </Link>
+                                        <span className="text-xs font-medium">
+                                          {product.color && product.size
+                                            ? `${product.color} / ${product.size}`
+                                            : product.color
+                                            ? product.color
+                                            : product.size
+                                            ? product.size
+                                            : ""}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  ))}
                                 </div>
                                 <RemoveFromCartButton
                                   type="upsell"

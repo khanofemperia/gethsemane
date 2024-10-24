@@ -530,7 +530,7 @@ export default async function OrderDetails({
                                     <Link
                                       href={`${product.slug}-${product.id}`}
                                       target="_blank"
-                                      className="text-gray text-xs underline"
+                                      className="text-gray text-xs underline w-max"
                                     >
                                       {product.name.length > 18
                                         ? `${product.name.slice(0, 18)}...`

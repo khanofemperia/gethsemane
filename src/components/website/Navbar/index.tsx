@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import clsx from "clsx";
 import { CartIcon } from "@/icons";
 import { HiMiniChevronDown } from "react-icons/hi2";
+import Link from "next/link";
 
 export default function Navbar({
   itemsInCart,
@@ -19,22 +20,21 @@ export default function Navbar({
   const [isCategoriesDropdownVisible, setCategoriesDropdownVisible] =
     useState(false);
   const categoriesRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
-      if (typeof window !== "undefined") {
-        const currentScrollPosition = window.scrollY;
-        const scrollDifference = currentScrollPosition - prevScrollPosition;
+      const currentScrollPosition = window.scrollY;
+      const scrollDifference = currentScrollPosition - prevScrollPosition;
 
-        if (scrollDifference > 0) {
-          setIsScrollingUp(false);
-        } else if (scrollDifference < 0) {
-          setIsScrollingUp(true);
-        }
-
-        setPrevScrollPosition(currentScrollPosition);
-        setCategoriesDropdownVisible(false);
+      if (scrollDifference > 0) {
+        setIsScrollingUp(false);
+      } else if (scrollDifference < 0) {
+        setIsScrollingUp(true);
       }
+
+      setPrevScrollPosition(currentScrollPosition);
+      setCategoriesDropdownVisible(false);
     };
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -46,15 +46,13 @@ export default function Navbar({
       }
     };
 
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", handleScroll);
-      document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll);
+    document.addEventListener("mousedown", handleClickOutside);
 
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [prevScrollPosition]);
 
   useEffect(() => {
@@ -86,14 +84,17 @@ export default function Navbar({
     setCategoriesDropdownVisible(!isCategoriesDropdownVisible);
   };
 
+  const handleCategoryClick = (categoryName: string) => {
+    router.push(`/category/${categoryName.toLowerCase()}`);
+    setCategoriesDropdownVisible(false);
+  };
+
   return (
     <>
       <nav
         className={clsx(
           "w-full max-h-[116px] md:max-h-16 z-20 fixed top-0 border-b transition duration-100 ease-in-out bg-white",
-          {
-            "-translate-y-full": !isScrollingUp && prevScrollPosition >= 154,
-          }
+          !isScrollingUp && prevScrollPosition >= 154 && "-translate-y-full"
         )}
       >
         <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex justify-between gap-1 flex-col md:flex-row">
@@ -134,13 +135,13 @@ export default function Navbar({
                   {isCategoriesDropdownVisible && (
                     <div className="w-36 absolute top-[56px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-12 min-[840px]:before:right-24">
                       {categories.map((category, index) => (
-                        <Link
+                        <button
                           key={index}
-                          href={`/category/${category.name.toLowerCase()}`}
-                          className="block px-5 py-2 text-sm font-semibold transition duration-300 ease-in-out hover:bg-lightgray"
+                          onClick={() => handleCategoryClick(category.name)}
+                          className="block w-full text-left px-5 py-2 text-sm font-semibold transition duration-300 ease-in-out hover:bg-lightgray"
                         >
                           {category.name}
-                        </Link>
+                        </button>
                       ))}
                     </div>
                   )}
