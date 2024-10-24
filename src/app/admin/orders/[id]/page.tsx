@@ -378,7 +378,7 @@ export default async function OrderDetails({
               <div className="flex gap-5 text-sm">
                 <h3 className="min-w-[78px] max-w-[78px] text-gray">ID</h3>
                 <Link href={paypalUrl} target="_blank">
-                  <span className="w-full text-blue hover:underline">
+                  <span className="w-full text-gray text-xs underline">
                     {captureId}
                   </span>
                 </Link>
@@ -408,7 +408,7 @@ export default async function OrderDetails({
                             <Link
                               href={`${item.slug}-${item.baseProductId}`}
                               target="_blank"
-                              className="text-xs text-blue line-clamp-1"
+                              className="text-gray text-xs underline line-clamp-1"
                             >
                               {item.name}
                             </Link>
@@ -530,7 +530,7 @@ export default async function OrderDetails({
                                     <Link
                                       href={`${product.slug}-${product.id}`}
                                       target="_blank"
-                                      className="text-xs text-blue"
+                                      className="text-gray text-xs underline"
                                     >
                                       {product.name.length > 18
                                         ? `${product.name.slice(0, 18)}...`
