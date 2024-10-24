@@ -1,4 +1,3 @@
-import { CheckmarkIcon } from "@/icons";
 import config from "@/lib/config";
 import { database } from "@/lib/firebase";
 import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
@@ -404,7 +403,7 @@ export default async function OrderDetails({
             </div>
           </div>
         </div>
-        <div className="relative flex items-center justify-between shadow rounded-xl bg-white">
+        <div className="max-w-[618px] relative flex items-center justify-between shadow rounded-xl bg-white">
           <div className="p-5">
             <div className="mx-auto">
               <div className="flex flex-col gap-5">
