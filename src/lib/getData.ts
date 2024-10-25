@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -10,7 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
-import { capitalizeFirstLetter } from "./utils";
+import { capitalizeFirstLetter, generateId } from "./utils";
 import { revalidatePath } from "next/cache";
 
 type BaseOptionsType = {
@@ -905,20 +906,85 @@ export async function getPageHero(): Promise<PageHeroType> {
 }
 
 export async function getCategories(): Promise<CategoryType[] | null> {
-  const snapshot = await getDocs(collection(database, "categories"));
+  const defaultCategories: Omit<CategoryType, "id">[] = [
+    { index: 1, name: "Dresses", image: "dresses.png", visibility: "VISIBLE" },
+    { index: 2, name: "Tops", image: "tops.png", visibility: "VISIBLE" },
+    { index: 3, name: "Bottoms", image: "bottoms.png", visibility: "VISIBLE" },
+    {
+      index: 4,
+      name: "Outerwear",
+      image: "outerwear.png",
+      visibility: "VISIBLE",
+    },
+    { index: 5, name: "Shoes", image: "shoes.png", visibility: "VISIBLE" },
+    {
+      index: 6,
+      name: "Accessories",
+      image: "accessories.png",
+      visibility: "VISIBLE",
+    },
+    { index: 7, name: "Men", image: "men.png", visibility: "VISIBLE" },
+  ];
 
-  if (snapshot.empty) {
-    return null;
+  const snapshot = await getDocs(collection(database, "categories"));
+  const existingCategoriesMap = new Map<string, CategoryType>();
+
+  // Load existing categories into a Map to track unique categories by name.
+  snapshot.docs.forEach((doc) => {
+    const data = doc.data() as Omit<CategoryType, "id">;
+    const category = { id: doc.id, ...data };
+    if (!existingCategoriesMap.has(category.name)) {
+      existingCategoriesMap.set(category.name, category);
+    } else {
+      // If a duplicate is found, delete it immediately
+      deleteDoc(doc.ref);
+    }
+  });
+
+  // Prepare categories that need adding or updating
+  const categoriesToAddOrUpdate: CategoryType[] = [];
+  for (const defaultCategory of defaultCategories) {
+    const existingCategory = existingCategoriesMap.get(defaultCategory.name);
+
+    if (!existingCategory) {
+      // If the category does not exist, create a new one
+      const newCategoryId = generateId();
+      categoriesToAddOrUpdate.push({ ...defaultCategory, id: newCategoryId });
+    } else {
+      // If it exists but differs in `index` or `image`, update it
+      const requiresUpdate =
+        existingCategory.index !== defaultCategory.index ||
+        existingCategory.image !== defaultCategory.image;
+
+      if (requiresUpdate) {
+        categoriesToAddOrUpdate.push({
+          ...existingCategory,
+          index: defaultCategory.index,
+          image: defaultCategory.image,
+        });
+      }
+    }
   }
 
-  const categories: CategoryType[] = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...(doc.data() as Omit<CategoryType, "id">),
-  }));
+  // Create or update categories in Firestore
+  await Promise.all(
+    categoriesToAddOrUpdate.map((category) =>
+      setDoc(doc(database, "categories", category.id), {
+        index: category.index,
+        name: category.name,
+        image: category.image,
+        visibility: category.visibility,
+      })
+    )
+  );
 
-  categories.sort((a, b) => a.index - b.index);
+  // Fetch and return the updated category list
+  const finalSnapshot = await getDocs(collection(database, "categories"));
+  const finalCategories = finalSnapshot.docs
+    .map((doc) => ({ id: doc.id, ...(doc.data() as Omit<CategoryType, "id">) }))
+    .sort((a, b) => a.index - b.index);
 
-  return categories;
+  return finalCategories.length ? finalCategories : null;
 }
 
 export async function getSettings(): Promise<SettingsType | null> {

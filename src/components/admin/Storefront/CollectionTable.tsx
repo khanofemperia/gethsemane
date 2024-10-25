@@ -27,10 +27,17 @@ export default function CollectionTable({
   const [isPageInRange, setIsPageInRange] = useState(true);
 
   const pagination = (
-    data: CollectionType[],
+    data: CollectionType[] | null,
     currentPage: number,
     rowsPerPage: number
   ) => {
+    if (!data || data.length === 0) {
+      return {
+        paginatedArray: [],
+        totalPages: 0,
+      };
+    }
+
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     const paginatedArray = data.slice(startIndex, endIndex);

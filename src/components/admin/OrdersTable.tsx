@@ -16,10 +16,17 @@ export default function OrdersTable({
   const [isPageInRange, setIsPageInRange] = useState(true);
 
   const pagination = (
-    data: OrderType[],
+    data: OrderType[] | null,
     currentPage: number,
     rowsPerPage: number
   ) => {
+    if (!data || data.length === 0) {
+      return {
+        paginatedArray: [],
+        totalPages: 0,
+      };
+    }
+
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     const paginatedArray = data.slice(startIndex, endIndex);

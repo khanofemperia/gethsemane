@@ -84,7 +84,7 @@ type CategoryType = {
   index: number;
   name: string;
   image: string;
-  visibility: VisibilityType;
+  visibility: "VISIBLE" | "HIDDEN";
 };
 
 /***************************************************************/
@@ -323,7 +323,7 @@ type CartType = {
   items: Array<CartProductItemType | CartUpsellItemType>;
 };
 
-// 
+//
 type OrderType = {
   id: string;
   status: string;
