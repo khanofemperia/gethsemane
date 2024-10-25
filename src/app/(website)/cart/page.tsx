@@ -316,7 +316,7 @@ export default async function Cart() {
                     </div>
                   </div>
                 </div>
-                <div className="min-w-[340px] max-w-[340px] sticky top-16 h-max flex flex-col gap-4">
+                <div className="select-none min-w-[340px] max-w-[340px] sticky top-16 h-max flex flex-col gap-4">
                   <div className="flex flex-col gap-2">
                     <div className="flex gap-[6px] items-center">
                       <TbLock className="stroke-green -ml-[1px]" size={20} />
@@ -359,6 +359,7 @@ export default async function Cart() {
                         width={34}
                         height={34}
                         priority={true}
+                        draggable={false}
                       />
                     </div>
                     <div className="ml-[10px] h-[18px] w-[36px] rounded-[3px] flex items-center justify-center">
@@ -369,6 +370,7 @@ export default async function Cart() {
                         width={38}
                         height={38}
                         priority={true}
+                        draggable={false}
                       />
                     </div>
                     <div className="ml-[5px] h-[20px] overflow-hidden rounded-[3px] flex items-center justify-center">
@@ -378,6 +380,7 @@ export default async function Cart() {
                         width={60}
                         height={20}
                         priority={true}
+                        draggable={false}
                       />
                     </div>
                     <div className="ml-[10px] h-[20px] rounded-[3px] flex items-center justify-center">
@@ -387,6 +390,7 @@ export default async function Cart() {
                         width={64}
                         height={14}
                         priority={true}
+                        draggable={false}
                       />
                     </div>
                     <div className="ml-[10px] h-[20px] rounded-[3px] flex items-center justify-center">
@@ -396,6 +400,7 @@ export default async function Cart() {
                         width={68}
                         height={10}
                         priority={true}
+                        draggable={false}
                       />
                     </div>
                   </div>

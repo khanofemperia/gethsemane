@@ -112,31 +112,33 @@ export function QuickviewOverlay() {
                     <p className="line-clamp-2 text-sm text-gray">
                       {selectedProduct.name}
                     </p>
-                    <div className="flex flex-col gap-4">
-                      <div
-                        className="text-lg leading-[26px] [&>:last-child]:mb-0"
-                        dangerouslySetInnerHTML={{
-                          __html: selectedProduct.highlights.headline || "",
-                        }}
-                      />
-                      <ul className="text-sm list-inside *:leading-[22px]">
-                        {selectedProduct.highlights.keyPoints
-                          .slice()
-                          .sort((a, b) => a.index - b.index)
-                          .map((point) => (
-                            <li
-                              key={point.index}
-                              className="flex items-start gap-2 mb-[7px] last:mb-0"
-                            >
-                              <CheckmarkIcon
-                                className="fill-green mt-[1px] -ml-[1px]"
-                                size={19}
-                              />
-                              <span>{point.text}</span>
-                            </li>
-                          ))}
-                      </ul>
-                    </div>
+                    {selectedProduct.highlights.headline && (
+                      <div className="flex flex-col gap-4">
+                        <div
+                          className="text-lg leading-[26px] [&>:last-child]:mb-0"
+                          dangerouslySetInnerHTML={{
+                            __html: selectedProduct.highlights.headline || "",
+                          }}
+                        />
+                        <ul className="text-sm list-inside *:leading-[22px]">
+                          {selectedProduct.highlights.keyPoints
+                            .slice()
+                            .sort((a, b) => a.index - b.index)
+                            .map((point) => (
+                              <li
+                                key={point.index}
+                                className="flex items-start gap-2 mb-[7px] last:mb-0"
+                              >
+                                <CheckmarkIcon
+                                  className="fill-green mt-[1px] -ml-[1px]"
+                                  size={19}
+                                />
+                                <span>{point.text}</span>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    )}
                     <div className="flex flex-col gap-5">
                       <div className="w-max flex items-center justify-center">
                         {Number(selectedProduct.pricing.salePrice) ? (
@@ -187,17 +189,19 @@ export function QuickviewOverlay() {
                           </div>
                         )}
                       </div>
-                      <Options
-                        productInfo={{
-                          id: selectedProduct.id,
-                          name: selectedProduct.name,
-                          pricing: selectedProduct.pricing,
-                          images: selectedProduct.images,
-                          options: selectedProduct.options,
-                        }}
-                        isStickyBarInCartIndicator={false}
-                        deviceIdentifier={deviceIdentifier}
-                      />
+                      {(hasSize || hasColor) && (
+                        <Options
+                          productInfo={{
+                            id: selectedProduct.id,
+                            name: selectedProduct.name,
+                            pricing: selectedProduct.pricing,
+                            images: selectedProduct.images,
+                            options: selectedProduct.options,
+                          }}
+                          isStickyBarInCartIndicator={false}
+                          deviceIdentifier={deviceIdentifier}
+                        />
+                      )}
                     </div>
                   </div>
                   {selectedProduct.upsell &&

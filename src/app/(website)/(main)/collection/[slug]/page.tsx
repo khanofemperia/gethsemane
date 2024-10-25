@@ -5,10 +5,6 @@ import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { getCart, getCollectionWithProductsAndUpsells } from "@/lib/getData";
 import { cookies } from "next/headers";
 
-type CollectionWithProductsAndUpsellsType = Omit<CollectionType, "products"> & {
-  products: ProductWithUpsellType[];
-};
-
 export default async function Collections({
   params,
 }: {
@@ -18,25 +14,29 @@ export default async function Collections({
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);
 
-  const collection = (await getCollectionWithProductsAndUpsells({
+  const collection = await getCollectionWithProductsAndUpsells({
     id: params.slug.split("-").pop() as string,
-  })) as CollectionWithProductsAndUpsellsType;
-
-  const { products } = collection;
+  });
 
   return (
     <>
       <div className="max-w-[968px] mx-auto pt-10">
-        <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
-          {products.map((product, index) => (
-            <ProductCard
-              key={index}
-              product={product}
-              cart={cart}
-              deviceIdentifier={deviceIdentifier}
-            />
-          ))}
-        </div>
+        {collection && Array.isArray(collection.products) && (
+          <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
+            {collection.products
+              .filter(
+                (product): product is ProductWithUpsellType => product !== null
+              )
+              .map((product, index) => (
+                <ProductCard
+                  key={index}
+                  product={product}
+                  cart={cart}
+                  deviceIdentifier={deviceIdentifier}
+                />
+              ))}
+          </div>
+        )}
       </div>
       <QuickviewOverlay />
       <UpsellReviewOverlay cart={cart} />

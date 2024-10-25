@@ -14,23 +14,29 @@ export default async function Categories({
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);
 
-  const products = (await getProductsByCategoryWithUpsell({
+  const products = await getProductsByCategoryWithUpsell({
     category: params.name,
-  })) as ProductWithUpsellType[];
+  });
 
   return (
     <>
       <div className="max-w-[968px] mx-auto pt-10">
-        <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
-          {products.map((product, index) => (
-            <ProductCard
-              key={index}
-              product={product}
-              cart={cart}
-              deviceIdentifier={deviceIdentifier}
-            />
-          ))}
-        </div>
+        {products && Array.isArray(products) && (
+          <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
+            {products
+              .filter(
+                (product): product is ProductWithUpsellType => product !== null
+              )
+              .map((product, index) => (
+                <ProductCard
+                  key={index}
+                  product={product}
+                  cart={cart}
+                  deviceIdentifier={deviceIdentifier}
+                />
+              ))}
+          </div>
+        )}
       </div>
       <QuickviewOverlay />
       <UpsellReviewOverlay cart={cart} />
