@@ -339,7 +339,7 @@ export default function CollectionTable({
                           <td className="px-3 w-full min-w-full">
                             <div className="flex items-center justify-center">
                               <Link
-                                href={`/admin/shop/collections/${slug}-${id}`}
+                                href={`/admin/collections/${slug}-${id}`}
                                 className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray lg:hover:bg-lightgray"
                               >
                                 <EditIcon size={20} />

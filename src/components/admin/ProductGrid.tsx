@@ -192,7 +192,7 @@ export default function ProductGrid({ products }: { products: ProductType[] }) {
               {gridData.map(({ id, name, pricing, images, slug }, index) => (
                 <Link
                   key={index}
-                  href={`/admin/shop/products/${slug}-${id}`}
+                  href={`/admin/products/${slug}-${id}`}
                   className="group aspect-square w-[calc(50%-10px)] min-[560px]:w-[calc(33.33%-14px)] lg:w-[calc(25%-15px)] select-none"
                 >
                   <div className="relative">

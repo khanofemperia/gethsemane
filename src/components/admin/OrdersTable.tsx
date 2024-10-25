@@ -138,7 +138,7 @@ export default function OrdersTable({
                         <tr key={id} className="h-[98px]">
                           <td className="pl-5 pr-3 w-[160px] min-w-[160px]">
                             <Link
-                              href={`/admin/shop/orders/${id}`}
+                              href={`/admin/orders/${id}`}
                               className="w-max line-clamp-1 font-medium text-blue hover:underline"
                             >
                               {payer.name.firstName} {payer.name.lastName}

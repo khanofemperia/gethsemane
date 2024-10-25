@@ -494,7 +494,7 @@ export function ProductListOverlay({
                                       <td className="px-3 max-w-[150px] min-w-[150px]">
                                         <div className="flex items-center justify-center">
                                           <Link
-                                            href={`/admin/shop/products/${slug}-${id}`}
+                                            href={`/admin/products/${slug}-${id}`}
                                             className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray lg:hover:bg-lightgray"
                                           >
                                             <EditIcon size={20} />

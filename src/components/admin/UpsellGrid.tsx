@@ -191,7 +191,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
               {gridData.map(({ id, pricing, mainImage }, index) => (
                 <Link
                   key={index}
-                  href={`/admin/shop/upsells/${id}`}
+                  href={`/admin/upsells/${id}`}
                   className="group aspect-square w-[calc(50%-10px)] min-[560px]:w-[calc(33.33%-14px)] lg:w-[calc(25%-15px)] select-none"
                 >
                   <div className="relative">
