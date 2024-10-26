@@ -58,7 +58,7 @@ export function NewCollectionMenuButton({ closeMenu }: NewCollectionMenuButtonTy
   return (
     <button
       type="button"
-      className="h-9 w-[calc(100%-10px)] mx-auto px-4 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+      className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
       onClick={openOverlay}
     >
       New collection
