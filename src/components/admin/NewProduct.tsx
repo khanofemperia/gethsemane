@@ -14,7 +14,11 @@ import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { getCategories } from "@/lib/getData";
 
-export function NewProductMenuButton() {
+interface NewProductMenuButtonType {
+  closeMenu: () => void;
+}
+
+export function NewProductMenuButton({ closeMenu }: NewProductMenuButtonType) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
   const pageName = useOverlayStore((state) => state.pages.products.name);
@@ -25,12 +29,13 @@ export function NewProductMenuButton() {
   const openOverlay = () => {
     setNavbarMenu(false);
     showOverlay({ pageName, overlayName });
+    closeMenu();
   };
 
   return (
     <button
       type="button"
-      className="h-9 w-[calc(100%-10px)] mx-auto px-4 rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+      className="h-9 w-[calc(100%-10px)] mx-auto px-4 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
       onClick={openOverlay}
     >
       New product

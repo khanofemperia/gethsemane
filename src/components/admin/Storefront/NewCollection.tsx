@@ -37,7 +37,11 @@ type RequestDataType = {
   bannerImages?: BannerImagesType;
 };
 
-export function NewCollectionMenuButton() {
+interface NewCollectionMenuButtonType {
+  closeMenu: () => void;
+}
+
+export function NewCollectionMenuButton({ closeMenu }: NewCollectionMenuButtonType) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
   const pageName = useOverlayStore((state) => state.pages.storefront.name);
@@ -48,12 +52,13 @@ export function NewCollectionMenuButton() {
   const openOverlay = () => {
     setNavbarMenu(false);
     showOverlay({ pageName, overlayName });
+    closeMenu();
   };
 
   return (
     <button
       type="button"
-      className="h-9 w-[calc(100%-10px)] mx-auto px-4 rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+      className="h-9 w-[calc(100%-10px)] mx-auto px-4 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
       onClick={openOverlay}
     >
       New collection
