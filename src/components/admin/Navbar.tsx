@@ -108,12 +108,16 @@ export default function Navbar() {
               <HamburgerMenuIcon size={24} />
             </button>
             {isMenuDropdownVisible && (
-              <div className="w-36 absolute top-[52px] right-0 z-20 py-2 rounded-md shadow-dropdown bg-white">
+              <div className="w-[148px] absolute top-[52px] right-0 z-20 py-[5px] rounded-md shadow-dropdown bg-white">
                 {isProductsPage && (
-                  <NewProductMenuButton closeMenu={() => setMenuDropdownVisible(false)} />
+                  <NewProductMenuButton
+                    closeMenu={() => setMenuDropdownVisible(false)}
+                  />
                 )}
                 {isUpsellsPage && (
-                  <NewUpsellMenuButton closeMenu={() => setMenuDropdownVisible(false)} />
+                  <NewUpsellMenuButton
+                    closeMenu={() => setMenuDropdownVisible(false)}
+                  />
                 )}
                 {isProductEditingPage && (
                   <button
@@ -121,13 +125,15 @@ export default function Navbar() {
                       handleNavigation(`/${productSlug}`);
                       setMenuDropdownVisible(false);
                     }}
-                    className="h-9 w-[calc(100%-10px)] mx-auto px-4 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray"
+                    className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray"
                   >
                     Visit product
                   </button>
                 )}
                 {isCollectionsPage && (
-                  <NewCollectionMenuButton closeMenu={() => setMenuDropdownVisible(false)} />
+                  <NewCollectionMenuButton
+                    closeMenu={() => setMenuDropdownVisible(false)}
+                  />
                 )}
                 {showSeparator && (
                   <div className="h-[1px] my-[5px] bg-[#e5e7eb]"></div>
@@ -137,7 +143,7 @@ export default function Navbar() {
                     handleNavigation("#");
                     setMenuDropdownVisible(false);
                   }}
-                  className="block w-full px-5 py-2 text-sm font-semibold transition duration-300 ease-in-out hover:bg-lightgray text-left"
+                  className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
                   Public website
                 </button>
@@ -146,7 +152,7 @@ export default function Navbar() {
                     handleNavigation("#");
                     setMenuDropdownVisible(false);
                   }}
-                  className="block w-full px-5 py-2 text-sm font-semibold transition duration-300 ease-in-out hover:bg-lightgray text-left"
+                  className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
                   Sign out
                 </button>
