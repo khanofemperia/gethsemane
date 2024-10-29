@@ -92,9 +92,9 @@ export function StickyBar({
   const [isPending, startTransition] = useTransition();
   const [isInCart, setIsInCart] = useState<boolean>(false);
 
-  const selectedColor = useOptionsStore(state => state.selectedColor);
-  const selectedSize = useOptionsStore(state => state.selectedSize);
-  const showAlert = useAlertStore(state => state.showAlert);
+  const selectedColor = useOptionsStore((state) => state.selectedColor);
+  const selectedSize = useOptionsStore((state) => state.selectedSize);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const { pricing, upsell, images, name } = productInfo;
 
@@ -232,122 +232,127 @@ export function StickyBar({
               {isPending ? <Spinner size={28} color="gray" /> : "Add to cart"}
             </button>
           )}
-          <div className="w-full h-[44px] min-[840px]:h-12 relative rounded-full flex justify-end">
-            <div className="peer w-full">
-              <UpsellReviewButton
-                product={{
-                  id: productInfo.id,
-                  upsell: productInfo.upsell,
-                }}
-              />
-            </div>
-            {!barIsHidden && (
-              <div
-                className={clsx(
-                  "peer-hover:block hidden py-[18px] px-6 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:right-20 min-[840px]:before:right-24 absolute top-[58px]",
-                  !isInCart ? "-right-2" : "left-1/2 -translate-x-1/2"
-                )}
-              >
-                {upsell && upsell.products.length > 0 && (
-                  <div className="w-max rounded-md pb-[10px] bg-white">
-                    <div className="w-full">
-                      <div>
-                        <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
-                          UPGRADE MY ORDER
-                        </h2>
-                        <div className="mt-1 w-max mx-auto flex items-center justify-center">
-                          {Number(upsell.pricing.salePrice) ? (
-                            <div className="flex items-center gap-[6px]">
+          {productInfo.upsell && (
+            <div className="w-full h-[44px] min-[840px]:h-12 relative rounded-full flex justify-end">
+              <div className="peer w-full">
+                <UpsellReviewButton
+                  product={{
+                    id: productInfo.id,
+                    upsell: productInfo.upsell,
+                  }}
+                />
+              </div>
+              {!barIsHidden && (
+                <div
+                  className={clsx(
+                    "peer-hover:block hidden py-[18px] px-6 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:right-20 min-[840px]:before:right-24 absolute top-[58px]",
+                    !isInCart ? "-right-2" : "left-1/2 -translate-x-1/2"
+                  )}
+                >
+                  {upsell && upsell.products.length > 0 && (
+                    <div className="w-max rounded-md pb-[10px] bg-white">
+                      <div className="w-full">
+                        <div>
+                          <h2 className="font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                            UPGRADE MY ORDER
+                          </h2>
+                          <div className="mt-1 w-max mx-auto flex items-center justify-center">
+                            {Number(upsell.pricing.salePrice) ? (
+                              <div className="flex items-center gap-[6px]">
+                                <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                  <span className="text-[0.813rem] leading-3 font-semibold">
+                                    $
+                                  </span>
+                                  <span className="text-lg font-bold">
+                                    {Math.floor(
+                                      Number(upsell.pricing.salePrice)
+                                    )}
+                                  </span>
+                                  <span className="text-[0.813rem] leading-3 font-semibold">
+                                    {(Number(upsell.pricing.salePrice) % 1)
+                                      .toFixed(2)
+                                      .substring(1)}
+                                  </span>
+                                </div>
+                                <span className="text-[0.813rem] leading-3 text-gray line-through">
+                                  $
+                                  {formatThousands(
+                                    Number(upsell.pricing.basePrice)
+                                  )}
+                                </span>
+                              </div>
+                            ) : (
                               <div className="flex items-baseline text-[rgb(168,100,0)]">
                                 <span className="text-[0.813rem] leading-3 font-semibold">
                                   $
                                 </span>
                                 <span className="text-lg font-bold">
-                                  {Math.floor(Number(upsell.pricing.salePrice))}
+                                  {Math.floor(Number(upsell.pricing.basePrice))}
                                 </span>
                                 <span className="text-[0.813rem] leading-3 font-semibold">
-                                  {(Number(upsell.pricing.salePrice) % 1)
+                                  {(Number(upsell.pricing.basePrice) % 1)
                                     .toFixed(2)
                                     .substring(1)}
                                 </span>
-                              </div>
-                              <span className="text-[0.813rem] leading-3 text-gray line-through">
-                                $
-                                {formatThousands(
-                                  Number(upsell.pricing.basePrice)
-                                )}
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="flex items-baseline text-[rgb(168,100,0)]">
-                              <span className="text-[0.813rem] leading-3 font-semibold">
-                                $
-                              </span>
-                              <span className="text-lg font-bold">
-                                {Math.floor(Number(upsell.pricing.basePrice))}
-                              </span>
-                              <span className="text-[0.813rem] leading-3 font-semibold">
-                                {(Number(upsell.pricing.basePrice) % 1)
-                                  .toFixed(2)
-                                  .substring(1)}
-                              </span>
-                              <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
-                                today
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
-                        <Image
-                          src={upsell.mainImage}
-                          alt="Upgrade order"
-                          width={240}
-                          height={240}
-                          priority
-                        />
-                      </div>
-                      <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
-                        <ul className="*:flex *:justify-between">
-                          {upsell.products.map((product) => (
-                            <li key={product.id}>
-                              <p className="text-gray">{product.name}</p>
-                              <p>
-                                <span
-                                  className={`${
-                                    upsell.pricing.salePrice > 0 &&
-                                    upsell.pricing.salePrice <
-                                      upsell.pricing.basePrice
-                                      ? "line-through text-gray"
-                                      : "text-gray"
-                                  }`}
-                                >
-                                  ${formatThousands(Number(product.basePrice))}
+                                <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                  today
                                 </span>
-                              </p>
-                            </li>
-                          ))}
-                          {upsell.pricing.salePrice > 0 &&
-                            upsell.pricing.salePrice <
-                              upsell.pricing.basePrice && (
-                              <li className="mt-2 flex items-center rounded font-semibold">
-                                <p className="mx-auto">
-                                  You Save $
-                                  {formatThousands(
-                                    Number(upsell.pricing.basePrice) -
-                                      Number(upsell.pricing.salePrice)
-                                  )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
+                          <Image
+                            src={upsell.mainImage}
+                            alt="Upgrade order"
+                            width={240}
+                            height={240}
+                            priority
+                          />
+                        </div>
+                        <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
+                          <ul className="*:flex *:justify-between">
+                            {upsell.products.map((product) => (
+                              <li key={product.id}>
+                                <p className="text-gray">{product.name}</p>
+                                <p>
+                                  <span
+                                    className={`${
+                                      upsell.pricing.salePrice > 0 &&
+                                      upsell.pricing.salePrice <
+                                        upsell.pricing.basePrice
+                                        ? "line-through text-gray"
+                                        : "text-gray"
+                                    }`}
+                                  >
+                                    $
+                                    {formatThousands(Number(product.basePrice))}
+                                  </span>
                                 </p>
                               </li>
-                            )}
-                        </ul>
+                            ))}
+                            {upsell.pricing.salePrice > 0 &&
+                              upsell.pricing.salePrice <
+                                upsell.pricing.basePrice && (
+                                <li className="mt-2 flex items-center rounded font-semibold">
+                                  <p className="mx-auto">
+                                    You Save $
+                                    {formatThousands(
+                                      Number(upsell.pricing.basePrice) -
+                                        Number(upsell.pricing.salePrice)
+                                    )}
+                                  </p>
+                                </li>
+                              )}
+                          </ul>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

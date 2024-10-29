@@ -101,7 +101,7 @@ export default function Navbar({
           <div className="flex items-center gap-5">
             <Link
               href="/"
-              className="h-12 min-w-[168px] w-[168px] pl-2 flex items-center"
+              className="h-10 min-w-[168px] w-[168px] pl-2 flex items-center"
             >
               <Image
                 src="/images/logos/cherlygood_wordmark.svg"
@@ -111,10 +111,10 @@ export default function Navbar({
                 priority
               />
             </Link>
-            <div className="flex gap-3 h-12">
+            <div className="flex gap-3 h-10">
               <Link
                 href="/new-arrivals"
-                className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
+                className="hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
               >
                 New Arrivals
               </Link>
@@ -122,7 +122,10 @@ export default function Navbar({
                 <div className="relative" ref={categoriesRef}>
                   <button
                     onClick={toggleCategoriesDropdown}
-                    className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
+                    className={clsx(
+                      "hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out",
+                      isCategoriesDropdownVisible && "bg-lightgray"
+                    )}
                   >
                     <span>Categories</span>
                     <HiMiniChevronDown
@@ -133,7 +136,7 @@ export default function Navbar({
                     />
                   </button>
                   {isCategoriesDropdownVisible && (
-                    <div className="w-36 absolute top-[56px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-12 min-[840px]:before:right-24">
+                    <div className="w-36 absolute top-[48px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-10 min-[840px]:before:right-24">
                       {categories.map((category, index) => (
                         <button
                           key={index}
@@ -149,16 +152,16 @@ export default function Navbar({
               )}
               <Link
                 href="#"
-                className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
+                className="hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
               >
                 Track Order
               </Link>
             </div>
           </div>
-          <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-12 flex items-center justify-end">
+          <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-10 flex items-center justify-end">
             <Link
               href="/cart"
-              className="relative h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
+              className="relative h-11 w-11 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
             >
               <CartIcon size={26} />
               {itemsInCart > 0 && (

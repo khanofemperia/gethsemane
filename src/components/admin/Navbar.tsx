@@ -7,6 +7,7 @@ import { NewProductMenuButton } from "./NewProduct";
 import { usePathname, useRouter } from "next/navigation";
 import { NewUpsellMenuButton } from "./NewUpsell";
 import { NewCollectionMenuButton } from "./Storefront/NewCollection";
+import Link from "next/link";
 
 export default function Navbar() {
   const [isMenuDropdownVisible, setMenuDropdownVisible] = useState(false);
@@ -41,8 +42,9 @@ export default function Navbar() {
   };
 
   const isProductsPage = pathname === "/admin/products";
-  const isProductEditingPage =
-    /^\/admin\/products\/[a-z0-9-]+-\d{5}$/.test(pathname);
+  const isProductEditingPage = /^\/admin\/products\/[a-z0-9-]+-\d{5}$/.test(
+    pathname
+  );
   const isUpsellsPage = pathname === "/admin/upsells";
   const isCollectionsPage = pathname === "/admin";
 
@@ -60,8 +62,8 @@ export default function Navbar() {
     <nav className="w-full max-h-[116px] md:max-h-16 fixed top-0 z-10 shadow-[0px_1px_2px_#DDDDDD] bg-lightgray">
       <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex justify-between gap-1 flex-col md:flex-row">
         <div className="flex items-center gap-5">
-          <button
-            onClick={() => handleNavigation("/")}
+          <Link
+            href="/"
             className="h-12 min-w-[168px] w-[168px] pl-2 flex items-center"
           >
             <Image
@@ -71,39 +73,27 @@ export default function Navbar() {
               height={40}
               priority
             />
-          </button>
+          </Link>
           <div className="flex gap-3 h-9 *:text-sm *:font-semibold *:h-full *:px-2 *:rounded-full *:flex *:items-center *:justify-center *:transition *:duration-300 *:ease-in-out">
-            <button
-              onClick={() => handleNavigation("#")}
-              className="hover:bg-lightgray-dimmed"
-            >
+            <Link href="admin/storefront" className="hover:bg-lightgray-dimmed">
               Storefront
-            </button>
-            <button
-              onClick={() => handleNavigation("#")}
-              className="hover:bg-lightgray-dimmed"
-            >
+            </Link>
+            <Link href="/admin/products" className="hover:bg-lightgray-dimmed">
               Products
-            </button>
-            <button
-              onClick={() => handleNavigation("#")}
-              className="hover:bg-lightgray-dimmed"
-            >
+            </Link>
+            <Link href="/admin/upsells" className="hover:bg-lightgray-dimmed">
               Upsells
-            </button>
-            <button
-              onClick={() => handleNavigation("#")}
-              className="hover:bg-lightgray-dimmed"
-            >
+            </Link>
+            <Link href="/admin/orders" className="hover:bg-lightgray-dimmed">
               Orders
-            </button>
+            </Link>
           </div>
         </div>
         <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-12 flex items-center justify-end">
           <div className="relative" ref={menuRef}>
             <button
               onClick={toggleMenuDropdown}
-              className="h-12 w-12 rounded-full flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray-dimmed"
+              className="h-11 w-11 rounded-full flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray-dimmed"
             >
               <HamburgerMenuIcon size={24} />
             </button>
@@ -125,7 +115,7 @@ export default function Navbar() {
                       handleNavigation(`/${productSlug}`);
                       setMenuDropdownVisible(false);
                     }}
-                    className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray"
+                    className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray hover:bg-lightgray"
                   >
                     Visit product
                   </button>
@@ -140,7 +130,7 @@ export default function Navbar() {
                 )}
                 <button
                   onClick={() => {
-                    handleNavigation("#");
+                    handleNavigation("/");
                     setMenuDropdownVisible(false);
                   }}
                   className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
@@ -164,4 +154,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

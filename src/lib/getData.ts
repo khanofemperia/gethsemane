@@ -905,86 +905,141 @@ export async function getPageHero(): Promise<PageHeroType> {
   return { id: snapshot.id, ...(snapshot.data() as Omit<PageHeroType, "id">) };
 }
 
-export async function getCategories(): Promise<CategoryType[] | null> {
-  const defaultCategories: Omit<CategoryType, "id">[] = [
-    { index: 1, name: "Dresses", image: "dresses.png", visibility: "VISIBLE" },
-    { index: 2, name: "Tops", image: "tops.png", visibility: "VISIBLE" },
-    { index: 3, name: "Bottoms", image: "bottoms.png", visibility: "VISIBLE" },
-    {
-      index: 4,
-      name: "Outerwear",
-      image: "outerwear.png",
-      visibility: "VISIBLE",
-    },
-    { index: 5, name: "Shoes", image: "shoes.png", visibility: "VISIBLE" },
-    {
-      index: 6,
-      name: "Accessories",
-      image: "accessories.png",
-      visibility: "VISIBLE",
-    },
-    { index: 7, name: "Men", image: "men.png", visibility: "VISIBLE" },
-  ];
+type VisibilityFilterType = {
+  visibility?: "VISIBLE" | "HIDDEN";
+};
 
-  const snapshot = await getDocs(collection(database, "categories"));
-  const existingCategoriesMap = new Map<string, CategoryType>();
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
 
-  // Load existing categories into a Map to track unique categories by name.
-  snapshot.docs.forEach((doc) => {
-    const data = doc.data() as Omit<CategoryType, "id">;
-    const category = { id: doc.id, ...data };
-    if (!existingCategoriesMap.has(category.name)) {
-      existingCategoriesMap.set(category.name, category);
-    } else {
-      // If a duplicate is found, delete it immediately
-      deleteDoc(doc.ref);
-    }
-  });
+type StoreCategoriesType = {
+  showOnPublicSite: boolean;
+  categories: CategoryType[];
+};
 
-  // Prepare categories that need adding or updating
-  const categoriesToAddOrUpdate: CategoryType[] = [];
-  for (const defaultCategory of defaultCategories) {
-    const existingCategory = existingCategoriesMap.get(defaultCategory.name);
+const defaultCategories: CategoryType[] = [
+  {
+    index: 0,
+    name: "Dresses",
+    image: "dresses.png",
+    visibility: "HIDDEN",
+  },
+  { index: 1, name: "Tops", image: "tops.png", visibility: "HIDDEN" },
+  {
+    index: 2,
+    name: "Bottoms",
+    image: "bottoms.png",
+    visibility: "HIDDEN",
+  },
+  {
+    index: 3,
+    name: "Outerwear",
+    image: "outerwear.png",
+    visibility: "HIDDEN",
+  },
+  {
+    index: 4,
+    name: "Shoes",
+    image: "shoes.png",
+    visibility: "HIDDEN",
+  },
+  {
+    index: 5,
+    name: "Accessories",
+    image: "accessories.png",
+    visibility: "HIDDEN",
+  },
+  { index: 6, name: "Men", image: "men.png", visibility: "HIDDEN" },
+];
 
-    if (!existingCategory) {
-      // If the category does not exist, create a new one
-      const newCategoryId = generateId();
-      categoriesToAddOrUpdate.push({ ...defaultCategory, id: newCategoryId });
-    } else {
-      // If it exists but differs in `index` or `image`, update it
-      const requiresUpdate =
-        existingCategory.index !== defaultCategory.index ||
-        existingCategory.image !== defaultCategory.image;
+export async function getCategories(
+  filter?: VisibilityFilterType
+): Promise<StoreCategoriesType | null> {
+  const categoriesRef = doc(database, "categories", "storeCategories");
+  const categoriesDoc = await getDoc(categoriesRef);
 
-      if (requiresUpdate) {
-        categoriesToAddOrUpdate.push({
-          ...existingCategory,
-          index: defaultCategory.index,
-          image: defaultCategory.image,
-        });
-      }
-    }
+  if (!categoriesDoc.exists()) {
+    // If document doesn't exist, create it with default categories
+    const newCategoriesDoc: StoreCategoriesType = {
+      showOnPublicSite: false,
+      categories: defaultCategories,
+    };
+
+    await setDoc(categoriesRef, newCategoriesDoc);
+
+    // Return filtered or all categories with proper structure
+    return {
+      showOnPublicSite: false,
+      categories: filter?.visibility
+        ? defaultCategories.filter(
+            (category) => category.visibility === filter.visibility
+          )
+        : defaultCategories,
+    };
   }
 
-  // Create or update categories in Firestore
-  await Promise.all(
-    categoriesToAddOrUpdate.map((category) =>
-      setDoc(doc(database, "categories", category.id), {
-        index: category.index,
-        name: category.name,
-        image: category.image,
-        visibility: category.visibility,
-      })
-    )
+  const data = categoriesDoc.data() as StoreCategoriesType;
+  let existingCategories = [...data.categories];
+
+  // Check for missing default categories and add them
+  const existingNames = new Set(
+    existingCategories.map((category) => category.name)
+  );
+  const categoriesToAdd = defaultCategories.filter(
+    (category) => !existingNames.has(category.name)
   );
 
-  // Fetch and return the updated category list
-  const finalSnapshot = await getDocs(collection(database, "categories"));
-  const finalCategories = finalSnapshot.docs
-    .map((doc) => ({ id: doc.id, ...(doc.data() as Omit<CategoryType, "id">) }))
-    .sort((a, b) => a.index - b.index);
+  // Check for categories that need updating
+  const categoriesToUpdate = defaultCategories.filter((defaultCategory) => {
+    const existingCategory = existingCategories.find(
+      (cat) => cat.name === defaultCategory.name
+    );
+    return (
+      existingCategory &&
+      (existingCategory.index !== defaultCategory.index ||
+        existingCategory.image !== defaultCategory.image)
+    );
+  });
 
-  return finalCategories.length ? finalCategories : null;
+  // If we need to make any changes, update the document
+  if (categoriesToAdd.length > 0 || categoriesToUpdate.length > 0) {
+    // Remove categories that need updating
+    existingCategories = existingCategories.filter(
+      (category) =>
+        !categoriesToUpdate.some((updateCategory) => updateCategory.name === category.name)
+    );
+
+    // Add new and updated categories
+    existingCategories = [
+      ...existingCategories,
+      ...categoriesToAdd,
+      ...categoriesToUpdate,
+    ];
+
+    existingCategories.sort((a, b) => a.index - b.index);
+
+    await setDoc(categoriesRef, {
+      showOnPublicSite: data.showOnPublicSite,
+      categories: existingCategories,
+    });
+  }
+
+  if (existingCategories.length === 0) {
+    return null;
+  }
+
+  return {
+    showOnPublicSite: data.showOnPublicSite,
+    categories: filter?.visibility
+      ? existingCategories.filter(
+          (category) => category.visibility === filter.visibility
+        )
+      : existingCategories,
+  };
 }
 
 export async function getSettings(): Promise<SettingsType | null> {

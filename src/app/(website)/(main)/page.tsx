@@ -110,15 +110,13 @@ type EnrichedCollectionType = {
 };
 
 export default async function Home() {
-  const [pageHero, categories, collections, discoveryProducts] =
-    await Promise.all([
-      getPageHero(),
-      getCategories(),
-      getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
-      getDiscoveryProducts({
-        limit: 10,
-      }),
-    ]);
+  const [pageHero, categories, collections] = await Promise.all([
+    getPageHero(),
+    getCategories({ visibility: "VISIBLE" }),
+    getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
+  ]);
+
+  console.log(categories);
 
   const getFeaturedCollections = async (): Promise<
     EnrichedCollectionType[]
@@ -201,7 +199,7 @@ export default async function Home() {
 
   return (
     <>
-      {pageHero && (
+      {pageHero && pageHero.images?.desktop && pageHero.images?.mobile && (
         <Link href={pageHero.destinationUrl} target="_blank" className="w-full">
           <div className="block md:hidden">
             <Image
@@ -234,10 +232,10 @@ export default async function Home() {
         </Link>
       )}
       <div className="w-full pt-8">
-        {categories && categories.length > 0 && (
+        {/* {categories && categories.length > 0 && (
           <Categories categories={categories} />
-        )}
-        <div className="max-w-[968px] mx-auto flex flex-col gap-10">
+        )} */}
+        {/* <div className="max-w-[968px] mx-auto flex flex-col gap-10">
           {combinedCollections &&
             combinedCollections.length > 0 &&
             combinedCollections.map((collection, index) => {
@@ -273,11 +271,11 @@ export default async function Home() {
             deviceIdentifier={deviceIdentifier}
             cart={cart}
           />
-        </div>
+        </div> */}
       </div>
-      <QuickviewOverlay />
+      {/* <QuickviewOverlay />
       <UpsellReviewOverlay cart={cart} />
-      <ShowAlert />
+      <ShowAlert /> */}
     </>
   );
 }
