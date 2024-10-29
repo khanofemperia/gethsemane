@@ -5,9 +5,9 @@ import { FeaturedProducts } from "@/components/website/FeaturedProducts";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import ShowAlert from "@/components/website/ShowAlert";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
+import { getCategories } from "@/domains/categories/service";
 import {
   getCart,
-  getCategories,
   getCollections,
   getDiscoveryProducts,
   getPageHero,
@@ -110,13 +110,11 @@ type EnrichedCollectionType = {
 };
 
 export default async function Home() {
-  const [pageHero, categories, collections] = await Promise.all([
+  const [categoriesData, pageHero, collections] = await Promise.all([
+    getCategories({ visibility: "HIDDEN" }),
     getPageHero(),
-    getCategories({ visibility: "VISIBLE" }),
     getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
   ]);
-
-  console.log(categories);
 
   const getFeaturedCollections = async (): Promise<
     EnrichedCollectionType[]
@@ -232,9 +230,9 @@ export default async function Home() {
         </Link>
       )}
       <div className="w-full pt-8">
-        {/* {categories && categories.length > 0 && (
-          <Categories categories={categories} />
-        )} */}
+        {categoriesData?.showOnPublicSite && categoriesData.categories.length > 0 && (
+          <Categories categories={categoriesData.categories} />
+        )}
         {/* <div className="max-w-[968px] mx-auto flex flex-col gap-10">
           {combinedCollections &&
             combinedCollections.length > 0 &&

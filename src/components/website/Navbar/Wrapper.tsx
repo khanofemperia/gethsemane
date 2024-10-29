@@ -1,6 +1,7 @@
-import { getCart, getCategories } from "@/lib/getData";
+import { getCart } from "@/lib/getData";
 import { cookies } from "next/headers";
 import Navbar from ".";
+import { getCategories } from "@/domains/categories/service";
 
 export async function NavbarWrapper() {
   const cookieStore = cookies();
@@ -12,9 +13,10 @@ export async function NavbarWrapper() {
   ]);
 
   return (
-    <Navbar
-      itemsInCart={cart ? cart.items.length : 0}
-      categories={categories}
-    />
+    // <Navbar
+    //   itemsInCart={cart ? cart.items.length : 0}
+    //   categories={categories}
+    // />
+    <></>
   );
 }

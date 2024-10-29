@@ -79,15 +79,6 @@ type PageHeroType = {
 };
 
 /***************************************************************/
-type CategoryType = {
-  id: string;
-  index: number;
-  name: string;
-  image: string;
-  visibility: "VISIBLE" | "HIDDEN";
-};
-
-/***************************************************************/
 type PricingType = {
   basePrice: number;
   salePrice: number;

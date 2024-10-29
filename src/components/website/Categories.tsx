@@ -83,7 +83,16 @@ export const NextButton: React.FC<PropType> = (props) => {
   );
 };
 
-export function Categories({ categories }: { categories: CategoryType[] }) {
+export function Categories({
+  categories,
+}: {
+  categories: Array<{
+    index: number;
+    name: string;
+    image: string;
+    visibility: "VISIBLE" | "HIDDEN";
+  }>;
+}) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
   });
