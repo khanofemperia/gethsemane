@@ -1042,45 +1042,6 @@ export async function getCategories(
   };
 }
 
-export async function getSettings(): Promise<SettingsType | null> {
-  const defaultSettings: SettingsType = {
-    categorySection: {
-      visibility: "HIDDEN",
-    },
-  };
-
-  const documentRef = doc(database, "settings", "defaultSettings");
-  const snapshot = await getDoc(documentRef);
-
-  if (!snapshot.exists()) {
-    await setDoc(documentRef, defaultSettings);
-    return defaultSettings;
-  }
-
-  const currentSettings = snapshot.data() as SettingsType;
-  let needsUpdate = false;
-
-  for (const key of Object.keys(defaultSettings)) {
-    if (!(key in currentSettings)) {
-      currentSettings[key] = defaultSettings[key];
-      needsUpdate = true;
-    }
-  }
-
-  for (const key of Object.keys(currentSettings)) {
-    if (!(key in defaultSettings)) {
-      delete currentSettings[key];
-      needsUpdate = true;
-    }
-  }
-
-  if (needsUpdate) {
-    await setDoc(documentRef, currentSettings);
-  }
-
-  return currentSettings;
-}
-
 export async function getDiscoveryProducts(
   options: {
     limit?: number;
