@@ -9,7 +9,7 @@ import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getCategories } from "@/lib/getData";
+import { getCategories } from "@/domains/categories/service";
 
 type DataType = {
   id: string;
@@ -41,6 +41,13 @@ export function BasicDetailsButton({ className }: { className: string }) {
   );
 }
 
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
+
 export function BasicDetailsOverlay({ data }: { data: DataType }) {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -50,7 +57,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     AlertMessageType.NEUTRAL
   );
   const [selectedCategory, setSelectedCategory] = useState(data.category);
-  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [categories, setCategories] = useState<CategoryType[] | undefined>([]);
   const [name, setName] = useState(data.name);
   const [slug, setSlug] = useState(data.slug);
   const [basePrice, setBasePrice] = useState(
@@ -75,8 +82,8 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
   useEffect(() => {
     (async () => {
       try {
-        const categories = (await getCategories()) as CategoryType[];
-        setCategories(categories);
+        const categoriesData = await getCategories();
+        setCategories(categoriesData?.categories);
       } catch (error) {
         console.error("Error fetching categories:", error);
         setAlertMessageType(AlertMessageType.ERROR);
@@ -300,7 +307,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                       })}
                     >
                       <div className="overflow-hidden h-full max-h-[228px] overflow-x-hidden overflow-y-visible custom-scrollbar w-full py-[6px] flex flex-col gap-0 rounded-md shadow-dropdown bg-white">
-                        {categories.map((category, index) => (
+                        {categories?.map((category, index) => (
                           <div
                             key={index}
                             className="w-full min-h-9 h-9 flex items-center px-[12px] cursor-context-menu transition duration-300 ease-in-out hover:bg-lightgray"

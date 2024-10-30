@@ -5,7 +5,7 @@ import Images from "@/components/website/Product/Images";
 import Image from "next/image";
 import { cookies } from "next/headers";
 import styles from "./styles.module.css";
-import { getCart, getCategories, getProductWithUpsell } from "@/lib/getData";
+import { getCart, getProductWithUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import "@/components/shared/TextEditor/theme/index.css";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
@@ -15,6 +15,7 @@ import { SizeChartOverlay } from "@/components/website/Product/SizeChartOverlay"
 import clsx from "clsx";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
+import { getCategories } from "@/domains/categories/service";
 
 export default async function ProductDetails({
   params,
@@ -24,9 +25,9 @@ export default async function ProductDetails({
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
 
-  const [cart, categories, product] = await Promise.all([
+  const [cart, categoriesData, product] = await Promise.all([
     getCart(deviceIdentifier),
-    getCategories(),
+    getCategories({ visibility: "HIDDEN" }),
     (await getProductWithUpsell({
       id: params.slug.split("-").pop() as string,
     })) as ProductWithUpsellType,
@@ -53,7 +54,7 @@ export default async function ProductDetails({
         deviceIdentifier={deviceIdentifier}
         hasColor={hasColor}
         hasSize={hasSize}
-        categories={categories}
+        categoriesData={categoriesData}
         productInfo={{
           id,
           name,

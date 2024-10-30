@@ -69,6 +69,18 @@ type ProductInfoType = {
   };
 };
 
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
+
+type StoreCategoriesType = {
+  showOnPublicSite: boolean;
+  categories: CategoryType[];
+};
+
 export function ProductDetailsWrapper({
   children,
   cart,
@@ -76,7 +88,7 @@ export function ProductDetailsWrapper({
   hasColor,
   hasSize,
   productInfo,
-  categories,
+  categoriesData,
 }: {
   readonly children: React.ReactNode;
   cart: CartType | null;
@@ -84,7 +96,7 @@ export function ProductDetailsWrapper({
   hasColor: boolean;
   hasSize: boolean;
   productInfo: ProductInfoType;
-  categories: CategoryType[] | null;
+  categoriesData: StoreCategoriesType | null;
 }) {
   const [isCategoriesDropdownVisible, setCategoriesDropdownVisible] =
     useState(false);
@@ -167,35 +179,36 @@ export function ProductDetailsWrapper({
               >
                 New Arrivals
               </Link>
-              {categories && categories.length > 0 && (
-                <div className="relative" ref={categoriesRef}>
-                  <button
-                    onClick={toggleCategoriesDropdown}
-                    className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
-                  >
-                    <span>Categories</span>
-                    <HiMiniChevronDown
-                      size={18}
-                      className={`-mr-1 transition-transform duration-300 ${
-                        isCategoriesDropdownVisible ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                  {isCategoriesDropdownVisible && (
-                    <div className="w-40 absolute top-[56px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-12 min-[840px]:before:right-24">
-                      {categories.map((category, index) => (
-                        <Link
-                          key={index}
-                          href={`/category/${category.name.toLowerCase()}`}
-                          className="block px-5 py-2 text-sm font-semibold transition duration-300 ease-in-out hover:bg-lightgray"
-                        >
-                          {category.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+              {categoriesData?.showOnPublicSite &&
+                categoriesData.categories.length > 0 && (
+                  <div className="relative" ref={categoriesRef}>
+                    <button
+                      onClick={toggleCategoriesDropdown}
+                      className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
+                    >
+                      <span>Categories</span>
+                      <HiMiniChevronDown
+                        size={18}
+                        className={`-mr-1 transition-transform duration-300 ${
+                          isCategoriesDropdownVisible ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    {isCategoriesDropdownVisible && (
+                      <div className="w-40 absolute top-[56px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-12 min-[840px]:before:right-24">
+                        {categoriesData.categories.map((category, index) => (
+                          <Link
+                            key={index}
+                            href={`/category/${category.name.toLowerCase()}`}
+                            className="block px-5 py-2 text-sm font-semibold transition duration-300 ease-in-out hover:bg-lightgray"
+                          >
+                            {category.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               <Link
                 href="#"
                 className="hover:bg-lightgray h-12 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
