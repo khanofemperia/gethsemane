@@ -8,21 +8,14 @@ import { ArrowLeftIcon, CloseIcon } from "@/icons";
 import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
-import UpdateCategoriesAction from "@/actions/categories";
 import { AlertMessageType } from "@/lib/sharedTypes";
-
-type CategorySectionType = {
-  visibility: string;
-};
+import { UpdateCategoriesAction } from "@/actions/categories";
 
 export function CategoriesButton({
-  categorySection,
+  showOnPublicSite,
 }: {
-  categorySection: CategorySectionType;
+  showOnPublicSite: boolean | undefined;
 }) {
-  const HIDDEN = "HIDDEN";
-  const VISIBLE = "VISIBLE";
-
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.storefront.name);
   const overlayName = useOverlayStore(
@@ -39,23 +32,13 @@ export function CategoriesButton({
         <div
           className={clsx(
             "w-10 h-5 rounded-full relative cursor-pointer ease-in-out duration-200",
-            {
-              "bg-white border":
-                categorySection.visibility.toUpperCase() === HIDDEN,
-              "bg-blue border border-blue":
-                categorySection.visibility.toUpperCase() === VISIBLE,
-            }
+            showOnPublicSite ? "bg-blue border border-blue" : "bg-white border"
           )}
         >
           <div
             className={clsx(
               "w-[10px] h-[10px] rounded-full ease-in-out duration-300 absolute [top:50%] [transform:translateY(-50%)]",
-              {
-                "left-[5px] bg-black":
-                  categorySection.visibility.toUpperCase() === HIDDEN,
-                "left-[23px] bg-white":
-                  categorySection.visibility.toUpperCase() === VISIBLE,
-              }
+              showOnPublicSite ? "left-[23px] bg-white" : "left-[5px] bg-black"
             )}
           ></div>
         </div>
@@ -68,16 +51,26 @@ export function CategoriesButton({
   );
 }
 
-export function CategoriesOverlay({
-  categories,
-  categorySection,
-}: {
-  categories: CategoryType[];
-  categorySection: CategorySectionType;
-}) {
-  const HIDDEN = "HIDDEN";
-  const VISIBLE = "VISIBLE";
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
 
+type StoreCategoriesType = {
+  showOnPublicSite: boolean;
+  categories: CategoryType[];
+};
+
+const HIDDEN = "HIDDEN";
+const VISIBLE = "VISIBLE";
+
+export function CategoriesOverlay({
+  categoriesData,
+}: {
+  categoriesData: StoreCategoriesType | null;
+}) {
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
@@ -85,13 +78,11 @@ export function CategoriesOverlay({
   );
   const [showAlert, setShowAlert] = useState(false);
   const [categorySectionVisibility, setCategorySectionVisibility] = useState(
-    categorySection.visibility.toUpperCase()
+    categoriesData?.showOnPublicSite
   );
-  const [visibilityStates, setVisibilityStates] = useState(
-    categories
-      ? categories.map((category) => category.visibility === VISIBLE)
-      : []
-  );
+  const [visibilityStates, setVisibilityStates] = useState<
+    ("VISIBLE" | "HIDDEN")[]
+  >(categoriesData?.categories.map((category) => category.visibility) || []);
 
   const hideOverlay = useOverlayStore((state) => state.hideOverlay);
   const pageName = useOverlayStore((state) => state.pages.storefront.name);
@@ -103,15 +94,11 @@ export function CategoriesOverlay({
   );
 
   useEffect(() => {
-    if (isOverlayVisible || showAlert) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "visible";
-    }
-
+    document.body.style.overflow =
+      isOverlayVisible || showAlert ? HIDDEN : VISIBLE;
     return () => {
       if (!isOverlayVisible && !showAlert) {
-        document.body.style.overflow = "visible";
+        document.body.style.overflow = VISIBLE;
       }
     };
   }, [isOverlayVisible, showAlert]);
@@ -120,19 +107,23 @@ export function CategoriesOverlay({
     setLoading(true);
 
     try {
-      const updatedCategories = categories.map((category, index) => ({
-        id: category.id,
-        visibility: visibilityStates[index] ? VISIBLE : HIDDEN,
-      }));
+      const updatedCategories = categoriesData?.categories.map(
+        (category, index) => ({
+          index: category.index,
+          name: category.name,
+          image: category.image,
+          visibility: visibilityStates[index],
+        })
+      );
 
-      const allCategoriesHidden = updatedCategories.every(
+      const allCategoriesHidden = updatedCategories?.every(
         (category) => category.visibility === HIDDEN
       );
 
-      if (categorySectionVisibility === VISIBLE && allCategoriesHidden) {
+      if (categorySectionVisibility && allCategoriesHidden) {
         setAlertMessageType(AlertMessageType.ERROR);
         setAlertMessage(
-          "Cannot display category section on storefront, all categories are hidden."
+          "Cannot display category section on storefront; all categories are hidden."
         );
         setShowAlert(true);
         setLoading(false);
@@ -140,9 +131,10 @@ export function CategoriesOverlay({
       }
 
       const result = await UpdateCategoriesAction({
-        categorySectionVisibility: categorySectionVisibility,
-        categories: updatedCategories,
+        showOnPublicSite: categorySectionVisibility ?? false,
+        categories: updatedCategories || [],
       });
+
       setAlertMessageType(result.type);
       setAlertMessage(result.message);
       setShowAlert(true);
@@ -159,11 +151,9 @@ export function CategoriesOverlay({
   const onHideOverlay = () => {
     setLoading(false);
     hideOverlay({ pageName, overlayName });
-    setCategorySectionVisibility(categorySection.visibility.toUpperCase());
+    setCategorySectionVisibility(categoriesData?.showOnPublicSite);
     setVisibilityStates(
-      categories
-        ? categories.map((category) => category.visibility === VISIBLE)
-        : []
+      categoriesData?.categories.map((category) => category.visibility) || []
     );
   };
 
@@ -176,7 +166,8 @@ export function CategoriesOverlay({
   const toggleVisibility = (index: number) => {
     setVisibilityStates((prev) => {
       const newVisibilityStates = [...prev];
-      newVisibilityStates[index] = !newVisibilityStates[index];
+      newVisibilityStates[index] =
+        newVisibilityStates[index] === VISIBLE ? HIDDEN : VISIBLE;
       return newVisibilityStates;
     });
   };
@@ -240,29 +231,21 @@ export function CategoriesOverlay({
                     </div>
                     <div
                       onClick={() =>
-                        setCategorySectionVisibility((prevState) =>
-                          prevState === VISIBLE ? HIDDEN : VISIBLE
-                        )
+                        setCategorySectionVisibility((prevState) => !prevState)
                       }
                       className={clsx(
                         "min-w-10 w-10 h-5 rounded-full relative cursor-pointer ease-in-out duration-200",
-                        {
-                          "bg-white border":
-                            categorySectionVisibility === HIDDEN,
-                          "bg-blue border border-blue":
-                            categorySectionVisibility === VISIBLE,
-                        }
+                        categorySectionVisibility
+                          ? "bg-blue border border-blue"
+                          : "bg-white border"
                       )}
                     >
                       <div
                         className={clsx(
                           "w-[10px] h-[10px] rounded-full ease-in-out duration-300 absolute [top:50%] [transform:translateY(-50%)]",
-                          {
-                            "left-[5px] bg-black":
-                              categorySectionVisibility === HIDDEN,
-                            "left-[23px] bg-white":
-                              categorySectionVisibility === VISIBLE,
-                          }
+                          categorySectionVisibility
+                            ? "left-[23px] bg-white"
+                            : "left-[5px] bg-black"
                         )}
                       ></div>
                     </div>
@@ -271,51 +254,56 @@ export function CategoriesOverlay({
                 <div className="flex flex-col gap-2">
                   <h2 className="text-xs text-gray">Categories</h2>
                   <div className="flex flex-wrap gap-2">
-                    {categories.map(({ index, image, name }, mapIndex) => (
-                      <div
-                        key={mapIndex}
-                        className="w-[calc(50%-4px)] min-[466px]:w-[calc(33.333333%-6px)] min-[608px]:w-[calc(25%-6px)] min-[768px]:w-40 border rounded-xl relative overflow-hidden"
-                      >
-                        <div className="w-full aspect-square mb-2 flex flex-col gap-1 items-center pt-5">
-                          <div className="w-[calc(100%-56px)] max-w-[140px] aspect-square rounded-full overflow-hidden flex items-center justify-center shadow-[rgba(0,0,0,0.2)_0px_1px_3px_0px,_rgba(27,31,35,0.15)_0px_0px_0px_1px]">
-                            <Image
-                              src={`/images/categories/${image}`}
-                              alt={name}
-                              width={140}
-                              height={140}
-                              priority={true}
-                            />
+                    {categoriesData?.categories.map(
+                      ({ index, image, name }, mapIndex) => (
+                        <div
+                          key={mapIndex}
+                          className="w-[calc(50%-4px)] min-[466px]:w-[calc(33.333333%-6px)] min-[608px]:w-[calc(25%-6px)] min-[768px]:w-40 border rounded-xl relative overflow-hidden"
+                        >
+                          <div className="w-full aspect-square mb-2 flex flex-col gap-1 items-center pt-5">
+                            <div className="w-[calc(100%-56px)] max-w-[140px] aspect-square rounded-full overflow-hidden flex items-center justify-center shadow-[rgba(0,0,0,0.2)_0px_1px_3px_0px,_rgba(27,31,35,0.15)_0px_0px_0px_1px]">
+                              <Image
+                                src={`/images/categories/${image}`}
+                                alt={name}
+                                width={140}
+                                height={140}
+                                priority={true}
+                              />
+                            </div>
+                            <span className="text-gray">{name}</span>
                           </div>
-                          <span className="text-gray">{name}</span>
-                        </div>
-                        <div className="w-full py-2 px-5 flex items-center justify-between border-t">
-                          <span className="text-sm font-semibold">{index}</span>
-                          <div
-                            onClick={() => toggleVisibility(mapIndex)}
-                            className={clsx(
-                              "w-10 h-5 rounded-full relative cursor-pointer ease-in-out duration-200",
-                              {
-                                "bg-white border": !visibilityStates[mapIndex],
-                                "bg-blue border border-blue":
-                                  visibilityStates[mapIndex],
-                              }
-                            )}
-                          >
+                          <div className="w-full py-2 px-5 flex items-center justify-between border-t">
+                            <span className="text-sm font-semibold">
+                              {index + 1}
+                            </span>
                             <div
+                              onClick={() => toggleVisibility(mapIndex)}
                               className={clsx(
-                                "w-[10px] h-[10px] rounded-full ease-in-out duration-300 absolute [top:50%] [transform:translateY(-50%)]",
+                                "w-10 h-5 rounded-full relative cursor-pointer ease-in-out duration-200",
                                 {
-                                  "left-[5px] bg-black":
-                                    !visibilityStates[mapIndex],
-                                  "left-[23px] bg-white":
-                                    visibilityStates[mapIndex],
+                                  "bg-white border":
+                                    visibilityStates[mapIndex] === HIDDEN,
+                                  "bg-blue border border-blue":
+                                    visibilityStates[mapIndex] === VISIBLE,
                                 }
                               )}
-                            ></div>
+                            >
+                              <div
+                                className={clsx(
+                                  "w-[10px] h-[10px] rounded-full ease-in-out duration-300 absolute [top:50%] [transform:translateY(-50%)]",
+                                  {
+                                    "left-[5px] bg-black":
+                                      visibilityStates[mapIndex] === HIDDEN,
+                                    "left-[23px] bg-white":
+                                      visibilityStates[mapIndex] === VISIBLE,
+                                  }
+                                )}
+                              ></div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 </div>
               </div>

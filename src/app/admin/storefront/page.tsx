@@ -8,19 +8,14 @@ import {
   PageHeroButton,
   PageHeroOverlay,
 } from "@/components/admin/Storefront/PageHeroOverlay";
-import {
-  getCategories,
-  getCollections,
-  getPageHero,
-  getSettings,
-} from "@/lib/getData";
+import { getCategories } from "@/domains/categories/service";
+import { getCollections, getPageHero } from "@/lib/getData";
 import clsx from "clsx";
 
 export default async function Storefront() {
-  const [pageHero, categories, settings, collections] = await Promise.all([
-    getPageHero() as Promise<PageHeroType>,
-    getCategories() as Promise<CategoryType[]>,
-    getSettings() as Promise<SettingsType>,
+  const [categoriesData, pageHero, collections] = await Promise.all([
+    getCategories({ visibility: "HIDDEN" }),
+    getPageHero(),
     getCollections({
       fields: ["title", "slug", "products", "campaignDuration"],
     }) as Promise<CollectionType[]>,
@@ -33,7 +28,9 @@ export default async function Storefront() {
           <h2 className="font-semibold text-lg mb-5">Elements</h2>
           <div className="w-full flex flex-wrap gap-2">
             <PageHeroButton visibility={pageHero.visibility} />
-            <CategoriesButton categorySection={settings.categorySection} />
+            <CategoriesButton
+              showOnPublicSite={categoriesData?.showOnPublicSite}
+            />
             <button className="flex flex-col items-start w-full min-[560px]:w-[calc(100%/2-4px)] min-[824px]:w-64 rounded-xl p-5 relative cursor-pointer ease-in-out duration-300 transition shadow border border-transparent bg-white active:border-[#bfc5ce] lg:hover:border-[#bfc5ce]">
               <div className="w-full mb-4 flex items-center justify-between relative">
                 <h2 className="text-left font-semibold text-sm">Shop now</h2>
@@ -68,10 +65,7 @@ export default async function Storefront() {
       </div>
       <NewCollectionOverlay />
       <PageHeroOverlay pageHero={pageHero} />
-      <CategoriesOverlay
-        categories={categories}
-        categorySection={settings.categorySection}
-      />
+      <CategoriesOverlay categoriesData={categoriesData} />
     </>
   );
 }

@@ -1,43 +1,36 @@
-"use server";
-
 import { doc, updateDoc } from "firebase/firestore";
 import { database } from "@/lib/firebase";
-import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
 type CategoryType = {
-  id: string;
-  visibility: string;
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
 };
 
-type DataType = {
-  categorySectionVisibility: string;
+type StoreCategoriesType = {
+  showOnPublicSite: boolean;
   categories: CategoryType[];
 };
 
-export default async function UpdateCategoriesAction(data: DataType) {
+export async function UpdateCategoriesAction(data: StoreCategoriesType) {
   try {
-    const updatePromises = data.categories.map(async ({ id, visibility }) => {
-      const documentRef = doc(database, "categories", id);
-      await updateDoc(documentRef, { visibility });
-    });
+    const categoriesRef = doc(database, "categories", "storeCategories");
 
-    const settingsPromise = updateDoc(
-      doc(database, "settings", "defaultSettings"),
-      {
-        "categorySection.visibility": data.categorySectionVisibility,
-      }
-    );
+    const updates = {
+      showOnPublicSite: data.showOnPublicSite,
+      categories: data.categories,
+    };
 
-    await Promise.all([...updatePromises, settingsPromise]);
+    await updateDoc(categoriesRef, updates);
 
-    // Revalidate paths to update categories data
-    revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath("/");  // Public main page
-
-    return { type: AlertMessageType.SUCCESS, message: "Categories updated successfully" };
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Categories updated successfully",
+    };
   } catch (error) {
-    console.error("Error updating categories and settings:", error);
+    console.error("Error updating categories:", error);
     return {
       type: AlertMessageType.ERROR,
       message: "Failed to update categories",

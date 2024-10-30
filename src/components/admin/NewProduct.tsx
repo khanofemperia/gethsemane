@@ -12,7 +12,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getCategories } from "@/lib/getData";
+import { getCategories } from "@/domains/categories/service";
 
 interface NewProductMenuButtonType {
   closeMenu: () => void;
@@ -67,6 +67,18 @@ export function NewProductEmptyGridButton() {
   );
 }
 
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
+
+type StoreCategoriesType = {
+  showOnPublicSite: boolean;
+  categories: CategoryType[];
+};
+
 export function NewProductOverlay() {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -76,7 +88,7 @@ export function NewProductOverlay() {
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Select");
-  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [categories, setCategories] = useState<CategoryType[] | undefined>([]);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -89,8 +101,8 @@ export function NewProductOverlay() {
 
   useEffect(() => {
     (async () => {
-      const categories = (await getCategories()) as CategoryType[];
-      setCategories(categories);
+      const categories = await getCategories({ visibility: "HIDDEN" });
+      setCategories(categories?.categories);
     })();
   }, []);
 
@@ -214,7 +226,7 @@ export function NewProductOverlay() {
   };
 
   const handleCategoryDropdownClick = () => {
-    if (categories.length === 0) {
+    if (categories?.length === 0) {
       setAlertMessageType(AlertMessageType.ERROR);
       setAlertMessage(
         "No published categories found. Edit categories in the storefront tab."
@@ -303,7 +315,7 @@ export function NewProductOverlay() {
                       })}
                     >
                       <div className="overflow-hidden h-full w-full py-[6px] flex flex-col gap-0 rounded-md shadow-dropdown bg-white">
-                        {categories.map((category, index) => (
+                        {categories?.map((category, index) => (
                           <div
                             key={index}
                             className="w-full h-9 flex items-center px-[12px] cursor-pointer transition duration-300 ease-in-out hover:bg-lightgray"
