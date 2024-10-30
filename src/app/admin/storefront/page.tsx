@@ -14,7 +14,7 @@ import clsx from "clsx";
 
 export default async function Storefront() {
   const [categoriesData, pageHero, collections] = await Promise.all([
-    getCategories({ visibility: "HIDDEN" }),
+    getCategories(),
     getPageHero(),
     getCollections({
       fields: ["title", "slug", "products", "campaignDuration"],
