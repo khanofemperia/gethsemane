@@ -110,10 +110,10 @@ type EnrichedCollectionType = {
 };
 
 export default async function Home() {
-  const [categoriesData, pageHero, collections] = await Promise.all([
+  const [collections, categoriesData, pageHero] = await Promise.all([
+    getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
     getCategories({ visibility: "VISIBLE" }),
     getPageHero(),
-    getCollections({ fields: ["title", "slug", "products", "bannerImages"] }),
   ]);
 
   const getFeaturedCollections = async (): Promise<
