@@ -1,5 +1,8 @@
-import { doc, updateDoc } from "firebase/firestore";
+"use server";
+
+import { doc, setDoc } from "firebase/firestore";
 import { database } from "@/lib/firebase";
+import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
 type CategoryType = {
@@ -16,14 +19,53 @@ type StoreCategoriesType = {
 
 export async function UpdateCategoriesAction(data: StoreCategoriesType) {
   try {
-    const categoriesRef = doc(database, "categories", "storeCategories");
+    if (!data.categories || !Array.isArray(data.categories)) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Invalid categories data provided",
+      };
+    }
 
-    const updates = {
+    for (const category of data.categories) {
+      if (
+        typeof category.index !== "number" ||
+        typeof category.name !== "string" ||
+        typeof category.image !== "string" ||
+        !["VISIBLE", "HIDDEN"].includes(category.visibility)
+      ) {
+        return {
+          type: AlertMessageType.ERROR,
+          message: `Invalid category data for ${
+            category.name || "unknown category"
+          }`,
+        };
+      }
+    }
+
+    if (
+      data.showOnPublicSite &&
+      data.categories.every((category) => category.visibility === "HIDDEN")
+    ) {
+      return {
+        type: AlertMessageType.ERROR,
+        message:
+          "Cannot show categories section when all categories are hidden",
+      };
+    }
+
+    const sortedCategories = [...data.categories].sort(
+      (a, b) => a.index - b.index
+    );
+
+    const updateData: StoreCategoriesType = {
       showOnPublicSite: data.showOnPublicSite,
-      categories: data.categories,
+      categories: sortedCategories,
     };
 
-    await updateDoc(categoriesRef, updates);
+    const categoriesRef = doc(database, "categories", "storeCategories");
+    await setDoc(categoriesRef, updateData);
+
+    revalidatePath("/storefront");
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -31,6 +73,7 @@ export async function UpdateCategoriesAction(data: StoreCategoriesType) {
     };
   } catch (error) {
     console.error("Error updating categories:", error);
+
     return {
       type: AlertMessageType.ERROR,
       message: "Failed to update categories",
