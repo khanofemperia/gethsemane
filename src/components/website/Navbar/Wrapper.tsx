@@ -7,16 +7,15 @@ export async function NavbarWrapper() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value;
 
-  const [cart, categories] = await Promise.all([
+  const [cart, categoriesData] = await Promise.all([
     getCart(deviceIdentifier),
     getCategories(),
   ]);
 
   return (
-    // <Navbar
-    //   itemsInCart={cart ? cart.items.length : 0}
-    //   categories={categories}
-    // />
-    <></>
+    <Navbar
+      itemsInCart={cart ? cart.items.length : 0}
+      categories={categoriesData?.categories}
+    />
   );
 }

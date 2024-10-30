@@ -20,7 +20,7 @@ export default function Navbar({
   categories,
 }: {
   itemsInCart: number;
-  categories: CategoryType[] | null;
+  categories: CategoryType[] | undefined;
 }) {
   const [isScrollingUp, setIsScrollingUp] = useState(true);
   const [prevScrollPosition, setPrevScrollPosition] = useState(0);
