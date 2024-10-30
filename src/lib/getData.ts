@@ -883,28 +883,6 @@ export async function getUpsell({
   return upsell;
 }
 
-export async function getPageHero(): Promise<PageHeroType> {
-  const documentRef = doc(database, "pageHero", "homepageHero");
-  const snapshot = await getDoc(documentRef);
-
-  const defaultPageHero: Omit<PageHeroType, "id"> = {
-    images: {
-      desktop: "",
-      mobile: "",
-    },
-    title: "",
-    destinationUrl: "",
-    visibility: "HIDDEN",
-  };
-
-  if (!snapshot.exists()) {
-    await setDoc(documentRef, defaultPageHero);
-    return { id: documentRef.id, ...defaultPageHero };
-  }
-
-  return { id: snapshot.id, ...(snapshot.data() as Omit<PageHeroType, "id">) };
-}
-
 export async function getDiscoveryProducts(
   options: {
     limit?: number;

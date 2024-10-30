@@ -67,17 +67,6 @@ type SettingsType = {
 
 /***************************************************************/
 
-type PageHeroType = {
-  id: string;
-  images: {
-    desktop: string;
-    mobile: string;
-  };
-  title: string;
-  destinationUrl: string;
-  visibility: string;
-};
-
 /***************************************************************/
 type PricingType = {
   basePrice: number;

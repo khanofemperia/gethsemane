@@ -6,11 +6,11 @@ import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import ShowAlert from "@/components/website/ShowAlert";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { getCategories } from "@/domains/categories/service";
+import { getPageHero } from "@/domains/pageHero/service";
 import {
   getCart,
   getCollections,
   getDiscoveryProducts,
-  getPageHero,
   getProductsByIdsWithUpsells,
 } from "@/lib/getData";
 import { cookies } from "next/headers";
@@ -197,42 +197,49 @@ export default async function Home() {
 
   return (
     <>
-      {pageHero && pageHero.images?.desktop && pageHero.images?.mobile && (
-        <Link href={pageHero.destinationUrl} target="_blank" className="w-full">
-          <div className="block md:hidden">
-            <Image
-              src={pageHero.images.mobile}
-              alt={pageHero.title}
-              sizes="100vw"
-              style={{
-                width: "100%",
-                height: "auto",
-              }}
-              width={2000}
-              height={2000}
-              priority
-            />
-          </div>
-          <div className="hidden md:block">
-            <Image
-              src={pageHero.images.desktop}
-              alt={pageHero.title}
-              sizes="100vw"
-              style={{
-                width: "100%",
-                height: "auto",
-              }}
-              width={1440}
-              height={360}
-              priority
-            />
-          </div>
-        </Link>
-      )}
-      <div className="w-full pt-8">
-        {categoriesData?.showOnPublicSite && categoriesData.categories.length > 0 && (
-          <Categories categories={categoriesData.categories} />
+      {pageHero?.visibility === "VISIBLE" &&
+        pageHero.images?.desktop &&
+        pageHero.images?.mobile && (
+          <Link
+            href={pageHero.destinationUrl}
+            target="_blank"
+            className="w-full"
+          >
+            <div className="block md:hidden">
+              <Image
+                src={pageHero.images.mobile}
+                alt={pageHero.title}
+                sizes="100vw"
+                style={{
+                  width: "100%",
+                  height: "auto",
+                }}
+                width={2000}
+                height={2000}
+                priority
+              />
+            </div>
+            <div className="hidden md:block">
+              <Image
+                src={pageHero.images.desktop}
+                alt={pageHero.title}
+                sizes="100vw"
+                style={{
+                  width: "100%",
+                  height: "auto",
+                }}
+                width={1440}
+                height={360}
+                priority
+              />
+            </div>
+          </Link>
         )}
+      <div className="w-full pt-8">
+        {categoriesData?.showOnPublicSite &&
+          categoriesData.categories.length > 0 && (
+            <Categories categories={categoriesData.categories} />
+          )}
         {/* <div className="max-w-[968px] mx-auto flex flex-col gap-10">
           {combinedCollections &&
             combinedCollections.length > 0 &&

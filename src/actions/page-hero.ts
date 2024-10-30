@@ -5,7 +5,15 @@ import { database } from "@/lib/firebase";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-export async function UpdatePageHeroAction(data: Partial<PageHeroType>) {
+export async function UpdatePageHeroAction(data: {
+  images: {
+    desktop: string;
+    mobile: string;
+  };
+  title: string;
+  destinationUrl: string;
+  visibility: "VISIBLE" | "HIDDEN";
+}) {
   try {
     const { ...updatedPageHeroData } = data;
 
@@ -14,7 +22,7 @@ export async function UpdatePageHeroAction(data: Partial<PageHeroType>) {
 
     // Revalidate paths to update page hero data
     revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath("/");  // Public main page
+    revalidatePath("/"); // Public main page
 
     return {
       type: AlertMessageType.SUCCESS,

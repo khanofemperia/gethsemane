@@ -15,7 +15,7 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 
 export function PageHeroButton({ visibility }: { visibility: string }) {
   const HIDDEN = "HIDDEN";
-  const PUBLISHED = "PUBLISHED";
+  const VISIBLE = "VISIBLE";
 
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.storefront.name);
@@ -35,7 +35,7 @@ export function PageHeroButton({ visibility }: { visibility: string }) {
             "w-10 h-5 rounded-full relative cursor-pointer ease-in-out duration-200",
             {
               "bg-white border": visibility === HIDDEN,
-              "bg-blue border border-blue": visibility === PUBLISHED,
+              "bg-blue border border-blue": visibility === VISIBLE,
             }
           )}
         >
@@ -44,7 +44,7 @@ export function PageHeroButton({ visibility }: { visibility: string }) {
               "w-[10px] h-[10px] rounded-full ease-in-out duration-300 absolute [top:50%] [transform:translateY(-50%)]",
               {
                 "left-[5px] bg-black": visibility === HIDDEN,
-                "left-[23px] bg-white": visibility === PUBLISHED,
+                "left-[23px] bg-white": visibility === VISIBLE,
               }
             )}
           ></div>
@@ -58,13 +58,24 @@ export function PageHeroButton({ visibility }: { visibility: string }) {
   );
 }
 
+type PageHeroType = {
+  id: string;
+  images: {
+    desktop: string;
+    mobile: string;
+  };
+  title: string;
+  destinationUrl: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
+
 export function PageHeroOverlay({
   pageHero,
 }: {
   pageHero: Partial<PageHeroType>;
 }) {
   const HIDDEN = "HIDDEN";
-  const PUBLISHED = "PUBLISHED";
+  const VISIBLE = "VISIBLE";
 
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
@@ -114,7 +125,7 @@ export function PageHeroOverlay({
 
     try {
       if (
-        visibility === "PUBLISHED" &&
+        visibility === VISIBLE &&
         (!title || !desktopImage || !mobileImage || !destinationUrl)
       ) {
         let errorMessage = "";
@@ -140,7 +151,7 @@ export function PageHeroOverlay({
             mobile: mobileImage,
           },
           destinationUrl,
-          visibility,
+          visibility: visibility as "VISIBLE" | "HIDDEN",
         });
         setAlertMessageType(result.type);
         setAlertMessage(result.message);
@@ -231,15 +242,14 @@ export function PageHeroOverlay({
                     <div
                       onClick={() =>
                         setVisibility((prevVisibility) =>
-                          prevVisibility === PUBLISHED ? HIDDEN : PUBLISHED
+                          prevVisibility === VISIBLE ? HIDDEN : VISIBLE
                         )
                       }
                       className={clsx(
                         "w-10 h-5 rounded-full relative cursor-pointer ease-in-out duration-200",
                         {
                           "bg-white border": visibility === HIDDEN,
-                          "bg-blue border border-blue":
-                            visibility === PUBLISHED,
+                          "bg-blue border border-blue": visibility === VISIBLE,
                         }
                       )}
                     >
@@ -248,7 +258,7 @@ export function PageHeroOverlay({
                           "w-[10px] h-[10px] rounded-full ease-in-out duration-300 absolute [top:50%] [transform:translateY(-50%)]",
                           {
                             "left-[5px] bg-black": visibility === HIDDEN,
-                            "left-[23px] bg-white": visibility === PUBLISHED,
+                            "left-[23px] bg-white": visibility === VISIBLE,
                           }
                         )}
                       ></div>
