@@ -9,7 +9,7 @@ import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getCategories } from "@/domains/categories/service";
+import { getCategories } from "@/lib/api/categories";
 
 type DataType = {
   id: string;

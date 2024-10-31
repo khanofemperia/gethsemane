@@ -15,7 +15,7 @@ import { SizeChartOverlay } from "@/components/website/Product/SizeChartOverlay"
 import clsx from "clsx";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-import { getCategories } from "@/domains/categories/service";
+import { getCategories } from "@/lib/api/categories";
 
 export default async function ProductDetails({
   params,

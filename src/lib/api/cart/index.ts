@@ -1,4 +1,4 @@
-import { getProducts } from "../products/service";
+import { getProducts } from "../products";
 
 type CartType = {
   id: string;

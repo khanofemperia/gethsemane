@@ -8,7 +8,7 @@ import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { InCartIndicator } from "./InCartIndicator";
 import clsx from "clsx";
 import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
-import { getCart } from "@/domains/cart/service";
+import { getCart } from "@/lib/api/cart";
 
 type ProductColorsType = {
   colors: Array<{

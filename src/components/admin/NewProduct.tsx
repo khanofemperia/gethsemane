@@ -12,7 +12,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getCategories } from "@/domains/categories/service";
+import { getCategories } from "@/lib/api/categories";
 
 interface NewProductMenuButtonType {
   closeMenu: () => void;

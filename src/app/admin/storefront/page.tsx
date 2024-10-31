@@ -8,8 +8,8 @@ import {
   PageHeroButton,
   PageHeroOverlay,
 } from "@/components/admin/Storefront/PageHeroOverlay";
-import { getCategories } from "@/domains/categories/service";
-import { getPageHero } from "@/domains/pageHero/service";
+import { getCategories } from "@/lib/api/categories";
+import { getPageHero } from "@/lib/api/pageHero";
 import { getCollections } from "@/lib/getData";
 import clsx from "clsx";
 

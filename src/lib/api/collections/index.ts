@@ -1,6 +1,6 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { database } from "@/lib/firebase";
-import { getProducts } from "../products/service";
+import { getProducts } from "../products";
 
 /**
  * Unified function to get collections with flexible filtering and field selection.
