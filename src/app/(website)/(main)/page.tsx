@@ -1,8 +1,3 @@
-import {
-  getCollections,
-  getProductsByIdsWithUpsells,
-  getCart,
-} from "@/lib/getData";
 import { Banner } from "@/components/website/Banner";
 import { Categories } from "@/components/website/Categories";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
@@ -15,6 +10,9 @@ import { cookies } from "next/headers";
 import ShowAlert from "@/components/website/ShowAlert";
 import Image from "next/image";
 import Link from "next/link";
+import { getCollections } from "@/domains/collections/service";
+import { getProducts } from "@/domains/products/service";
+import { getCart } from "@/domains/cart/service";
 
 type EnrichedProductType = {
   index: number;
@@ -124,22 +122,21 @@ export default async function Home() {
         collection.visibility === "PUBLISHED"
     );
 
-    const productIdToIndexMap: { id: string; index: number }[] = [];
-
-    featuredCollections.forEach((collection) => {
-      if (collection.products) {
-        collection.products.forEach((product) => {
-          productIdToIndexMap.push({ id: product.id, index: product.index });
-        });
-      }
-    });
+    // Create a map of product IDs and their indexes from all featured collections
+    const productIdToIndexMap: { id: string; index: number }[] =
+      featuredCollections.flatMap(
+        (collection) =>
+          collection.products?.map((product) => ({
+            id: product.id,
+            index: product.index,
+          })) || []
+      );
 
     const productIds = productIdToIndexMap.map((item) => item.id);
 
-    const productsFromDb = await getProductsByIdsWithUpsells({
+    const productsFromDb = await getProducts({
       ids: productIds,
       fields: [
-        "id",
         "name",
         "slug",
         "description",
@@ -152,13 +149,14 @@ export default async function Home() {
       visibility: "PUBLISHED",
     });
 
-    const productsWithIndexes = (productsFromDb || []).map((product) => {
-      const productIndex = productIdToIndexMap.find(
-        (item) => item.id === product.id
-      )?.index;
-      return { ...product, index: productIndex ?? 0 };
-    });
+    // Add indexes to products
+    const productsWithIndexes = (productsFromDb || []).map((product) => ({
+      ...product,
+      index:
+        productIdToIndexMap.find((item) => item.id === product.id)?.index ?? 0,
+    }));
 
+    // Enrich collections with product details
     const collectionsWithProducts = featuredCollections.map((collection) => {
       const enrichedProducts = (collection.products || [])
         .map((product) => {
@@ -169,12 +167,15 @@ export default async function Home() {
             ? { ...productDetails, index: product.index }
             : undefined;
         })
-        .filter((product) => product !== undefined)
-        .sort((a, b) => (a!.index ?? 0) - (b!.index ?? 0));
+        .filter(
+          (product): product is NonNullable<typeof product> =>
+            product !== undefined
+        )
+        .sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 
       return {
         ...collection,
-        products: enrichedProducts as Array<{ index: number; id: string }>,
+        products: enrichedProducts,
       } as EnrichedCollectionType;
     });
 
