@@ -2,10 +2,56 @@
 
 import useEmblaCarousel from "embla-carousel-react";
 import Link from "next/link";
-import { ComponentPropsWithRef, useCallback, useEffect, useState } from "react";
-import { EmblaCarouselType } from "embla-carousel";
-import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { ProductCard } from "./ProductCard";
+
+export function FeaturedProducts({
+  collection,
+  cart,
+  deviceIdentifier,
+}: {
+  collection: EnrichedCollectionType;
+  cart: CartType | null;
+  deviceIdentifier: string;
+}) {
+  const [emblaRef] = useEmblaCarousel({
+    align: "start",
+  });
+
+  const { id, slug, title } = collection;
+  const products = collection.products as (ProductWithUpsellType & {
+    index: number;
+  })[];
+
+  return (
+    <>
+      <div className="w-[calc(100%-20px)] mx-auto mb-4 flex items-center gap-4">
+        <h2 className="font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
+          {title}
+        </h2>
+        <Link
+          href={`/collection/${slug}-${id}`}
+          className="text-sm rounded-full px-3 h-8 text-nowrap flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
+        >
+          See more
+        </Link>
+      </div>
+      <div className="embla relative select-none" ref={emblaRef}>
+        <div className="embla__container w-full flex gap-1 md:gap-0">
+          {products.slice(0, 3).map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              cart={cart}
+              deviceIdentifier={deviceIdentifier}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// -- Type Definitions --
 
 type EnrichedProductType = {
   index: number;
@@ -82,125 +128,3 @@ type EnrichedCollectionType = {
   createdAt: string;
   updatedAt: string;
 };
-
-type UsePrevNextButtonsType = {
-  prevBtnDisabled: boolean;
-  nextBtnDisabled: boolean;
-  onPrevButtonClick: () => void;
-  onNextButtonClick: () => void;
-};
-
-export const usePrevNextButtons = (
-  emblaApi: EmblaCarouselType | undefined
-): UsePrevNextButtonsType => {
-  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
-  const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
-
-  const onPrevButtonClick = useCallback(() => {
-    if (!emblaApi) return;
-    emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const onNextButtonClick = useCallback(() => {
-    if (!emblaApi) return;
-    emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
-    setPrevBtnDisabled(!emblaApi.canScrollPrev());
-    setNextBtnDisabled(!emblaApi.canScrollNext());
-  }, []);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-
-    onSelect(emblaApi);
-    emblaApi.on("reInit", onSelect).on("select", onSelect);
-  }, [emblaApi, onSelect]);
-
-  return {
-    prevBtnDisabled,
-    nextBtnDisabled,
-    onPrevButtonClick,
-    onNextButtonClick,
-  };
-};
-
-type PropType = ComponentPropsWithRef<"button">;
-
-export const PrevButton: React.FC<PropType> = (props) => {
-  const { children, ...restProps } = props;
-
-  return (
-    <button
-      className="embla__button embla__button--prev disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute left-4 lg:-left-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
-      type="button"
-      {...restProps}
-    >
-      <ChevronLeftIcon className="stroke-white mr-[2px]" size={22} />
-      {children}
-    </button>
-  );
-};
-
-export const NextButton: React.FC<PropType> = (props) => {
-  const { children, ...restProps } = props;
-
-  return (
-    <button
-      className="embla__button embla__button--next disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute right-4 lg:-right-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
-      type="button"
-      {...restProps}
-    >
-      <ChevronRightIcon className="stroke-white ml-[2px]" size={22} />
-      {children}
-    </button>
-  );
-};
-
-export function FeaturedProducts({
-  collection,
-  cart,
-  deviceIdentifier,
-}: {
-  collection: EnrichedCollectionType;
-  cart: CartType | null;
-  deviceIdentifier: string;
-}) {
-  const [emblaRef] = useEmblaCarousel({
-    align: "start",
-  });
-
-  const { id, slug, title } = collection;
-  const products = collection.products as (ProductWithUpsellType & {
-    index: number;
-  })[];
-
-  return (
-    <>
-      <div className="w-[calc(100%-20px)] mx-auto mb-4 flex items-center gap-4">
-        <h2 className="font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
-          {title}
-        </h2>
-        <Link
-          href={`/collection/${slug}-${id}`}
-          className="text-sm rounded-full px-3 h-8 text-nowrap flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
-        >
-          See more
-        </Link>
-      </div>
-      <div className="embla relative select-none" ref={emblaRef}>
-        <div className="embla__container w-full flex gap-1 md:gap-0">
-          {products.slice(0, 3).map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              cart={cart}
-              deviceIdentifier={deviceIdentifier}
-            />
-          ))}
-        </div>
-      </div>
-    </>
-  );
-}
