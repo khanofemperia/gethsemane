@@ -1,81 +1,6 @@
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 import { getProducts } from "../products/service";
-
-type GetCollectionsOptions = {
-  ids?: string[];
-  fields?: string[];
-  visibility?: VisibilityType;
-  includeProducts?: boolean;
-};
-
-type Sortable = { [key: string]: any };
-
-type ProductWithUpsellType = Partial<Omit<ProductType, "upsell">> & {
-  upsell: {
-    id: string;
-    mainImage: string;
-    pricing: {
-      salePrice: number;
-      basePrice: number;
-      discountPercentage: number;
-    };
-    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-    createdAt: string;
-    updatedAt: string;
-    products: {
-      id: string;
-      name: string;
-      slug: string;
-      basePrice: number;
-      images: {
-        main: string;
-        gallery: string[];
-      };
-    }[];
-  };
-};
-
-type CollectionWithProductsAndUpsellsType = Omit<CollectionType, "products"> & {
-  products: ProductWithUpsellType[];
-};
-
-function sortItems<T extends Sortable>(
-  items: T[],
-  key: keyof T,
-  isDate: boolean = false
-): T[] {
-  return items.sort((a, b) => {
-    if (isDate) {
-      return new Date(b[key]).getTime() - new Date(a[key]).getTime();
-    }
-    return (a[key] as number) - (b[key] as number);
-  });
-}
-
-function sanitizeOptions(options: GetCollectionsOptions = {}) {
-  return {
-    ids: Array.isArray(options.ids)
-      ? options.ids.filter(
-          (id): id is string => typeof id === "string" && id.trim() !== ""
-        )
-      : [],
-    fields: Array.isArray(options.fields)
-      ? options.fields.filter(
-          (field): field is string =>
-            typeof field === "string" && field.trim() !== ""
-        )
-      : [],
-    visibility: options.visibility,
-    includeProducts:
-      options.includeProducts ?? options.fields?.includes("products") ?? false,
-  };
-}
 
 /**
  * Unified function to get collections with flexible filtering and field selection.
@@ -96,11 +21,10 @@ function sanitizeOptions(options: GetCollectionsOptions = {}) {
  * });
  */
 export async function getCollections(
-  options: GetCollectionsOptions = {}
-): Promise<CollectionType[] | CollectionWithProductsAndUpsellsType[] | null> {
+  options: GetCollectionsOptionsType = {}
+): Promise<CollectionType[] | null> {
   const { ids, fields, visibility, includeProducts } = sanitizeOptions(options);
 
-  // Build the base query
   const collectionsRef = collection(database, "collections");
   let conditions: any[] = [];
 
@@ -122,13 +46,11 @@ export async function getCollections(
     return null;
   }
 
-  // Process collections
   const collections = await Promise.all(
     snapshot.docs.map(async (docSnapshot) => {
       const data = docSnapshot.data();
       let selectedFields: Partial<CollectionType> = {};
 
-      // Handle basic fields
       if (fields.length) {
         fields.forEach((field) => {
           if (data.hasOwnProperty(field)) {
@@ -142,13 +64,16 @@ export async function getCollections(
       const collection = {
         id: docSnapshot.id,
         ...selectedFields,
+        ...(data.collectionType === "BANNER" &&
+          data.bannerImages && {
+            bannerImages: data.bannerImages,
+          }),
         updatedAt: data["updatedAt"],
         index: data["index"],
         visibility: data["visibility"],
         collectionType: data["collectionType"],
       };
 
-      // Handle products if requested
       if (includeProducts && data.products?.length) {
         const productIds = data.products.map((p: { id: string }) => p.id);
         const products = await getProducts({
@@ -167,7 +92,6 @@ export async function getCollections(
         });
 
         if (products) {
-          // Add index information from the collection's product data
           const productsWithIndex = products.map((product) => {
             const productIndex =
               data.products.find((p: { id: string }) => p.id === product.id)
@@ -178,7 +102,7 @@ export async function getCollections(
           return {
             ...collection,
             products: productsWithIndex,
-          } as CollectionWithProductsAndUpsellsType;
+          };
         }
       }
 
@@ -186,6 +110,35 @@ export async function getCollections(
     })
   );
 
-  const sortedCollections = sortItems(collections, "index");
-  return sortedCollections;
+  return collections.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 }
+
+// -- Logic & Utilities --
+
+function sanitizeOptions(options: GetCollectionsOptionsType = {}) {
+  return {
+    ids: Array.isArray(options.ids)
+      ? options.ids.filter(
+          (id): id is string => typeof id === "string" && id.trim() !== ""
+        )
+      : [],
+    fields: Array.isArray(options.fields)
+      ? options.fields.filter(
+          (field): field is string =>
+            typeof field === "string" && field.trim() !== ""
+        )
+      : [],
+    visibility: options.visibility,
+    includeProducts:
+      options.includeProducts ?? options.fields?.includes("products") ?? false,
+  };
+}
+
+// -- Type Definitions --
+
+type GetCollectionsOptionsType = {
+  ids?: string[];
+  fields?: string[];
+  visibility?: VisibilityType;
+  includeProducts?: boolean;
+};
