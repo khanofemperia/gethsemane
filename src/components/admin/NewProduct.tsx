@@ -74,11 +74,6 @@ type CategoryType = {
   visibility: "VISIBLE" | "HIDDEN";
 };
 
-type StoreCategoriesType = {
-  showOnPublicSite: boolean;
-  categories: CategoryType[];
-};
-
 export function NewProductOverlay() {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -101,7 +96,7 @@ export function NewProductOverlay() {
 
   useEffect(() => {
     (async () => {
-      const categories = await getCategories({ visibility: "HIDDEN" });
+      const categories = await getCategories();
       setCategories(categories?.categories);
     })();
   }, []);

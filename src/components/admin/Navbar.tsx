@@ -63,7 +63,7 @@ export default function Navbar() {
       <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex justify-between gap-1 flex-col md:flex-row">
         <div className="flex items-center gap-5">
           <Link
-            href="/"
+            href="/admin"
             className="h-12 min-w-[168px] w-[168px] pl-2 flex items-center"
           >
             <Image
@@ -75,7 +75,10 @@ export default function Navbar() {
             />
           </Link>
           <div className="flex gap-3 h-9 *:text-sm *:font-semibold *:h-full *:px-2 *:rounded-full *:flex *:items-center *:justify-center *:transition *:duration-300 *:ease-in-out">
-            <Link href="admin/storefront" className="hover:bg-lightgray-dimmed">
+            <Link
+              href="/admin/storefront"
+              className="hover:bg-lightgray-dimmed"
+            >
               Storefront
             </Link>
             <Link href="/admin/products" className="hover:bg-lightgray-dimmed">

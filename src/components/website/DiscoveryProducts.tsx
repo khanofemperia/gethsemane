@@ -9,13 +9,13 @@ export function DiscoveryProducts({
   deviceIdentifier,
 }: {
   heading?: string;
-  products: ProductWithUpsellType[];
+  products?: ProductWithUpsellType[];
   cart: CartType | null;
   deviceIdentifier: string;
 }) {
   noStore(); // prevents this component from being cached
 
-  const shuffledProducts = shuffleDiscoveryProducts([...products]);
+  const shuffledProducts = shuffleDiscoveryProducts([...(products || [])]);
   return (
     <div>
       <h2 className="w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">

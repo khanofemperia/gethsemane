@@ -1,19 +1,18 @@
+import {
+  getCollections,
+  getProductsByIdsWithUpsells,
+  getCart,
+} from "@/lib/getData";
 import { Banner } from "@/components/website/Banner";
 import { Categories } from "@/components/website/Categories";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { FeaturedProducts } from "@/components/website/FeaturedProducts";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
-import ShowAlert from "@/components/website/ShowAlert";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { getCategories } from "@/domains/categories/service";
 import { getPageHero } from "@/domains/pageHero/service";
-import {
-  getCart,
-  getCollections,
-  getDiscoveryProducts,
-  getProductsByIdsWithUpsells,
-} from "@/lib/getData";
 import { cookies } from "next/headers";
+import ShowAlert from "@/components/website/ShowAlert";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -240,7 +239,7 @@ export default async function Home() {
           categoriesData.categories.length > 0 && (
             <Categories categories={categoriesData.categories} />
           )}
-        {/* <div className="max-w-[968px] mx-auto flex flex-col gap-10">
+        <div className="max-w-[968px] mx-auto flex flex-col gap-10">
           {combinedCollections &&
             combinedCollections.length > 0 &&
             combinedCollections.map((collection, index) => {
@@ -271,16 +270,12 @@ export default async function Home() {
                   return null;
               }
             })}
-          <DiscoveryProducts
-            products={discoveryProducts as ProductWithUpsellType[]}
-            deviceIdentifier={deviceIdentifier}
-            cart={cart}
-          />
-        </div> */}
+          <DiscoveryProducts deviceIdentifier={deviceIdentifier} cart={cart} />
+        </div>
       </div>
-      {/* <QuickviewOverlay />
+      <QuickviewOverlay />
       <UpsellReviewOverlay cart={cart} />
-      <ShowAlert /> */}
+      <ShowAlert />
     </>
   );
 }
