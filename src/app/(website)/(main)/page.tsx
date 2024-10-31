@@ -15,17 +15,14 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 
 export default async function Home() {
-  // Fetch all required data in parallel
   const [collections, categoriesData, pageHero] = await Promise.all([
     getCollections({ fields: ["title", "slug", "products"] }),
     getCategories({ visibility: "VISIBLE" }),
     getPageHero(),
   ]);
 
-  // Process collections and enrich with product data
   const featuredCollections = await enrichFeaturedCollections(collections);
 
-  // Combine and sort all collections
   const combinedCollections = [
     ...featuredCollections,
     ...(collections?.filter(
@@ -33,7 +30,6 @@ export default async function Home() {
     ) || []),
   ].sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 
-  // Get cart data
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);

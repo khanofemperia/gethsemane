@@ -97,89 +97,87 @@ export default function Navbar({
   };
 
   return (
-    <>
-      <nav
-        className={clsx(
-          "w-full max-h-[116px] md:max-h-16 z-20 fixed top-0 border-b transition duration-100 ease-in-out bg-white",
-          !isScrollingUp && prevScrollPosition >= 154 && "-translate-y-full"
-        )}
-      >
-        <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex justify-between gap-1 flex-col md:flex-row">
-          <div className="flex items-center gap-5">
+    <nav
+      className={clsx(
+        "w-full max-h-[116px] md:max-h-16 z-20 fixed top-0 border-b transition duration-100 ease-in-out bg-white",
+        !isScrollingUp && prevScrollPosition >= 154 && "-translate-y-full"
+      )}
+    >
+      <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex justify-between gap-1 flex-col md:flex-row">
+        <div className="flex items-center gap-5">
+          <Link
+            href="/"
+            className="h-10 min-w-[168px] w-[168px] pl-2 flex items-center"
+          >
+            <Image
+              src="/images/logos/cherlygood_wordmark.svg"
+              alt="Cherly Good"
+              width={160}
+              height={40}
+              priority
+            />
+          </Link>
+          <div className="flex gap-3 h-10">
             <Link
-              href="/"
-              className="h-10 min-w-[168px] w-[168px] pl-2 flex items-center"
+              href="/new-arrivals"
+              className="hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
             >
-              <Image
-                src="/images/logos/cherlygood_wordmark.svg"
-                alt="Cherly Good"
-                width={160}
-                height={40}
-                priority
-              />
+              New Arrivals
             </Link>
-            <div className="flex gap-3 h-10">
-              <Link
-                href="/new-arrivals"
-                className="hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
-              >
-                New Arrivals
-              </Link>
-              {categories && categories.length > 0 && (
-                <div className="relative" ref={categoriesRef}>
-                  <button
-                    onClick={toggleCategoriesDropdown}
-                    className={clsx(
-                      "hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out",
-                      isCategoriesDropdownVisible && "bg-lightgray"
-                    )}
-                  >
-                    <span>Categories</span>
-                    <HiMiniChevronDown
-                      size={18}
-                      className={`-mr-1 transition-transform duration-300 ${
-                        isCategoriesDropdownVisible ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                  {isCategoriesDropdownVisible && (
-                    <div className="w-36 absolute top-[48px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-10 min-[840px]:before:right-24">
-                      {categories.map((category, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleCategoryClick(category.name)}
-                          className="block w-full text-left px-5 py-2 text-sm font-semibold transition duration-300 ease-in-out hover:bg-lightgray"
-                        >
-                          {category.name}
-                        </button>
-                      ))}
-                    </div>
+            {categories && categories.length > 0 && (
+              <div className="relative" ref={categoriesRef}>
+                <button
+                  onClick={toggleCategoriesDropdown}
+                  className={clsx(
+                    "hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out",
+                    isCategoriesDropdownVisible && "bg-lightgray"
                   )}
-                </div>
-              )}
-              <Link
-                href="#"
-                className="hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
-              >
-                Track Order
-              </Link>
-            </div>
-          </div>
-          <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-10 flex items-center justify-end">
+                >
+                  <span>Categories</span>
+                  <HiMiniChevronDown
+                    size={18}
+                    className={`-mr-1 transition-transform duration-300 ${
+                      isCategoriesDropdownVisible ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {isCategoriesDropdownVisible && (
+                  <div className="w-36 absolute top-[48px] left-0 z-20 py-2 rounded-md shadow-dropdown bg-white before:content-[''] before:w-[10px] before:h-[10px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-2 before:border-l before:border-t before:border-[#d9d9d9] before:left-10 min-[840px]:before:right-24">
+                    {categories.map((category, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleCategoryClick(category.name)}
+                        className="block w-full text-left px-5 py-2 text-sm font-semibold transition duration-300 ease-in-out hover:bg-lightgray"
+                      >
+                        {category.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <Link
-              href="/cart"
-              className="relative h-11 w-11 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
+              href="#"
+              className="hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
             >
-              <CartIcon size={26} />
-              {itemsInCart > 0 && (
-                <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
-                  {itemsInCart}
-                </span>
-              )}
+              Track Order
             </Link>
           </div>
         </div>
-      </nav>
-    </>
+        <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-10 flex items-center justify-end">
+          <Link
+            href="/cart"
+            className="relative h-11 w-11 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
+          >
+            <CartIcon size={26} />
+            {itemsInCart > 0 && (
+              <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
+                {itemsInCart}
+              </span>
+            )}
+          </Link>
+        </div>
+      </div>
+    </nav>
   );
 }

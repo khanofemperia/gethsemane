@@ -1,17 +1,6 @@
 import { database } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-type PageHeroType = {
-  id: string;
-  images: {
-    desktop: string;
-    mobile: string;
-  };
-  title: string;
-  destinationUrl: string;
-  visibility: "VISIBLE" | "HIDDEN";
-};
-
 export async function getPageHero(): Promise<PageHeroType> {
   const documentRef = doc(database, "pageHero", "homepageHero");
   const snapshot = await getDoc(documentRef);
@@ -33,3 +22,16 @@ export async function getPageHero(): Promise<PageHeroType> {
 
   return { id: snapshot.id, ...(snapshot.data() as Omit<PageHeroType, "id">) };
 }
+
+// -- Type Definitions --
+
+type PageHeroType = {
+  id: string;
+  images: {
+    desktop: string;
+    mobile: string;
+  };
+  title: string;
+  destinationUrl: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
