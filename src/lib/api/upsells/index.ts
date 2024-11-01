@@ -1,18 +1,51 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { database } from "@/lib/firebase";
+
+type UpsellType = {
+  id: string;
+  mainImage: string;
+  visibility: VisibilityType;
+  createdAt: string;
+  updatedAt: string;
+  pricing: PricingType;
+  products: Array<{
+    index: number;
+    id: string;
+    slug: string;
+    name: string;
+    basePrice: number;
+    images: {
+      main: string;
+      gallery: string[];
+    };
+    options: {
+      colors: Array<{
+        name: string;
+        image: string;
+      }>;
+      sizes: {
+        inches: {
+          columns: Array<{ label: string; order: number }>;
+          rows: Array<{ [key: string]: string }>;
+        };
+        centimeters: {
+          columns: Array<{ label: string; order: number }>;
+          rows: Array<{ [key: string]: string }>;
+        };
+      };
+    };
+  }>;
+};
 
 type GetUpsellsOptions = {
   ids?: string[];
-  fields?: string[];
+  fields?: Array<keyof UpsellType>;
   includeProducts?: boolean;
 };
+
+// Create a type that represents a partial upsell with only selected fields
+type PartialUpsell = Partial<Omit<UpsellType, "id" | "updatedAt">> &
+  Pick<UpsellType, "id" | "updatedAt">;
 
 function sanitizeOptions(options: GetUpsellsOptions = {}) {
   return {
@@ -23,7 +56,7 @@ function sanitizeOptions(options: GetUpsellsOptions = {}) {
       : [],
     fields: Array.isArray(options.fields)
       ? options.fields.filter(
-          (field): field is string =>
+          (field): field is keyof UpsellType =>
             typeof field === "string" && field.trim() !== ""
         )
       : [],
@@ -31,46 +64,19 @@ function sanitizeOptions(options: GetUpsellsOptions = {}) {
   };
 }
 
-function sortItems<T extends { [key: string]: any }>(
-  items: T[],
-  key: keyof T,
-  isDate: boolean = false
-): T[] {
-  return items.sort((a, b) => {
-    if (isDate) {
-      return new Date(b[key]).getTime() - new Date(a[key]).getTime();
-    }
-    return (a[key] as number) - (b[key] as number);
-  });
-}
-
 /**
  * Unified function to get upsells with flexible filtering and field selection.
- *
- * @example Get a single upsell
- * const upsell = await getUpsells({ ids: ["upsell-id"] });
- *
- * @example Get multiple upsells with specific fields
- * const upsells = await getUpsells({
- *   ids: ["id1", "id2"],
- *   fields: ["name", "description"]
- * });
- *
- * @example Get all upsells without product details
- * const upsells = await getUpsells({
- *   includeProducts: false
- * });
+ * Returns null if no upsells are found, otherwise returns an array of upsells.
+ * When fields are specified, returns partial upsell objects.
  */
 export async function getUpsells(
   options: GetUpsellsOptions = {}
 ): Promise<UpsellType[] | null> {
   const { ids, fields, includeProducts } = sanitizeOptions(options);
 
-  // Build the base query
   const upsellsRef = collection(database, "upsells");
   let firestoreQuery = query(upsellsRef);
 
-  // Add ID filtering if specified
   if (ids.length > 0) {
     firestoreQuery = query(upsellsRef, where("__name__", "in", ids));
   }
@@ -81,45 +87,38 @@ export async function getUpsells(
     return null;
   }
 
-  // Process upsells
   const upsells = await Promise.all(
     snapshot.docs.map(async (docSnapshot) => {
-      const data = docSnapshot.data();
-      let selectedFields: Partial<UpsellType> = {};
-
-      // Handle field selection
-      if (fields.length) {
-        fields.forEach((field) => {
-          if (data.hasOwnProperty(field)) {
-            selectedFields[field as keyof UpsellType] = data[field];
-          }
-        });
-      } else {
-        selectedFields = data;
-      }
-
-      // Ensure critical fields are always included
-      const baseUpsell = {
+      const data = docSnapshot.data() as Omit<UpsellType, "id">;
+      const baseUpsell: PartialUpsell = {
         id: docSnapshot.id,
-        ...selectedFields,
         updatedAt: data.updatedAt,
       };
 
-      // Handle products
+      if (fields.length > 0) {
+        fields.forEach((field) => {
+          if (field !== "id" && field in data) {
+            (baseUpsell[field as keyof Omit<UpsellType, "id">] as any) =
+              data[field as keyof Omit<UpsellType, "id">];
+          }
+        });
+      } else {
+        Object.assign(baseUpsell, data);
+      }
+
       if (includeProducts && data.products) {
         const products = [...data.products].sort((a, b) => a.index - b.index);
         return {
           ...baseUpsell,
           products,
-        };
+        } as UpsellType;
       }
 
-      // Return without products if not requested
-      return baseUpsell;
+      return baseUpsell as UpsellType;
     })
   );
 
-  // Sort by updatedAt in descending order
-  const sortedUpsells = sortItems(upsells, "updatedAt", true);
-  return sortedUpsells;
+  return upsells.sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  );
 }

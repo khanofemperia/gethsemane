@@ -107,7 +107,12 @@ export default async function EditProduct({
     };
   }
 
-  const upsellDetails = upsell ? calculateUpsell(pricing, upsell) : null;
+  const upsellDetails = upsell
+    ? calculateUpsell(
+        pricing,
+        upsell
+      )
+    : null;
 
   const hasBasicDetails = category && name && pricing.basePrice && slug && id;
   const hasOnPageSeo =
