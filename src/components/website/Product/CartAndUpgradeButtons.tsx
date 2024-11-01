@@ -8,6 +8,9 @@ import { AddToCartAction } from "@/actions/shopping-cart";
 import { Spinner } from "@/ui/Spinners/Default";
 import clsx from "clsx";
 import { UpsellReviewButton } from "../UpsellReviewOverlay";
+import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
+import { usePathname, useRouter } from "next/navigation";
+import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 
 type CartAndUpgradeButtonsType = {
   product: ProductWithUpsellType;
@@ -23,12 +26,15 @@ export function CartAndUpgradeButtons({
   hasSize,
 }: CartAndUpgradeButtonsType) {
   const [isPending, startTransition] = useTransition();
-
+  const pathname = usePathname();
+  const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
   const selectedColor = useOptionsStore((state) => state.selectedColor);
   const selectedSize = useOptionsStore((state) => state.selectedSize);
   const isInCart = useOptionsStore((state) => state.isInCart);
   const setIsInCart = useOptionsStore((state) => state.setIsInCart);
+  const hideOverlay = useUpsellReviewStore((state) => state.hideOverlay);
+  const hideQuickviewOverlay = useQuickviewStore((state) => state.hideOverlay);
 
   useEffect(() => {
     setIsInCart(
@@ -82,7 +88,20 @@ export function CartAndUpgradeButtons({
   };
 
   const handleInCartButtonClick = () => {
-    // Navigate to the cart or trigger desired action
+    if (pathname === "/cart") {
+      hideOverlay();
+      hideQuickviewOverlay();
+
+      const scrollableParent = document.getElementById("scrollable-parent");
+      if (scrollableParent) {
+        scrollableParent.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+    } else {
+      router.push("/cart");
+    }
   };
 
   return (
@@ -107,7 +126,7 @@ export function CartAndUpgradeButtons({
               onClick={handleAddToCart}
               disabled={isPending}
               className={clsx(
-                "flex items-center justify-center w-full rounded-full cursor-pointer border border-[#c5c3c0] text-sm font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:text-base min-[896px]:h-12",
+                "flex items-center justify-center w-full max-w-60 rounded-full cursor-pointer border border-[#c5c3c0] text-sm font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:text-base min-[896px]:h-12",
                 isPending && "cursor-context-menu opacity-50"
               )}
             >
