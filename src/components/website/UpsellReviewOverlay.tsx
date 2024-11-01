@@ -77,9 +77,11 @@ function ProductSizeChart({
   selectedSize,
   onSizeSelect,
 }: ProductSizeChartProps) {
-  const showOverlay = useOverlayStore(state => state.showOverlay);
-  const pageName = useOverlayStore(state => state.pages.productDetails.name);
-  const overlayName = useOverlayStore(state => state.pages.productDetails.overlays.sizeChart.name);
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.productDetails.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.productDetails.overlays.sizeChart.name
+  );
 
   const { columns, rows } = sizeChart.inches;
   const sizes = rows.map((row) => row[columns[0].label]);
@@ -170,7 +172,6 @@ function ProductOptions({
 }: ProductOptionsProps) {
   const hasColor = product.options.colors.length > 0;
   const hasSize = Object.keys(product.options.sizes).length > 0;
-
   return (
     <div className="flex flex-col gap-4 select-none">
       {hasColor && (
@@ -196,8 +197,10 @@ export function UpsellReviewButton({
 }: {
   product: UpsellReviewProductType;
 }) {
-  const showOverlay = useUpsellReviewStore(state => state.showOverlay);
-  const setSelectedProduct = useUpsellReviewStore(state => state.setSelectedProduct);
+  const showOverlay = useUpsellReviewStore((state) => state.showOverlay);
+  const setSelectedProduct = useUpsellReviewStore(
+    (state) => state.setSelectedProduct
+  );
 
   const openOverlay = () => {
     setSelectedProduct(product);
@@ -216,15 +219,23 @@ export function UpsellReviewButton({
 }
 
 export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
-  const hideOverlay = useUpsellReviewStore(state => state.hideOverlay);
-  const selectedOptions = useUpsellReviewStore(state => state.selectedOptions);
-  const readyProducts = useUpsellReviewStore(state => state.readyProducts);
-  const isVisible = useUpsellReviewStore(state => state.isVisible);
-  const selectedProduct = useUpsellReviewStore(state => state.selectedProduct);
-  const setSelectedOptions = useUpsellReviewStore(state => state.setSelectedOptions);
-  const setReadyProducts = useUpsellReviewStore(state => state.setReadyProducts);
-  const hideQuickviewOverlay = useQuickviewStore(state => state.hideOverlay);
-  const showAlert = useAlertStore(state => state.showAlert);
+  const hideOverlay = useUpsellReviewStore((state) => state.hideOverlay);
+  const selectedOptions = useUpsellReviewStore(
+    (state) => state.selectedOptions
+  );
+  const readyProducts = useUpsellReviewStore((state) => state.readyProducts);
+  const isVisible = useUpsellReviewStore((state) => state.isVisible);
+  const selectedProduct = useUpsellReviewStore(
+    (state) => state.selectedProduct
+  );
+  const setSelectedOptions = useUpsellReviewStore(
+    (state) => state.setSelectedOptions
+  );
+  const setReadyProducts = useUpsellReviewStore(
+    (state) => state.setReadyProducts
+  );
+  const hideQuickviewOverlay = useQuickviewStore((state) => state.hideOverlay);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const pathname = usePathname();
   const router = useRouter();

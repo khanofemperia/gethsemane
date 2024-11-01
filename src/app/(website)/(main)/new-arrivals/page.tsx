@@ -1,26 +1,29 @@
 import React from "react";
 import { cookies } from "next/headers";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  DocumentData,
-  QueryDocumentSnapshot,
-} from "firebase/firestore";
-import { database } from "@/lib/firebase";
 import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import ShowAlert from "@/components/website/ShowAlert";
 import { getCart } from "@/lib/api/cart";
+import { getProducts } from "@/lib/api/products";
 
 export default async function NewArrivals() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);
-  const products = await getProductsWithUpsells();
+  const products = (await getProducts({
+    fields: [
+      "id",
+      "name",
+      "slug",
+      "description",
+      "pricing",
+      "images",
+      "options",
+      "upsell",
+      "highlights",
+    ],
+  })) as ProductWithUpsellType[];
 
   return (
     <>
@@ -40,47 +43,5 @@ export default async function NewArrivals() {
       <UpsellReviewOverlay cart={cart} />
       <ShowAlert />
     </>
-  );
-}
-
-async function getProductsWithUpsells(): Promise<
-  ProductWithUpsellType[] | null
-> {
-  const collectionRef = collection(database, "products");
-  const snapshot = await getDocs(query(collectionRef));
-
-  if (snapshot.empty) {
-    return null;
-  }
-
-  const products = await Promise.all(
-    snapshot.docs.map(
-      async (docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
-        const data = docSnapshot.data() as Omit<ProductType, "id">;
-        const product: ProductType = {
-          ...data,
-          id: docSnapshot.id,
-        };
-
-        let upsell: UpsellType | null = null;
-        if (product.upsell && product.upsell.trim()) {
-          const upsellDocRef = doc(database, "upsells", product.upsell);
-          const upsellSnapshot = await getDoc(upsellDocRef);
-
-          if (upsellSnapshot.exists()) {
-            upsell = upsellSnapshot.data() as UpsellType;
-          }
-        }
-
-        return {
-          ...product,
-          upsell,
-        } as ProductWithUpsellType;
-      }
-    )
-  );
-
-  return products.sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 }
