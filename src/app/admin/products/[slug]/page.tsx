@@ -30,7 +30,6 @@ import {
   DescriptionButton,
   DescriptionOverlay,
 } from "@/components/admin/EditProduct/DescriptionOverlay";
-import { getProduct, getUpsell } from "@/lib/getData";
 import Link from "next/link";
 import { CheckmarkIcon } from "@/icons";
 import {
@@ -50,6 +49,8 @@ import {
   UpsellButton,
   UpsellOverlay,
 } from "@/components/admin/EditProduct/UpsellOverlay ";
+import { getUpsells } from "@/lib/api/upsells";
+import { getProducts } from "@/lib/api/products";
 
 export default async function EditProduct({
   params,
@@ -57,7 +58,7 @@ export default async function EditProduct({
   params: { slug: string };
 }) {
   const productId = params.slug.split("-").pop() as string;
-  const product = await getProduct({ id: productId });
+  const [product] = (await getProducts({ ids: [productId] })) || [];
 
   if (!product) {
     notFound();
@@ -79,9 +80,11 @@ export default async function EditProduct({
     upsell: upsellId,
   } = product as ProductType;
 
-  const upsell = upsellId
-    ? ((await getUpsell({ id: upsellId })) as UpsellType)
+  const fetchedUpsells = upsellId
+    ? await getUpsells({ ids: [upsellId] })
     : null;
+
+  const upsell = fetchedUpsells ? fetchedUpsells[0] : null;
 
   function calculateUpsell(
     currentProduct: PricingType,
@@ -91,6 +94,7 @@ export default async function EditProduct({
 
     const originalPrice =
       Number(currentProduct.salePrice) || Number(currentProduct.basePrice);
+
     const upsellPrice =
       Number(upsell.pricing.salePrice) || Number(upsell.pricing.basePrice);
 

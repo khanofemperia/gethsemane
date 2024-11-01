@@ -30,7 +30,8 @@ import {
   BannerImagesButton,
   BannerImagesOverlay,
 } from "@/components/admin/Storefront/EditCollection/BannerImagesOverlay";
-import { getCollection, getProductsByIds } from "@/lib/getData";
+import { getCollections } from "@/lib/api/collections";
+import { getProducts } from "@/lib/api/products";
 
 type ProductWithIndex = ProductType & { index: number };
 
@@ -63,8 +64,11 @@ export default async function EditCollection({
   const CAMPAIGN_STATUS_UPCOMING = "Upcoming";
   const CAMPAIGN_STATUS_ACTIVE = "Active";
 
-  const collectionId = params.slug.split("-").pop() as string;
-  const collection = await getCollection({ id: collectionId });
+  const [collection] =
+    (await getCollections({
+      ids: [params.slug.split("-").pop() as string],
+      includeProducts: true,
+    })) || [];
 
   if (!collection) {
     notFound();
@@ -74,7 +78,7 @@ export default async function EditCollection({
     (collection.products || []).map((product) => [product.id, product.index])
   );
 
-  const collectionProducts = await getProductsByIds({
+  const collectionProducts = await getProducts({
     ids: Array.from(productIndexes.keys()),
     fields: ["id", "slug", "images", "name", "pricing"],
   });

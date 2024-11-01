@@ -1,6 +1,6 @@
+import { getProducts } from "@/lib/api/products";
 import config from "@/lib/config";
 import { database } from "@/lib/firebase";
-import { getProductsByIds } from "@/lib/getData";
 import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
@@ -598,7 +598,7 @@ async function updateUpsellProductNames(order: PaymentTransaction) {
   let upsellProducts;
   if (upsellProductIds.length > 0) {
     try {
-      upsellProducts = await getProductsByIds({
+      upsellProducts = await getProducts({
         ids: upsellProductIds,
         fields: ["name"],
         visibility: "PUBLISHED",

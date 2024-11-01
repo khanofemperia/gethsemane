@@ -9,8 +9,8 @@ import {
   PageHeroOverlay,
 } from "@/components/admin/Storefront/PageHeroOverlay";
 import { getCategories } from "@/lib/api/categories";
+import { getCollections } from "@/lib/api/collections";
 import { getPageHero } from "@/lib/api/pageHero";
-import { getCollections } from "@/lib/getData";
 import clsx from "clsx";
 
 export default async function Storefront() {

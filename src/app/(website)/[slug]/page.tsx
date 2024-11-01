@@ -5,7 +5,6 @@ import Images from "@/components/website/Product/Images";
 import Image from "next/image";
 import { cookies } from "next/headers";
 import styles from "./styles.module.css";
-import { getCart, getProductWithUpsell } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import "@/components/shared/TextEditor/theme/index.css";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
@@ -16,6 +15,8 @@ import clsx from "clsx";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { getCategories } from "@/lib/api/categories";
+import { getCart } from "@/lib/api/cart";
+import { getProducts } from "@/lib/api/products";
 
 export default async function ProductDetails({
   params,
@@ -25,13 +26,24 @@ export default async function ProductDetails({
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
 
-  const [cart, categoriesData, product] = await Promise.all([
+  const [cart, categoriesData, fetchedProducts] = await Promise.all([
     getCart(deviceIdentifier),
     getCategories({ visibility: "HIDDEN" }),
-    (await getProductWithUpsell({
-      id: params.slug.split("-").pop() as string,
-    })) as ProductWithUpsellType,
+    getProducts({
+      ids: [params.slug.split("-").pop() as string],
+      fields: [
+        "name",
+        "pricing",
+        "images",
+        "options",
+        "highlights",
+        "upsell",
+        "description",
+      ],
+    }),
   ]);
+
+  const product = fetchedProducts?.[0] as ProductWithUpsellType;
 
   const {
     id,
@@ -42,7 +54,7 @@ export default async function ProductDetails({
     highlights,
     upsell,
     description,
-  } = product as ProductWithUpsellType;
+  } = product || {};
 
   const hasColor = product.options.colors.length > 0;
   const hasSize = Object.keys(product.options.sizes).length > 0;

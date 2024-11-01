@@ -11,15 +11,15 @@ import {
   VisibilityOverlay,
 } from "@/components/admin/EditUpsell/VisibilityOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
-import { getUpsell } from "@/lib/getData";
 import clsx from "clsx";
+import { getUpsells } from "@/lib/api/upsells";
 
 export default async function EditUpsell({
   params,
 }: {
   params: { id: string };
 }) {
-  const upsell = (await getUpsell({ id: params.id })) as UpsellType;
+  const [upsell] = (await getUpsells({ ids: [params.id] })) || [];
 
   if (!upsell) {
     notFound();

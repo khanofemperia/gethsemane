@@ -15,7 +15,7 @@ const HIDDEN = "HIDDEN";
 const INACTIVE = "INACTIVE";
 const ALL = "ALL";
 
-export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
+export default function UpsellGrid({ upsells }: { upsells: UpsellType[] | null }) {
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>(ALL);
@@ -30,17 +30,17 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
 
   const getFilteredUpsells = (filter: string) => {
     if (filter === PUBLISHED) {
-      return upsells.filter(
+      return (upsells ?? []).filter(
         (upsell) => upsell.visibility.toUpperCase() === PUBLISHED
       );
     } else if (filter === INACTIVE) {
-      return upsells.filter(
+      return (upsells ?? []).filter(
         (upsell) =>
           upsell.visibility.toUpperCase() === HIDDEN ||
           upsell.visibility.toUpperCase() === DRAFT
       );
     }
-    return upsells;
+    return upsells ?? [];
   };
 
   const filteredUpsells = getFilteredUpsells(filter);
@@ -90,7 +90,6 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
     setCurrentPage((prevPage) => {
       const value = Math.max(prevPage - 1, 1);
       setPageJumpValue(String(value));
-
       return value;
     });
     setIsPageInRange(true);
@@ -100,7 +99,6 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
     setCurrentPage((prevPage) => {
       const value = Math.min(prevPage + 1, totalPages);
       setPageJumpValue(String(value));
-
       return value;
     });
     setIsPageInRange(true);
@@ -138,7 +136,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
 
   return (
     <div className="mx-auto flex flex-wrap justify-start px-5 min-[1068px]:px-0 md:w-[762px] lg:w-[1016px]">
-      {upsells.length > 0 ? (
+      {(upsells?.length ?? 0) > 0 ? (
         <>
           <div className="w-full flex flex-col gap-3">
             <div className="w-full flex flex-col min-[588px]:flex-row gap-2 items-center justify-between">
@@ -149,7 +147,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                     filter === ALL ? "text-blue" : "text-gray hover:text-black"
                   }`}
                 >
-                  View all ({upsells.length})
+                  View all ({upsells?.length ?? 0})
                 </button>
                 <button
                   onClick={() => handleFilterChange(PUBLISHED)}
@@ -161,7 +159,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                 >
                   Published (
                   {
-                    upsells.filter(
+                    (upsells ?? []).filter(
                       (upsell) => upsell.visibility.toUpperCase() === PUBLISHED
                     ).length
                   }
@@ -177,7 +175,7 @@ export default function UpsellGrid({ upsells }: { upsells: UpsellType[] }) {
                 >
                   Inactive (
                   {
-                    upsells.filter(
+                    (upsells ?? []).filter(
                       (upsell) =>
                         upsell.visibility.toUpperCase() === HIDDEN ||
                         upsell.visibility.toUpperCase() === DRAFT

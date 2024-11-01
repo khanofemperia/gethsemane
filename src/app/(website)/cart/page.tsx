@@ -1,7 +1,6 @@
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import ShowAlert from "@/components/website/ShowAlert";
 import { CheckmarkIcon } from "@/icons";
-import { getCart, getDiscoveryProducts, getProductsByIds } from "@/lib/getData";
 import { formatThousands } from "@/lib/utils";
 import { cookies } from "next/headers";
 import Image from "next/image";
@@ -15,14 +14,15 @@ import { database } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
 import { PayPalButton } from "@/components/website/PayPalButton";
+import { getCart } from "@/lib/api/cart";
+import { getProducts } from "@/lib/api/products";
 
 export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
 
-  const [cart, discoveryProducts] = await Promise.all([
+  const [cart] = await Promise.all([
     getCart(deviceIdentifier),
-    getDiscoveryProducts({ limit: 10 }),
   ]);
 
   const items = cart?.items || [];
@@ -409,12 +409,6 @@ export default async function Cart() {
               </div>
             )}
           </div>
-          <DiscoveryProducts
-            heading="Add These to Your Cart"
-            products={discoveryProducts as ProductWithUpsellType[]}
-            cart={cart as CartType}
-            deviceIdentifier={deviceIdentifier}
-          />
         </div>
       </div>
       <ShowAlert />
@@ -426,7 +420,7 @@ export default async function Cart() {
 }
 
 const getBaseProducts = async (productIds: string[]) =>
-  getProductsByIds({
+  getProducts({
     ids: productIds,
     fields: ["id", "name", "slug", "pricing", "images", "options"],
     visibility: "PUBLISHED",
@@ -560,9 +554,9 @@ const getUpsell = async ({
     ? data.products.map((p: { id: string }) => p.id)
     : [];
 
-  const products: ProductType[] | null =
+  const products =
     productIds.length > 0
-      ? await getProductsByIds({
+      ? await getProducts({
           ids: productIds,
           fields: ["options", "images"],
           visibility: "PUBLISHED",
