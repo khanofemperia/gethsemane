@@ -1,4 +1,8 @@
+import { collection, getDocs, query, runTransaction, serverTimestamp, where } from "firebase/firestore";
 import { getProducts } from "../products";
+import { database } from "@/lib/firebase";
+import { revalidatePath } from "next/cache";
+import { getUpsells } from "../upsells";
 
 type CartType = {
   id: string;
@@ -63,14 +67,14 @@ async function validateCartItems(items: any[]): Promise<any[]> {
   const validatedItems = await Promise.all(
     items.map(async (item) => {
       if (item.type === "product") {
-        const product = await getProducts({
+        const fetchedProducts = await getProducts({
           ids: [item.baseProductId],
           fields: ["name"],
         });
-        return product ? item : null;
+        return fetchedProducts?.length ? item : null;
       } else if (item.type === "upsell") {
-        const upsell = await getUpsell({ id: item.baseUpsellId });
-        return upsell ? item : null;
+        const fetchedUpsells = await getUpsells({ ids: [item.baseUpsellId] });
+        return fetchedUpsells?.length ? item : null;
       }
       return null;
     })

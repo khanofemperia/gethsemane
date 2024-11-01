@@ -9,12 +9,12 @@ import {
   DocumentData,
   QueryDocumentSnapshot,
 } from "firebase/firestore";
-import { getCart } from "@/lib/getData";
 import { database } from "@/lib/firebase";
 import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import ShowAlert from "@/components/website/ShowAlert";
+import { getCart } from "@/lib/api/cart";
 
 export default async function NewArrivals() {
   const cookieStore = cookies();

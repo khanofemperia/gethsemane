@@ -12,8 +12,8 @@ import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getProduct } from "@/lib/getData";
 import { ReactSortable } from "react-sortablejs";
+import { getProducts } from "@/lib/api/products";
 
 type ProductType = {
   index: number;
@@ -276,26 +276,27 @@ export function NewUpsellOverlay() {
     setLoadingProduct(true);
 
     try {
-      const product = await getProduct({
-        id: trimmedProductId,
-        fields: ["id", "name", "slug", "images", "pricing"],
+      const fetchedProducts = await getProducts({
+        ids: [trimmedProductId],
+        fields: ["name", "slug", "images", "pricing"],
       });
 
-      if (product) {
+      if (fetchedProducts?.length) {
+        const { id, slug, name, images, pricing } = fetchedProducts[0];
         const newProduct = {
           index: products.length + 1,
-          id: product.id,
-          slug: product.slug,
-          name: product.name,
-          images: product.images,
-          basePrice: product.pricing?.basePrice ?? 0,
+          id,
+          slug,
+          name,
+          images,
+          basePrice: pricing?.basePrice ?? 0,
         };
 
         setProducts((prevProducts) => [
           ...prevProducts,
           newProduct as ProductType,
         ]);
-        setProductId(""); // Clear input field after adding
+        setProductId("");
       } else {
         setAlertMessageType(AlertMessageType.ERROR);
         setAlertMessage("Product not found");

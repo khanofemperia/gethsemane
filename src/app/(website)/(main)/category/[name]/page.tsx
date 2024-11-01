@@ -2,7 +2,8 @@ import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import ShowAlert from "@/components/website/ShowAlert";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-import { getCart, getProductsByCategoryWithUpsell } from "@/lib/getData";
+import { getCart } from "@/lib/api/cart";
+import { getProducts } from "@/lib/api/products";
 import { cookies } from "next/headers";
 
 export default async function Categories({
@@ -14,7 +15,7 @@ export default async function Categories({
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);
 
-  const products = await getProductsByCategoryWithUpsell({
+  const products = await getProducts({
     category: params.name,
   });
 

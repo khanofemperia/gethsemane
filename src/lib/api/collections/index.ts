@@ -79,7 +79,6 @@ export async function getCollections(
         const products = await getProducts({
           ids: productIds,
           fields: [
-            "id",
             "name",
             "slug",
             "description",
