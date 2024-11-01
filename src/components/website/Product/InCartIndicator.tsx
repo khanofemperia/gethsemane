@@ -1,6 +1,4 @@
 import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
-import { useAlertStore } from "@/zustand/website/alertStore";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 
