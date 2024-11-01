@@ -3,8 +3,9 @@ import type { NextRequest } from "next/server";
 import { setDoc, doc } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 import { cookies } from "next/headers";
-import { getCart, getProductsByIds } from "@/lib/getData";
 import { getDoc } from "firebase/firestore";
+import { getCart } from "@/lib/api/cart";
+import { getProducts } from "@/lib/api/products";
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.NEXT_PAYPAL_CLIENT_SECRET;
@@ -149,9 +150,9 @@ async function getCartItems() {
 }
 
 const getBaseProducts = async (productIds: string[]) =>
-  getProductsByIds({
+  getProducts({
     ids: productIds,
-    fields: ["id", "name", "slug", "pricing", "images", "options"],
+    fields: ["name", "slug", "pricing", "images", "options"],
     visibility: "PUBLISHED",
   }) as Promise<ProductType[]>;
 
@@ -283,9 +284,9 @@ const getUpsell = async ({
     ? data.products.map((p: { id: string }) => p.id)
     : [];
 
-  const products: ProductType[] | null =
+  const products =
     productIds.length > 0
-      ? await getProductsByIds({
+      ? await getProducts({
           ids: productIds,
           fields: ["options", "images"],
           visibility: "PUBLISHED",
