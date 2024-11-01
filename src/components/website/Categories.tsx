@@ -8,81 +8,6 @@ import { ComponentPropsWithRef, useCallback, useEffect, useState } from "react";
 import { EmblaCarouselType } from "embla-carousel";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 
-type UsePrevNextButtonsType = {
-  prevBtnDisabled: boolean;
-  nextBtnDisabled: boolean;
-  onPrevButtonClick: () => void;
-  onNextButtonClick: () => void;
-};
-
-export const usePrevNextButtons = (
-  emblaApi: EmblaCarouselType | undefined
-): UsePrevNextButtonsType => {
-  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
-  const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
-
-  const onPrevButtonClick = useCallback(() => {
-    if (!emblaApi) return;
-    emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const onNextButtonClick = useCallback(() => {
-    if (!emblaApi) return;
-    emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
-    setPrevBtnDisabled(!emblaApi.canScrollPrev());
-    setNextBtnDisabled(!emblaApi.canScrollNext());
-  }, []);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-
-    onSelect(emblaApi);
-    emblaApi.on("reInit", onSelect).on("select", onSelect);
-  }, [emblaApi, onSelect]);
-
-  return {
-    prevBtnDisabled,
-    nextBtnDisabled,
-    onPrevButtonClick,
-    onNextButtonClick,
-  };
-};
-
-type PropType = ComponentPropsWithRef<"button">;
-
-export const PrevButton: React.FC<PropType> = (props) => {
-  const { children, ...restProps } = props;
-
-  return (
-    <button
-      className="embla__button embla__button--prev disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute left-4 lg:-left-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
-      type="button"
-      {...restProps}
-    >
-      <ChevronLeftIcon className="stroke-white mr-[2px]" size={22} />
-      {children}
-    </button>
-  );
-};
-
-export const NextButton: React.FC<PropType> = (props) => {
-  const { children, ...restProps } = props;
-
-  return (
-    <button
-      className="embla__button embla__button--next disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute right-4 lg:-right-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
-      type="button"
-      {...restProps}
-    >
-      <ChevronRightIcon className="stroke-white ml-[2px]" size={22} />
-      {children}
-    </button>
-  );
-};
-
 export function Categories({
   categories,
 }: {
@@ -151,3 +76,84 @@ export function Categories({
     </div>
   );
 }
+
+// -- Logic & Utilities --
+
+export const usePrevNextButtons = (
+  emblaApi: EmblaCarouselType | undefined
+): UsePrevNextButtonsType => {
+  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
+  const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
+
+  const onPrevButtonClick = useCallback(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const onNextButtonClick = useCallback(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
+    setPrevBtnDisabled(!emblaApi.canScrollPrev());
+    setNextBtnDisabled(!emblaApi.canScrollNext());
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    onSelect(emblaApi);
+    emblaApi.on("reInit", onSelect).on("select", onSelect);
+  }, [emblaApi, onSelect]);
+
+  return {
+    prevBtnDisabled,
+    nextBtnDisabled,
+    onPrevButtonClick,
+    onNextButtonClick,
+  };
+};
+
+// -- UI Components --
+
+export const PrevButton: React.FC<PropType> = (props) => {
+  const { children, ...restProps } = props;
+
+  return (
+    <button
+      className="embla__button embla__button--prev disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute left-4 lg:-left-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
+      type="button"
+      {...restProps}
+    >
+      <ChevronLeftIcon className="stroke-white mr-[2px]" size={22} />
+      {children}
+    </button>
+  );
+};
+
+export const NextButton: React.FC<PropType> = (props) => {
+  const { children, ...restProps } = props;
+
+  return (
+    <button
+      className="embla__button embla__button--next disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute right-4 lg:-right-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
+      type="button"
+      {...restProps}
+    >
+      <ChevronRightIcon className="stroke-white ml-[2px]" size={22} />
+      {children}
+    </button>
+  );
+};
+
+// -- Type Definitions --
+
+type UsePrevNextButtonsType = {
+  prevBtnDisabled: boolean;
+  nextBtnDisabled: boolean;
+  onPrevButtonClick: () => void;
+  onNextButtonClick: () => void;
+};
+
+type PropType = ComponentPropsWithRef<"button">;
