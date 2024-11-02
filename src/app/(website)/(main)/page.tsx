@@ -34,6 +34,15 @@ export default async function Home() {
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
   const cart = await getCart(deviceIdentifier);
 
+  const excludeIdsFromDiscoveryProducts = combinedCollections
+    .filter((collection) => collection.collectionType === "FEATURED")
+    .flatMap((collection) =>
+      (collection.products || [])
+        .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+        .slice(0, 3)
+        .map((product) => product.id)
+    );
+
   return (
     <>
       {renderHero(pageHero)}
@@ -48,7 +57,12 @@ export default async function Home() {
               {renderCollection(collection, cart, deviceIdentifier)}
             </div>
           ))}
-          <DiscoveryProducts deviceIdentifier={deviceIdentifier} cart={cart} />
+          <DiscoveryProducts
+            page="HOME"
+            excludeIds={excludeIdsFromDiscoveryProducts}
+            deviceIdentifier={deviceIdentifier}
+            cart={cart}
+          />
         </div>
       </div>
       <QuickviewOverlay />

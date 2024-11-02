@@ -1,28 +1,49 @@
-import { shuffleDiscoveryProducts } from "@/lib/utils";
-import { unstable_noStore as noStore } from "next/cache";
 import { ProductCard } from "./ProductCard";
+import { getProducts } from "@/lib/api/products";
 
-export function DiscoveryProducts({
+export async function DiscoveryProducts({
   heading = "Explore Your Interests",
-  products,
+  page,
+  excludeIds = [],
   cart,
   deviceIdentifier,
 }: {
   heading?: string;
-  products?: ProductWithUpsellType[];
+  page?: "HOME" | "CART";
+  excludeIds?: string[];
   cart: CartType | null;
   deviceIdentifier: string;
 }) {
-  noStore(); // prevents this component from being cached
+  const fields = [
+    "id",
+    "name",
+    "slug",
+    "description",
+    "pricing",
+    "images",
+    "options",
+    "upsell",
+    "highlights",
+  ];
 
-  const shuffledProducts = shuffleDiscoveryProducts([...(products || [])]);
+  const products = (await getProducts({ fields })) as ProductWithUpsellType[];
+
+  const filteredProducts = products.filter((product) => {
+    // Ignore CART for now
+    if (page === "HOME") {
+      return !excludeIds.includes(product.id);
+    }
+
+    return true;
+  });
+
   return (
     <div>
       <h2 className="w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
         {heading}
       </h2>
       <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
-        {shuffledProducts.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard
             key={product.id}
             product={product}
