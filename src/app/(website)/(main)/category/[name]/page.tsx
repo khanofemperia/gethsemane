@@ -118,6 +118,110 @@ export default async function Categories({
   );
 }
 
+async function getProducts({
+  category,
+  page = 1,
+  limit: pageLimit = 12,
+}: {
+  category: string;
+  page?: number;
+  limit?: number;
+}): Promise<{
+  products: (ProductType | ProductWithUpsellType)[];
+  totalPages: number;
+  lastVisible: any | null;
+}> {
+  try {
+    const productsRef = collection(database, "products");
+    const countQuery = query(
+      productsRef,
+      where("category", "==", capitalizeFirstLetter(category))
+    );
+    const countSnapshot = await getDocs(countQuery);
+    const totalProducts = countSnapshot.size;
+    const totalPages = Math.ceil(totalProducts / pageLimit);
+
+    let paginatedQuery = query(
+      productsRef,
+      where("category", "==", capitalizeFirstLetter(category)),
+      orderBy("updatedAt", "desc"),
+      orderBy("__name__", "desc"),
+      limit(pageLimit)
+    );
+
+    // If not the first page, we need to get the cursor
+    if (page > 1) {
+      const cursorDocQuery = query(
+        productsRef,
+        where("category", "==", capitalizeFirstLetter(category)),
+        orderBy("updatedAt", "desc"),
+        orderBy("__name__", "desc"),
+        limit((page - 1) * pageLimit)
+      );
+
+      const cursorSnapshot = await getDocs(cursorDocQuery);
+
+      if (!cursorSnapshot.empty) {
+        const lastDoc = cursorSnapshot.docs[cursorSnapshot.docs.length - 1];
+
+        paginatedQuery = query(
+          productsRef,
+          where("category", "==", capitalizeFirstLetter(category)),
+          orderBy("updatedAt", "desc"),
+          orderBy("__name__", "desc"),
+          startAfter(lastDoc),
+          limit(pageLimit)
+        );
+      }
+    }
+
+    // Get the paginated products
+    const paginatedSnapshot = await getDocs(paginatedQuery);
+    const lastVisible =
+      paginatedSnapshot.docs[paginatedSnapshot.docs.length - 1];
+
+    const products = await Promise.all(
+      paginatedSnapshot.docs.map(async (docSnapshot) => {
+        const data = docSnapshot.data();
+
+        const product: Partial<ProductType> = {
+          id: docSnapshot.id,
+          ...data,
+        };
+
+        if (product?.upsell) {
+          const upsellDetails = await fetchUpsellDetails(product.upsell);
+          if (upsellDetails) {
+            return {
+              ...product,
+              upsell: upsellDetails,
+            } as ProductWithUpsellType;
+          }
+        }
+
+        return product as ProductType;
+      })
+    );
+
+    return {
+      products,
+      totalPages,
+      lastVisible,
+    };
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("requires an index")) {
+      console.error("Firestore index not yet ready:", error);
+      // Return empty state while index is building
+      return {
+        products: [],
+        totalPages: 0,
+        lastVisible: null,
+      };
+    }
+    throw error;
+  }
+}
+
 async function fetchUpsellDetails(
   upsellId: string
 ): Promise<UpsellType | null> {
@@ -156,64 +260,5 @@ async function fetchUpsellDetails(
     products: productsInUpsell.filter(
       (item): item is UpsellType["products"][number] => item !== null
     ),
-  };
-}
-
-async function getProducts({
-  category,
-  page = 1,
-  limit = 12,
-}: {
-  category: string;
-  page?: number;
-  limit?: number;
-}): Promise<{
-  products: (ProductType | ProductWithUpsellType)[];
-  totalPages: number;
-}> {
-  const productsRef = collection(database, "products");
-  const conditions = [where("category", "==", capitalizeFirstLetter(category))];
-
-  // Get all products for total count
-  const allProductsSnapshot = await getDocs(query(productsRef, ...conditions));
-  const totalProducts = allProductsSnapshot.size;
-  const totalPages = Math.ceil(totalProducts / limit);
-
-  // Get paginated products
-  const start = (page - 1) * limit;
-  const paginatedProducts = allProductsSnapshot.docs.slice(
-    start,
-    start + limit
-  );
-
-  // Process products
-  const products = await Promise.all(
-    paginatedProducts.map(async (docSnapshot) => {
-      const data = docSnapshot.data();
-
-      const product: Partial<ProductType> = {
-        id: docSnapshot.id,
-        ...data,
-      };
-
-      if (product?.upsell) {
-        const upsellDetails = await fetchUpsellDetails(product.upsell);
-        if (upsellDetails) {
-          return {
-            ...product,
-            upsell: upsellDetails,
-          } as ProductWithUpsellType;
-        }
-      }
-
-      return product as ProductType;
-    })
-  );
-
-  const sortedProducts = products;
-
-  return {
-    products: sortedProducts,
-    totalPages,
   };
 }
