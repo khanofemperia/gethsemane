@@ -9,7 +9,6 @@ import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { database } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
@@ -21,9 +20,7 @@ export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
 
-  const [cart] = await Promise.all([
-    getCart(deviceIdentifier),
-  ]);
+  const [cart] = await Promise.all([getCart(deviceIdentifier)]);
 
   const items = cart?.items || [];
   const productItems = items.filter((item) => item.type === "product");
@@ -56,6 +53,12 @@ export default async function Cart() {
     }, 0);
 
     return Number(totalBasePrice.toFixed(2));
+  };
+
+  const formatProductOptions = (color: string, size: string) => {
+    if (!color && !size) return null;
+    if (color && size) return `${color} / ${size}`;
+    return color || size;
   };
 
   return (
@@ -121,6 +124,11 @@ export default async function Cart() {
                     <div className="flex flex-col gap-5">
                       {sortedCartItems.map((item) => {
                         if (item.type === "product") {
+                          const productOptions = formatProductOptions(
+                            item.color,
+                            item.size
+                          );
+
                           return (
                             <div key={item.index} className="flex gap-5">
                               <div className="flex items-center">
@@ -154,10 +162,12 @@ export default async function Cart() {
                                     variantId={item.variantId}
                                   />
                                 </div>
-                                <span className="text-xs font-medium">
-                                  {item.color} / {item.size}
-                                </span>
-                                <div className="mt-2 w-max flex items-center justify-center">
+                                {productOptions && (
+                                  <span className="mb-1 text-xs font-medium">
+                                    {productOptions}
+                                  </span>
+                                )}
+                                <div className="w-max flex items-center justify-center">
                                   {Number(item.pricing.salePrice) ? (
                                     <div className="flex items-center gap-[6px]">
                                       <div className="flex items-baseline text-[rgb(168,100,0)]">
@@ -266,42 +276,48 @@ export default async function Cart() {
                                   </div>
                                 </div>
                                 <div className="flex flex-wrap gap-5">
-                                  {item.products.map((product) => (
-                                    <div
-                                      key={product.id}
-                                      className="last:mb-0 w-[146px]"
-                                    >
-                                      <div className="mb-2 w-full h-[146px] rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
-                                        <Image
-                                          src={product.mainImage}
-                                          alt={product.name}
-                                          width={146}
-                                          height={146}
-                                          priority
-                                        />
+                                  {item.products.map((product) => {
+                                    const productOptions = formatProductOptions(
+                                      product.color,
+                                      product.size
+                                    );
+
+                                    return (
+                                      <div
+                                        key={product.id}
+                                        className="last:mb-0 w-[146px]"
+                                      >
+                                        <div className="mb-2 w-full h-[146px] rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
+                                          <Image
+                                            src={product.mainImage}
+                                            alt={product.name}
+                                            width={146}
+                                            height={146}
+                                            priority
+                                          />
+                                        </div>
+                                        <div className="flex flex-col gap-[2px]">
+                                          <Link
+                                            href={`${product.slug}-${product.id}`}
+                                            target="_blank"
+                                            className="text-gray text-xs hover:underline w-max"
+                                          >
+                                            {product.name.length > 18
+                                              ? `${product.name.slice(
+                                                  0,
+                                                  18
+                                                )}...`
+                                              : product.name}
+                                          </Link>
+                                          {productOptions && (
+                                            <span className="text-xs font-medium">
+                                              {productOptions}
+                                            </span>
+                                          )}
+                                        </div>
                                       </div>
-                                      <div className="flex flex-col gap-[2px]">
-                                        <Link
-                                          href={`${product.slug}-${product.id}`}
-                                          target="_blank"
-                                          className="text-gray text-xs hover:underline w-max"
-                                        >
-                                          {product.name.length > 18
-                                            ? `${product.name.slice(0, 18)}...`
-                                            : product.name}
-                                        </Link>
-                                        <span className="text-xs font-medium">
-                                          {product.color && product.size
-                                            ? `${product.color} / ${product.size}`
-                                            : product.color
-                                            ? product.color
-                                            : product.size
-                                            ? product.size
-                                            : ""}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  ))}
+                                    );
+                                  })}
                                 </div>
                                 <RemoveFromCartButton
                                   type="upsell"

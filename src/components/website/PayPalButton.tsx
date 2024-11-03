@@ -146,7 +146,8 @@ function generateCartItems(cart: Cart): CartItem[] {
   }
 
   function getPrice(pricing: { salePrice: number; basePrice: number }): number {
-    return pricing.salePrice > 0 ? pricing.salePrice : pricing.basePrice;
+    const price = pricing.salePrice > 0 ? pricing.salePrice : pricing.basePrice;
+    return Number(price);
   }
 
   return cart.map((item): CartItem => {
