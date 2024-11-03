@@ -1,155 +1,3 @@
-// import { ProductCard } from "@/components/website/ProductCard";
-// import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
-// import ShowAlert from "@/components/website/ShowAlert";
-// import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-// import { getCart } from "@/lib/api/cart";
-// import { cookies } from "next/headers";
-
-// export default async function Categories({
-//   params,
-// }: {
-//   params: { name: string };
-// }) {
-//   const cookieStore = cookies();
-//   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
-//   const cart = await getCart(deviceIdentifier);
-
-//   const products = await getProducts({
-//     category: params.name,
-//   });
-
-//   console.log(products);
-
-//   return (
-//     <>
-//       <div className="max-w-[968px] mx-auto pt-10">
-//         {products && Array.isArray(products) && (
-//           <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
-//             {products
-//               .filter(
-//                 (product): product is ProductWithUpsellType => product !== null
-//               )
-//               .map((product, index) => (
-//                 <ProductCard
-//                   key={index}
-//                   product={product}
-//                   cart={cart}
-//                   deviceIdentifier={deviceIdentifier}
-//                 />
-//               ))}
-//           </div>
-//         )}
-//       </div>
-//       <QuickviewOverlay />
-//       <UpsellReviewOverlay cart={cart} />
-//       <ShowAlert />
-//     </>
-//   );
-// }
-
-// import {
-//   collection,
-//   doc,
-//   getDoc,
-//   getDocs,
-//   query,
-//   where,
-// } from "firebase/firestore";
-// import { database } from "@/lib/firebase";
-// import { capitalizeFirstLetter } from "@/lib/utils";
-
-// async function fetchUpsellDetails(
-//   upsellId: string
-// ): Promise<UpsellType | null> {
-//   const upsellDocRef = doc(database, "upsells", upsellId);
-//   const upsellSnapshot = await getDoc(upsellDocRef);
-
-//   if (!upsellSnapshot.exists()) {
-//     return null;
-//   }
-
-//   const upsellData = upsellSnapshot.data() as UpsellType;
-//   const productsInUpsell = await Promise.all(
-//     upsellData.products.map(async (productItem) => {
-//       const productDocRef = doc(database, "products", productItem.id);
-//       const productSnapshot = await getDoc(productDocRef);
-
-//       if (!productSnapshot.exists()) {
-//         return null;
-//       }
-
-//       const productData = productSnapshot.data() as ProductType;
-//       return {
-//         index: productItem.index,
-//         name: productItem.name,
-//         id: productData.id,
-//         slug: productData.slug,
-//         images: productData.images,
-//         basePrice: productData.pricing.basePrice,
-//         options: productData.options,
-//       };
-//     })
-//   );
-
-//   return {
-//     ...upsellData,
-//     products: productsInUpsell.filter(
-//       (item): item is UpsellType["products"][number] => item !== null
-//     ),
-//   };
-// }
-
-// export async function getProducts({
-//   category,
-// }: {
-//   category: string;
-// }): Promise<(ProductType | ProductWithUpsellType)[] | null> {
-//   const productsRef = collection(database, "products");
-//   let conditions: any[] = [];
-
-//   if (category) {
-//     conditions.push(where("category", "==", capitalizeFirstLetter(category)));
-//   }
-
-//   const firestoreQuery =
-//     conditions.length > 0
-//       ? query(productsRef, ...conditions)
-//       : query(productsRef);
-
-//   const snapshot = await getDocs(firestoreQuery);
-
-//   if (snapshot.empty) {
-//     return null;
-//   }
-
-//   // Process products
-//   const products = await Promise.all(
-//     snapshot.docs.map(async (docSnapshot) => {
-//       const data = docSnapshot.data();
-
-//       const product: Partial<ProductType> = {
-//         id: docSnapshot.id,
-//         ...data,
-//       };
-
-//       if (product?.upsell) {
-//         const upsellDetails = await fetchUpsellDetails(product.upsell);
-//         if (upsellDetails) {
-//           return {
-//             ...product,
-//             upsell: upsellDetails,
-//           } as ProductWithUpsellType;
-//         }
-//       }
-
-//       return product as ProductType;
-//     })
-//   );
-
-//   const sortedProducts = products; // do the sort by updatedAt
-//   return sortedProducts;
-// }
-
 import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import ShowAlert from "@/components/website/ShowAlert";
@@ -158,6 +6,21 @@ import { getCart } from "@/lib/api/cart";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import clsx from "clsx";
+
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+  startAfter,
+} from "firebase/firestore";
+import { database } from "@/lib/firebase";
+import { capitalizeFirstLetter } from "@/lib/utils";
+import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 
 export default async function Categories({
   params,
@@ -255,21 +118,6 @@ export default async function Categories({
   );
 }
 
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  limit,
-  startAfter,
-} from "firebase/firestore";
-import { database } from "@/lib/firebase";
-import { capitalizeFirstLetter } from "@/lib/utils";
-import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
-
 async function fetchUpsellDetails(
   upsellId: string
 ): Promise<UpsellType | null> {
@@ -311,7 +159,7 @@ async function fetchUpsellDetails(
   };
 }
 
-export async function getProducts({
+async function getProducts({
   category,
   page = 1,
   limit = 12,
