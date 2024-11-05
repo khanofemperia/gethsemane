@@ -47,7 +47,7 @@ export function RemoveFromCartButton({
       {isPending ? (
         <DashSpinner size={18} color="#6c6c6c" />
       ) : (
-        <TrashIcon size={18} className="fill-gray" />
+        <TrashIcon size={18} className="fill-neutral-500" />
       )}
     </button>
   );

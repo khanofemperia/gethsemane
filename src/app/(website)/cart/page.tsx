@@ -117,7 +117,7 @@ export default async function Cart() {
                         </div>
                       </div>
                       <span className="font-semibold">
-                        Select all ({sortedCartItems.length})
+                        Checkout ({sortedCartItems.length} {sortedCartItems.length === 1 ? "Item" : "Items"})
                       </span>
                     </div>
                     <div className="flex flex-col gap-5">
