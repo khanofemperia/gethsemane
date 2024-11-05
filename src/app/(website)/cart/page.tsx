@@ -19,8 +19,7 @@ import { getProducts } from "@/lib/api/products";
 export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
-
-  const [cart] = await Promise.all([getCart(deviceIdentifier)]);
+  const cart = await getCart(deviceIdentifier);
 
   const items = cart?.items || [];
   const productItems = items.filter((item) => item.type === "product");
@@ -113,7 +112,7 @@ export default async function Cart() {
                   <div className="flex flex-col gap-5">
                     <div className="flex gap-5">
                       <div className="flex items-center">
-                        <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                        <div className="w-5 h-5 cursor-pointer rounded-full flex items-center justify-center ease-in-out duration-200 transition bg-black hover:bg-black/60">
                           <CheckmarkIcon className="fill-white" size={16} />
                         </div>
                       </div>
@@ -132,7 +131,7 @@ export default async function Cart() {
                           return (
                             <div key={item.index} className="flex gap-5">
                               <div className="flex items-center">
-                                <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                                <div className="w-5 h-5 cursor-pointer rounded-full flex items-center justify-center ease-in-out duration-200 transition bg-black hover:bg-black/60">
                                   <CheckmarkIcon
                                     className="fill-white"
                                     size={16}
@@ -217,7 +216,7 @@ export default async function Cart() {
                           return (
                             <div key={item.index} className="flex gap-5">
                               <div className="flex items-center">
-                                <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+                                <div className="w-5 h-5 cursor-pointer rounded-full flex items-center justify-center ease-in-out duration-200 transition bg-black hover:bg-black/60">
                                   <CheckmarkIcon
                                     className="fill-white"
                                     size={16}
