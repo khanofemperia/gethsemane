@@ -94,7 +94,6 @@ export function PayPalButton({ cart }: { cart: Cart }) {
       }
 
       const orderData = await response.json();
-      console.log("orderData:", orderData);
 
       return orderData;
     } catch (error) {
