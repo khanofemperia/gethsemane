@@ -10,6 +10,40 @@ import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
 import { getCart } from "@/lib/api/cart";
 import { getProducts } from "@/lib/api/products";
 import CartItemList from "@/components/website/CartItemList";
+import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
+import clsx from "clsx";
+
+type CartItemType =
+  | {
+      type: "product";
+      baseProductId: string;
+      name: string;
+      slug: string;
+      pricing: any;
+      mainImage: string;
+      variantId: string;
+      size: string;
+      color: string;
+      index: number;
+    }
+  | {
+      type: "upsell";
+      baseUpsellId: string;
+      variantId: string;
+      index: number;
+      mainImage: string;
+      pricing: any;
+      products: Array<{
+        index: number;
+        id: string;
+        slug: string;
+        name: string;
+        mainImage: string;
+        basePrice: number;
+        size: string;
+        color: string;
+      }>;
+    };
 
 export default async function Cart() {
   const cookieStore = cookies();
@@ -37,6 +71,36 @@ export default async function Cart() {
   const sortedCartItems = [...cartProducts, ...cartUpsells].sort(
     (a, b) => b.index - a.index
   );
+
+  const getExcludedProductIds = (cartItems: CartItemType[]): string[] => {
+    const productIds = new Set<string>();
+
+    cartItems.forEach((item: CartItemType) => {
+      if (item.type === "product") {
+        productIds.add(item.baseProductId);
+      } else if (item.type === "upsell" && item.products) {
+        item.products.forEach(
+          (product: {
+            index: number;
+            id: string;
+            slug: string;
+            name: string;
+            mainImage: string;
+            basePrice: number;
+            size: string;
+            color: string;
+          }) => {
+            productIds.add(product.id);
+          }
+        );
+      }
+    });
+
+    return Array.from(productIds);
+  };
+
+  const excludeIdsFromDiscoveryProducts =
+    getExcludedProductIds(sortedCartItems);
 
   return (
     <>
@@ -74,20 +138,32 @@ export default async function Cart() {
         </nav>
         <div className="max-w-[968px] mx-auto flex flex-col gap-10">
           <div className="mx-auto">
-            {!sortedCartItems || sortedCartItems.length === 0 ? (
-              <div className="flex flex-col items-center py-16 text-lg">
-                <Image
-                  src="/icons/cart-thin.svg"
-                  alt="Cart"
-                  width={80}
-                  height={80}
-                  priority={true}
-                />
-              </div>
-            ) : (
+            <div
+              className={clsx(
+                sortedCartItems?.length === 0
+                  ? "flex flex-col items-center py-16 text-lg"
+                  : "hidden"
+              )}
+            >
+              <Image
+                src="/icons/cart-thin.svg"
+                alt="Cart"
+                width={80}
+                height={80}
+                priority={true}
+              />
+            </div>
+            {sortedCartItems?.length > 0 && (
               <CartItemList cartItems={sortedCartItems} />
             )}
           </div>
+          <DiscoveryProducts
+            page="CART"
+            heading="Add These to Your Cart"
+            excludeIds={excludeIdsFromDiscoveryProducts}
+            deviceIdentifier={deviceIdentifier}
+            cart={cart}
+          />
         </div>
       </div>
       <ShowAlert />

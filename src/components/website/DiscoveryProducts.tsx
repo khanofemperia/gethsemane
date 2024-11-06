@@ -29,11 +29,9 @@ export async function DiscoveryProducts({
   const products = (await getProducts({ fields })) as ProductWithUpsellType[];
 
   const filteredProducts = products.filter((product) => {
-    // Ignore CART for now
-    if (page === "HOME") {
+    if (page === "HOME" || page === "CART") {
       return !excludeIds.includes(product.id);
     }
-
     return true;
   });
 

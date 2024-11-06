@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import { CheckmarkIcon } from "@/icons";
 import { formatThousands } from "@/lib/utils";
@@ -52,13 +52,65 @@ export default function CartItemList({
     new Set(cartItems.map((item) => item.variantId))
   );
 
+  // Keep track of manually deselected items
+  const [deselectedItems, setDeselectedItems] = useState<Set<string>>(
+    new Set()
+  );
+
+  // Keep track of manually selected items
+  const [manuallySelectedItems, setManuallySelectedItems] = useState<
+    Set<string>
+  >(new Set());
+
+  useEffect(() => {
+    // Update selections when cart items change
+    setSelectedItems((prevSelected) => {
+      const newSelected = new Set<string>();
+
+      cartItems.forEach((item) => {
+        const variantId = item.variantId;
+
+        // Keep item selected if:
+        // 1. It was manually selected previously
+        // 2. OR it's a new item AND wasn't manually deselected before
+        if (
+          manuallySelectedItems.has(variantId) ||
+          (!prevSelected.has(variantId) && !deselectedItems.has(variantId))
+        ) {
+          newSelected.add(variantId);
+        }
+        // Keep item selected if it was previously selected and not manually deselected
+        else if (
+          prevSelected.has(variantId) &&
+          !deselectedItems.has(variantId)
+        ) {
+          newSelected.add(variantId);
+        }
+      });
+
+      return newSelected;
+    });
+  }, [cartItems, deselectedItems, manuallySelectedItems]);
+
   const toggleItem = (variantId: string) => {
     setSelectedItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(variantId)) {
         newSet.delete(variantId);
+        // Track manually deselected items
+        setDeselectedItems(new Set([...deselectedItems, variantId]));
+        setManuallySelectedItems(
+          new Set([...manuallySelectedItems].filter((id) => id !== variantId))
+        );
       } else {
         newSet.add(variantId);
+        // Track manually selected items
+        setManuallySelectedItems(
+          new Set([...manuallySelectedItems, variantId])
+        );
+        setDeselectedItems(
+          new Set([...deselectedItems].filter((id) => id !== variantId))
+        );
       }
       return newSet;
     });
@@ -67,8 +119,16 @@ export default function CartItemList({
   const toggleAll = () => {
     if (selectedItems.size === cartItems.length) {
       setSelectedItems(new Set());
+      // Add all current items to deselected set
+      setDeselectedItems(new Set(cartItems.map((item) => item.variantId)));
+      setManuallySelectedItems(new Set());
     } else {
       setSelectedItems(new Set(cartItems.map((item) => item.variantId)));
+      // Clear deselected items when selecting all
+      setDeselectedItems(new Set());
+      setManuallySelectedItems(
+        new Set(cartItems.map((item) => item.variantId))
+      );
     }
   };
 
