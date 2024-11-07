@@ -9,7 +9,7 @@ export async function NavbarWrapper() {
 
   const [cart, categoriesData] = await Promise.all([
     getCart(deviceIdentifier),
-    getCategories(),
+    getCategories({ visibility: "VISIBLE" }),
   ]);
 
   return (
