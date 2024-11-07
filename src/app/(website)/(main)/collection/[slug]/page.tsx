@@ -33,21 +33,28 @@ export default async function Collections({
   return (
     <>
       <div className="max-w-[968px] mx-auto pt-10">
-        {products && (
-          <>
-            <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
-              {products.filter(Boolean).map((product, index) => (
-                <ProductCard
-                  key={index}
-                  product={product as ProductWithUpsellType & { index: number }}
-                  cart={cart}
-                  deviceIdentifier={deviceIdentifier}
-                />
-              ))}
-            </div>
-            <Pagination currentPage={currentPage} totalPages={totalPages} />
-          </>
-        )}
+        <h2 className="w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
+          {collection.title}
+        </h2>
+        <div>
+          {products && (
+            <>
+              <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
+                {products.filter(Boolean).map((product, index) => (
+                  <ProductCard
+                    key={index}
+                    product={
+                      product as ProductWithUpsellType & { index: number }
+                    }
+                    cart={cart}
+                    deviceIdentifier={deviceIdentifier}
+                  />
+                ))}
+              </div>
+              <Pagination currentPage={currentPage} totalPages={totalPages} />
+            </>
+          )}
+        </div>
       </div>
       <QuickviewOverlay />
       <UpsellReviewOverlay cart={cart} />

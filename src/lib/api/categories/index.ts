@@ -139,4 +139,5 @@ const defaultCategories: CategoryType[] = [
     visibility: "HIDDEN",
   },
   { index: 6, name: "Men", image: "men.png", visibility: "HIDDEN" },
+  { index: 7, name: "Catch-All", image: "catch-all.png", visibility: "HIDDEN" },
 ];

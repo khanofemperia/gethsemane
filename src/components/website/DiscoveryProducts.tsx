@@ -37,7 +37,7 @@ export async function DiscoveryProducts({
 
   return (
     <div>
-      <h2 className="w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-[1.375rem] md:leading-7">
+      <h2 className="w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
         {heading}
       </h2>
       <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
