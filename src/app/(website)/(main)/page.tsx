@@ -46,12 +46,12 @@ export default async function Home() {
   return (
     <>
       {renderHero(pageHero)}
-      <div className="w-full pt-8">
+      <div>
         {categoriesData?.showOnPublicSite &&
           categoriesData.categories.length > 0 && (
             <Categories categories={categoriesData.categories} />
           )}
-        <div className="max-w-[968px] mx-auto flex flex-col gap-10">
+        <div className="mt-12 max-w-[968px] mx-auto flex flex-col gap-10">
           {combinedCollections.map((collection, index) => (
             <div key={index}>
               {renderCollection(collection, cart, deviceIdentifier)}

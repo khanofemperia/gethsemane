@@ -30,7 +30,7 @@ export function Categories({
   } = usePrevNextButtons(emblaApi);
 
   return (
-    <div className="relative mb-10 w-full max-w-max mx-auto">
+    <div className="relative pt-8 w-full max-w-max mx-auto">
       <div
         className="embla relative select-none overflow-hidden w-full max-w-[768px] lg:max-w-[828px] py-1 px-3 md:px-1 mx-auto"
         ref={emblaRef}
