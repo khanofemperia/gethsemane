@@ -292,6 +292,12 @@ export default async function OrderDetails({
   const captureId = paypalOrder.purchase_units[0].payments.captures[0].id;
   const paypalUrl = getPayPalUrl(captureId);
 
+  const formatProductOptions = (color?: string, size?: string) => {
+    if (!color && !size) return null;
+    if (color && size) return `${color} / ${size}`;
+    return color || size;
+  };
+
   return (
     <>
       <div className="w-full max-w-[768px] flex flex-col gap-6">
@@ -387,176 +393,165 @@ export default async function OrderDetails({
           </div>
         </div>
         <div className="max-w-[618px] relative flex items-center justify-between shadow rounded-xl bg-white">
-          <div className="p-5">
-            <div className="mx-auto">
-              <div className="flex flex-col gap-5">
-                {order &&
-                  order.items.map((item) => {
-                    if (item.type === "product") {
-                      return (
-                        <div key={item.index} className="flex gap-5">
-                          <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
-                            <Image
-                              src={item.mainImage}
-                              alt={item.name}
-                              width={128}
-                              height={128}
-                              priority
-                            />
-                          </div>
-                          <div className="w-full pr-3 flex flex-col gap-1">
-                            <Link
-                              href={`${item.slug}-${item.baseProductId}`}
-                              target="_blank"
-                              className="text-gray text-xs underline line-clamp-1"
-                            >
-                              {item.name}
-                            </Link>
-                            <span className="text-xs font-medium">
-                              {item.color} / {item.size}
+          <div className="p-5 flex flex-col gap-5">
+            {order.items.map((item) => {
+              if (item.type === "product") {
+                const productOptions = formatProductOptions(
+                  item.color,
+                  item.size
+                );
+                return (
+                  <div key={item.index} className="flex gap-5">
+                    <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
+                      <Image
+                        src={item.mainImage}
+                        alt={item.name}
+                        width={128}
+                        height={128}
+                        priority
+                      />
+                    </div>
+                    <div className="w-full pr-3 flex flex-col gap-1">
+                      <Link
+                        href={`${item.slug}-${item.baseProductId}`}
+                        target="_blank"
+                        className="w-max text-gray text-xs line-clamp-1 hover:underline"
+                      >
+                        {item.name}
+                      </Link>
+                      {productOptions && (
+                        <span className="mb-1 text-xs font-medium">
+                          {productOptions}
+                        </span>
+                      )}
+                      <div className="w-max flex items-center justify-center">
+                        {Number(item.pricing.salePrice) ? (
+                          <div className="flex items-center gap-[6px]">
+                            <div className="flex items-baseline text-[rgb(168,100,0)]">
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(Number(item.pricing.salePrice))}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(Number(item.pricing.salePrice) % 1)
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
+                            <span className="text-[0.813rem] leading-3 text-gray line-through">
+                              ${formatThousands(Number(item.pricing.basePrice))}
                             </span>
-                            <div className="mt-2 w-max flex items-center justify-center">
-                              {Number(item.pricing.salePrice) ? (
-                                <div className="flex items-center gap-[6px]">
-                                  <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                    <span className="text-[0.813rem] leading-3 font-semibold">
-                                      $
-                                    </span>
-                                    <span className="text-lg font-bold">
-                                      {Math.floor(
-                                        Number(item.pricing.salePrice)
-                                      )}
-                                    </span>
-                                    <span className="text-[0.813rem] leading-3 font-semibold">
-                                      {(Number(item.pricing.salePrice) % 1)
-                                        .toFixed(2)
-                                        .substring(1)}
-                                    </span>
-                                  </div>
-                                  <span className="text-[0.813rem] leading-3 text-gray line-through">
-                                    $
-                                    {formatThousands(
-                                      Number(item.pricing.basePrice)
-                                    )}
-                                  </span>
-                                </div>
-                              ) : (
-                                <div className="flex items-baseline">
-                                  <span className="text-[0.813rem] leading-3 font-semibold">
-                                    $
-                                  </span>
-                                  <span className="text-lg font-bold">
-                                    {Math.floor(Number(item.pricing.basePrice))}
-                                  </span>
-                                  <span className="text-[0.813rem] leading-3 font-semibold">
-                                    {(Number(item.pricing.basePrice) % 1)
-                                      .toFixed(2)
-                                      .substring(1)}
-                                  </span>
-                                </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-baseline">
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              $
+                            </span>
+                            <span className="text-lg font-bold">
+                              {Math.floor(Number(item.pricing.basePrice))}
+                            </span>
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              {(Number(item.pricing.basePrice) % 1)
+                                .toFixed(2)
+                                .substring(1)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              } else if (item.type === "upsell") {
+                return (
+                  <div
+                    key={item.index}
+                    className="relative w-full p-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]"
+                  >
+                    <div className="mb-5 min-w-full h-5 flex gap-5 items-center justify-between">
+                      <div className="w-max flex items-center justify-center">
+                        {Number(item.pricing.salePrice) ? (
+                          <div className="flex items-center gap-[6px]">
+                            <div className="flex items-baseline text-[rgb(168,100,0)]">
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                $
+                              </span>
+                              <span className="text-xl font-bold">
+                                {Math.floor(Number(item.pricing.salePrice))}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(Number(item.pricing.salePrice) % 1)
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
+                            <span className="text-[0.813rem] leading-3 text-gray line-through">
+                              ${formatThousands(Number(item.pricing.basePrice))}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex items-baseline text-[rgb(168,100,0)]">
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              $
+                            </span>
+                            <span className="text-lg font-bold">
+                              {Math.floor(Number(item.pricing.basePrice))}
+                            </span>
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              {(Number(item.pricing.basePrice) % 1)
+                                .toFixed(2)
+                                .substring(1)}
+                            </span>
+                            <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                              today
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-5">
+                      {item.products.map((product) => {
+                        const productOptions = formatProductOptions(
+                          product.color,
+                          product.size
+                        );
+                        return (
+                          <div key={product.id} className="last:mb-0 w-[146px]">
+                            <div className="mb-2 w-full h-[146px] rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
+                              <Image
+                                src={product.mainImage}
+                                alt={product.name}
+                                width={146}
+                                height={146}
+                                priority
+                              />
+                            </div>
+                            <div className="flex flex-col gap-[2px]">
+                              <Link
+                                href={`${product.slug}-${product.id}`}
+                                target="_blank"
+                                className="text-gray text-xs hover:underline w-max"
+                              >
+                                {product.name.length > 18
+                                  ? `${product.name.slice(0, 18)}...`
+                                  : product.name}
+                              </Link>
+                              {productOptions && (
+                                <span className="text-xs font-medium">
+                                  {productOptions}
+                                </span>
                               )}
                             </div>
                           </div>
-                        </div>
-                      );
-                    } else if (item.type === "upsell") {
-                      return (
-                        <div key={item.index}>
-                          <div className="relative w-full p-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]">
-                            <div className="mb-5 min-w-full h-5 flex gap-5 items-center justify-between">
-                              <div className="w-max flex items-center justify-center">
-                                {Number(item.pricing.salePrice) ? (
-                                  <div className="flex items-center gap-[6px]">
-                                    <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                      <span className="text-[0.813rem] leading-3 font-semibold">
-                                        $
-                                      </span>
-                                      <span className="text-xl font-bold">
-                                        {Math.floor(
-                                          Number(item.pricing.salePrice)
-                                        )}
-                                      </span>
-                                      <span className="text-[0.813rem] leading-3 font-semibold">
-                                        {(Number(item.pricing.salePrice) % 1)
-                                          .toFixed(2)
-                                          .substring(1)}
-                                      </span>
-                                    </div>
-                                    <span className="text-[0.813rem] leading-3 text-gray line-through">
-                                      $
-                                      {formatThousands(
-                                        Number(item.pricing.basePrice)
-                                      )}
-                                    </span>
-                                  </div>
-                                ) : (
-                                  <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                    <span className="text-[0.813rem] leading-3 font-semibold">
-                                      $
-                                    </span>
-                                    <span className="text-lg font-bold">
-                                      {Math.floor(
-                                        Number(item.pricing.basePrice)
-                                      )}
-                                    </span>
-                                    <span className="text-[0.813rem] leading-3 font-semibold">
-                                      {(Number(item.pricing.basePrice) % 1)
-                                        .toFixed(2)
-                                        .substring(1)}
-                                    </span>
-                                    <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
-                                      today
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <div className="flex gap-5">
-                              {item.products.map((product) => (
-                                <div
-                                  key={product.id}
-                                  className="last:mb-0 w-32"
-                                >
-                                  <div className="mb-2 w-full h-32 rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
-                                    <Image
-                                      src={product.mainImage}
-                                      alt={product.name}
-                                      width={128}
-                                      height={128}
-                                      priority
-                                    />
-                                  </div>
-                                  <div className="flex flex-col gap-[2px]">
-                                    <Link
-                                      href={`${product.slug}-${product.id}`}
-                                      target="_blank"
-                                      className="text-gray text-xs underline w-max"
-                                    >
-                                      {product.name.length > 18
-                                        ? `${product.name.slice(0, 18)}...`
-                                        : product.name}
-                                    </Link>
-                                    <span className="text-xs font-medium">
-                                      {product.color && product.size
-                                        ? `${product.color} / ${product.size}`
-                                        : product.color
-                                        ? product.color
-                                        : product.size
-                                        ? product.size
-                                        : ""}
-                                    </span>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })}
-              </div>
-            </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })}
           </div>
         </div>
       </div>

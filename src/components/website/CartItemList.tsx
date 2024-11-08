@@ -341,7 +341,6 @@ export default function CartItemList({
                             product.color,
                             product.size
                           );
-
                           return (
                             <div
                               key={product.id}
