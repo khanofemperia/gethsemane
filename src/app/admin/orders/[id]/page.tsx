@@ -1,3 +1,4 @@
+import { OrderEmails } from "@/components/admin/OrderEmails";
 import { getProducts } from "@/lib/api/products";
 import config from "@/lib/config";
 import { database } from "@/lib/firebase";
@@ -5,6 +6,7 @@ import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
+import { MdOutlineMail } from "react-icons/md";
 
 type OrderDetailsType = {
   id: string;
@@ -392,6 +394,9 @@ export default async function OrderDetails({
             </div>
           </div>
         </div>
+        <div className="p-5 pt-4 relative shadow rounded-xl bg-white">
+          <OrderEmails />
+        </div>
         <div className="max-w-[618px] relative flex items-center justify-between shadow rounded-xl bg-white">
           <div className="p-5 flex flex-col gap-5">
             {order.items.map((item) => {
@@ -415,7 +420,7 @@ export default async function OrderDetails({
                       <Link
                         href={`${item.slug}-${item.baseProductId}`}
                         target="_blank"
-                        className="w-max text-gray text-xs line-clamp-1 hover:underline"
+                        className="text-xs text-gray line-clamp-1 hover:underline"
                       >
                         {item.name}
                       </Link>
