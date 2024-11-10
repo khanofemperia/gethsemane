@@ -1,4 +1,6 @@
-import { OrderConfirmation } from "@/components/emails/order-confirmation";
+import { OrderConfirmation } from "@/components/emails/OrderConfirmation";
+import { ShippingConfirmation } from "@/components/emails/ShippingConfirmation";
+import { DeliveredNotification } from "@/components/emails/DeliveredNotification";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -9,7 +11,7 @@ export async function POST() {
       from: "Acme <onboarding@resend.dev>",
       to: ["khanofemperia@gmail.com"],
       subject: "Howdy",
-      react: OrderConfirmation(),
+      react: DeliveredNotification(),
     });
 
     if (error) {
