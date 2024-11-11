@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRightIcon } from "@/icons";
-import { OrderConfirmedEmailPreviewButton, OrderConfirmedEmailPreviewOverlay } from "./EmailPreviewOverlay";
+import { OrderConfirmedEmailPreviewButton, OrderConfirmedEmailPreviewOverlay } from "./OrderConfirmedEmailPreviewOverlay";
 
 export function OrderEmails() {
   return (
