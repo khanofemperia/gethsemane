@@ -184,6 +184,23 @@ export const useOverlayStore = create<OverlayStoreProps>((set) => ({
         },
       },
     },
+    orderDetails: {
+      name: "orderDetails",
+      overlays: {
+        orderConfirmedEmailPreview: {
+          name: "orderConfirmedEmailPreview",
+          isVisible: false,
+        },
+        orderShippedEmailPreview: {
+          name: "orderShippedEmailPreview",
+          isVisible: false,
+        },
+        orderDeliveredEmailPreview: {
+          name: "orderDeliveredEmailPreview",
+          isVisible: false,
+        },
+      },
+    },
   },
   showOverlay: ({ pageName, overlayName }: OverlayType) => {
     set((state) => {
