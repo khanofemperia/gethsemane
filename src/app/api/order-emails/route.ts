@@ -7,29 +7,26 @@ import { EmailType } from "@/lib/sharedTypes";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-type EmailTemplate = () => JSX.Element;
+type EmailTemplateType = () => JSX.Element;
 
-const EMAIL_TEMPLATES: Record<EmailType, EmailTemplate> = {
+const EMAIL_TEMPLATES: Record<EmailType, EmailTemplateType> = {
   [EmailType.ORDER_CONFIRMED]: OrderConfirmation,
   [EmailType.SHIPPING_CONFIRMED]: ShippingConfirmation,
   [EmailType.DELIVERY_CONFIRMED]: DeliveredNotification,
 };
 
-interface EmailRequestBody {
+type EmailRequestBodyType = {
   customerEmail: string;
   emailSubject: string;
   emailType: EmailType;
-}
+};
 
 export async function POST(request: NextRequest) {
   try {
     const { customerEmail, emailSubject, emailType } =
-      (await request.json()) as EmailRequestBody;
+      (await request.json()) as EmailRequestBodyType;
 
     const Template = EMAIL_TEMPLATES[emailType];
-    if (!Template) {
-      return Response.json({ error: "Invalid email type" }, { status: 400 });
-    }
 
     const { data, error } = await resend.emails.send({
       from: "Acme <onboarding@resend.dev>",
