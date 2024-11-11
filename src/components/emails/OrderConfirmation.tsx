@@ -7,7 +7,7 @@ export function OrderConfirmation() {
         fontFamily: "'Times New Roman', serif",
         backgroundColor: "#FFFFFF",
         color: "#333333",
-        padding: "40px 20px",
+        padding: "0 20px 40px 20px",
       }}
     >
       {/* Header */}
