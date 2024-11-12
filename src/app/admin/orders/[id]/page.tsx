@@ -1,6 +1,3 @@
-import { OrderConfirmedEmailPreviewButton, OrderConfirmedEmailPreviewOverlay } from "@/components/admin/OrderConfirmedEmailPreviewOverlay";
-import { OrderShippedEmailPreviewButton, OrderShippedEmailPreviewOverlay } from "@/components/admin/OrderShippedEmailPreviewOverlay";
-import { OrderDeliveredEmailPreviewButton, OrderDeliveredEmailPreviewOverlay } from "@/components/admin/OrderDeliveredEmailPreviewOverlay";
 import { getProducts } from "@/lib/api/products";
 import config from "@/lib/config";
 import { database } from "@/lib/firebase";
@@ -8,6 +5,8 @@ import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
+import { EmailPreviewButton, EmailPreviewOverlay } from "@/components/admin/OrderEmailPreviewOverlay";
+import { EmailType } from "@/lib/sharedTypes";
 
 type OrderDetailsType = {
   id: string;
@@ -397,9 +396,9 @@ export default async function OrderDetails({
         </div>
         <div className="p-5 pt-4 relative shadow rounded-xl bg-white">
           <div className="flex flex-wrap gap-5">
-            <OrderConfirmedEmailPreviewButton />
-            <OrderShippedEmailPreviewButton />
-            <OrderDeliveredEmailPreviewButton />
+            <EmailPreviewButton emailType={EmailType.ORDER_CONFIRMED} />
+            <EmailPreviewButton emailType={EmailType.ORDER_SHIPPED} />
+            <EmailPreviewButton emailType={EmailType.ORDER_DELIVERED} />
           </div>
         </div>
         <div className="max-w-[618px] relative flex items-center justify-between shadow rounded-xl bg-white">
@@ -565,9 +564,9 @@ export default async function OrderDetails({
           </div>
         </div>
       </div>
-      <OrderConfirmedEmailPreviewOverlay />
-      <OrderShippedEmailPreviewOverlay />
-      <OrderDeliveredEmailPreviewOverlay />
+      <EmailPreviewOverlay emailType={EmailType.ORDER_CONFIRMED} />
+      <EmailPreviewOverlay emailType={EmailType.ORDER_SHIPPED} />
+      <EmailPreviewOverlay emailType={EmailType.ORDER_DELIVERED} />
     </>
   );
 }
