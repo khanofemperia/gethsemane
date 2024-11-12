@@ -1,7 +1,6 @@
-import { OrderConfirmedEmailPreviewOverlay } from "@/components/admin/OrderConfirmedEmailPreviewOverlay";
-import { OrderShippedEmailPreviewOverlay } from "@/components/admin/OrderShippedEmailPreviewOverlay";
-import { OrderDeliveredEmailPreviewOverlay } from "@/components/admin/OrderDeliveredEmailPreviewOverlay";
-import { OrderEmailButtons } from "@/components/admin/OrderEmailButtons";
+import { OrderConfirmedEmailPreviewButton, OrderConfirmedEmailPreviewOverlay } from "@/components/admin/OrderConfirmedEmailPreviewOverlay";
+import { OrderShippedEmailPreviewButton, OrderShippedEmailPreviewOverlay } from "@/components/admin/OrderShippedEmailPreviewOverlay";
+import { OrderDeliveredEmailPreviewButton, OrderDeliveredEmailPreviewOverlay } from "@/components/admin/OrderDeliveredEmailPreviewOverlay";
 import { getProducts } from "@/lib/api/products";
 import config from "@/lib/config";
 import { database } from "@/lib/firebase";
@@ -9,7 +8,6 @@ import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-import { MdOutlineMail } from "react-icons/md";
 
 type OrderDetailsType = {
   id: string;
@@ -398,7 +396,11 @@ export default async function OrderDetails({
           </div>
         </div>
         <div className="p-5 pt-4 relative shadow rounded-xl bg-white">
-          <OrderEmailButtons />
+          <div className="flex flex-wrap gap-5">
+            <OrderConfirmedEmailPreviewButton />
+            <OrderShippedEmailPreviewButton />
+            <OrderDeliveredEmailPreviewButton />
+          </div>
         </div>
         <div className="max-w-[618px] relative flex items-center justify-between shadow rounded-xl bg-white">
           <div className="p-5 flex flex-col gap-5">
