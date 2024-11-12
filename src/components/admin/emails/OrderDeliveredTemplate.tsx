@@ -1,4 +1,4 @@
-export function ShippingConfirmation() {
+export function OrderDeliveredTemplate() {
   return (
     <div
       style={{
@@ -26,7 +26,7 @@ export function ShippingConfirmation() {
             letterSpacing: "2px",
           }}
         >
-          Order Shipped
+          Order Delivered
         </h1>
         <div
           style={{
@@ -36,7 +36,7 @@ export function ShippingConfirmation() {
             fontStyle: "italic",
           }}
         >
-          Your order is on its way, traveling safely to you.
+          We hope you enjoy your new purchase!
         </div>
       </div>
       {/* Content */}
@@ -48,7 +48,7 @@ export function ShippingConfirmation() {
           background: "rgba(0,0,0,0.02)",
         }}
       >
-        {/* Order ID and Dispatch Date */}
+        {/* Order ID and Delivery Date */}
         <div
           style={{
             textAlign: "center",
@@ -83,43 +83,7 @@ export function ShippingConfirmation() {
               marginTop: "8px",
             }}
           >
-            Dispatched on November 10, 2024
-          </div>
-        </div>
-        {/* Divider */}
-        <div
-          style={{
-            width: "100%",
-            height: "1px",
-            background: "linear-gradient(to right, #FFFFFF, #E5E5E5, #FFFFFF)",
-            margin: "30px 0",
-          }}
-        ></div>
-        {/* Expected Delivery Date */}
-        <div
-          style={{
-            textAlign: "center",
-            padding: "30px 0",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "14px",
-              color: "#B8860B",
-              letterSpacing: "2px",
-              marginBottom: "15px",
-            }}
-          >
-            EXPECTED DELIVERY
-          </div>
-          <div
-            style={{
-              fontSize: "18px",
-              lineHeight: 1.6,
-              fontFamily: "'Times New Roman', serif",
-            }}
-          >
-            November 14, 2024
+            Delivered on November 14, 2024
           </div>
         </div>
         {/* Divider */}
@@ -146,7 +110,7 @@ export function ShippingConfirmation() {
               marginBottom: "20px",
             }}
           >
-            For any shipping inquiries, feel free to reach us at
+            If you have any questions or concerns, our team is here to help.
           </p>
           <a
             href="mailto:support@cherlygood.com"

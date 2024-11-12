@@ -6,15 +6,15 @@ import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import AlertMessage from "@/components/shared/AlertMessage";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType, EmailType } from "@/lib/sharedTypes";
-import { OrderConfirmedTemplate } from "./emails/OrderConfirmedTemplate";
 import { Spinner } from "@/ui/Spinners/Default";
 import { ArrowLeftIcon, ChevronRightIcon } from "@/icons";
+import { OrderShippedTemplate } from "./emails/OrderShippedTemplate";
 
-export function OrderConfirmedEmailPreviewButton() {
+export function OrderShippedEmailPreviewButton() {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.orderDetails.name);
   const overlayName = useOverlayStore(
-    (state) => state.pages.orderDetails.overlays.orderConfirmedEmailPreview.name
+    (state) => state.pages.orderDetails.overlays.orderShippedEmailPreview.name
   );
 
   return (
@@ -25,17 +25,17 @@ export function OrderConfirmedEmailPreviewButton() {
     >
       <div>
         <h2 className="font-semibold text-sm mb-1 flex items-center gap-[2px] w-max mx-auto">
-          <span>Confirmed</span>
+          <span>Shipped</span>
           <ChevronRightIcon size={16} className="text-gray" />
         </h2>
-        <span className="text-xs text-green">1 of 2 attempts used</span>{" "}
-        <span className="text-xs text-gray">• Last sent Nov 3, 2024</span>
+        <span className="text-xs text-gray">Not sent yet</span>{" "}
+        <span className="text-xs text-gray">• 2 attempts remaining</span>
       </div>
     </button>
   );
 }
 
-export function OrderConfirmedEmailPreviewOverlay() {
+export function OrderShippedEmailPreviewOverlay() {
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({
     message: "",
@@ -45,11 +45,12 @@ export function OrderConfirmedEmailPreviewOverlay() {
 
   const { hideOverlay, isOverlayVisible } = useOverlayStore((state) => ({
     hideOverlay: state.hideOverlay,
-    isOverlayVisible: state.pages.orderDetails.overlays.orderConfirmedEmailPreview.isVisible,
+    isOverlayVisible:
+      state.pages.orderDetails.overlays.orderShippedEmailPreview.isVisible,
   }));
   const pageName = useOverlayStore((state) => state.pages.orderDetails.name);
   const overlayName = useOverlayStore(
-    (state) => state.pages.orderDetails.overlays.orderConfirmedEmailPreview.name
+    (state) => state.pages.orderDetails.overlays.orderShippedEmailPreview.name
   );
 
   const closeAlert = () =>
@@ -73,7 +74,7 @@ export function OrderConfirmedEmailPreviewOverlay() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customerEmail: "recipient@example.com",
-          emailSubject: "Order Confirmed",
+          emailSubject: "Order Shipped",
           emailType: type,
         }),
       });
@@ -110,11 +111,11 @@ export function OrderConfirmedEmailPreviewOverlay() {
               >
                 <ArrowLeftIcon size={20} className="fill-blue" />
                 <span className="font-semibold text-sm text-blue">
-                  Order confirmed
+                  Order shipped
                 </span>
               </button>
               <button
-                onClick={() => handleSendEmail(EmailType.ORDER_CONFIRMED)}
+                onClick={() => handleSendEmail(EmailType.ORDER_SHIPPED)}
                 disabled={isLoading}
                 className={clsx(
                   "relative h-9 w-max px-4 rounded-full text-white bg-neutral-700 transition ease-in-out",
@@ -137,7 +138,7 @@ export function OrderConfirmedEmailPreviewOverlay() {
             </div>
             <div className="p-5">
               <div className="border border-dashed rounded-md overflow-hidden">
-                <OrderConfirmedTemplate />
+                <OrderShippedTemplate />
               </div>
             </div>
             <div className="w-full pb-5 pt-2 px-5 md:hidden">

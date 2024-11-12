@@ -1,4 +1,7 @@
-import { OrderEmails } from "@/components/admin/OrderEmails";
+import { OrderConfirmedEmailPreviewOverlay } from "@/components/admin/OrderConfirmedEmailPreviewOverlay";
+import { OrderShippedEmailPreviewOverlay } from "@/components/admin/OrderShippedEmailPreviewOverlay";
+import { OrderDeliveredEmailPreviewOverlay } from "@/components/admin/OrderDeliveredEmailPreviewOverlay";
+import { OrderEmailButtons } from "@/components/admin/OrderEmailButtons";
 import { getProducts } from "@/lib/api/products";
 import config from "@/lib/config";
 import { database } from "@/lib/firebase";
@@ -395,7 +398,7 @@ export default async function OrderDetails({
           </div>
         </div>
         <div className="p-5 pt-4 relative shadow rounded-xl bg-white">
-          <OrderEmails />
+          <OrderEmailButtons />
         </div>
         <div className="max-w-[618px] relative flex items-center justify-between shadow rounded-xl bg-white">
           <div className="p-5 flex flex-col gap-5">
@@ -560,6 +563,9 @@ export default async function OrderDetails({
           </div>
         </div>
       </div>
+      <OrderConfirmedEmailPreviewOverlay />
+      <OrderShippedEmailPreviewOverlay />
+      <OrderDeliveredEmailPreviewOverlay />
     </>
   );
 }

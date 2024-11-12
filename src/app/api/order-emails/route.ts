@@ -1,6 +1,6 @@
-import { OrderConfirmation } from "@/components/emails/OrderConfirmation";
-import { ShippingConfirmation } from "@/components/emails/ShippingConfirmation";
-import { DeliveredNotification } from "@/components/emails/DeliveredNotification";
+import { OrderConfirmation } from "@/components/admin/emails/OrderConfirmedTemplate";
+import { ShippingConfirmation } from "@/components/admin/emails/OrderShippedTemplate";
+import { DeliveredNotification } from "@/components/admin/emails/OrderDeliveredTemplate";
 import { Resend } from "resend";
 import { NextRequest } from "next/server";
 import { EmailType } from "@/lib/sharedTypes";

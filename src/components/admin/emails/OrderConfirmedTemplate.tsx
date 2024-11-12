@@ -1,4 +1,4 @@
-export function DeliveredNotification() {
+export function OrderConfirmedTemplate() {
   return (
     <div
       style={{
@@ -7,7 +7,7 @@ export function DeliveredNotification() {
         fontFamily: "'Times New Roman', serif",
         backgroundColor: "#FFFFFF",
         color: "#333333",
-        padding: "40px 20px",
+        padding: "0 20px 40px 20px",
       }}
     >
       {/* Header */}
@@ -26,7 +26,7 @@ export function DeliveredNotification() {
             letterSpacing: "2px",
           }}
         >
-          Order Delivered
+          Order Confirmed
         </h1>
         <div
           style={{
@@ -36,7 +36,7 @@ export function DeliveredNotification() {
             fontStyle: "italic",
           }}
         >
-          We hope you enjoy your new purchase!
+          We've received your order and will start preparing it shortly.
         </div>
       </div>
       {/* Content */}
@@ -48,7 +48,7 @@ export function DeliveredNotification() {
           background: "rgba(0,0,0,0.02)",
         }}
       >
-        {/* Order ID and Delivery Date */}
+        {/* Order ID and Date */}
         <div
           style={{
             textAlign: "center",
@@ -83,7 +83,45 @@ export function DeliveredNotification() {
               marginTop: "8px",
             }}
           >
-            Delivered on November 14, 2024
+            Graciously received on November 10, 2024
+          </div>
+        </div>
+        {/* Divider */}
+        <div
+          style={{
+            width: "100%",
+            height: "1px",
+            background: "linear-gradient(to right, #FFFFFF, #E5E5E5, #FFFFFF)",
+            margin: "30px 0",
+          }}
+        ></div>
+        {/* Address Section */}
+        <div
+          style={{
+            textAlign: "center",
+            padding: "30px 0",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "14px",
+              color: "#B8860B",
+              letterSpacing: "2px",
+              marginBottom: "15px",
+            }}
+          >
+            DELIVERING TO
+          </div>
+          <div
+            style={{
+              fontSize: "18px",
+              lineHeight: 1.6,
+              fontFamily: "'Times New Roman', serif",
+            }}
+          >
+            1234 Main Street
+            <br />
+            City, State, 12345
           </div>
         </div>
         {/* Divider */}
@@ -110,7 +148,8 @@ export function DeliveredNotification() {
               marginBottom: "20px",
             }}
           >
-            If you have any questions or concerns, our team is here to help.
+            For inquiries about your order, please contact our dedicated
+            concierge service
           </p>
           <a
             href="mailto:support@cherlygood.com"

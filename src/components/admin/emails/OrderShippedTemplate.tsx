@@ -1,4 +1,4 @@
-export function OrderConfirmation() {
+export function OrderShippedTemplate() {
   return (
     <div
       style={{
@@ -7,7 +7,7 @@ export function OrderConfirmation() {
         fontFamily: "'Times New Roman', serif",
         backgroundColor: "#FFFFFF",
         color: "#333333",
-        padding: "0 20px 40px 20px",
+        padding: "40px 20px",
       }}
     >
       {/* Header */}
@@ -26,7 +26,7 @@ export function OrderConfirmation() {
             letterSpacing: "2px",
           }}
         >
-          Order Confirmed
+          Order Shipped
         </h1>
         <div
           style={{
@@ -36,7 +36,7 @@ export function OrderConfirmation() {
             fontStyle: "italic",
           }}
         >
-          We've received your order and will start preparing it shortly.
+          Your order is on its way, traveling safely to you.
         </div>
       </div>
       {/* Content */}
@@ -48,7 +48,7 @@ export function OrderConfirmation() {
           background: "rgba(0,0,0,0.02)",
         }}
       >
-        {/* Order ID and Date */}
+        {/* Order ID and Dispatch Date */}
         <div
           style={{
             textAlign: "center",
@@ -83,7 +83,7 @@ export function OrderConfirmation() {
               marginTop: "8px",
             }}
           >
-            Graciously received on November 10, 2024
+            Dispatched on November 10, 2024
           </div>
         </div>
         {/* Divider */}
@@ -95,7 +95,7 @@ export function OrderConfirmation() {
             margin: "30px 0",
           }}
         ></div>
-        {/* Address Section */}
+        {/* Expected Delivery Date */}
         <div
           style={{
             textAlign: "center",
@@ -110,7 +110,7 @@ export function OrderConfirmation() {
               marginBottom: "15px",
             }}
           >
-            DELIVERING TO
+            EXPECTED DELIVERY
           </div>
           <div
             style={{
@@ -119,9 +119,7 @@ export function OrderConfirmation() {
               fontFamily: "'Times New Roman', serif",
             }}
           >
-            1234 Main Street
-            <br />
-            City, State, 12345
+            November 14, 2024
           </div>
         </div>
         {/* Divider */}
@@ -148,8 +146,7 @@ export function OrderConfirmation() {
               marginBottom: "20px",
             }}
           >
-            For inquiries about your order, please contact our dedicated
-            concierge service
+            For any shipping inquiries, feel free to reach us at
           </p>
           <a
             href="mailto:support@cherlygood.com"
