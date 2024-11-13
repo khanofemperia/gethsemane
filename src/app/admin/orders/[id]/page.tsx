@@ -5,7 +5,10 @@ import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-import { EmailPreviewButton, EmailPreviewOverlay } from "@/components/admin/OrderEmailPreviewOverlay";
+import {
+  EmailPreviewButton,
+  EmailPreviewOverlay,
+} from "@/components/admin/OrderEmailPreviewOverlay";
 import { EmailType } from "@/lib/sharedTypes";
 
 type OrderDetailsType = {
@@ -302,265 +305,307 @@ export default async function OrderDetails({
 
   return (
     <>
-      <div className="w-full max-w-[768px] flex flex-col gap-6">
-        <div className="relative flex items-center justify-between shadow rounded-xl bg-white">
-          <div className="w-full flex flex-col px-5">
-            <div className="flex flex-col gap-2 py-5 border-b">
-              <div className="flex gap-5 text-sm">
-                <h3 className="min-w-[78px] max-w-[78px] text-gray">
-                  Transaction
-                </h3>
-                <div className="px-2 rounded-full h-5 w-max flex items-center bg-green/10 border border-green/15 text-green">
-                  {capitalizeFirstLetter(paypalOrder.status)}
+      <div className="w-full max-w-[768px] flex flex-col gap-10">
+        <div>
+          <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">Order summary</h2>
+            <p className="text-sm md:max-w-[85%]">
+              Clear order information helps you find exactly what you're looking
+              for in seconds. And with shipping details organized neatly,
+              everyone on your team can help customers without confusion.
+            </p>
+          </div>
+          <div className="relative flex items-center justify-between shadow rounded-xl bg-white">
+            <div className="w-full flex flex-col px-5">
+              <div className="flex flex-col gap-2 py-5 border-b">
+                <div className="flex gap-5 text-sm">
+                  <h3 className="min-w-[78px] max-w-[78px] text-gray">
+                    Transaction
+                  </h3>
+                  <div className="px-2 rounded-full h-5 w-max flex items-center bg-green/10 border border-green/15 text-green">
+                    {capitalizeFirstLetter(paypalOrder.status)}
+                  </div>
                 </div>
-              </div>
-              <div className="flex gap-5 text-sm">
-                <h3 className="min-w-[78px] max-w-[78px] text-gray">
-                  Purchased
-                </h3>
-                <span className="w-full font-medium">{orderPlacedDate}</span>
-              </div>
-              <div className="flex gap-5 text-sm">
-                <h3 className="min-w-[78px] max-w-[78px] text-gray">Total</h3>
-                <span className="w-full font-medium">
-                  ${paypalOrder.purchase_units[0].amount.value}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 py-5 border-b">
-              <div className="flex gap-5 text-sm">
-                <h3 className="min-w-[78px] max-w-[78px] text-gray">
-                  Shipping
-                </h3>
-                <div className="flex flex-col gap-2 font-medium">
-                  <span>
-                    {
-                      paypalOrder.purchase_units[0].shipping.address
-                        .address_line_1
-                    }
-                    ,{" "}
-                    {
-                      paypalOrder.purchase_units[0].shipping.address
-                        .address_line_2
-                    }
-                  </span>
-                  <span>
-                    {
-                      paypalOrder.purchase_units[0].shipping.address
-                        .admin_area_2
-                    }
-                    ,{" "}
-                    {
-                      paypalOrder.purchase_units[0].shipping.address
-                        .admin_area_1
-                    }{" "}
-                    {paypalOrder.purchase_units[0].shipping.address.postal_code}
-                  </span>
-                  <span>
-                    {
-                      paypalOrder.purchase_units[0].shipping.address
-                        .country_code
-                    }
+                <div className="flex gap-5 text-sm">
+                  <h3 className="min-w-[78px] max-w-[78px] text-gray">
+                    Purchased
+                  </h3>
+                  <span className="w-full font-medium">{orderPlacedDate}</span>
+                </div>
+                <div className="flex gap-5 text-sm">
+                  <h3 className="min-w-[78px] max-w-[78px] text-gray">Total</h3>
+                  <span className="w-full font-medium">
+                    ${paypalOrder.purchase_units[0].amount.value}
                   </span>
                 </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-2 py-5 border-b">
-              <div className="flex gap-5 text-sm">
-                <h3 className="min-w-[78px] max-w-[78px] text-gray">
-                  Customer
-                </h3>
-                <span className="w-full font-medium">
-                  {paypalOrder.payer.name.given_name}{" "}
-                  {paypalOrder.payer.name.surname}
-                </span>
+              <div className="flex flex-col gap-2 py-5 border-b">
+                <div className="flex gap-5 text-sm">
+                  <h3 className="min-w-[78px] max-w-[78px] text-gray">
+                    Shipping
+                  </h3>
+                  <div className="flex flex-col gap-2 font-medium">
+                    <span>
+                      {
+                        paypalOrder.purchase_units[0].shipping.address
+                          .address_line_1
+                      }
+                      ,{" "}
+                      {
+                        paypalOrder.purchase_units[0].shipping.address
+                          .address_line_2
+                      }
+                    </span>
+                    <span>
+                      {
+                        paypalOrder.purchase_units[0].shipping.address
+                          .admin_area_2
+                      }
+                      ,{" "}
+                      {
+                        paypalOrder.purchase_units[0].shipping.address
+                          .admin_area_1
+                      }{" "}
+                      {
+                        paypalOrder.purchase_units[0].shipping.address
+                          .postal_code
+                      }
+                    </span>
+                    <span>
+                      {
+                        paypalOrder.purchase_units[0].shipping.address
+                          .country_code
+                      }
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="flex gap-5 text-sm">
-                <h3 className="min-w-[78px] max-w-[78px] text-gray">Email</h3>
-                <span className="w-full font-medium">
-                  {paypalOrder.payer.email_address}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 py-5">
-              <div className="flex gap-5 text-sm">
-                <h3 className="min-w-[78px] max-w-[78px] text-gray">ID</h3>
-                <Link href={paypalUrl} target="_blank">
-                  <span className="w-full text-gray text-xs underline">
-                    {captureId}
+              <div className="flex flex-col gap-2 py-5 border-b">
+                <div className="flex gap-5 text-sm">
+                  <h3 className="min-w-[78px] max-w-[78px] text-gray">
+                    Customer
+                  </h3>
+                  <span className="w-full font-medium">
+                    {paypalOrder.payer.name.given_name}{" "}
+                    {paypalOrder.payer.name.surname}
                   </span>
-                </Link>
+                </div>
+                <div className="flex gap-5 text-sm">
+                  <h3 className="min-w-[78px] max-w-[78px] text-gray">Email</h3>
+                  <span className="w-full font-medium">
+                    {paypalOrder.payer.email_address}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 py-5">
+                <div className="flex gap-5 text-sm">
+                  <h3 className="min-w-[78px] max-w-[78px] text-gray">ID</h3>
+                  <Link href={paypalUrl} target="_blank">
+                    <span className="w-full text-gray text-xs underline">
+                      {captureId}
+                    </span>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="p-5 pt-4 relative shadow rounded-xl bg-white">
-          <div className="flex flex-wrap gap-5">
-            <EmailPreviewButton emailType={EmailType.ORDER_CONFIRMED} />
-            <EmailPreviewButton emailType={EmailType.ORDER_SHIPPED} />
-            <EmailPreviewButton emailType={EmailType.ORDER_DELIVERED} />
+        <div>
+          <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">Status updates</h2>
+            <p className="text-sm md:max-w-[85%]">
+              Send customers the right updates at every stage of their order.
+              This keeps them informed and reduces support queries. It builds
+              trust and makes customers feel valued.
+            </p>
+          </div>
+          <div className="p-5 pt-4 relative shadow rounded-xl bg-white">
+            <div className="flex flex-wrap gap-5">
+              <EmailPreviewButton emailType={EmailType.ORDER_CONFIRMED} />
+              <EmailPreviewButton emailType={EmailType.ORDER_SHIPPED} />
+              <EmailPreviewButton emailType={EmailType.ORDER_DELIVERED} />
+            </div>
           </div>
         </div>
-        <div className="max-w-[618px] relative flex items-center justify-between shadow rounded-xl bg-white">
-          <div className="p-5 flex flex-col gap-5">
-            {order.items.map((item) => {
-              if (item.type === "product") {
-                const productOptions = formatProductOptions(
-                  item.color,
-                  item.size
-                );
-                return (
-                  <div key={item.index} className="flex gap-5">
-                    <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
-                      <Image
-                        src={item.mainImage}
-                        alt={item.name}
-                        width={128}
-                        height={128}
-                        priority
-                      />
+        <div>
+          <div className="mb-6">
+            <h2 className="font-semibold text-xl mb-3">Purchased items</h2>
+            <p className="text-sm md:max-w-[85%]">
+              Clear item breakdowns help your team pack orders perfectly every
+              time. And with all product options listed clearly, handling
+              returns and exchanges becomes stress-free.
+            </p>
+          </div>
+          <div className="max-w-[618px] relative flex items-center justify-between shadow rounded-xl bg-white">
+            <div className="p-5 flex flex-col gap-5">
+              {order.items.map((item) => {
+                if (item.type === "product") {
+                  const productOptions = formatProductOptions(
+                    item.color,
+                    item.size
+                  );
+                  return (
+                    <div key={item.index} className="flex gap-5">
+                      <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
+                        <Image
+                          src={item.mainImage}
+                          alt={item.name}
+                          width={128}
+                          height={128}
+                          priority
+                        />
+                      </div>
+                      <div className="w-full pr-3 flex flex-col gap-1">
+                        <Link
+                          href={`${item.slug}-${item.baseProductId}`}
+                          target="_blank"
+                          className="text-xs text-gray line-clamp-1 hover:underline"
+                        >
+                          {item.name}
+                        </Link>
+                        {productOptions && (
+                          <span className="mb-1 text-xs font-medium">
+                            {productOptions}
+                          </span>
+                        )}
+                        <div className="w-max flex items-center justify-center">
+                          {Number(item.pricing.salePrice) ? (
+                            <div className="flex items-center gap-[6px]">
+                              <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                <span className="text-[0.813rem] leading-3 font-semibold">
+                                  $
+                                </span>
+                                <span className="text-lg font-bold">
+                                  {Math.floor(Number(item.pricing.salePrice))}
+                                </span>
+                                <span className="text-[0.813rem] leading-3 font-semibold">
+                                  {(Number(item.pricing.salePrice) % 1)
+                                    .toFixed(2)
+                                    .substring(1)}
+                                </span>
+                              </div>
+                              <span className="text-[0.813rem] leading-3 text-gray line-through">
+                                $
+                                {formatThousands(
+                                  Number(item.pricing.basePrice)
+                                )}
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="flex items-baseline">
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(Number(item.pricing.basePrice))}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(Number(item.pricing.basePrice) % 1)
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div className="w-full pr-3 flex flex-col gap-1">
-                      <Link
-                        href={`${item.slug}-${item.baseProductId}`}
-                        target="_blank"
-                        className="text-xs text-gray line-clamp-1 hover:underline"
-                      >
-                        {item.name}
-                      </Link>
-                      {productOptions && (
-                        <span className="mb-1 text-xs font-medium">
-                          {productOptions}
-                        </span>
-                      )}
-                      <div className="w-max flex items-center justify-center">
-                        {Number(item.pricing.salePrice) ? (
-                          <div className="flex items-center gap-[6px]">
+                  );
+                } else if (item.type === "upsell") {
+                  return (
+                    <div
+                      key={item.index}
+                      className="relative w-full p-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]"
+                    >
+                      <div className="mb-5 min-w-full h-5 flex gap-5 items-center justify-between">
+                        <div className="w-max flex items-center justify-center">
+                          {Number(item.pricing.salePrice) ? (
+                            <div className="flex items-center gap-[6px]">
+                              <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                <span className="text-[0.813rem] leading-3 font-semibold">
+                                  $
+                                </span>
+                                <span className="text-xl font-bold">
+                                  {Math.floor(Number(item.pricing.salePrice))}
+                                </span>
+                                <span className="text-[0.813rem] leading-3 font-semibold">
+                                  {(Number(item.pricing.salePrice) % 1)
+                                    .toFixed(2)
+                                    .substring(1)}
+                                </span>
+                              </div>
+                              <span className="text-[0.813rem] leading-3 text-gray line-through">
+                                $
+                                {formatThousands(
+                                  Number(item.pricing.basePrice)
+                                )}
+                              </span>
+                            </div>
+                          ) : (
                             <div className="flex items-baseline text-[rgb(168,100,0)]">
                               <span className="text-[0.813rem] leading-3 font-semibold">
                                 $
                               </span>
                               <span className="text-lg font-bold">
-                                {Math.floor(Number(item.pricing.salePrice))}
+                                {Math.floor(Number(item.pricing.basePrice))}
                               </span>
                               <span className="text-[0.813rem] leading-3 font-semibold">
-                                {(Number(item.pricing.salePrice) % 1)
+                                {(Number(item.pricing.basePrice) % 1)
                                   .toFixed(2)
                                   .substring(1)}
                               </span>
+                              <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                today
+                              </span>
                             </div>
-                            <span className="text-[0.813rem] leading-3 text-gray line-through">
-                              ${formatThousands(Number(item.pricing.basePrice))}
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="flex items-baseline">
-                            <span className="text-[0.813rem] leading-3 font-semibold">
-                              $
-                            </span>
-                            <span className="text-lg font-bold">
-                              {Math.floor(Number(item.pricing.basePrice))}
-                            </span>
-                            <span className="text-[0.813rem] leading-3 font-semibold">
-                              {(Number(item.pricing.basePrice) % 1)
-                                .toFixed(2)
-                                .substring(1)}
-                            </span>
-                          </div>
-                        )}
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-5">
+                        {item.products.map((product) => {
+                          const productOptions = formatProductOptions(
+                            product.color,
+                            product.size
+                          );
+                          return (
+                            <div
+                              key={product.id}
+                              className="last:mb-0 w-[146px]"
+                            >
+                              <div className="mb-2 w-full h-[146px] rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
+                                <Image
+                                  src={product.mainImage}
+                                  alt={product.name}
+                                  width={146}
+                                  height={146}
+                                  priority
+                                />
+                              </div>
+                              <div className="flex flex-col gap-[2px]">
+                                <Link
+                                  href={`${product.slug}-${product.id}`}
+                                  target="_blank"
+                                  className="text-gray text-xs hover:underline w-max"
+                                >
+                                  {product.name.length > 18
+                                    ? `${product.name.slice(0, 18)}...`
+                                    : product.name}
+                                </Link>
+                                {productOptions && (
+                                  <span className="text-xs font-medium">
+                                    {productOptions}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
-                  </div>
-                );
-              } else if (item.type === "upsell") {
-                return (
-                  <div
-                    key={item.index}
-                    className="relative w-full p-5 rounded-lg bg-[#fffbf6] border border-[#fceddf]"
-                  >
-                    <div className="mb-5 min-w-full h-5 flex gap-5 items-center justify-between">
-                      <div className="w-max flex items-center justify-center">
-                        {Number(item.pricing.salePrice) ? (
-                          <div className="flex items-center gap-[6px]">
-                            <div className="flex items-baseline text-[rgb(168,100,0)]">
-                              <span className="text-[0.813rem] leading-3 font-semibold">
-                                $
-                              </span>
-                              <span className="text-xl font-bold">
-                                {Math.floor(Number(item.pricing.salePrice))}
-                              </span>
-                              <span className="text-[0.813rem] leading-3 font-semibold">
-                                {(Number(item.pricing.salePrice) % 1)
-                                  .toFixed(2)
-                                  .substring(1)}
-                              </span>
-                            </div>
-                            <span className="text-[0.813rem] leading-3 text-gray line-through">
-                              ${formatThousands(Number(item.pricing.basePrice))}
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="flex items-baseline text-[rgb(168,100,0)]">
-                            <span className="text-[0.813rem] leading-3 font-semibold">
-                              $
-                            </span>
-                            <span className="text-lg font-bold">
-                              {Math.floor(Number(item.pricing.basePrice))}
-                            </span>
-                            <span className="text-[0.813rem] leading-3 font-semibold">
-                              {(Number(item.pricing.basePrice) % 1)
-                                .toFixed(2)
-                                .substring(1)}
-                            </span>
-                            <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
-                              today
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-5">
-                      {item.products.map((product) => {
-                        const productOptions = formatProductOptions(
-                          product.color,
-                          product.size
-                        );
-                        return (
-                          <div key={product.id} className="last:mb-0 w-[146px]">
-                            <div className="mb-2 w-full h-[146px] rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
-                              <Image
-                                src={product.mainImage}
-                                alt={product.name}
-                                width={146}
-                                height={146}
-                                priority
-                              />
-                            </div>
-                            <div className="flex flex-col gap-[2px]">
-                              <Link
-                                href={`${product.slug}-${product.id}`}
-                                target="_blank"
-                                className="text-gray text-xs hover:underline w-max"
-                              >
-                                {product.name.length > 18
-                                  ? `${product.name.slice(0, 18)}...`
-                                  : product.name}
-                              </Link>
-                              {productOptions && (
-                                <span className="text-xs font-medium">
-                                  {productOptions}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })}
+                  );
+                }
+                return null;
+              })}
+            </div>
           </div>
         </div>
       </div>

@@ -138,28 +138,31 @@ export function EmailPreviewOverlay({ emailType }: { emailType: EmailType }) {
   };
 
   const renderSendButton = (isMobile = false) => (
-    <button
-      onClick={handleSendEmail}
-      disabled={isLoading}
-      className={clsx(
-        "relative w-max px-4 text-white bg-neutral-700 transition ease-in-out",
-        {
-          "h-9 rounded-full": !isMobile,
-          "h-12 w-full rounded-full": isMobile,
-          "bg-opacity-50": isLoading,
-          "hover:bg-neutral-700/85 active:bg-neutral-700/85": !isLoading,
-        }
-      )}
-    >
-      {isLoading ? (
-        <div className="flex items-center gap-1 justify-center w-full h-full">
-          <Spinner color="white" />
-          <span className="text-white">Sending</span>
-        </div>
-      ) : (
-        <span className="text-white">Email customer</span>
-      )}
-    </button>
+    <div className="relative">
+      <button
+        onClick={handleSendEmail}
+        disabled={isLoading}
+        className={clsx(
+          "relative w-max px-4 text-white bg-neutral-700 transition ease-in-out",
+          {
+            "h-9 rounded-full": !isMobile,
+            "h-12 w-full rounded-full": isMobile,
+            "bg-opacity-50": isLoading,
+            "hover:bg-neutral-700/85 active:bg-neutral-700/85": !isLoading,
+          }
+        )}
+      >
+        {isLoading ? (
+          <div className="flex items-center gap-1 justify-center w-full h-full">
+            <Spinner color="white" />
+            <span className="text-white">Sending</span>
+          </div>
+        ) : (
+          <span className="text-white">Email customer (0/2)</span>
+        )}
+      </button>
+      <span className="text-xs text-gray italic absolute top-10 left-4">Last sent on Nov 6, 2024</span>
+    </div>
   );
 
   return (
@@ -180,8 +183,8 @@ export function EmailPreviewOverlay({ emailType }: { emailType: EmailType }) {
               </button>
               {renderSendButton()}
             </div>
-            <div className="p-5">
-              <div className="border border-dashed rounded-md overflow-hidden">
+            <div className="p-5 pt-8">
+              <div className="border border-dashed rounded-lg overflow-hidden">
                 {renderEmailTemplate()}
               </div>
             </div>
