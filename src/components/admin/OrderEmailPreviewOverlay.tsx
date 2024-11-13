@@ -99,7 +99,7 @@ export function EmailPreviewOverlay({ emailType }: { emailType: EmailType }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          customerEmail: "recipient@example.com",
+          customerEmail: "khanofemperia@gmail.com",
           emailSubject: emailSubjects[emailType],
           emailType: emailType,
         }),
@@ -157,7 +157,7 @@ export function EmailPreviewOverlay({ emailType }: { emailType: EmailType }) {
           <span className="text-white">Sending</span>
         </div>
       ) : (
-        <span className="text-white">Email the Customer</span>
+        <span className="text-white">Email customer</span>
       )}
     </button>
   );
