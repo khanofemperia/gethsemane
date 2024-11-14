@@ -12,7 +12,7 @@ const PAYPAL_CLIENT_SECRET = process.env.NEXT_PAYPAL_CLIENT_SECRET;
 const PAYPAL_API_BASE = "https://api-m.sandbox.paypal.com";
 
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { orderId: string } }
 ) {
   const { orderId } = params;
@@ -72,6 +72,23 @@ export async function POST(
       transactionId: orderData.purchase_units[0].payments.captures[0].id,
       timestamp: orderData.purchase_units[0].payments.captures[0].create_time,
       items: cartItems,
+      emails: {
+        confirmation: {
+          sentCount: 0,
+          maxAllowed: 2,
+          lastSent: null,
+        },
+        shipping: {
+          sentCount: 0,
+          maxAllowed: 2,
+          lastSent: null,
+        },
+        delivery: {
+          sentCount: 0,
+          maxAllowed: 2,
+          lastSent: null,
+        },
+      },
     };
 
     const orderRef = doc(database, "orders", orderData.id);

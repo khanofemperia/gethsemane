@@ -36,13 +36,44 @@ const overlayTitles: Record<EmailType, string> = {
   [EmailType.ORDER_DELIVERED]: "Order delivered",
 };
 
-export function EmailPreviewButton({ emailType }: { emailType: EmailType }) {
+export function EmailPreviewButton({
+  emailType,
+  email,
+}: {
+  emailType: EmailType;
+  email: {
+    sentCount: number;
+    maxAllowed: number;
+    lastSent: string | null;
+  };
+}) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.orderDetails.name);
   const overlayName = useOverlayStore(
     (state) =>
       state.pages.orderDetails.overlays[overlayNameKeys[emailType]].name
   );
+
+  const getLastSentText = () => {
+    if (!email.lastSent) return null;
+    return `Last sent on ${new Date(email.lastSent).toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })}`;
+  };
+
+  const getRemainingSendsText = () => {
+    const remainingSends = email.maxAllowed - email.sentCount;
+    if (remainingSends <= 0) return "Max sends reached";
+    return `${remainingSends} send${remainingSends > 1 ? "s" : ""} remaining`;
+  };
+
+  const remainingSends = email.maxAllowed - email.sentCount;
+  const isMaxReached = remainingSends <= 0;
 
   return (
     <button
@@ -55,14 +86,39 @@ export function EmailPreviewButton({ emailType }: { emailType: EmailType }) {
           <span>{emailLabels[emailType]}</span>
           <ChevronRightIcon size={16} className="text-gray" />
         </h2>
-        <span className="text-xs text-gray">Not sent yet</span>{" "}
-        <span className="text-xs text-gray">• 2 attempts remaining</span>
+        {email.lastSent ? (
+          <span className="text-xs text-green">{getLastSentText()}</span>
+        ) : (
+          <span className="text-xs text-gray">Not sent yet</span>
+        )}
+        <span className="text-xs text-gray">
+          •{" "}
+          {isMaxReached ? (
+            <span className="text-red">Max sends reached</span>
+          ) : email.lastSent ? (
+            getRemainingSendsText()
+          ) : (
+            `${remainingSends} send${remainingSends > 1 ? "s" : ""} remaining`
+          )}
+        </span>
       </div>
     </button>
   );
 }
 
-export function EmailPreviewOverlay({ emailType }: { emailType: EmailType }) {
+export function EmailPreviewOverlay({
+  emailType,
+  email,
+  orderId,
+}: {
+  emailType: EmailType;
+  email: {
+    sentCount: number;
+    maxAllowed: number;
+    lastSent: string | null;
+  };
+  orderId: string;
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({
     message: "",
@@ -102,6 +158,7 @@ export function EmailPreviewOverlay({ emailType }: { emailType: EmailType }) {
           customerEmail: "khanofemperia@gmail.com",
           emailSubject: emailSubjects[emailType],
           emailType: emailType,
+          orderId
         }),
       });
 
@@ -137,33 +194,51 @@ export function EmailPreviewOverlay({ emailType }: { emailType: EmailType }) {
     }
   };
 
-  const renderSendButton = (isMobile = false) => (
-    <div className="relative">
-      <button
-        onClick={handleSendEmail}
-        disabled={isLoading}
-        className={clsx(
-          "relative w-max px-4 text-white bg-neutral-700 transition ease-in-out",
-          {
-            "h-9 rounded-full": !isMobile,
-            "h-12 w-full rounded-full": isMobile,
-            "bg-opacity-50": isLoading,
-            "hover:bg-neutral-700/85 active:bg-neutral-700/85": !isLoading,
-          }
-        )}
-      >
-        {isLoading ? (
-          <div className="flex items-center gap-1 justify-center w-full h-full">
-            <Spinner color="white" />
-            <span className="text-white">Sending</span>
-          </div>
-        ) : (
-          <span className="text-white">Email customer (0/2)</span>
-        )}
-      </button>
-      <span className="text-xs text-gray italic absolute top-10 left-4">Last sent on Nov 6, 2024</span>
-    </div>
-  );
+  const renderSendButton = (isMobile = false) => {
+    const getLastSentText = () => {
+      if (!email.lastSent) return "Awaiting first send";
+      return `Last sent on ${new Date(email.lastSent).toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })}`;
+    };
+
+    return (
+      <div className="relative">
+        <button
+          onClick={handleSendEmail}
+          disabled={isLoading}
+          className={clsx(
+            "relative w-max px-4 text-white bg-neutral-700 transition ease-in-out",
+            {
+              "h-9 rounded-full": !isMobile,
+              "h-12 w-full rounded-full": isMobile,
+              "bg-opacity-50": isLoading,
+              "hover:bg-neutral-700/85 active:bg-neutral-700/85": !isLoading,
+            }
+          )}
+        >
+          {isLoading ? (
+            <div className="flex items-center gap-1 justify-center w-full h-full">
+              <Spinner color="white" />
+              <span className="text-white">Sending</span>
+            </div>
+          ) : (
+            <span className="text-white">
+              Email customer ({email.sentCount}/{email.maxAllowed})
+            </span>
+          )}
+        </button>
+        <span className="text-xs text-gray italic absolute top-10 left-4">
+          {getLastSentText()}
+        </span>
+      </div>
+    );
+  };
 
   return (
     <>

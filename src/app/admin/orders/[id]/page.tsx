@@ -238,6 +238,23 @@ type PaymentTransaction = {
     };
   };
   items: Array<ProductType | UpsellType>;
+  emails: {
+    confirmation: {
+      sentCount: number;
+      maxAllowed: number;
+      lastSent: string | null;
+    };
+    shipping: {
+      sentCount: number;
+      maxAllowed: number;
+      lastSent: string | null;
+    };
+    delivery: {
+      sentCount: number;
+      maxAllowed: number;
+      lastSent: string | null;
+    };
+  };
 };
 
 const PAYPAL_BASE_URL =
@@ -421,9 +438,18 @@ export default async function OrderDetails({
           </div>
           <div className="p-5 pt-4 relative shadow rounded-xl bg-white">
             <div className="flex flex-wrap gap-5">
-              <EmailPreviewButton emailType={EmailType.ORDER_CONFIRMED} />
-              <EmailPreviewButton emailType={EmailType.ORDER_SHIPPED} />
-              <EmailPreviewButton emailType={EmailType.ORDER_DELIVERED} />
+              <EmailPreviewButton
+                emailType={EmailType.ORDER_CONFIRMED}
+                email={order.emails.confirmation}
+              />
+              <EmailPreviewButton
+                emailType={EmailType.ORDER_SHIPPED}
+                email={order.emails.shipping}
+              />
+              <EmailPreviewButton
+                emailType={EmailType.ORDER_DELIVERED}
+                email={order.emails.delivery}
+              />
             </div>
           </div>
         </div>
@@ -609,9 +635,9 @@ export default async function OrderDetails({
           </div>
         </div>
       </div>
-      <EmailPreviewOverlay emailType={EmailType.ORDER_CONFIRMED} />
-      <EmailPreviewOverlay emailType={EmailType.ORDER_SHIPPED} />
-      <EmailPreviewOverlay emailType={EmailType.ORDER_DELIVERED} />
+      <EmailPreviewOverlay emailType={EmailType.ORDER_CONFIRMED} email={order.emails.confirmation} orderId={order.id} />
+      <EmailPreviewOverlay emailType={EmailType.ORDER_SHIPPED} email={order.emails.shipping} orderId={order.id} />
+      <EmailPreviewOverlay emailType={EmailType.ORDER_DELIVERED} email={order.emails.delivery} orderId={order.id} />
     </>
   );
 }
