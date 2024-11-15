@@ -1,8 +1,9 @@
+"use server";
+
 import { OrderConfirmedTemplate } from "@/components/admin/emails/OrderConfirmedTemplate";
 import { OrderShippedTemplate } from "@/components/admin/emails/OrderShippedTemplate";
 import { OrderDeliveredTemplate } from "@/components/admin/emails/OrderDeliveredTemplate";
 import { Resend } from "resend";
-import { NextRequest } from "next/server";
 import { EmailType, AlertMessageType } from "@/lib/sharedTypes";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { database } from "@/lib/firebase";
@@ -16,13 +17,6 @@ const EMAIL_TEMPLATES: Record<EmailType, EmailTemplateType> = {
   [EmailType.ORDER_CONFIRMED]: OrderConfirmedTemplate,
   [EmailType.ORDER_SHIPPED]: OrderShippedTemplate,
   [EmailType.ORDER_DELIVERED]: OrderDeliveredTemplate,
-};
-
-type EmailRequestBodyType = {
-  orderId: string;
-  customerEmail: string;
-  emailSubject: string;
-  emailType: EmailType;
 };
 
 const EMAIL_TYPE_TO_KEY: Record<EmailType, string> = {
@@ -114,14 +108,19 @@ async function incrementEmailCount(
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function OrderStatusEmailAction(
+  orderId: string,
+  customerEmail: string,
+  emailSubject: string,
+  emailType: EmailType
+) {
   try {
-    const { orderId, customerEmail, emailSubject, emailType } =
-      (await request.json()) as EmailRequestBodyType;
-
     const emailStatusResult = await updateEmailStatus(orderId, emailType);
     if (emailStatusResult.type === AlertMessageType.ERROR) {
-      return Response.json(emailStatusResult, { status: 500 });
+      return {
+        type: AlertMessageType.ERROR,
+        message: emailStatusResult.message,
+      };
     }
 
     const { orderData, orderRef, emailKey } = emailStatusResult as {
@@ -140,10 +139,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      return Response.json(
-        { type: AlertMessageType.ERROR, message: "Failed to send email" },
-        { status: 500 }
-      );
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Failed to send email",
+      };
     }
 
     const updateResult = await incrementEmailCount(
@@ -156,21 +155,21 @@ export async function POST(request: NextRequest) {
 
     if (updateResult.type === AlertMessageType.ERROR) {
       console.error("Failed to update email count:", updateResult.message);
-      return Response.json({
+      return {
         type: AlertMessageType.SUCCESS,
         message: "Email sent successfully",
-      });
+      };
     }
 
-    return Response.json({
+    return {
       type: AlertMessageType.SUCCESS,
       message: "Email sent and count updated successfully",
-    });
+    };
   } catch (error) {
     console.error("Internal server error:", error);
-    return Response.json(
-      { type: AlertMessageType.ERROR, message: "Internal server error" },
-      { status: 500 }
-    );
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to send email",
+    };
   }
 }

@@ -11,6 +11,7 @@ import { OrderShippedTemplate } from "./emails/OrderShippedTemplate";
 import { OrderDeliveredTemplate } from "./emails/OrderDeliveredTemplate";
 import { Spinner } from "@/ui/Spinners/Default";
 import { ArrowLeftIcon, ChevronRightIcon } from "@/icons";
+import { OrderStatusEmailAction } from "@/actions/order-status-email";
 
 const overlayNameKeys: Record<EmailType, string> = {
   [EmailType.ORDER_CONFIRMED]: "orderConfirmedEmailPreview",
@@ -127,11 +128,11 @@ export function EmailPreviewOverlay({
   orderId: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [alert, setAlert] = useState({
-    message: "",
-    isVisible: false,
-    type: AlertMessageType.NEUTRAL,
-  });
+  const [alertMessageType, setAlertMessageType] = useState<AlertMessageType>(
+    AlertMessageType.NEUTRAL
+  );
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
 
   const overlayStore = useOverlayStore((state) => state);
   const hideOverlay = overlayStore.hideOverlay;
@@ -144,45 +145,37 @@ export function EmailPreviewOverlay({
 
   useEffect(() => {
     document.body.style.overflow =
-      isOverlayVisible || alert.isVisible ? "hidden" : "visible";
+      isOverlayVisible || showAlert ? "hidden" : "visible";
     return () => {
-      if (!isOverlayVisible && !alert.isVisible) {
+      if (!isOverlayVisible && !showAlert) {
         document.body.style.overflow = "visible";
       }
     };
-  }, [isOverlayVisible, alert.isVisible]);
+  }, [isOverlayVisible, showAlert]);
 
-  const closeAlert = () =>
-    setAlert({ ...alert, isVisible: false, message: "" });
+  const closeAlert = () => setShowAlert(false);
 
   async function handleSendEmail() {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/order-emails", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerEmail: "khanofemperia@gmail.com",
-          emailSubject: emailSubjects[emailType],
-          emailType: emailType,
-          orderId,
-        }),
-      });
+      const customerEmail = "khanofemperia@gmail.com";
+      const emailSubject = emailSubjects[emailType];
 
-      if (!response.ok) throw new Error("Failed to send email");
+      const result = await OrderStatusEmailAction(
+        orderId,
+        customerEmail,
+        emailSubject,
+        emailType
+      );
 
-      setAlert({
-        message: "Email sent successfully!",
-        isVisible: true,
-        type: AlertMessageType.SUCCESS,
-      });
+      setAlertMessageType(result.type);
+      setAlertMessage(result.message);
+      setShowAlert(true);
     } catch (error) {
-      console.error(error);
-      setAlert({
-        message: "Failed to send email",
-        isVisible: true,
-        type: AlertMessageType.ERROR,
-      });
+      console.error("Error creating product:", error);
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Failed to send email");
+      setShowAlert(true);
     } finally {
       setIsLoading(false);
     }
@@ -204,12 +197,6 @@ export function EmailPreviewOverlay({
   const renderSendButton = (isMobile = false) => {
     const getLastSentText = () => {
       if (!email.lastSent || email.sentCount === 0) {
-        // Optional: Log warning for inconsistent data
-        if (email.lastSent && email.sentCount === 0) {
-          console.warn(
-            `Inconsistent data: lastSent is set but sentCount is 0 for this email.`
-          );
-        }
         return null;
       }
       return `Last sent ${new Date(email.lastSent).toLocaleDateString("en-US", {
@@ -283,11 +270,11 @@ export function EmailPreviewOverlay({
           </div>
         </Overlay>
       )}
-      {alert.isVisible && (
+      {showAlert && (
         <AlertMessage
-          message={alert.message}
+          message={alertMessage}
           hideAlertMessage={closeAlert}
-          type={alert.type}
+          type={alertMessageType}
         />
       )}
     </>
