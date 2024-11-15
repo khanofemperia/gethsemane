@@ -6,6 +6,7 @@ import { NextRequest } from "next/server";
 import { EmailType, AlertMessageType } from "@/lib/sharedTypes";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { database } from "@/lib/firebase";
+import { revalidatePath } from "next/cache";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -24,6 +25,12 @@ type EmailRequestBodyType = {
   emailType: EmailType;
 };
 
+const EMAIL_TYPE_TO_KEY: Record<EmailType, string> = {
+  [EmailType.ORDER_CONFIRMED]: "confirmed",
+  [EmailType.ORDER_SHIPPED]: "shipped",
+  [EmailType.ORDER_DELIVERED]: "delivered",
+};
+
 async function updateEmailStatus(orderId: string, emailType: EmailType) {
   try {
     const orderRef = doc(database, "orders", orderId);
@@ -37,7 +44,23 @@ async function updateEmailStatus(orderId: string, emailType: EmailType) {
     }
 
     const orderData = orderSnap.data();
-    const emailStatus = orderData?.emails[emailType];
+    const emailKey = EMAIL_TYPE_TO_KEY[emailType];
+
+    if (!emailKey) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Invalid email type",
+      };
+    }
+
+    if (!orderData?.emails || !orderData.emails[emailKey]) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Email configuration not found",
+      };
+    }
+
+    const emailStatus = orderData.emails[emailKey];
 
     if (emailStatus.sentCount >= emailStatus.maxAllowed) {
       return {
@@ -46,7 +69,7 @@ async function updateEmailStatus(orderId: string, emailType: EmailType) {
       };
     }
 
-    return { emailStatus, orderData, orderRef };
+    return { emailStatus, orderData, orderRef, emailKey };
   } catch (error) {
     console.error("Error fetching email status:", error);
     return {
@@ -58,22 +81,21 @@ async function updateEmailStatus(orderId: string, emailType: EmailType) {
 
 async function incrementEmailCount(
   orderRef: any,
-  emailType: EmailType,
-  orderData: any,
-  emailStatus: any
+  emailKey: string,
+  orderData: any
 ) {
   try {
-    const updatedEmailStatus = {
-      ...emailStatus,
-      sentCount: emailStatus.sentCount + 1,
-      lastSent: new Date().toISOString(),
-    };
+    const currentEmailStatus = orderData.emails[emailKey];
 
     const updatedOrderData = {
       ...orderData,
       emails: {
-        ...orderData?.emails,
-        [emailType]: updatedEmailStatus,
+        ...orderData.emails,
+        [emailKey]: {
+          ...currentEmailStatus,
+          sentCount: (currentEmailStatus.sentCount || 0) + 1,
+          lastSent: new Date().toISOString(),
+        },
       },
     };
 
@@ -81,14 +103,13 @@ async function incrementEmailCount(
 
     return {
       type: AlertMessageType.SUCCESS,
-      message: `Email for ${emailType} updated successfully`,
+      message: `Email count updated for ${emailKey}`,
     };
   } catch (error) {
-    console.error("Error updating email status:", error);
-
+    console.error("Error updating email count:", error);
     return {
       type: AlertMessageType.ERROR,
-      message: "Failed to update email status",
+      message: "Failed to update email count",
     };
   }
 }
@@ -98,18 +119,24 @@ export async function POST(request: NextRequest) {
     const { orderId, customerEmail, emailSubject, emailType } =
       (await request.json()) as EmailRequestBodyType;
 
-    // Fetch the email status data
-    const emailStatusResult = await updateEmailStatus(orderId, emailType);
+    console.log("orderId:", orderId);
+    console.log("customerEmail:", customerEmail);
+    console.log("emailSubject:", emailSubject);
+    console.log("emailType:", emailType);
 
+    const emailStatusResult = await updateEmailStatus(orderId, emailType);
     if (emailStatusResult.type === AlertMessageType.ERROR) {
       return Response.json(emailStatusResult, { status: 500 });
     }
 
-    const { emailStatus, orderData, orderRef } = emailStatusResult;
+    const { orderData, orderRef, emailKey } = emailStatusResult as {
+      orderData: any;
+      orderRef: any;
+      emailKey: string;
+      emailStatus: any;
+    };
 
-    // Proceed with sending the email using the Resend API
     const EmailTemplate = EMAIL_TEMPLATES[emailType];
-
     const { data, error } = await resend.emails.send({
       from: "Acme <onboarding@resend.dev>",
       to: customerEmail,
@@ -117,26 +144,41 @@ export async function POST(request: NextRequest) {
       react: EmailTemplate(),
     });
 
+    console.log("error:", error);
+    console.log("data:", data);
+
     if (error) {
-      return Response.json({ error: "Failed to send email" }, { status: 500 });
+      return Response.json(
+        { type: AlertMessageType.ERROR, message: "Failed to send email" },
+        { status: 500 }
+      );
     }
 
-    // Only update the email status if the email was successfully sent
     const updateResult = await incrementEmailCount(
       orderRef,
-      emailType,
-      orderData,
-      emailStatus
+      emailKey,
+      orderData
     );
 
-    // Ensure that the update result is returned and logged
+    revalidatePath("/admin/orders/[id]", "page");
+
     if (updateResult.type === AlertMessageType.ERROR) {
-      return Response.json(updateResult, { status: 500 });
+      console.error("Failed to update email count:", updateResult.message);
+      return Response.json({
+        type: AlertMessageType.SUCCESS,
+        message: "Email sent successfully",
+      });
     }
 
-    return Response.json({ message: "Email sent successfully", emailData: data });
+    return Response.json({
+      type: AlertMessageType.SUCCESS,
+      message: "Email sent and count updated successfully",
+    });
   } catch (error) {
     console.error("Internal server error:", error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    return Response.json(
+      { type: AlertMessageType.ERROR, message: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

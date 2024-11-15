@@ -73,17 +73,17 @@ export async function POST(
       timestamp: orderData.purchase_units[0].payments.captures[0].create_time,
       items: cartItems,
       emails: {
-        confirmation: {
+        confirmed: {
           sentCount: 0,
           maxAllowed: 2,
           lastSent: null,
         },
-        shipping: {
+        shipped: {
           sentCount: 0,
           maxAllowed: 2,
           lastSent: null,
         },
-        delivery: {
+        delivered: {
           sentCount: 0,
           maxAllowed: 2,
           lastSent: null,

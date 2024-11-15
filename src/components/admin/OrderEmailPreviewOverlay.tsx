@@ -55,14 +55,19 @@ export function EmailPreviewButton({
   );
 
   const getLastSentText = () => {
-    if (!email.lastSent) return null;
-    return `Last sent on ${new Date(email.lastSent).toLocaleString("en-US", {
+    if (!email.lastSent || email.sentCount === 0) {
+      // Optional: Log a warning if there's inconsistency
+      if (email.lastSent && email.sentCount === 0) {
+        console.warn(
+          `Inconsistent data: lastSent is set but sentCount is 0 for emailType ${emailType}`
+        );
+      }
+      return null;
+    }
+    return `Last sent ${new Date(email.lastSent).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
     })}`;
   };
 
@@ -86,7 +91,9 @@ export function EmailPreviewButton({
           <span>{emailLabels[emailType]}</span>
           <ChevronRightIcon size={16} className="text-gray" />
         </h2>
-        {email.lastSent ? (
+        {email.sentCount === 0 ? (
+          <span className="text-xs text-gray">Not sent yet</span>
+        ) : email.lastSent ? (
           <span className="text-xs text-green">{getLastSentText()}</span>
         ) : (
           <span className="text-xs text-gray">Not sent yet</span>
@@ -95,10 +102,10 @@ export function EmailPreviewButton({
           •{" "}
           {isMaxReached ? (
             <span className="text-red">Max sends reached</span>
-          ) : email.lastSent ? (
-            getRemainingSendsText()
-          ) : (
+          ) : email.sentCount === 0 ? (
             `${remainingSends} send${remainingSends > 1 ? "s" : ""} remaining`
+          ) : (
+            getRemainingSendsText()
           )}
         </span>
       </div>
@@ -158,7 +165,7 @@ export function EmailPreviewOverlay({
           customerEmail: "khanofemperia@gmail.com",
           emailSubject: emailSubjects[emailType],
           emailType: emailType,
-          orderId
+          orderId,
         }),
       });
 
@@ -196,14 +203,19 @@ export function EmailPreviewOverlay({
 
   const renderSendButton = (isMobile = false) => {
     const getLastSentText = () => {
-      if (!email.lastSent) return "Awaiting first send";
-      return `Last sent on ${new Date(email.lastSent).toLocaleString("en-US", {
+      if (!email.lastSent || email.sentCount === 0) {
+        // Optional: Log warning for inconsistent data
+        if (email.lastSent && email.sentCount === 0) {
+          console.warn(
+            `Inconsistent data: lastSent is set but sentCount is 0 for this email.`
+          );
+        }
+        return null;
+      }
+      return `Last sent ${new Date(email.lastSent).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
         year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
       })}`;
     };
 
@@ -233,9 +245,11 @@ export function EmailPreviewOverlay({
             </span>
           )}
         </button>
-        <span className="text-xs text-gray italic absolute top-10 left-4">
-          {getLastSentText()}
-        </span>
+        {!isLoading && (
+          <span className="text-xs text-gray italic absolute top-10 left-4">
+            {email.sentCount === 0 ? "Awaiting first send" : getLastSentText()}
+          </span>
+        )}
       </div>
     );
   };

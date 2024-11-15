@@ -239,17 +239,17 @@ type PaymentTransaction = {
   };
   items: Array<ProductType | UpsellType>;
   emails: {
-    confirmation: {
+    confirmed: {
       sentCount: number;
       maxAllowed: number;
       lastSent: string | null;
     };
-    shipping: {
+    shipped: {
       sentCount: number;
       maxAllowed: number;
       lastSent: string | null;
     };
-    delivery: {
+    delivered: {
       sentCount: number;
       maxAllowed: number;
       lastSent: string | null;
@@ -440,15 +440,15 @@ export default async function OrderDetails({
             <div className="flex flex-wrap gap-5">
               <EmailPreviewButton
                 emailType={EmailType.ORDER_CONFIRMED}
-                email={order.emails.confirmation}
+                email={order.emails.confirmed}
               />
               <EmailPreviewButton
                 emailType={EmailType.ORDER_SHIPPED}
-                email={order.emails.shipping}
+                email={order.emails.shipped}
               />
               <EmailPreviewButton
                 emailType={EmailType.ORDER_DELIVERED}
-                email={order.emails.delivery}
+                email={order.emails.delivered}
               />
             </div>
           </div>
@@ -635,9 +635,21 @@ export default async function OrderDetails({
           </div>
         </div>
       </div>
-      <EmailPreviewOverlay emailType={EmailType.ORDER_CONFIRMED} email={order.emails.confirmation} orderId={order.id} />
-      <EmailPreviewOverlay emailType={EmailType.ORDER_SHIPPED} email={order.emails.shipping} orderId={order.id} />
-      <EmailPreviewOverlay emailType={EmailType.ORDER_DELIVERED} email={order.emails.delivery} orderId={order.id} />
+      <EmailPreviewOverlay
+        emailType={EmailType.ORDER_CONFIRMED}
+        email={order.emails.confirmed}
+        orderId={order.id}
+      />
+      <EmailPreviewOverlay
+        emailType={EmailType.ORDER_SHIPPED}
+        email={order.emails.shipped}
+        orderId={order.id}
+      />
+      <EmailPreviewOverlay
+        emailType={EmailType.ORDER_DELIVERED}
+        email={order.emails.delivered}
+        orderId={order.id}
+      />
     </>
   );
 }
