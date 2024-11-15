@@ -119,11 +119,6 @@ export async function POST(request: NextRequest) {
     const { orderId, customerEmail, emailSubject, emailType } =
       (await request.json()) as EmailRequestBodyType;
 
-    console.log("orderId:", orderId);
-    console.log("customerEmail:", customerEmail);
-    console.log("emailSubject:", emailSubject);
-    console.log("emailType:", emailType);
-
     const emailStatusResult = await updateEmailStatus(orderId, emailType);
     if (emailStatusResult.type === AlertMessageType.ERROR) {
       return Response.json(emailStatusResult, { status: 500 });
@@ -143,9 +138,6 @@ export async function POST(request: NextRequest) {
       subject: emailSubject,
       react: EmailTemplate(),
     });
-
-    console.log("error:", error);
-    console.log("data:", data);
 
     if (error) {
       return Response.json(
