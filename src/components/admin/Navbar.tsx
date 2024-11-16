@@ -24,7 +24,7 @@ export default function Navbar() {
   const isProductEditingPage = /^\/admin\/products\/[a-z0-9-]+-\d{5}$/.test(
     pathname
   );
-  const isCollectionListPage = pathname === "/admin";
+  const isCollectionListPage = pathname === "/admin/storefront";
   const isCollectionEditingPage =
     /^\/admin\/collections\/[a-z0-9-]+-\d{5}$/.test(pathname);
   const isUpsellListPage = pathname === "/admin/upsells";
