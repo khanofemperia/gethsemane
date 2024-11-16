@@ -1,19 +1,46 @@
 "use client";
 
-import { HamburgerMenuIcon } from "@/icons";
-import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { NewProductMenuButton } from "./NewProduct";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { HamburgerMenuIcon } from "@/icons";
+import { NewProductMenuButton } from "./NewProduct";
 import { NewUpsellMenuButton } from "./NewUpsell";
 import { NewCollectionMenuButton } from "./Storefront/NewCollection";
-import Link from "next/link";
+import { DeleteProductAction } from "@/actions/products";
+import { DeleteUpsellAction } from "@/actions/upsells";
+import { DeleteCollectionAction } from "@/actions/collections";
 
 export default function Navbar() {
   const [isMenuDropdownVisible, setMenuDropdownVisible] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+
+  const isProductListPage = pathname === "/admin/products";
+  const isProductEditingPage = /^\/admin\/products\/[a-z0-9-]+-\d{5}$/.test(
+    pathname
+  );
+  const isCollectionListPage = pathname === "/admin";
+  const isCollectionEditingPage =
+    /^\/admin\/collections\/[a-z0-9-]+-\d{5}$/.test(pathname);
+  const isUpsellListPage = pathname === "/admin/upsells";
+  const isUpsellEditingPage = /^\/admin\/upsells\/\d{5}$/.test(pathname);
+
+  const showSeparator =
+    isProductListPage ||
+    isCollectionListPage ||
+    isProductEditingPage ||
+    isUpsellEditingPage ||
+    isCollectionEditingPage ||
+    isUpsellListPage;
+
+  const productSlug = isProductEditingPage
+    ? pathname.split("/").pop()
+    : undefined;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,25 +64,56 @@ export default function Navbar() {
     };
   }, [isMenuDropdownVisible]);
 
+  const getIdFromPath = () => {
+    if (isProductEditingPage) {
+      const match = pathname.match(/-(\d{5})$/);
+      return match ? match[1] : null;
+    }
+    if (isUpsellEditingPage) {
+      const match = pathname.match(/\/(\d{5})$/);
+      return match ? match[1] : null;
+    }
+    if (isCollectionEditingPage) {
+      const match = pathname.match(/-(\d{5})$/);
+      return match ? match[1] : null;
+    }
+    return null;
+  };
+
   const toggleMenuDropdown = () => {
     setMenuDropdownVisible(!isMenuDropdownVisible);
   };
 
-  const isProductsPage = pathname === "/admin/products";
-  const isProductEditingPage = /^\/admin\/products\/[a-z0-9-]+-\d{5}$/.test(
-    pathname
-  );
-  const isUpsellsPage = pathname === "/admin/upsells";
-  const isCollectionsPage = pathname === "/admin";
-
-  const showSeparator =
-    isProductsPage || isCollectionsPage || isProductEditingPage;
-  const productSlug = isProductEditingPage
-    ? pathname.split("/").pop()
-    : undefined;
-
   const handleNavigation = (path: string) => {
     router.push(path);
+  };
+
+  const handleDelete = async () => {
+    const id = getIdFromPath();
+    if (!id) return;
+
+    setIsDeleting(true);
+    try {
+      let redirectPath = "";
+
+      if (isProductEditingPage) {
+        await DeleteProductAction({ id });
+        redirectPath = "/admin/products";
+      } else if (isUpsellEditingPage) {
+        await DeleteUpsellAction({ id });
+        redirectPath = "/admin/upsells";
+      } else if (isCollectionEditingPage) {
+        await DeleteCollectionAction({ id });
+        redirectPath = "/admin/storefront";
+      }
+
+      router.push(redirectPath);
+    } catch (error) {
+      console.error("Delete failed:", error);
+    } finally {
+      setIsDeleting(false);
+      setMenuDropdownVisible(false);
+    }
   };
 
   return (
@@ -100,34 +158,55 @@ export default function Navbar() {
             >
               <HamburgerMenuIcon size={24} />
             </button>
+
             {isMenuDropdownVisible && (
               <div className="w-[148px] absolute top-[52px] right-0 z-20 py-[5px] rounded-md shadow-dropdown bg-white">
-                {isProductsPage && (
+                {isProductListPage && (
                   <NewProductMenuButton
                     closeMenu={() => setMenuDropdownVisible(false)}
                   />
                 )}
-                {isUpsellsPage && (
+                {isUpsellListPage && (
                   <NewUpsellMenuButton
                     closeMenu={() => setMenuDropdownVisible(false)}
                   />
                 )}
-                {isProductEditingPage && (
-                  <button
-                    onClick={() => {
-                      handleNavigation(`/${productSlug}`);
-                      setMenuDropdownVisible(false);
-                    }}
-                    className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray hover:bg-lightgray"
-                  >
-                    Visit product
-                  </button>
-                )}
-                {isCollectionsPage && (
+                {isCollectionListPage && (
                   <NewCollectionMenuButton
                     closeMenu={() => setMenuDropdownVisible(false)}
                   />
                 )}
+                {isProductEditingPage && (
+                  <>
+                    <button
+                      onClick={() => {
+                        handleNavigation(`/${productSlug}`);
+                        setMenuDropdownVisible(false);
+                      }}
+                      className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray hover:bg-lightgray"
+                    >
+                      Visit product
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      disabled={isDeleting}
+                      className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-red text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray hover:bg-lightgray disabled:opacity-50"
+                    >
+                      {isDeleting ? "Deleting..." : "Delete"}
+                    </button>
+                  </>
+                )}
+                {(isUpsellEditingPage || isCollectionEditingPage) && (
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-red text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray hover:bg-lightgray disabled:opacity-50"
+                  >
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </button>
+                )}
+
+                {/* Common Menu Items */}
                 {showSeparator && (
                   <div className="h-[1px] my-[5px] bg-[#e5e7eb]"></div>
                 )}

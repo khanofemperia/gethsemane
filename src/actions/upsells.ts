@@ -1,7 +1,7 @@
 "use server";
 
 import { database } from "@/lib/firebase";
-import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { generateId, currentTimestamp } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
@@ -85,5 +85,35 @@ export async function UpdateUpsellAction(
   } catch (error) {
     console.error("Error updating upsell:", error);
     return { type: AlertMessageType.ERROR, message: "Failed to update upsell" };
+  }
+}
+
+export async function DeleteUpsellAction(data: { id: string }) {
+  try {
+    const upsellDocRef = doc(database, "upsells", data.id);
+    const upsellSnap = await getDoc(upsellDocRef);
+    
+    if (!upsellSnap.exists()) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Upsell not found",
+      };
+    }
+
+    await deleteDoc(upsellDocRef);
+
+    revalidatePath("/admin/shop/upsells"); // Admin upsells page
+    revalidatePath("/"); // Public main page
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Upsell deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting upsell:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to delete upsell",
+    };
   }
 }

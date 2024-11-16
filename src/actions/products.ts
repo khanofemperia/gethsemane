@@ -8,6 +8,7 @@ import {
   collection,
   getDocs,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { generateId, currentTimestamp } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
@@ -274,6 +275,37 @@ export async function RemoveUpsellAction(data: { productId: string }) {
     return {
       type: AlertMessageType.ERROR,
       message: "Failed to remove upsell from product",
+    };
+  }
+}
+
+export async function DeleteProductAction(data: { id: string }) {
+  try {
+    const productDocRef = doc(database, "products", data.id);
+
+    const productSnap = await getDoc(productDocRef);
+
+    if (!productSnap.exists()) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Product not found",
+      };
+    }
+
+    await deleteDoc(productDocRef);
+
+    revalidatePath("/admin/products"); // Admin products page
+    revalidatePath("/"); // Public main page
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Product deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to delete product",
     };
   }
 }

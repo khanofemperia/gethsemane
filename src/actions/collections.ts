@@ -8,6 +8,7 @@ import {
   collection,
   updateDoc,
   getDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { generateId } from "@/lib/utils";
 import { currentTimestamp } from "@/lib/utils";
@@ -459,6 +460,37 @@ export async function ChangeProductIndexAction(data: {
     return {
       type: AlertMessageType.ERROR,
       message: "Failed to update product index",
+    };
+  }
+}
+
+export async function DeleteCollectionAction(data: { id: string }) {
+  try {
+    const collectionDocRef = doc(database, "collections", data.id);
+    const collectionSnap = await getDoc(collectionDocRef);
+    
+    if (!collectionSnap.exists()) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Collection not found",
+      };
+    }
+
+    await deleteDoc(collectionDocRef);
+
+    // Revalidate affected paths
+    revalidatePath("/admin/shop/collections"); // Admin collections page
+    revalidatePath("/"); // Public main page
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Collection deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting collection:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to delete collection",
     };
   }
 }
