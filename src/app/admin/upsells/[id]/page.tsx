@@ -12,7 +12,7 @@ import {
 } from "@/components/admin/EditUpsell/VisibilityOverlay";
 import IDCopyButton from "@/components/shared/IDCopyButton";
 import clsx from "clsx";
-import { getUpsells } from "@/lib/api/upsells";
+import { getUpsells } from "@/actions/get/upsells";
 
 export default async function EditUpsell({
   params,

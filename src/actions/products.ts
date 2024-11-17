@@ -160,7 +160,7 @@ export async function UpdateProductAction(
   }
 }
 
-export async function (data: {
+export async function SetUpsellAction(data: {
   productId: string;
   upsellId: string;
 }) {
@@ -208,7 +208,9 @@ export async function (data: {
   }
 }
 
-export async function RemoveUpsSetUpsellActionellAction(data: { productId: string }) {
+export async function RemoveUpsellAction(data: {
+  productId: string;
+}) {
   try {
     const productDocRef = doc(database, "products", data.productId);
     await updateDoc(productDocRef, {

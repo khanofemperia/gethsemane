@@ -14,9 +14,9 @@ import { SizeChartOverlay } from "@/components/website/Product/SizeChartOverlay"
 import clsx from "clsx";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-import { getCategories } from "@/lib/api/categories";
-import { getCart } from "@/lib/api/cart";
-import { getProducts } from "@/lib/api/products";
+import { getCart } from "@/actions/get/cart";
+import { getCategories } from "@/actions/get/categories";
+import { getProducts } from "@/actions/get/products";
 
 export default async function ProductDetails({
   params,

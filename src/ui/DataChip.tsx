@@ -1,5 +1,5 @@
+import { capitalizeFirstLetter } from "@/lib/utils/common";
 import clsx from "clsx";
-import { capitalizeFirstLetter } from "@/lib/utils";
 
 type DataChipType = {
   value: VisibilityType;

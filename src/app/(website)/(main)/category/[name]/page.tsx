@@ -1,10 +1,10 @@
+import { getCart } from "@/actions/get/cart";
+import { getProducts } from "@/actions/get/products";
 import { Pagination } from "@/components/website/Pagination";
 import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import ShowAlert from "@/components/website/ShowAlert";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-import { getCart } from "@/lib/api/cart";
-import { getProducts } from "@/lib/api/products";
 import { capitalizeFirstLetter } from "@/lib/utils/common";
 import { cookies } from "next/headers";
 

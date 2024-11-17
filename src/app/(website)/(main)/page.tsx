@@ -4,15 +4,15 @@ import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { FeaturedProducts } from "@/components/website/FeaturedProducts";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-import { getCategories } from "@/lib/api/categories";
-import { getPageHero } from "@/lib/api/pageHero";
-import { getCollections } from "@/lib/api/collections";
-import { getProducts } from "@/lib/api/products";
-import { getCart } from "@/lib/api/cart";
 import ShowAlert from "@/components/website/ShowAlert";
 import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { getCart } from "@/actions/get/cart";
+import { getCollections } from "@/actions/get/collections";
+import { getCategories } from "@/actions/get/categories";
+import { getPageHero } from "@/actions/get/pageHero";
+import { getProducts } from "@/actions/get/products";
 
 export default async function Home() {
   const [collections, categoriesData, pageHero] = await Promise.all([

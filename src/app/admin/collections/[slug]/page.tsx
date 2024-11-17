@@ -27,8 +27,8 @@ import {
   BannerImagesButton,
   BannerImagesOverlay,
 } from "@/components/admin/Storefront/EditCollection/BannerImagesOverlay";
-import { getCollections } from "@/lib/api/collections";
-import { getProducts } from "@/lib/api/products";
+import { getCollections } from "@/actions/get/collections";
+import { getProducts } from "@/actions/get/products";
 
 export default async function EditCollection({
   params,

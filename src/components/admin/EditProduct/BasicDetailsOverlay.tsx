@@ -9,7 +9,7 @@ import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { getCategories } from "@/lib/api/categories";
+import { getCategories } from "@/actions/get/categories";
 
 export function BasicDetailsButton({ className }: { className: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);

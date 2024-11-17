@@ -9,90 +9,6 @@ import {
   where,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
-import { capitalizeFirstLetter } from "@/lib/utils/common";
-
-type GetProductsOptions = {
-  ids?: string[];
-  fields?: string[];
-  visibility?: VisibilityType;
-  category?: string;
-};
-
-type Sortable = { [key: string]: any };
-
-function sortItems<T extends Sortable>(
-  items: T[],
-  key: keyof T,
-  isDate: boolean = false
-): T[] {
-  return items.sort((a, b) => {
-    if (isDate) {
-      return new Date(b[key]).getTime() - new Date(a[key]).getTime();
-    }
-    return (a[key] as number) - (b[key] as number);
-  });
-}
-
-function sanitizeOptions(options: GetProductsOptions = {}) {
-  return {
-    ids: Array.isArray(options.ids)
-      ? options.ids.filter(
-          (id): id is string => typeof id === "string" && id.trim() !== ""
-        )
-      : [],
-    fields: Array.isArray(options.fields)
-      ? options.fields.filter(
-          (field): field is string =>
-            typeof field === "string" && field.trim() !== ""
-        )
-      : [],
-    visibility: options.visibility,
-    category: options.category
-      ? capitalizeFirstLetter(options.category.trim())
-      : undefined,
-  };
-}
-
-async function fetchUpsellDetails(
-  upsellId: string
-): Promise<UpsellType | null> {
-  const upsellDocRef = doc(database, "upsells", upsellId);
-  const upsellSnapshot = await getDoc(upsellDocRef);
-
-  if (!upsellSnapshot.exists()) {
-    return null;
-  }
-
-  const upsellData = upsellSnapshot.data() as UpsellType;
-  const productsInUpsell = await Promise.all(
-    upsellData.products.map(async (productItem) => {
-      const productDocRef = doc(database, "products", productItem.id);
-      const productSnapshot = await getDoc(productDocRef);
-
-      if (!productSnapshot.exists()) {
-        return null;
-      }
-
-      const productData = productSnapshot.data() as ProductType;
-      return {
-        index: productItem.index,
-        name: productItem.name,
-        id: productData.id,
-        slug: productData.slug,
-        images: productData.images,
-        basePrice: productData.pricing.basePrice,
-        options: productData.options,
-      };
-    })
-  );
-
-  return {
-    ...upsellData,
-    products: productsInUpsell.filter(
-      (item): item is UpsellType["products"][number] => item !== null
-    ),
-  };
-}
 
 /**
  * Unified function to get products with flexible filtering and field selection.
@@ -119,9 +35,10 @@ async function fetchUpsellDetails(
  * });
  */
 export async function getProducts(
-  options: GetProductsOptions = {}
+  options: GetProductsOptionsType = {}
 ): Promise<(ProductType | ProductWithUpsellType)[] | null> {
-  const { ids, fields, visibility, category } = sanitizeOptions(options);
+  const { ids = [], fields = [], visibility, category } = options;
+
   const includeUpsells = !fields.length || fields.includes("upsell");
 
   // Build the base query
@@ -192,6 +109,59 @@ export async function getProducts(
     })
   );
 
-  const sortedProducts = sortItems(products, "updatedAt", true);
-  return sortedProducts;
+  return products.sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  );
 }
+
+// -- Logic & Utilities --
+
+async function fetchUpsellDetails(
+  upsellId: string
+): Promise<UpsellType | null> {
+  const upsellDocRef = doc(database, "upsells", upsellId);
+  const upsellSnapshot = await getDoc(upsellDocRef);
+
+  if (!upsellSnapshot.exists()) {
+    return null;
+  }
+
+  const upsellData = upsellSnapshot.data() as UpsellType;
+  const productsInUpsell = await Promise.all(
+    upsellData.products.map(async (productItem) => {
+      const productDocRef = doc(database, "products", productItem.id);
+      const productSnapshot = await getDoc(productDocRef);
+
+      if (!productSnapshot.exists()) {
+        return null;
+      }
+
+      const productData = productSnapshot.data() as ProductType;
+      return {
+        index: productItem.index,
+        name: productItem.name,
+        id: productData.id,
+        slug: productData.slug,
+        images: productData.images,
+        basePrice: productData.pricing.basePrice,
+        options: productData.options,
+      };
+    })
+  );
+
+  return {
+    ...upsellData,
+    products: productsInUpsell.filter(
+      (item): item is UpsellType["products"][number] => item !== null
+    ),
+  };
+}
+
+// -- Type Definitions --
+
+type GetProductsOptionsType = {
+  ids?: string[];
+  fields?: string[];
+  visibility?: VisibilityType;
+  category?: string;
+};

@@ -1,7 +1,7 @@
-import { getCategories } from "@/lib/api/categories";
-import { getCart } from "@/lib/api/cart";
 import { cookies } from "next/headers";
 import Navbar from ".";
+import { getCart } from "@/actions/get/cart";
+import { getCategories } from "@/actions/get/categories";
 
 export async function NavbarWrapper() {
   const cookieStore = cookies();

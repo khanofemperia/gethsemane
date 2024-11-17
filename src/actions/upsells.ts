@@ -1,7 +1,7 @@
 "use server";
 
 import { database } from "@/lib/firebase";
-import { setDoc, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { setDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
 import { generateId, currentTimestamp } from "@/lib/utils/common";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";

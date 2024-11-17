@@ -1,5 +1,5 @@
+import { getProducts } from "@/actions/get/products";
 import { ProductCard } from "./ProductCard";
-import { getProducts } from "@/lib/api/products";
 
 export async function DiscoveryProducts({
   heading = "Explore Your Interests",

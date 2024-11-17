@@ -1,4 +1,3 @@
-import { getProducts } from "@/lib/api/products";
 import config from "@/lib/config";
 import { database } from "@/lib/firebase";
 import { capitalizeFirstLetter, formatThousands } from "@/lib/utils/common";
@@ -10,6 +9,7 @@ import {
   EmailPreviewOverlay,
 } from "@/components/admin/OrderEmailPreviewOverlay";
 import { EmailType } from "@/lib/sharedTypes";
+import { getProducts } from "@/actions/get/products";
 
 const PAYPAL_BASE_URL =
   "https://www.sandbox.paypal.com/unifiedtransactions/details/payment/";

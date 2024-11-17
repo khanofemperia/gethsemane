@@ -13,7 +13,7 @@ import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { ReactSortable } from "react-sortablejs";
-import { getProducts } from "@/lib/api/products";
+import { getProducts } from "@/actions/get/products";
 
 export function NewUpsellMenuButton({ closeMenu }: NewUpsellMenuButtonType) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
@@ -594,4 +594,4 @@ type ProductType = {
 
 type NewUpsellMenuButtonType = {
   closeMenu: () => void;
-}
+};

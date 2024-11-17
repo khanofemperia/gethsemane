@@ -18,7 +18,7 @@ import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { ReactSortable } from "react-sortablejs";
-import { getProducts } from "@/lib/api/products";
+import { getProducts } from "@/actions/get/products";
 
 export function BasicDetailsButton({ className }: { className: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);

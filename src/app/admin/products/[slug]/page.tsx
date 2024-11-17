@@ -49,8 +49,8 @@ import {
   UpsellButton,
   UpsellOverlay,
 } from "@/components/admin/EditProduct/UpsellOverlay ";
-import { getUpsells } from "@/lib/api/upsells";
-import { getProducts } from "@/lib/api/products";
+import { getProducts } from "@/actions/get/products";
+import { getUpsells } from "@/actions/get/upsells";
 
 export default async function EditProduct({
   params,

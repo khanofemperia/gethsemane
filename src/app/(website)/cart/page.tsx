@@ -7,11 +7,11 @@ import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { database } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
-import { getCart } from "@/lib/api/cart";
-import { getProducts } from "@/lib/api/products";
 import CartItemList from "@/components/website/CartItemList";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import clsx from "clsx";
+import { getCart } from "@/actions/get/cart";
+import { getProducts } from "@/actions/get/products";
 
 export default async function Cart() {
   const cookieStore = cookies();

@@ -1,3 +1,6 @@
+import { getCategories } from "@/actions/get/categories";
+import { getCollections } from "@/actions/get/collections";
+import { getPageHero } from "@/actions/get/pageHero";
 import {
   CategoriesButton,
   CategoriesOverlay,
@@ -8,9 +11,6 @@ import {
   PageHeroButton,
   PageHeroOverlay,
 } from "@/components/admin/Storefront/PageHeroOverlay";
-import { getCategories } from "@/lib/api/categories";
-import { getCollections } from "@/lib/api/collections";
-import { getPageHero } from "@/lib/api/pageHero";
 import clsx from "clsx";
 
 export default async function Storefront() {

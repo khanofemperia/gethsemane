@@ -4,9 +4,9 @@ import { setDoc, doc } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 import { cookies } from "next/headers";
 import { getDoc } from "firebase/firestore";
-import { getCart } from "@/lib/api/cart";
-import { getProducts } from "@/lib/api/products";
 import { generateAccessToken } from "@/lib/utils/orders";
+import { getCart } from "@/actions/get/cart";
+import { getProducts } from "@/actions/get/products";
 
 export async function POST(
   _request: NextRequest,
