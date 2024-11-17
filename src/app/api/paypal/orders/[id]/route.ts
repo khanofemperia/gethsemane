@@ -1,12 +1,9 @@
+import { generateAccessToken } from "@/lib/utils/orders";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-const PAYPAL_CLIENT_SECRET = process.env.NEXT_PAYPAL_CLIENT_SECRET;
-const PAYPAL_API_BASE = "https://api-m.sandbox.paypal.com";
-
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -20,7 +17,7 @@ export async function GET(
       );
     }
 
-    const url = `${PAYPAL_API_BASE}/v2/checkout/orders/${orderId}`;
+    const url = `${process.env.PAYPAL_API_BASE}/v2/checkout/orders/${orderId}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -48,32 +45,4 @@ export async function GET(
       { status: 500 }
     );
   }
-}
-
-async function generateAccessToken() {
-  if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
-    throw new Error("Missing PayPal credentials");
-  }
-
-  const auth = Buffer.from(
-    `${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`
-  ).toString("base64");
-
-  const response = await fetch(`${PAYPAL_API_BASE}/v1/oauth2/token`, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${auth}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      grant_type: "client_credentials",
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to get PayPal access token");
-  }
-
-  const data = await response.json();
-  return data.access_token;
 }

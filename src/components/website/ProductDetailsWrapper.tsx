@@ -9,78 +9,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { HiMiniChevronDown } from "react-icons/hi2";
 
-type ProductInfoType = {
-  id: string;
-  name: string;
-  pricing: PricingType;
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  options: {
-    colors: Array<{
-      name: string;
-      image: string;
-    }>;
-    sizes: {
-      inches: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-      centimeters: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-    };
-  };
-  upsell: {
-    id: string;
-    mainImage: string;
-    pricing: PricingType;
-    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-    createdAt: string;
-    updatedAt: string;
-    products: Array<{
-      id: string;
-      name: string;
-      slug: string;
-      basePrice: number;
-      images: {
-        main: string;
-        gallery: string[];
-      };
-      options: {
-        colors: Array<{
-          name: string;
-          image: string;
-        }>;
-        sizes: {
-          inches: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-          centimeters: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-        };
-      };
-    }>;
-  };
-};
-
-type CategoryType = {
-  index: number;
-  name: string;
-  image: string;
-  visibility: "VISIBLE" | "HIDDEN";
-};
-
-type StoreCategoriesType = {
-  showOnPublicSite: boolean;
-  categories: CategoryType[];
-};
-
 export function ProductDetailsWrapper({
   children,
   cart,
@@ -251,3 +179,77 @@ export function ProductDetailsWrapper({
     </div>
   );
 }
+
+// -- Type Definitions --
+
+type ProductInfoType = {
+  id: string;
+  name: string;
+  pricing: PricingType;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  options: {
+    colors: Array<{
+      name: string;
+      image: string;
+    }>;
+    sizes: {
+      inches: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+      centimeters: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+    };
+  };
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: PricingType;
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: Array<{
+      id: string;
+      name: string;
+      slug: string;
+      basePrice: number;
+      images: {
+        main: string;
+        gallery: string[];
+      };
+      options: {
+        colors: Array<{
+          name: string;
+          image: string;
+        }>;
+        sizes: {
+          inches: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+          centimeters: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+        };
+      };
+    }>;
+  };
+};
+
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
+
+type StoreCategoriesType = {
+  showOnPublicSite: boolean;
+  categories: CategoryType[];
+};

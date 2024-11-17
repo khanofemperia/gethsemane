@@ -4,14 +4,6 @@ import Image from "next/image";
 import { useState } from "react";
 import styles from "./styles.module.css";
 
-type ProductImagesType = {
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  productName: string;
-};
-
 export default function Images({ images, productName }: ProductImagesType) {
   const [currentImage, setCurrentImage] = useState(images.main);
 
@@ -58,3 +50,13 @@ export default function Images({ images, productName }: ProductImagesType) {
     </div>
   );
 }
+
+// -- Type Definitions --
+
+type ProductImagesType = {
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  productName: string;
+};

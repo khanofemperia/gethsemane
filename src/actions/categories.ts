@@ -5,18 +5,6 @@ import { database } from "@/lib/firebase";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-type CategoryType = {
-  index: number;
-  name: string;
-  image: string;
-  visibility: "VISIBLE" | "HIDDEN";
-};
-
-type StoreCategoriesType = {
-  showOnPublicSite: boolean;
-  categories: CategoryType[];
-};
-
 export async function UpdateCategoriesAction(data: StoreCategoriesType) {
   try {
     if (!data.categories || !Array.isArray(data.categories)) {
@@ -80,3 +68,17 @@ export async function UpdateCategoriesAction(data: StoreCategoriesType) {
     };
   }
 }
+
+// -- Type Definitions --
+
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
+
+type StoreCategoriesType = {
+  showOnPublicSite: boolean;
+  categories: CategoryType[];
+};

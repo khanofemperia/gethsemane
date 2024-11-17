@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { isValidRemoteImage } from "@/lib/utils";
+import { isValidRemoteImage } from "@/lib/utils/common";
 import { FormEvent, useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -11,14 +11,6 @@ import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
-
-type DataType = {
-  id: string;
-  images: {
-    main: string;
-    gallery: string[];
-  };
-};
 
 export function MainImageButton() {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
@@ -230,3 +222,13 @@ export function MainImageOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  id: string;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+};

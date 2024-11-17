@@ -3,28 +3,6 @@ import Image from "next/image";
 import { CloseIconThin } from "@/icons";
 import clsx from "clsx";
 
-type ProductImage = {
-  src: string;
-  alt: string;
-};
-
-type ProductImageCarouselOverlayType = {
-  product: {
-    name: string;
-    images: {
-      main: string;
-      gallery: string[];
-    };
-    options: {
-      colors: Array<{
-        name: string;
-        image: string;
-      }>;
-    };
-  };
-  onClose: () => void;
-};
-
 export function ProductImageCarouselOverlay({
   product,
   onClose,
@@ -109,3 +87,27 @@ export function ProductImageCarouselOverlay({
     </div>
   );
 }
+
+// -- Type Definitions --
+
+type ProductImage = {
+  src: string;
+  alt: string;
+};
+
+type ProductImageCarouselOverlayType = {
+  product: {
+    name: string;
+    images: {
+      main: string;
+      gallery: string[];
+    };
+    options: {
+      colors: Array<{
+        name: string;
+        image: string;
+      }>;
+    };
+  };
+  onClose: () => void;
+};

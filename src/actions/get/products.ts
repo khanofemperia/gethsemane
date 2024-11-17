@@ -1,3 +1,5 @@
+"use server";
+
 import {
   collection,
   doc,
@@ -7,7 +9,7 @@ import {
   where,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
-import { capitalizeFirstLetter } from "@/lib/utils";
+import { capitalizeFirstLetter } from "@/lib/utils/common";
 
 type GetProductsOptions = {
   ids?: string[];

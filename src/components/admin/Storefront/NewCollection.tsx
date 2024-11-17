@@ -6,7 +6,7 @@ import {
   formatDate,
   isGifImage,
   isValidRemoteImage,
-} from "@/lib/utils";
+} from "@/lib/utils/common";
 import { useState, useEffect, useRef } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -20,26 +20,6 @@ import { CiImageOn } from "react-icons/ci";
 import { CreateCollectionAction } from "@/actions/collections";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
-
-type BannerImagesType = {
-  desktopImage: string;
-  mobileImage: string;
-};
-
-type RequestDataType = {
-  title: string;
-  slug: string;
-  campaignDuration: {
-    startDate: string;
-    endDate: string;
-  };
-  collectionType: string;
-  bannerImages?: BannerImagesType;
-};
-
-interface NewCollectionMenuButtonType {
-  closeMenu: () => void;
-}
 
 export function NewCollectionMenuButton({ closeMenu }: NewCollectionMenuButtonType) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
@@ -550,4 +530,26 @@ export function NewCollectionOverlay() {
       )}
     </>
   );
+}
+
+// -- Type Definitions --
+
+type BannerImagesType = {
+  desktopImage: string;
+  mobileImage: string;
+};
+
+type RequestDataType = {
+  title: string;
+  slug: string;
+  campaignDuration: {
+    startDate: string;
+    endDate: string;
+  };
+  collectionType: string;
+  bannerImages?: BannerImagesType;
+};
+
+interface NewCollectionMenuButtonType {
+  closeMenu: () => void;
 }

@@ -1,5 +1,5 @@
 import { customAlphabet } from "nanoid";
-import { REMOTE_PATTERNS } from "./config";
+import { REMOTE_PATTERNS } from "../config";
 
 export function generateId() {
   const nanoid = customAlphabet("1234567890", 5);

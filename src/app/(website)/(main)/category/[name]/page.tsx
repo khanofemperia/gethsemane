@@ -5,7 +5,7 @@ import ShowAlert from "@/components/website/ShowAlert";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { getCart } from "@/lib/api/cart";
 import { getProducts } from "@/lib/api/products";
-import { capitalizeFirstLetter } from "@/lib/utils";
+import { capitalizeFirstLetter } from "@/lib/utils/common";
 import { cookies } from "next/headers";
 
 export default async function Categories({

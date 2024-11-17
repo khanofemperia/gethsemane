@@ -10,31 +10,10 @@ import {
   getDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { generateId } from "@/lib/utils";
-import { currentTimestamp } from "@/lib/utils";
+import { generateId } from "@/lib/utils/common";
+import { currentTimestamp } from "@/lib/utils/common";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
-
-type DataType = {
-  image: string;
-  title: string;
-  slug: string;
-  campaignDuration: {
-    startDate: string;
-    endDate: string;
-  };
-  visibility: string;
-  collectionType: string;
-  index: number;
-  updatedAt: string;
-  createdAt: string;
-  products: { id: string; index: number }[];
-};
-
-type BannerImagesType = {
-  desktopImage: string;
-  mobileImage: string;
-};
 
 export async function CreateCollectionAction(data: {
   title: string;
@@ -81,8 +60,7 @@ export async function CreateCollectionAction(data: {
       return updateDoc(collectionRef, { index: index + 2 });
     });
 
-    await setDoc(documentRef, newCollection);
-    await Promise.all(updatePromises);
+    await Promise.all([setDoc(documentRef, newCollection), ...updatePromises]);
 
     revalidatePath("/admin/shop");
 
@@ -150,7 +128,9 @@ export async function ChangeCollectionIndexAction(data: {
     // Revalidate paths to update collections data
     const collectionData = collectionOneBeforeUpdate;
     revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath(`/admin/shop/collections/${collectionData.slug}-${collectionData.id}`); // Admin edit collection page
+    revalidatePath(
+      `/admin/shop/collections/${collectionData.slug}-${collectionData.id}`
+    ); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/collections/${collectionData.slug}-${collectionData.id}`); // Public collection page
 
@@ -212,7 +192,7 @@ export async function UpdateCollectionAction(data: {
       ...updateData,
       updatedAt: currentTimestamp(),
     });
-    
+
     // Revalidate paths to update collections data
     const collectionData = collectionSnapshot.data();
     revalidatePath("/admin/shop"); // Admin shop page
@@ -296,7 +276,9 @@ export async function AddProductAction(data: {
 
     // Revalidate paths to update collections data
     revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath(`/admin/shop/collections/${collectionData.slug}-${collectionId}`); // Admin edit collection page
+    revalidatePath(
+      `/admin/shop/collections/${collectionData.slug}-${collectionId}`
+    ); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
 
@@ -353,7 +335,9 @@ export async function RemoveProductAction(data: {
 
     // Revalidate paths to update collections data
     revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath(`/admin/shop/collections/${collectionData.slug}-${collectionId}`); // Admin edit collection page
+    revalidatePath(
+      `/admin/shop/collections/${collectionData.slug}-${collectionId}`
+    ); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
 
@@ -441,7 +425,9 @@ export async function ChangeProductIndexAction(data: {
 
       // Revalidate paths to update collections data
       revalidatePath("/admin/shop"); // Admin shop page
-      revalidatePath(`/admin/shop/collections/${collectionData.slug}-${collectionId}`); // Admin edit collection page
+      revalidatePath(
+        `/admin/shop/collections/${collectionData.slug}-${collectionId}`
+      ); // Admin edit collection page
       revalidatePath("/"); // Public main page
       revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
 
@@ -468,7 +454,7 @@ export async function DeleteCollectionAction(data: { id: string }) {
   try {
     const collectionDocRef = doc(database, "collections", data.id);
     const collectionSnap = await getDoc(collectionDocRef);
-    
+
     if (!collectionSnap.exists()) {
       return {
         type: AlertMessageType.ERROR,
@@ -494,3 +480,26 @@ export async function DeleteCollectionAction(data: { id: string }) {
     };
   }
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  image: string;
+  title: string;
+  slug: string;
+  campaignDuration: {
+    startDate: string;
+    endDate: string;
+  };
+  visibility: string;
+  collectionType: string;
+  index: number;
+  updatedAt: string;
+  createdAt: string;
+  products: Array<{ id: string; index: number }>;
+};
+
+type BannerImagesType = {
+  desktopImage: string;
+  mobileImage: string;
+};

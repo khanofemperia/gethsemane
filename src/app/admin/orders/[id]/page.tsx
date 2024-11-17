@@ -1,7 +1,7 @@
 import { getProducts } from "@/lib/api/products";
 import config from "@/lib/config";
 import { database } from "@/lib/firebase";
-import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
+import { capitalizeFirstLetter, formatThousands } from "@/lib/utils/common";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,252 +10,6 @@ import {
   EmailPreviewOverlay,
 } from "@/components/admin/OrderEmailPreviewOverlay";
 import { EmailType } from "@/lib/sharedTypes";
-
-type OrderDetailsType = {
-  id: string;
-  intent: string;
-  status: string;
-  payment_source: {
-    paypal: {
-      email_address: string;
-      account_id: string;
-      account_status: string;
-      name: {
-        given_name: string;
-        surname: string;
-      };
-      phone_number: {
-        national_number: string;
-      };
-      address: {
-        country_code: string;
-      };
-      attributes: {
-        cobranded_cards: Array<{
-          labels: any[];
-          payee: {
-            email_address: string;
-            merchant_id: string;
-          };
-          amount: {
-            currency_code: string;
-            value: string;
-          };
-        }>;
-      };
-    };
-  };
-  purchase_units: Array<{
-    reference_id: string;
-    amount: {
-      currency_code: string;
-      value: string;
-      breakdown: {
-        item_total: {
-          currency_code: string;
-          value: string;
-        };
-        shipping: {
-          currency_code: string;
-          value: string;
-        };
-        handling: {
-          currency_code: string;
-          value: string;
-        };
-        insurance: {
-          currency_code: string;
-          value: string;
-        };
-        shipping_discount: {
-          currency_code: string;
-          value: string;
-        };
-        discount: {
-          currency_code: string;
-          value: string;
-        };
-      };
-    };
-    payee: {
-      email_address: string;
-      merchant_id: string;
-    };
-    description: string;
-    soft_descriptor: string;
-    items: Array<{
-      name: string;
-      unit_amount: {
-        currency_code: string;
-        value: string;
-      };
-      tax: {
-        currency_code: string;
-        value: string;
-      };
-      quantity: string;
-      sku: string;
-    }>;
-    shipping: {
-      name: {
-        full_name: string;
-      };
-      address: {
-        address_line_1: string;
-        address_line_2: string;
-        admin_area_2: string;
-        admin_area_1: string;
-        postal_code: string;
-        country_code: string;
-      };
-    };
-    payments: {
-      captures: Array<{
-        id: string;
-        status: string;
-        amount: {
-          currency_code: string;
-          value: string;
-        };
-        final_capture: boolean;
-        seller_protection: {
-          status: string;
-          dispute_categories: string[];
-        };
-        seller_receivable_breakdown: {
-          gross_amount: {
-            currency_code: string;
-            value: string;
-          };
-          paypal_fee: {
-            currency_code: string;
-            value: string;
-          };
-          net_amount: {
-            currency_code: string;
-            value: string;
-          };
-        };
-        links: Array<{
-          href: string;
-          rel: string;
-          method: string;
-        }>;
-        create_time: string;
-        update_time: string;
-      }>;
-    };
-  }>;
-  payer: {
-    name: {
-      given_name: string;
-      surname: string;
-    };
-    email_address: string;
-    payer_id: string;
-    phone: {
-      phone_number: {
-        national_number: string;
-      };
-    };
-    address: {
-      country_code: string;
-    };
-  };
-  update_time: string;
-  links: Array<{
-    href: string;
-    rel: string;
-    method: string;
-  }>;
-};
-
-type ProductType = {
-  slug: string;
-  type: "product";
-  mainImage: string;
-  pricing: {
-    basePrice: number;
-    salePrice: number;
-    discountPercentage: number;
-  };
-  color: string;
-  size: string;
-  index: number;
-  baseProductId: string;
-  variantId: string;
-  name: string;
-};
-
-type UpsellType = {
-  mainImage: string;
-  index: number;
-  pricing: {
-    basePrice: number;
-    salePrice: number;
-    discountPercentage: number;
-  };
-  products: Array<{
-    mainImage: string;
-    index: number;
-    basePrice: number;
-    color: string;
-    id: string;
-    size: string;
-    slug: string;
-    name: string;
-  }>;
-  type: "upsell";
-  baseUpsellId: string;
-  variantId: string;
-};
-
-type PaymentTransaction = {
-  id: string;
-  status: string;
-  transactionId: string;
-  timestamp: string;
-  amount: {
-    currency: string;
-    value: string;
-  };
-  payer: {
-    email: string;
-    payerId: string;
-    name: {
-      firstName: string;
-      lastName: string;
-    };
-  };
-  shipping: {
-    name: string;
-    address: {
-      line1: string;
-      state: string;
-      country: string;
-      city: string;
-      postalCode: string;
-    };
-  };
-  items: Array<ProductType | UpsellType>;
-  emails: {
-    confirmed: {
-      sentCount: number;
-      maxAllowed: number;
-      lastSent: string | null;
-    };
-    shipped: {
-      sentCount: number;
-      maxAllowed: number;
-      lastSent: string | null;
-    };
-    delivered: {
-      sentCount: number;
-      maxAllowed: number;
-      lastSent: string | null;
-    };
-  };
-};
 
 const PAYPAL_BASE_URL =
   "https://www.sandbox.paypal.com/unifiedtransactions/details/payment/";
@@ -654,6 +408,8 @@ export default async function OrderDetails({
   );
 }
 
+// -- Logic & Utilities --
+
 async function getOrderById(id: string): Promise<OrderType | null> {
   if (!id) {
     return null;
@@ -713,3 +469,251 @@ async function updateUpsellProductNames(order: PaymentTransaction) {
     }
   });
 }
+
+// -- Type Definitions --
+
+type OrderDetailsType = {
+  id: string;
+  intent: string;
+  status: string;
+  payment_source: {
+    paypal: {
+      email_address: string;
+      account_id: string;
+      account_status: string;
+      name: {
+        given_name: string;
+        surname: string;
+      };
+      phone_number: {
+        national_number: string;
+      };
+      address: {
+        country_code: string;
+      };
+      attributes: {
+        cobranded_cards: Array<{
+          labels: any[];
+          payee: {
+            email_address: string;
+            merchant_id: string;
+          };
+          amount: {
+            currency_code: string;
+            value: string;
+          };
+        }>;
+      };
+    };
+  };
+  purchase_units: Array<{
+    reference_id: string;
+    amount: {
+      currency_code: string;
+      value: string;
+      breakdown: {
+        item_total: {
+          currency_code: string;
+          value: string;
+        };
+        shipping: {
+          currency_code: string;
+          value: string;
+        };
+        handling: {
+          currency_code: string;
+          value: string;
+        };
+        insurance: {
+          currency_code: string;
+          value: string;
+        };
+        shipping_discount: {
+          currency_code: string;
+          value: string;
+        };
+        discount: {
+          currency_code: string;
+          value: string;
+        };
+      };
+    };
+    payee: {
+      email_address: string;
+      merchant_id: string;
+    };
+    description: string;
+    soft_descriptor: string;
+    items: Array<{
+      name: string;
+      unit_amount: {
+        currency_code: string;
+        value: string;
+      };
+      tax: {
+        currency_code: string;
+        value: string;
+      };
+      quantity: string;
+      sku: string;
+    }>;
+    shipping: {
+      name: {
+        full_name: string;
+      };
+      address: {
+        address_line_1: string;
+        address_line_2: string;
+        admin_area_2: string;
+        admin_area_1: string;
+        postal_code: string;
+        country_code: string;
+      };
+    };
+    payments: {
+      captures: Array<{
+        id: string;
+        status: string;
+        amount: {
+          currency_code: string;
+          value: string;
+        };
+        final_capture: boolean;
+        seller_protection: {
+          status: string;
+          dispute_categories: string[];
+        };
+        seller_receivable_breakdown: {
+          gross_amount: {
+            currency_code: string;
+            value: string;
+          };
+          paypal_fee: {
+            currency_code: string;
+            value: string;
+          };
+          net_amount: {
+            currency_code: string;
+            value: string;
+          };
+        };
+        links: Array<{
+          href: string;
+          rel: string;
+          method: string;
+        }>;
+        create_time: string;
+        update_time: string;
+      }>;
+    };
+  }>;
+  payer: {
+    name: {
+      given_name: string;
+      surname: string;
+    };
+    email_address: string;
+    payer_id: string;
+    phone: {
+      phone_number: {
+        national_number: string;
+      };
+    };
+    address: {
+      country_code: string;
+    };
+  };
+  update_time: string;
+  links: Array<{
+    href: string;
+    rel: string;
+    method: string;
+  }>;
+};
+
+type ProductType = {
+  slug: string;
+  type: "product";
+  mainImage: string;
+  pricing: {
+    basePrice: number;
+    salePrice: number;
+    discountPercentage: number;
+  };
+  color: string;
+  size: string;
+  index: number;
+  baseProductId: string;
+  variantId: string;
+  name: string;
+};
+
+type UpsellType = {
+  mainImage: string;
+  index: number;
+  pricing: {
+    basePrice: number;
+    salePrice: number;
+    discountPercentage: number;
+  };
+  products: Array<{
+    mainImage: string;
+    index: number;
+    basePrice: number;
+    color: string;
+    id: string;
+    size: string;
+    slug: string;
+    name: string;
+  }>;
+  type: "upsell";
+  baseUpsellId: string;
+  variantId: string;
+};
+
+type PaymentTransaction = {
+  id: string;
+  status: string;
+  transactionId: string;
+  timestamp: string;
+  amount: {
+    currency: string;
+    value: string;
+  };
+  payer: {
+    email: string;
+    payerId: string;
+    name: {
+      firstName: string;
+      lastName: string;
+    };
+  };
+  shipping: {
+    name: string;
+    address: {
+      line1: string;
+      state: string;
+      country: string;
+      city: string;
+      postalCode: string;
+    };
+  };
+  items: Array<ProductType | UpsellType>;
+  emails: {
+    confirmed: {
+      sentCount: number;
+      maxAllowed: number;
+      lastSent: string | null;
+    };
+    shipped: {
+      sentCount: number;
+      maxAllowed: number;
+      lastSent: string | null;
+    };
+    delivered: {
+      sentCount: number;
+      maxAllowed: number;
+      lastSent: string | null;
+    };
+  };
+};

@@ -8,13 +8,6 @@ import { CartIcon } from "@/icons";
 import { HiMiniChevronDown } from "react-icons/hi2";
 import Link from "next/link";
 
-type CategoryType = {
-  index: number;
-  name: string;
-  image: string;
-  visibility: "VISIBLE" | "HIDDEN";
-};
-
 export default function Navbar({
   itemsInCart,
   categories,
@@ -181,3 +174,12 @@ export default function Navbar({
     </nav>
   );
 }
+
+// -- Type Definitions --
+
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};

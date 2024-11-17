@@ -6,14 +6,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-type ImageCarouselType = {
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  productName: string;
-};
-
 export default function ImageCarousel({
   images,
   productName,
@@ -56,3 +48,13 @@ export default function ImageCarousel({
     </div>
   );
 }
+
+// -- Type Definitions --
+
+type ImageCarouselType = {
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  productName: string;
+};

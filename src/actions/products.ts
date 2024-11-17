@@ -10,45 +10,9 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { generateId, currentTimestamp } from "@/lib/utils";
+import { generateId, currentTimestamp } from "@/lib/utils/common";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
-
-type CreateProductType = {
-  name: string;
-  slug: string;
-  category: string;
-  basePrice: string;
-  mainImage: string;
-};
-
-function calculateUpsellPricing(
-  products: UpsellType["products"],
-  currentPricing: PricingType
-): PricingType {
-  const totalBasePrice = products.reduce(
-    (total, product) => total + (Number(product.basePrice) || 0),
-    0
-  );
-
-  const roundedBasePrice = Math.floor(totalBasePrice) + 0.99;
-  const basePrice = Number(roundedBasePrice.toFixed(2));
-
-  const discountPercentage = currentPricing.discountPercentage ?? 0;
-
-  let salePrice = 0;
-  if (discountPercentage > 0) {
-    const rawSalePrice = basePrice * (1 - discountPercentage / 100);
-    const roundedSalePrice = Math.floor(rawSalePrice) + 0.99;
-    salePrice = Number(roundedSalePrice.toFixed(2));
-  }
-
-  return {
-    basePrice,
-    salePrice,
-    discountPercentage,
-  };
-}
 
 export async function CreateProductAction(data: CreateProductType) {
   try {
@@ -196,7 +160,7 @@ export async function UpdateProductAction(
   }
 }
 
-export async function SetUpsellAction(data: {
+export async function (data: {
   productId: string;
   upsellId: string;
 }) {
@@ -244,7 +208,7 @@ export async function SetUpsellAction(data: {
   }
 }
 
-export async function RemoveUpsellAction(data: { productId: string }) {
+export async function RemoveUpsSetUpsellActionellAction(data: { productId: string }) {
   try {
     const productDocRef = doc(database, "products", data.productId);
     await updateDoc(productDocRef, {
@@ -309,3 +273,43 @@ export async function DeleteProductAction(data: { id: string }) {
     };
   }
 }
+
+// -- Logic & Utilities --
+
+function calculateUpsellPricing(
+  products: UpsellType["products"],
+  currentPricing: PricingType
+): PricingType {
+  const totalBasePrice = products.reduce(
+    (total, product) => total + (Number(product.basePrice) || 0),
+    0
+  );
+
+  const roundedBasePrice = Math.floor(totalBasePrice) + 0.99;
+  const basePrice = Number(roundedBasePrice.toFixed(2));
+
+  const discountPercentage = currentPricing.discountPercentage ?? 0;
+
+  let salePrice = 0;
+  if (discountPercentage > 0) {
+    const rawSalePrice = basePrice * (1 - discountPercentage / 100);
+    const roundedSalePrice = Math.floor(rawSalePrice) + 0.99;
+    salePrice = Number(roundedSalePrice.toFixed(2));
+  }
+
+  return {
+    basePrice,
+    salePrice,
+    discountPercentage,
+  };
+}
+
+// -- Type Definitions --
+
+type CreateProductType = {
+  name: string;
+  slug: string;
+  category: string;
+  basePrice: string;
+  mainImage: string;
+};

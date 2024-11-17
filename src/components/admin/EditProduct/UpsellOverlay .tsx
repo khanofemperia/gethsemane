@@ -17,15 +17,6 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 import Image from "next/image";
 import { RemoveUpsellAction, SetUpsellAction } from "@/actions/products";
 
-type DataType = {
-  id: string;
-  upsell: UpsellType | null;
-  upsellDetails: {
-    additionalSpend: string;
-    percentageIncrease: string;
-  } | null;
-};
-
 export function UpsellButton({ className }: { className: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.editProduct.name);
@@ -278,3 +269,14 @@ export function UpsellOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  id: string;
+  upsell: UpsellType | null;
+  upsellDetails: {
+    additionalSpend: string;
+    percentageIncrease: string;
+  } | null;
+};

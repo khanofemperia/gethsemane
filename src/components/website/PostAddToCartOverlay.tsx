@@ -1,5 +1,5 @@
 import { CheckmarkIcon, CloseIconThin } from "@/icons";
-import { formatThousands } from "@/lib/utils";
+import { formatThousands } from "@/lib/utils/common";
 import Overlay from "@/ui/Overlay";
 import Image from "next/image";
 import { FaCheckCircle } from "react-icons/fa";

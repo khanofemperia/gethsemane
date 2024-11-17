@@ -11,6 +11,9 @@ import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { UpdateCategoriesAction } from "@/actions/categories";
 
+const HIDDEN = "HIDDEN";
+const VISIBLE = "VISIBLE";
+
 export function CategoriesButton({
   showOnPublicSite,
 }: {
@@ -50,21 +53,6 @@ export function CategoriesButton({
     </button>
   );
 }
-
-type CategoryType = {
-  index: number;
-  name: string;
-  image: string;
-  visibility: "VISIBLE" | "HIDDEN";
-};
-
-type StoreCategoriesType = {
-  showOnPublicSite: boolean;
-  categories: CategoryType[];
-};
-
-const HIDDEN = "HIDDEN";
-const VISIBLE = "VISIBLE";
 
 export function CategoriesOverlay({
   categoriesData,
@@ -343,3 +331,17 @@ export function CategoriesOverlay({
     </>
   );
 }
+
+// -- Type Definitions --
+
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};
+
+type StoreCategoriesType = {
+  showOnPublicSite: boolean;
+  categories: CategoryType[];
+};

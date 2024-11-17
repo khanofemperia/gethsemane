@@ -16,7 +16,7 @@ import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { AddProductAction } from "@/actions/collections";
 import Image from "next/image";
-import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
+import { capitalizeFirstLetter, formatThousands } from "@/lib/utils/common";
 import Link from "next/link";
 import {
   RemoveProductButton,

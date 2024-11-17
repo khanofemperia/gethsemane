@@ -10,123 +10,6 @@ import clsx from "clsx";
 import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
 import { getCart } from "@/lib/api/cart";
 
-type ProductColorsType = {
-  colors: Array<{
-    name: string;
-    image: string;
-  }>;
-};
-
-function ProductColors({ colors }: ProductColorsType) {
-  const selectedColor = useOptionsStore((state) => state.selectedColor);
-  const setSelectedColor = useOptionsStore((state) => state.setSelectedColor);
-
-  return (
-    <div className="w-full">
-      <div className="flex flex-wrap gap-3">
-        {colors.map(({ name, image }, index) => (
-          <div
-            onClick={() => setSelectedColor(name)}
-            key={index}
-            className={`relative w-[40px] h-[40px] flex items-center justify-center cursor-pointer hover:before:content-[''] hover:before:h-12 hover:before:w-12 hover:before:absolute hover:before:rounded-[6px] hover:before:border hover:before:border-black ${
-              selectedColor === name &&
-              "before:content-[''] before:h-12 before:w-12 before:absolute before:rounded-[6px] before:border before:border-blue hover:before:!border-blue"
-            }`}
-          >
-            <div className="w-full h-full flex items-center justify-center relative overflow-hidden bg-lightgray border rounded">
-              <Image src={image} alt={name} width={40} height={40} priority />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ProductSizeChart({
-  sizeChart,
-  onSizeChartClick,
-}: {
-  sizeChart: SizeChartType;
-  onSizeChartClick: () => void;
-}) {
-  const selectedSize = useOptionsStore((state) => state.selectedSize);
-  const setSelectedSize = useOptionsStore((state) => state.setSelectedSize);
-
-  const { columns, rows } = sizeChart.inches;
-  const sizes = rows.map((row) => row[columns[0].label]);
-
-  const isFeetInchFormat = (value: string) =>
-    /\d+'(?:\d{1,2}")?-?\d*'?(?:\d{1,2}")?/.test(value);
-
-  return (
-    <div className="w-full">
-      <div className="w-full max-w-[298px] flex flex-wrap gap-[10px]">
-        {sizes.map((size, index) => (
-          <div key={index} className="relative cursor-pointer">
-            <div
-              onClick={() => setSelectedSize(size)}
-              className={`font-medium border rounded-full relative px-4 h-7 flex items-center justify-center hover:border-black ${
-                selectedSize === size &&
-                "border-white hover:border-white before:border before:border-blue before:content-[''] before:h-8 before:w-[calc(100%_+_8px)] before:absolute before:rounded-full"
-              }`}
-            >
-              {size}
-            </div>
-          </div>
-        ))}
-      </div>
-      {selectedSize && (
-        <div
-          onClick={onSizeChartClick}
-          className="w-full py-3 pl-[14px] pr-8 mt-2 rounded-lg relative cursor-pointer bg-lightgray"
-        >
-          <div>
-            {rows.find((row) => row[columns[0].label] === selectedSize) && (
-              <ul className="leading-3 max-w-[calc(100%-20px)] flex flex-row flex-wrap gap-2">
-                {columns
-                  .filter(
-                    (column) =>
-                      // Exclude "Size" column and specified measurements
-                      column.label !== "Size" &&
-                      !["US", "EU", "UK", "NZ", "AU", "DE"].includes(
-                        column.label
-                      )
-                  )
-                  .sort((a, b) => a.order - b.order)
-                  .map((column) => {
-                    const selectedRow = rows.find(
-                      (row) => row[columns[0].label] === selectedSize
-                    );
-                    const measurement = selectedRow
-                      ? selectedRow[column.label]
-                      : "";
-
-                    return (
-                      <li key={column.label} className="text-nowrap">
-                        <span className="text-xs text-gray">{`${column.label}: `}</span>
-                        <span className="text-xs font-semibold">
-                          {measurement}
-                          {!isFeetInchFormat(measurement) && measurement !== ""
-                            ? " in"
-                            : ""}
-                        </span>
-                      </li>
-                    );
-                  })}
-              </ul>
-            )}
-          </div>
-          <ChevronRightIcon
-            className="absolute top-[50%] -translate-y-1/2 right-[6px] stroke-[#828282]"
-            size={20}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function ProductOptions({
   productInfo,
   isStickyBarInCartIndicator,
@@ -342,3 +225,124 @@ export default function ProductOptions({
     </div>
   );
 }
+
+// -- Logic & Utilities --
+
+function ProductColors({ colors }: ProductColorsType) {
+  const selectedColor = useOptionsStore((state) => state.selectedColor);
+  const setSelectedColor = useOptionsStore((state) => state.setSelectedColor);
+
+  return (
+    <div className="w-full">
+      <div className="flex flex-wrap gap-3">
+        {colors.map(({ name, image }, index) => (
+          <div
+            onClick={() => setSelectedColor(name)}
+            key={index}
+            className={`relative w-[40px] h-[40px] flex items-center justify-center cursor-pointer hover:before:content-[''] hover:before:h-12 hover:before:w-12 hover:before:absolute hover:before:rounded-[6px] hover:before:border hover:before:border-black ${
+              selectedColor === name &&
+              "before:content-[''] before:h-12 before:w-12 before:absolute before:rounded-[6px] before:border before:border-blue hover:before:!border-blue"
+            }`}
+          >
+            <div className="w-full h-full flex items-center justify-center relative overflow-hidden bg-lightgray border rounded">
+              <Image src={image} alt={name} width={40} height={40} priority />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProductSizeChart({
+  sizeChart,
+  onSizeChartClick,
+}: {
+  sizeChart: SizeChartType;
+  onSizeChartClick: () => void;
+}) {
+  const selectedSize = useOptionsStore((state) => state.selectedSize);
+  const setSelectedSize = useOptionsStore((state) => state.setSelectedSize);
+
+  const { columns, rows } = sizeChart.inches;
+  const sizes = rows.map((row) => row[columns[0].label]);
+
+  const isFeetInchFormat = (value: string) =>
+    /\d+'(?:\d{1,2}")?-?\d*'?(?:\d{1,2}")?/.test(value);
+
+  return (
+    <div className="w-full">
+      <div className="w-full max-w-[298px] flex flex-wrap gap-[10px]">
+        {sizes.map((size, index) => (
+          <div key={index} className="relative cursor-pointer">
+            <div
+              onClick={() => setSelectedSize(size)}
+              className={`font-medium border rounded-full relative px-4 h-7 flex items-center justify-center hover:border-black ${
+                selectedSize === size &&
+                "border-white hover:border-white before:border before:border-blue before:content-[''] before:h-8 before:w-[calc(100%_+_8px)] before:absolute before:rounded-full"
+              }`}
+            >
+              {size}
+            </div>
+          </div>
+        ))}
+      </div>
+      {selectedSize && (
+        <div
+          onClick={onSizeChartClick}
+          className="w-full py-3 pl-[14px] pr-8 mt-2 rounded-lg relative cursor-pointer bg-lightgray"
+        >
+          <div>
+            {rows.find((row) => row[columns[0].label] === selectedSize) && (
+              <ul className="leading-3 max-w-[calc(100%-20px)] flex flex-row flex-wrap gap-2">
+                {columns
+                  .filter(
+                    (column) =>
+                      // Exclude "Size" column and specified measurements
+                      column.label !== "Size" &&
+                      !["US", "EU", "UK", "NZ", "AU", "DE"].includes(
+                        column.label
+                      )
+                  )
+                  .sort((a, b) => a.order - b.order)
+                  .map((column) => {
+                    const selectedRow = rows.find(
+                      (row) => row[columns[0].label] === selectedSize
+                    );
+                    const measurement = selectedRow
+                      ? selectedRow[column.label]
+                      : "";
+
+                    return (
+                      <li key={column.label} className="text-nowrap">
+                        <span className="text-xs text-gray">{`${column.label}: `}</span>
+                        <span className="text-xs font-semibold">
+                          {measurement}
+                          {!isFeetInchFormat(measurement) && measurement !== ""
+                            ? " in"
+                            : ""}
+                        </span>
+                      </li>
+                    );
+                  })}
+              </ul>
+            )}
+          </div>
+          <ChevronRightIcon
+            className="absolute top-[50%] -translate-y-1/2 right-[6px] stroke-[#828282]"
+            size={20}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// -- Type Definitions --
+
+type ProductColorsType = {
+  colors: Array<{
+    name: string;
+    image: string;
+  }>;
+};

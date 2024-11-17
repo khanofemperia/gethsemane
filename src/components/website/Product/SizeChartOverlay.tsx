@@ -2,95 +2,22 @@
 
 import { CloseIconThin } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { productInternationalSizes } from "@/lib/utils";
+import { productInternationalSizes } from "@/lib/utils/common";
 import { useEffect } from "react";
-
-type SizeChartOverlayType = {
-  id: string;
-  name: string;
-  pricing: {
-    basePrice: number;
-    salePrice?: number;
-    discountPercentage?: number;
-  };
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  options: {
-    colors: Array<{
-      name: string;
-      image: string;
-    }>;
-    sizes: SizeChartType;
-  };
-};
-
-function Chart({
-  sizeChart,
-  unit,
-}: {
-  sizeChart: SizeChartType;
-  unit: "inches" | "centimeters";
-}) {
-  const chartData = sizeChart[unit === "inches" ? "inches" : "centimeters"];
-
-  return (
-    <div className="border w-full max-w-[max-content] rounded overflow-y-hidden overflow-x-visible custom-x-scrollbar">
-      <table className="w-max bg-white">
-        <thead className="h-10 border-b">
-          <tr>
-            {chartData.columns.map((column, index) => (
-              <th
-                key={index}
-                className={`px-5 text-nowrap text-sm ${
-                  index === chartData.columns.length - 1 ? "" : "border-r"
-                } ${index === 0 ? "sticky left-0 bg-neutral-100" : ""}`}
-              >
-                {column.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {chartData.rows.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className={`h-10 ${
-                rowIndex === chartData.rows.length - 1 ? "" : "border-b"
-              }`}
-            >
-              {chartData.columns.map((column, columnIndex) => (
-                <td
-                  key={columnIndex}
-                  className={`text-center w-[100px] ${
-                    columnIndex === 0
-                      ? "sticky left-0 bg-neutral-100"
-                      : columnIndex === chartData.columns.length - 1
-                      ? ""
-                      : "border-r"
-                  }`}
-                >
-                  {row[column.label]}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 export function SizeChartOverlay({
   productInfo,
 }: {
   productInfo: SizeChartOverlayType;
 }) {
-  const pageName = useOverlayStore(state => state.pages.productDetails.name);
-  const overlayName = useOverlayStore(state => state.pages.productDetails.overlays.sizeChart.name);
-  const isOverlayVisible = useOverlayStore(state => state.pages.productDetails.overlays.sizeChart.isVisible);
-  const hideOverlay = useOverlayStore(state => state.hideOverlay);
+  const pageName = useOverlayStore((state) => state.pages.productDetails.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.productDetails.overlays.sizeChart.name
+  );
+  const isOverlayVisible = useOverlayStore(
+    (state) => state.pages.productDetails.overlays.sizeChart.isVisible
+  );
+  const hideOverlay = useOverlayStore((state) => state.hideOverlay);
 
   useEffect(() => {
     if (isOverlayVisible) {
@@ -219,3 +146,84 @@ export function SizeChartOverlay({
     </>
   );
 }
+
+// -- Logic & Utilities --
+
+function Chart({
+  sizeChart,
+  unit,
+}: {
+  sizeChart: SizeChartType;
+  unit: "inches" | "centimeters";
+}) {
+  const chartData = sizeChart[unit === "inches" ? "inches" : "centimeters"];
+
+  return (
+    <div className="border w-full max-w-[max-content] rounded overflow-y-hidden overflow-x-visible custom-x-scrollbar">
+      <table className="w-max bg-white">
+        <thead className="h-10 border-b">
+          <tr>
+            {chartData.columns.map((column, index) => (
+              <th
+                key={index}
+                className={`px-5 text-nowrap text-sm ${
+                  index === chartData.columns.length - 1 ? "" : "border-r"
+                } ${index === 0 ? "sticky left-0 bg-neutral-100" : ""}`}
+              >
+                {column.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {chartData.rows.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className={`h-10 ${
+                rowIndex === chartData.rows.length - 1 ? "" : "border-b"
+              }`}
+            >
+              {chartData.columns.map((column, columnIndex) => (
+                <td
+                  key={columnIndex}
+                  className={`text-center w-[100px] ${
+                    columnIndex === 0
+                      ? "sticky left-0 bg-neutral-100"
+                      : columnIndex === chartData.columns.length - 1
+                      ? ""
+                      : "border-r"
+                  }`}
+                >
+                  {row[column.label]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// -- Type Definitions --
+
+type SizeChartOverlayType = {
+  id: string;
+  name: string;
+  pricing: {
+    basePrice: number;
+    salePrice?: number;
+    discountPercentage?: number;
+  };
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  options: {
+    colors: Array<{
+      name: string;
+      image: string;
+    }>;
+    sizes: SizeChartType;
+  };
+};

@@ -1,8 +1,5 @@
 import DataChip from "@/ui/DataChip";
-import {
-  formatThousands,
-  isValidRemoteImage,
-} from "@/lib/utils";
+import { formatThousands, isValidRemoteImage } from "@/lib/utils/common";
 import { notFound } from "next/navigation";
 import {
   VisibilityButton,
@@ -32,28 +29,6 @@ import {
 } from "@/components/admin/Storefront/EditCollection/BannerImagesOverlay";
 import { getCollections } from "@/lib/api/collections";
 import { getProducts } from "@/lib/api/products";
-
-type ProductWithIndex = ProductType & { index: number };
-
-type CollectionDataType = {
-  id: string;
-  bannerImages?: {
-    desktopImage: string;
-    mobileImage: string;
-  };
-  title: string;
-  slug: string;
-  campaignDuration: {
-    startDate: string;
-    endDate: string;
-  };
-  visibility: string;
-  collectionType: string;
-  index: number;
-  updatedAt: string;
-  createdAt: string;
-  products: ProductWithIndex[];
-};
 
 export default async function EditCollection({
   params,
@@ -489,3 +464,27 @@ export default async function EditCollection({
     </>
   );
 }
+
+// -- Type Definitions --
+
+type ProductWithIndex = ProductType & { index: number };
+
+type CollectionDataType = {
+  id: string;
+  bannerImages?: {
+    desktopImage: string;
+    mobileImage: string;
+  };
+  title: string;
+  slug: string;
+  campaignDuration: {
+    startDate: string;
+    endDate: string;
+  };
+  visibility: string;
+  collectionType: string;
+  index: number;
+  updatedAt: string;
+  createdAt: string;
+  products: ProductWithIndex[];
+};

@@ -2,7 +2,7 @@
 
 import { UpdateUpsellAction } from "@/actions/upsells";
 import AlertMessage from "@/components/shared/AlertMessage";
-import { formatThousands, isValidRemoteImage } from "@/lib/utils";
+import { formatThousands, isValidRemoteImage } from "@/lib/utils/common";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -19,29 +19,6 @@ import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { ReactSortable } from "react-sortablejs";
 import { getProducts } from "@/lib/api/products";
-
-type ProductType = {
-  index: number;
-  id: string;
-  slug: string;
-  name: string;
-  basePrice: number;
-  images: {
-    main: string;
-    gallery: string[];
-  };
-};
-
-type DataType = {
-  id: string;
-  mainImage: string;
-  pricing: {
-    basePrice: number;
-    salePrice?: number;
-    discountPercentage?: number;
-  };
-  products: ProductType[];
-};
 
 export function BasicDetailsButton({ className }: { className: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
@@ -598,3 +575,28 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type ProductType = {
+  index: number;
+  id: string;
+  slug: string;
+  name: string;
+  basePrice: number;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+};
+
+type DataType = {
+  id: string;
+  mainImage: string;
+  pricing: {
+    basePrice: number;
+    salePrice?: number;
+    discountPercentage?: number;
+  };
+  products: ProductType[];
+};

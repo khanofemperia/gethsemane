@@ -6,10 +6,7 @@ import { cookies } from "next/headers";
 import { getDoc } from "firebase/firestore";
 import { getCart } from "@/lib/api/cart";
 import { getProducts } from "@/lib/api/products";
-
-const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-const PAYPAL_CLIENT_SECRET = process.env.NEXT_PAYPAL_CLIENT_SECRET;
-const PAYPAL_API_BASE = "https://api-m.sandbox.paypal.com";
+import { generateAccessToken } from "@/lib/utils/orders";
 
 export async function POST(
   _request: NextRequest,
@@ -26,7 +23,7 @@ export async function POST(
 
   try {
     const accessToken = await generateAccessToken();
-    const url = `${PAYPAL_API_BASE}/v2/checkout/orders/${orderId}/capture`;
+    const url = `${process.env.PAYPAL_API_BASE}/v2/checkout/orders/${orderId}/capture`;
 
     const response = await fetch(url, {
       method: "POST",
@@ -107,33 +104,7 @@ export async function POST(
   }
 }
 
-async function generateAccessToken() {
-  if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
-    throw new Error("PayPal credentials are missing");
-  }
-
-  const auth = Buffer.from(
-    `${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`
-  ).toString("base64");
-
-  const response = await fetch(`${PAYPAL_API_BASE}/v1/oauth2/token`, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${auth}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      grant_type: "client_credentials",
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to generate PayPal access token");
-  }
-
-  const data = await response.json();
-  return data.access_token;
-}
+// -- Logic & Utilities --
 
 async function getCartItems() {
   const cookieStore = cookies();

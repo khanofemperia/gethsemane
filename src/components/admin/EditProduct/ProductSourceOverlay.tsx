@@ -10,28 +10,6 @@ import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-type DataType = {
-  id: string;
-  sourceInfo: {
-    platform: string;
-    platformUrl: string;
-    store: string;
-    storeId: string;
-    storeUrl: string;
-    productUrl: string;
-  };
-};
-
-type FormDataType = {
-  id: string;
-  platform: string;
-  platformUrl: string;
-  store: string;
-  storeId: string;
-  storeUrl: string;
-  productUrl: string;
-};
-
 export function ProductSourceButton({ className }: { className: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.editProduct.name);
@@ -350,3 +328,27 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  id: string;
+  sourceInfo: {
+    platform: string;
+    platformUrl: string;
+    store: string;
+    storeId: string;
+    storeUrl: string;
+    productUrl: string;
+  };
+};
+
+type FormDataType = {
+  id: string;
+  platform: string;
+  platformUrl: string;
+  store: string;
+  storeId: string;
+  storeUrl: string;
+  productUrl: string;
+};

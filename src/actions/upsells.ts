@@ -2,21 +2,9 @@
 
 import { database } from "@/lib/firebase";
 import { setDoc, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { generateId, currentTimestamp } from "@/lib/utils";
+import { generateId, currentTimestamp } from "@/lib/utils/common";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
-
-type ProductWithoutOptions = {
-  index: number;
-  id: string;
-  slug: string;
-  name: string;
-  basePrice: number;
-  images: {
-    main: string;
-    gallery: string[];
-  };
-};
 
 export async function CreateUpsellAction(
   data: Partial<Omit<UpsellType, "products">> & {
@@ -117,3 +105,17 @@ export async function DeleteUpsellAction(data: { id: string }) {
     };
   }
 }
+
+// -- Logic & Utilities --
+
+type ProductWithoutOptions = {
+  index: number;
+  id: string;
+  slug: string;
+  name: string;
+  basePrice: number;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+};

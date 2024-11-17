@@ -2,17 +2,6 @@
 
 import { useCallback } from "react";
 
-type TableRowType = {
-  [key: string]: string;
-};
-
-type SizesTableType = {
-  data: TableRowType[];
-  columns: string[];
-  onUpdate: (updatedData: TableRowType[]) => void;
-  onColumnUpdate: (updatedColumns: { label: string; order: number }[]) => void;
-};
-
 export default function SizesTable({
   data,
   columns,
@@ -100,3 +89,16 @@ export default function SizesTable({
     </div>
   );
 }
+
+// -- Type Definitions --
+
+type TableRowType = {
+  [key: string]: string;
+};
+
+type SizesTableType = {
+  data: TableRowType[];
+  columns: string[];
+  onUpdate: (updatedData: TableRowType[]) => void;
+  onColumnUpdate: (updatedColumns: { label: string; order: number }[]) => void;
+};

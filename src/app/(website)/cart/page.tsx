@@ -13,38 +13,6 @@ import CartItemList from "@/components/website/CartItemList";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import clsx from "clsx";
 
-type CartItemType =
-  | {
-      type: "product";
-      baseProductId: string;
-      name: string;
-      slug: string;
-      pricing: any;
-      mainImage: string;
-      variantId: string;
-      size: string;
-      color: string;
-      index: number;
-    }
-  | {
-      type: "upsell";
-      baseUpsellId: string;
-      variantId: string;
-      index: number;
-      mainImage: string;
-      pricing: any;
-      products: Array<{
-        index: number;
-        id: string;
-        slug: string;
-        name: string;
-        mainImage: string;
-        basePrice: number;
-        size: string;
-        color: string;
-      }>;
-    };
-
 export default async function Cart() {
   const cookieStore = cookies();
   const deviceIdentifier = cookieStore.get("device_identifier")?.value ?? "";
@@ -346,3 +314,39 @@ const getUpsell = async ({
 
   return upsell;
 };
+
+// -- Type Definitions --
+
+type ProductItemType = {
+  type: "product";
+  baseProductId: string;
+  name: string;
+  slug: string;
+  pricing: any;
+  mainImage: string;
+  variantId: string;
+  size: string;
+  color: string;
+  index: number;
+};
+
+type UpsellItemType = {
+  type: "upsell";
+  baseUpsellId: string;
+  variantId: string;
+  index: number;
+  mainImage: string;
+  pricing: any;
+  products: Array<{
+    index: number;
+    id: string;
+    slug: string;
+    name: string;
+    mainImage: string;
+    basePrice: number;
+    size: string;
+    color: string;
+  }>;
+};
+
+type CartItemType = ProductItemType | UpsellItemType;

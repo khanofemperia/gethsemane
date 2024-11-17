@@ -3,45 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
 import { CheckmarkIcon } from "@/icons";
-import { formatThousands } from "@/lib/utils";
+import { formatThousands } from "@/lib/utils/common";
 import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
 import { PayPalButton } from "@/components/website/PayPalButton";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
-
-type CartItemType =
-  | {
-      type: "product";
-      baseProductId: string;
-      name: string;
-      slug: string;
-      pricing: any;
-      mainImage: string;
-      variantId: string;
-      size: string;
-      color: string;
-      index: number;
-    }
-  | {
-      type: "upsell";
-      baseUpsellId: string;
-      variantId: string;
-      index: number;
-      mainImage: string;
-      pricing: any;
-      products: Array<{
-        index: number;
-        id: string;
-        slug: string;
-        name: string;
-        mainImage: string;
-        basePrice: number;
-        size: string;
-        color: string;
-      }>;
-    };
 
 export default function CartItemList({
   cartItems,
@@ -497,3 +465,39 @@ export default function CartItemList({
     </div>
   );
 }
+
+// -- Type Definitions --
+
+type ProductItemType = {
+  type: "product";
+  baseProductId: string;
+  name: string;
+  slug: string;
+  pricing: any;
+  mainImage: string;
+  variantId: string;
+  size: string;
+  color: string;
+  index: number;
+};
+
+type UpsellItemType = {
+  type: "upsell";
+  baseUpsellId: string;
+  variantId: string;
+  index: number;
+  mainImage: string;
+  pricing: any;
+  products: Array<{
+    index: number;
+    id: string;
+    slug: string;
+    name: string;
+    mainImage: string;
+    basePrice: number;
+    size: string;
+    color: string;
+  }>;
+};
+
+type CartItemType = ProductItemType | UpsellItemType;

@@ -10,15 +10,6 @@ import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-type DataType = {
-  id: string;
-  seo: {
-    metaTitle: string;
-    metaDescription: string;
-    keywords: string[];
-  };
-};
-
 export function OnPageSeoButton({ className }: { className: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.editProduct.name);
@@ -36,13 +27,6 @@ export function OnPageSeoButton({ className }: { className: string }) {
     </button>
   );
 }
-
-type FormDataType = {
-  id: string;
-  metaTitle: string;
-  metaDescription: string;
-  keywords: string;
-};
 
 export function OnPageSeoOverlay({ data }: { data: DataType }) {
   const [loading, setLoading] = useState(false);
@@ -286,3 +270,21 @@ export function OnPageSeoOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  id: string;
+  seo: {
+    metaTitle: string;
+    metaDescription: string;
+    keywords: string[];
+  };
+};
+
+type FormDataType = {
+  id: string;
+  metaTitle: string;
+  metaDescription: string;
+  keywords: string;
+};

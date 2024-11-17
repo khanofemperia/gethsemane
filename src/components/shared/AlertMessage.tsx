@@ -3,12 +3,6 @@
 import clsx from "clsx";
 import { useRef, useEffect } from "react";
 
-type AlertMessageType = {
-  message: string;
-  hideAlertMessage: () => void;
-  type?: "SUCCESS" | "ERROR" | "NEUTRAL";
-};
-
 const SUCCESS = "SUCCESS";
 const ERROR = "ERROR";
 const NEUTRAL = "NEUTRAL";
@@ -17,7 +11,11 @@ export default function AlertMessage({
   message,
   hideAlertMessage,
   type = NEUTRAL,
-}: AlertMessageType) {
+}: {
+  message: string;
+  hideAlertMessage: () => void;
+  type?: "SUCCESS" | "ERROR" | "NEUTRAL";
+}) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {

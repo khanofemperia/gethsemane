@@ -11,8 +11,6 @@ import { revalidatePath } from "next/cache";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-type EmailTemplateType = () => JSX.Element;
-
 const EMAIL_TEMPLATES: Record<EmailType, EmailTemplateType> = {
   [EmailType.ORDER_CONFIRMED]: OrderConfirmedTemplate,
   [EmailType.ORDER_SHIPPED]: OrderShippedTemplate,
@@ -24,6 +22,74 @@ const EMAIL_TYPE_TO_KEY: Record<EmailType, string> = {
   [EmailType.ORDER_SHIPPED]: "shipped",
   [EmailType.ORDER_DELIVERED]: "delivered",
 };
+
+export async function OrderStatusEmailAction(
+  orderId: string,
+  customerEmail: string,
+  emailSubject: string,
+  emailType: EmailType
+) {
+  try {
+    const emailStatusResult = await updateEmailStatus(orderId, emailType);
+    if (emailStatusResult.type === AlertMessageType.ERROR) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: emailStatusResult.message,
+      };
+    }
+
+    const { orderData, orderRef, emailKey } = emailStatusResult as {
+      orderData: any;
+      orderRef: any;
+      emailKey: string;
+      emailStatus: any;
+    };
+
+    const EmailTemplate = EMAIL_TEMPLATES[emailType];
+    const { data, error } = await resend.emails.send({
+      from: "Acme <onboarding@resend.dev>",
+      to: customerEmail,
+      subject: emailSubject,
+      react: EmailTemplate(),
+    });
+
+    if (error) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Failed to send email",
+      };
+    }
+
+    const updateResult = await incrementEmailCount(
+      orderRef,
+      emailKey,
+      orderData
+    );
+
+    revalidatePath("/admin/orders/[id]", "page");
+
+    if (updateResult.type === AlertMessageType.ERROR) {
+      console.error("Failed to update email count:", updateResult.message);
+      return {
+        type: AlertMessageType.SUCCESS,
+        message: "Email sent successfully",
+      };
+    }
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Email sent and count updated successfully",
+    };
+  } catch (error) {
+    console.error("Internal server error:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to send email",
+    };
+  }
+}
+
+// -- Logic & Utilities --
 
 async function updateEmailStatus(orderId: string, emailType: EmailType) {
   try {
@@ -108,68 +174,6 @@ async function incrementEmailCount(
   }
 }
 
-export async function OrderStatusEmailAction(
-  orderId: string,
-  customerEmail: string,
-  emailSubject: string,
-  emailType: EmailType
-) {
-  try {
-    const emailStatusResult = await updateEmailStatus(orderId, emailType);
-    if (emailStatusResult.type === AlertMessageType.ERROR) {
-      return {
-        type: AlertMessageType.ERROR,
-        message: emailStatusResult.message,
-      };
-    }
+// -- Type Definitions --
 
-    const { orderData, orderRef, emailKey } = emailStatusResult as {
-      orderData: any;
-      orderRef: any;
-      emailKey: string;
-      emailStatus: any;
-    };
-
-    const EmailTemplate = EMAIL_TEMPLATES[emailType];
-    const { data, error } = await resend.emails.send({
-      from: "Acme <onboarding@resend.dev>",
-      to: customerEmail,
-      subject: emailSubject,
-      react: EmailTemplate(),
-    });
-
-    if (error) {
-      return {
-        type: AlertMessageType.ERROR,
-        message: "Failed to send email",
-      };
-    }
-
-    const updateResult = await incrementEmailCount(
-      orderRef,
-      emailKey,
-      orderData
-    );
-
-    revalidatePath("/admin/orders/[id]", "page");
-
-    if (updateResult.type === AlertMessageType.ERROR) {
-      console.error("Failed to update email count:", updateResult.message);
-      return {
-        type: AlertMessageType.SUCCESS,
-        message: "Email sent successfully",
-      };
-    }
-
-    return {
-      type: AlertMessageType.SUCCESS,
-      message: "Email sent and count updated successfully",
-    };
-  } catch (error) {
-    console.error("Internal server error:", error);
-    return {
-      type: AlertMessageType.ERROR,
-      message: "Failed to send email",
-    };
-  }
-}
+type EmailTemplateType = () => JSX.Element;

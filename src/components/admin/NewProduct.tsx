@@ -2,7 +2,7 @@
 
 import { CreateProductAction } from "@/actions/products";
 import AlertMessage from "@/components/shared/AlertMessage";
-import { capitalizeFirstLetter, isValidRemoteImage } from "@/lib/utils";
+import { capitalizeFirstLetter, isValidRemoteImage } from "@/lib/utils/common";
 import { useState, useEffect, useRef } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -13,10 +13,6 @@ import Image from "next/image";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { getCategories } from "@/lib/api/categories";
-
-interface NewProductMenuButtonType {
-  closeMenu: () => void;
-}
 
 export function NewProductMenuButton({ closeMenu }: NewProductMenuButtonType) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
@@ -66,13 +62,6 @@ export function NewProductEmptyGridButton() {
     </button>
   );
 }
-
-type CategoryType = {
-  index: number;
-  name: string;
-  image: string;
-  visibility: "VISIBLE" | "HIDDEN";
-};
 
 export function NewProductOverlay() {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -439,3 +428,16 @@ export function NewProductOverlay() {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type NewProductMenuButtonType = {
+  closeMenu: () => void;
+};
+
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};

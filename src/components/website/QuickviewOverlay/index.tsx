@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import Images from "../Product/Images";
-import { formatThousands } from "@/lib/utils";
+import { formatThousands } from "@/lib/utils/common";
 import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
 import { useRouter } from "next/navigation";

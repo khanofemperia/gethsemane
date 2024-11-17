@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils/common";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";

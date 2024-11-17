@@ -8,7 +8,7 @@ import { useAlertStore } from "@/zustand/website/alertStore";
 import { useEffect, useState, useTransition } from "react";
 import { AddToCartAction } from "@/actions/shopping-cart";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { formatThousands } from "@/lib/utils";
+import { formatThousands } from "@/lib/utils/common";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
@@ -16,181 +16,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { Spinner } from "@/ui/Spinners/Default";
 import { BiExpandAlt } from "react-icons/bi";
-
-type ProductColorsType = {
-  colors: Array<{
-    name: string;
-    image: string;
-  }>;
-  selectedColor: string;
-  onColorSelect: (color: string) => void;
-};
-
-function ProductColors({
-  colors,
-  selectedColor,
-  onColorSelect,
-}: ProductColorsType) {
-  return (
-    <div className="max-w-[280px]">
-      <div className="flex flex-wrap gap-2">
-        {colors.map(({ name, image }, index) => (
-          <div
-            onClick={() => onColorSelect(name)}
-            key={index}
-            className={clsx(
-              "relative w-[40px] h-[40px] flex items-center justify-center rounded cursor-pointer overflow-hidden",
-              {
-                "hover:ring-1 hover:ring-black hover:ring-offset-2":
-                  selectedColor !== name,
-              },
-              { "ring-1 ring-blue ring-offset-2": selectedColor === name }
-            )}
-          >
-            <Image src={image} alt={name} width={40} height={40} priority />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-type SizeChartType = {
-  inches: {
-    columns: Array<{ label: string; order: number }>;
-    rows: Array<{ [key: string]: string }>;
-  };
-  centimeters: {
-    columns: Array<{ label: string; order: number }>;
-    rows: Array<{ [key: string]: string }>;
-  };
-};
-
-type ProductSizeChartProps = {
-  sizeChart: SizeChartType;
-  selectedSize: string;
-  onSizeSelect: (size: string) => void;
-};
-
-function ProductSizeChart({
-  sizeChart,
-  selectedSize,
-  onSizeSelect,
-}: ProductSizeChartProps) {
-  const showOverlay = useOverlayStore((state) => state.showOverlay);
-  const pageName = useOverlayStore((state) => state.pages.productDetails.name);
-  const overlayName = useOverlayStore(
-    (state) => state.pages.productDetails.overlays.sizeChart.name
-  );
-
-  const { columns, rows } = sizeChart.inches;
-  const sizes = rows.map((row) => row[columns[0].label]);
-
-  return (
-    <div className="w-full">
-      <div className="w-full max-w-[298px] flex flex-wrap gap-2">
-        {sizes.map((size, index) => (
-          <div key={index} className="relative cursor-pointer">
-            <div
-              onClick={() => onSizeSelect(size)}
-              className={clsx(
-                "font-medium border rounded-full relative px-4 h-7 flex items-center justify-center hover:border-black",
-                { "border-blue hover:border-blue": selectedSize === size }
-              )}
-            >
-              {size}
-            </div>
-          </div>
-        ))}
-      </div>
-      {selectedSize && (
-        <div
-          onClick={() => {
-            showOverlay({ pageName, overlayName });
-          }}
-          className="w-full py-3 pl-[14px] pr-8 mt-2 rounded-lg relative cursor-pointer bg-lightgray"
-        >
-          <div>
-            {rows.find((row) => row[columns[0].label] === selectedSize) && (
-              <ul className="leading-3 max-w-[calc(100%-20px)] flex flex-row flex-wrap gap-2">
-                {columns
-                  .filter(
-                    (column) =>
-                      column.label !== "Size" &&
-                      !["US", "EU", "UK", "NZ", "AU", "DE"].includes(
-                        column.label
-                      )
-                  )
-                  .sort((a, b) => a.order - b.order)
-                  .map((column) => {
-                    const selectedRow = rows.find(
-                      (row) => row[columns[0].label] === selectedSize
-                    );
-                    return (
-                      <li key={column.label} className="text-nowrap">
-                        <span className="text-xs text-gray">{`${column.label}: `}</span>
-                        <span className="text-xs font-semibold">
-                          {`${selectedRow ? selectedRow[column.label] : ""}in`}
-                        </span>
-                      </li>
-                    );
-                  })}
-              </ul>
-            )}
-          </div>
-          <ChevronRightIcon
-            className="absolute top-[50%] -translate-y-1/2 right-[6px] stroke-[#828282]"
-            size={20}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
-type ProductOptionsProps = {
-  product: {
-    options: {
-      colors: Array<{
-        name: string;
-        image: string;
-      }>;
-      sizes: SizeChartType;
-    };
-  };
-  selectedOptions: {
-    color?: string;
-    size?: string;
-  };
-  onOptionSelect: (option: string, value: string) => void;
-};
-
-function ProductOptions({
-  product,
-  selectedOptions,
-  onOptionSelect,
-}: ProductOptionsProps) {
-  const hasColor = product.options.colors.length > 0;
-  const hasSize = Object.keys(product.options.sizes).length > 0;
-  return (
-    <div className="flex flex-col gap-4 select-none">
-      {hasColor && (
-        <ProductColors
-          colors={product.options.colors}
-          selectedColor={selectedOptions.color || ""}
-          onColorSelect={(color) => onOptionSelect("color", color)}
-        />
-      )}
-      {hasSize && (
-        <ProductSizeChart
-          sizeChart={product.options.sizes}
-          selectedSize={selectedOptions.size || ""}
-          onSizeSelect={(size) => onOptionSelect("size", size)}
-        />
-      )}
-    </div>
-  );
-}
 
 export function UpsellReviewButton({
   product,
@@ -618,3 +443,182 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
     </>
   );
 }
+
+// -- Logic & Utilities --
+
+function ProductColors({
+  colors,
+  selectedColor,
+  onColorSelect,
+}: ProductColorsType) {
+  return (
+    <div className="max-w-[280px]">
+      <div className="flex flex-wrap gap-2">
+        {colors.map(({ name, image }, index) => (
+          <div
+            onClick={() => onColorSelect(name)}
+            key={index}
+            className={clsx(
+              "relative w-[40px] h-[40px] flex items-center justify-center rounded cursor-pointer overflow-hidden",
+              {
+                "hover:ring-1 hover:ring-black hover:ring-offset-2":
+                  selectedColor !== name,
+              },
+              { "ring-1 ring-blue ring-offset-2": selectedColor === name }
+            )}
+          >
+            <Image src={image} alt={name} width={40} height={40} priority />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProductSizeChart({
+  sizeChart,
+  selectedSize,
+  onSizeSelect,
+}: ProductSizeChartProps) {
+  const showOverlay = useOverlayStore((state) => state.showOverlay);
+  const pageName = useOverlayStore((state) => state.pages.productDetails.name);
+  const overlayName = useOverlayStore(
+    (state) => state.pages.productDetails.overlays.sizeChart.name
+  );
+
+  const { columns, rows } = sizeChart.inches;
+  const sizes = rows.map((row) => row[columns[0].label]);
+
+  return (
+    <div className="w-full">
+      <div className="w-full max-w-[298px] flex flex-wrap gap-2">
+        {sizes.map((size, index) => (
+          <div key={index} className="relative cursor-pointer">
+            <div
+              onClick={() => onSizeSelect(size)}
+              className={clsx(
+                "font-medium border rounded-full relative px-4 h-7 flex items-center justify-center hover:border-black",
+                { "border-blue hover:border-blue": selectedSize === size }
+              )}
+            >
+              {size}
+            </div>
+          </div>
+        ))}
+      </div>
+      {selectedSize && (
+        <div
+          onClick={() => {
+            showOverlay({ pageName, overlayName });
+          }}
+          className="w-full py-3 pl-[14px] pr-8 mt-2 rounded-lg relative cursor-pointer bg-lightgray"
+        >
+          <div>
+            {rows.find((row) => row[columns[0].label] === selectedSize) && (
+              <ul className="leading-3 max-w-[calc(100%-20px)] flex flex-row flex-wrap gap-2">
+                {columns
+                  .filter(
+                    (column) =>
+                      column.label !== "Size" &&
+                      !["US", "EU", "UK", "NZ", "AU", "DE"].includes(
+                        column.label
+                      )
+                  )
+                  .sort((a, b) => a.order - b.order)
+                  .map((column) => {
+                    const selectedRow = rows.find(
+                      (row) => row[columns[0].label] === selectedSize
+                    );
+                    return (
+                      <li key={column.label} className="text-nowrap">
+                        <span className="text-xs text-gray">{`${column.label}: `}</span>
+                        <span className="text-xs font-semibold">
+                          {`${selectedRow ? selectedRow[column.label] : ""}in`}
+                        </span>
+                      </li>
+                    );
+                  })}
+              </ul>
+            )}
+          </div>
+          <ChevronRightIcon
+            className="absolute top-[50%] -translate-y-1/2 right-[6px] stroke-[#828282]"
+            size={20}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ProductOptions({
+  product,
+  selectedOptions,
+  onOptionSelect,
+}: ProductOptionsProps) {
+  const hasColor = product.options.colors.length > 0;
+  const hasSize = Object.keys(product.options.sizes).length > 0;
+  return (
+    <div className="flex flex-col gap-4 select-none">
+      {hasColor && (
+        <ProductColors
+          colors={product.options.colors}
+          selectedColor={selectedOptions.color || ""}
+          onColorSelect={(color) => onOptionSelect("color", color)}
+        />
+      )}
+      {hasSize && (
+        <ProductSizeChart
+          sizeChart={product.options.sizes}
+          selectedSize={selectedOptions.size || ""}
+          onSizeSelect={(size) => onOptionSelect("size", size)}
+        />
+      )}
+    </div>
+  );
+}
+
+// -- Type Definitions --
+
+type ProductColorsType = {
+  colors: Array<{
+    name: string;
+    image: string;
+  }>;
+  selectedColor: string;
+  onColorSelect: (color: string) => void;
+};
+
+type SizeChartType = {
+  inches: {
+    columns: Array<{ label: string; order: number }>;
+    rows: Array<{ [key: string]: string }>;
+  };
+  centimeters: {
+    columns: Array<{ label: string; order: number }>;
+    rows: Array<{ [key: string]: string }>;
+  };
+};
+
+type ProductSizeChartProps = {
+  sizeChart: SizeChartType;
+  selectedSize: string;
+  onSizeSelect: (size: string) => void;
+};
+
+type ProductOptionsProps = {
+  product: {
+    options: {
+      colors: Array<{
+        name: string;
+        image: string;
+      }>;
+      sizes: SizeChartType;
+    };
+  };
+  selectedOptions: {
+    color?: string;
+    size?: string;
+  };
+  onOptionSelect: (option: string, value: string) => void;
+};

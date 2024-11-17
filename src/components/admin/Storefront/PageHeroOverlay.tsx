@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { isGifImage, isValidRemoteImage } from "@/lib/utils";
+import { isGifImage, isValidRemoteImage } from "@/lib/utils/common";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -57,17 +57,6 @@ export function PageHeroButton({ visibility }: { visibility: string }) {
     </button>
   );
 }
-
-type PageHeroType = {
-  id: string;
-  images: {
-    desktop: string;
-    mobile: string;
-  };
-  title: string;
-  destinationUrl: string;
-  visibility: "VISIBLE" | "HIDDEN";
-};
 
 export function PageHeroOverlay({
   pageHero,
@@ -419,3 +408,16 @@ export function PageHeroOverlay({
     </>
   );
 }
+
+// -- Type Definitions --
+
+type PageHeroType = {
+  id: string;
+  images: {
+    desktop: string;
+    mobile: string;
+  };
+  title: string;
+  destinationUrl: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};

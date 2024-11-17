@@ -1,7 +1,7 @@
 "use client";
 
 import { QuickviewButton } from "@/components/website/QuickviewOverlay";
-import { formatThousands } from "@/lib/utils";
+import { formatThousands } from "@/lib/utils/common";
 import Image from "next/image";
 import Link from "next/link";
 

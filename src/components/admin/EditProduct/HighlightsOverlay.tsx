@@ -10,22 +10,8 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 import { ReactSortable } from "react-sortablejs";
 import { MdOutlineDragIndicator } from "react-icons/md";
 import { UpdateProductAction } from "@/actions/products";
-import { generateId } from "@/lib/utils";
+import { generateId } from "@/lib/utils/common";
 import { TextEditor } from "@/components/shared/TextEditor";
-
-type DataType = {
-  id: string;
-  highlights: {
-    headline: string;
-    keyPoints: KeyPointsType[];
-  };
-};
-
-type ItemType = {
-  id: number;
-  name: string;
-  order: number;
-};
 
 export function HighlightsButton({ className }: { className?: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
@@ -286,3 +272,19 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  id: string;
+  highlights: {
+    headline: string;
+    keyPoints: KeyPointsType[];
+  };
+};
+
+type ItemType = {
+  id: number;
+  name: string;
+  order: number;
+};

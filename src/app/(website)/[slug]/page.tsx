@@ -5,7 +5,7 @@ import Images from "@/components/website/Product/Images";
 import Image from "next/image";
 import { cookies } from "next/headers";
 import styles from "./styles.module.css";
-import { formatThousands } from "@/lib/utils";
+import { formatThousands } from "@/lib/utils/common";
 import "@/components/shared/TextEditor/theme/index.css";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
 import ShowAlert from "@/components/website/ShowAlert";

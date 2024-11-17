@@ -11,18 +11,6 @@ import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { getCategories } from "@/lib/api/categories";
 
-type DataType = {
-  id: string;
-  category: string;
-  name: string;
-  slug: string;
-  pricing: {
-    basePrice: number;
-    salePrice?: number;
-    discountPercentage?: number;
-  };
-};
-
 export function BasicDetailsButton({ className }: { className: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.editProduct.name);
@@ -40,13 +28,6 @@ export function BasicDetailsButton({ className }: { className: string }) {
     </button>
   );
 }
-
-type CategoryType = {
-  index: number;
-  name: string;
-  image: string;
-  visibility: "VISIBLE" | "HIDDEN";
-};
 
 export function BasicDetailsOverlay({ data }: { data: DataType }) {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -442,3 +423,24 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  id: string;
+  category: string;
+  name: string;
+  slug: string;
+  pricing: {
+    basePrice: number;
+    salePrice?: number;
+    discountPercentage?: number;
+  };
+};
+
+type CategoryType = {
+  index: number;
+  name: string;
+  image: string;
+  visibility: "VISIBLE" | "HIDDEN";
+};

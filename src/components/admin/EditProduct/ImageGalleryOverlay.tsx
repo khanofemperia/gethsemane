@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { isValidRemoteImage } from "@/lib/utils";
+import { isValidRemoteImage } from "@/lib/utils/common";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -12,14 +12,6 @@ import Overlay from "@/ui/Overlay";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
-
-type DataType = {
-  id: string;
-  images: {
-    main: string;
-    gallery: string[];
-  };
-};
 
 export function ImageGalleryButton() {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
@@ -281,3 +273,13 @@ export function ImageGalleryOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  id: string;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+};

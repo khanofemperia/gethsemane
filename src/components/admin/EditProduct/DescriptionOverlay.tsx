@@ -10,11 +10,6 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 import { TextEditor } from "@/components/shared/TextEditor";
 import { UpdateProductAction } from "@/actions/products";
 
-type DataType = {
-  id: string;
-  description: string;
-};
-
 export function DescriptionButton({ className }: { className?: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.editProduct.name);
@@ -182,3 +177,10 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  id: string;
+  description: string;
+};

@@ -12,13 +12,6 @@ import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 
-type CartAndUpgradeButtonsType = {
-  product: ProductWithUpsellType;
-  cart: CartType | null;
-  hasColor: boolean;
-  hasSize: boolean;
-};
-
 export function CartAndUpgradeButtons({
   product,
   cart,
@@ -154,3 +147,12 @@ export function CartAndUpgradeButtons({
     </>
   );
 }
+
+// -- Type Definitions --
+
+type CartAndUpgradeButtonsType = {
+  product: ProductWithUpsellType;
+  cart: CartType | null;
+  hasColor: boolean;
+  hasSize: boolean;
+};

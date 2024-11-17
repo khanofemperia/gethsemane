@@ -1,3 +1,5 @@
+"use server";
+
 import { collection, getDocs, query } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 

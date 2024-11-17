@@ -11,12 +11,6 @@ import { ChangeCollectionIndexAction } from "@/actions/collections";
 import { useItemSelectorStore } from "@/zustand/admin/itemSelectorStore";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-type ButtonDataType = {
-  id: string;
-  index: string;
-  title: string;
-};
-
 export function ChangeCollectionIndexButton({
   data,
 }: {
@@ -228,3 +222,11 @@ export function ChangeCollectionIndexOverlay() {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type ButtonDataType = {
+  id: string;
+  index: string;
+  title: string;
+};

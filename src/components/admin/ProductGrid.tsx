@@ -2,7 +2,7 @@
 
 import { NewProductEmptyGridButton } from "@/components/admin/NewProduct";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
-import { capitalizeFirstLetter, formatThousands } from "@/lib/utils";
+import { capitalizeFirstLetter, formatThousands } from "@/lib/utils/common";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";

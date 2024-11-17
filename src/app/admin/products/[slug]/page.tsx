@@ -3,7 +3,7 @@ import {
   BasicDetailsButton,
 } from "@/components/admin/EditProduct/BasicDetailsOverlay";
 import DataChip from "@/ui/DataChip";
-import { formatThousands, isValidRemoteImage } from "@/lib/utils";
+import { formatThousands, isValidRemoteImage } from "@/lib/utils/common";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {

@@ -2,7 +2,7 @@
 
 import { AddToCartAction } from "@/actions/shopping-cart";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { formatThousands } from "@/lib/utils";
+import { formatThousands } from "@/lib/utils/common";
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 import clsx from "clsx";
@@ -10,66 +10,6 @@ import Image from "next/image";
 import { useEffect, useState, useTransition } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { UpsellReviewButton } from "../UpsellReviewOverlay";
-
-type ProductInfoType = {
-  id: string;
-  name: string;
-  pricing: PricingType;
-  images: {
-    main: string;
-    gallery: string[];
-  };
-  options: {
-    colors: Array<{
-      name: string;
-      image: string;
-    }>;
-    sizes: {
-      inches: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-      centimeters: {
-        columns: { label: string; order: number }[];
-        rows: { [key: string]: string }[];
-      };
-    };
-  };
-  upsell: {
-    id: string;
-    mainImage: string;
-    pricing: PricingType;
-    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
-    createdAt: string;
-    updatedAt: string;
-    products: Array<{
-      id: string;
-      name: string;
-      slug: string;
-      basePrice: number;
-      images: {
-        main: string;
-        gallery: string[];
-      };
-      options: {
-        colors: Array<{
-          name: string;
-          image: string;
-        }>;
-        sizes: {
-          inches: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-          centimeters: {
-            columns: Array<{ label: string; order: number }>;
-            rows: Array<{ [key: string]: string }>;
-          };
-        };
-      };
-    }>;
-  };
-};
 
 const SCROLL_THRESHOLD = 1040;
 
@@ -358,3 +298,65 @@ export function StickyBar({
     </div>
   );
 }
+
+// -- Type Definitions --
+
+type ProductInfoType = {
+  id: string;
+  name: string;
+  pricing: PricingType;
+  images: {
+    main: string;
+    gallery: string[];
+  };
+  options: {
+    colors: Array<{
+      name: string;
+      image: string;
+    }>;
+    sizes: {
+      inches: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+      centimeters: {
+        columns: { label: string; order: number }[];
+        rows: { [key: string]: string }[];
+      };
+    };
+  };
+  upsell: {
+    id: string;
+    mainImage: string;
+    pricing: PricingType;
+    visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
+    createdAt: string;
+    updatedAt: string;
+    products: Array<{
+      id: string;
+      name: string;
+      slug: string;
+      basePrice: number;
+      images: {
+        main: string;
+        gallery: string[];
+      };
+      options: {
+        colors: Array<{
+          name: string;
+          image: string;
+        }>;
+        sizes: {
+          inches: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+          centimeters: {
+            columns: Array<{ label: string; order: number }>;
+            rows: Array<{ [key: string]: string }>;
+          };
+        };
+      };
+    }>;
+  };
+};

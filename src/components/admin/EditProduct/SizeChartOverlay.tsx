@@ -31,15 +31,6 @@ export function SizeChartButton() {
   );
 }
 
-type TableRowType = {
-  [key: string]: string;
-};
-
-type DataType = {
-  id: string;
-  sizes: SizeChartType;
-};
-
 export function SizeChartOverlay({ data }: { data: DataType }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState("");
@@ -402,3 +393,14 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type TableRowType = {
+  [key: string]: string;
+};
+
+type DataType = {
+  id: string;
+  sizes: SizeChartType;
+};

@@ -3,51 +3,11 @@
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useEffect, useState, useCallback } from "react";
 
-type CartItem = {
-  name: string;
-  sku: string;
-  unit_amount: {
-    currency_code: string;
-    value: string;
-  };
-  quantity: number;
-};
-
-type UpsellCartItem = {
-  baseUpsellId: string;
-  type: "upsell";
-  pricing: {
-    salePrice: number;
-    basePrice: number;
-  };
-  products: Array<{
-    id: string;
-    name: string;
-    basePrice: number;
-    size: string;
-    color: string;
-  }>;
-};
-
-type ProductCartItem = {
-  baseProductId: string;
-  name: string;
-  type: "product";
-  pricing: {
-    basePrice: number;
-    salePrice: number;
-  };
-  size?: string;
-  color?: string;
-};
-
-type Cart = (ProductCartItem | UpsellCartItem)[];
-
 const initialOptions = {
   clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
   currency: "USD",
   intent: "capture",
-} as const;
+};
 
 export function PayPalButton({ cart }: { cart: Cart }) {
   const [key, setKey] = useState(() => cart.length);
@@ -123,6 +83,8 @@ export function PayPalButton({ cart }: { cart: Cart }) {
   );
 }
 
+// -- Logic & Utilities --
+
 function generateCartItems(cart: Cart): CartItem[] {
   const skuCounters: Record<string, number> = {};
 
@@ -185,3 +147,45 @@ function generateCartItems(cart: Cart): CartItem[] {
     }
   });
 }
+
+// -- Type Definitions --
+
+type CartItem = {
+  name: string;
+  sku: string;
+  unit_amount: {
+    currency_code: string;
+    value: string;
+  };
+  quantity: number;
+};
+
+type UpsellCartItem = {
+  baseUpsellId: string;
+  type: "upsell";
+  pricing: {
+    salePrice: number;
+    basePrice: number;
+  };
+  products: Array<{
+    id: string;
+    name: string;
+    basePrice: number;
+    size: string;
+    color: string;
+  }>;
+};
+
+type ProductCartItem = {
+  baseProductId: string;
+  name: string;
+  type: "product";
+  pricing: {
+    basePrice: number;
+    salePrice: number;
+  };
+  size?: string;
+  color?: string;
+};
+
+type Cart = (ProductCartItem | UpsellCartItem)[];

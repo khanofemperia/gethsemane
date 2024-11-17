@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
 import { database } from "@/lib/firebase";
-import { generateId } from "@/lib/utils";
+import { generateId } from "@/lib/utils/common";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
 export async function AddToCartAction(data: {

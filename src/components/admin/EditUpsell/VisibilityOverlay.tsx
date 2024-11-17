@@ -10,11 +10,6 @@ import Overlay from "@/ui/Overlay";
 import { UpdateUpsellAction } from "@/actions/upsells";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-type DataType = {
-  id: string;
-  visibility: string;
-};
-
 export function VisibilityButton() {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const pageName = useOverlayStore((state) => state.pages.editUpsell.name);
@@ -265,3 +260,10 @@ export function VisibilityOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type DataType = {
+  id: string;
+  visibility: string;
+};

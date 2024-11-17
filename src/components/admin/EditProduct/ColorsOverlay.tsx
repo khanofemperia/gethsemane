@@ -1,7 +1,7 @@
 "use client";
 
 import AlertMessage from "@/components/shared/AlertMessage";
-import { isValidRemoteImage } from "@/lib/utils";
+import { isValidRemoteImage } from "@/lib/utils/common";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
@@ -12,16 +12,6 @@ import Overlay from "@/ui/Overlay";
 import { HiOutlinePlus } from "react-icons/hi2";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
-
-type ColorProps = {
-  name: string;
-  image: string;
-};
-
-type DataType = {
-  id: string;
-  colors: ColorProps[] | null;
-};
 
 export function ColorsButton() {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
@@ -321,3 +311,15 @@ export function ColorsOverlay({ data }: { data: DataType }) {
     </>
   );
 }
+
+// -- Type Definitions --
+
+type ColorProps = {
+  name: string;
+  image: string;
+};
+
+type DataType = {
+  id: string;
+  colors: ColorProps[] | null;
+};
