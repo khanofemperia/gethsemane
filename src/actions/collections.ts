@@ -424,7 +424,7 @@ export async function ChangeProductIndexAction(data: {
       });
 
       // Revalidate paths to update collections data
-      revalidatePath("/admin/storfront"); // Admin storefront page
+      revalidatePath("/admin/storefront"); // Admin storefront page
       revalidatePath(
         `/admin/collections/${collectionData.slug}-${collectionId}`
       ); // Admin edit collection page
@@ -463,10 +463,15 @@ export async function DeleteCollectionAction(data: { id: string }) {
     }
 
     await deleteDoc(collectionDocRef);
+    
+    const reorderResult = await ReorderCollectionIndicesAction();
+    
+    if (reorderResult.type === AlertMessageType.ERROR) {
+      return reorderResult;
+    }
 
-    // Revalidate affected paths
-    revalidatePath("/admin/collections"); // Admin collections page
-    revalidatePath("/"); // Public main page
+    revalidatePath("/admin/storefront"); 
+    revalidatePath("/");
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -477,6 +482,45 @@ export async function DeleteCollectionAction(data: { id: string }) {
     return {
       type: AlertMessageType.ERROR,
       message: "Failed to delete collection",
+    };
+  }
+}
+
+// -- Logic & Utilities --
+
+async function ReorderCollectionIndicesAction() {
+  try {
+    const collectionsSnapshot = await getDocs(collection(database, "collections"));
+    
+    const sortedCollections = collectionsSnapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        index: doc.data().index
+      }))
+      .sort((a, b) => a.index - b.index);
+
+    const updatePromises = sortedCollections.map((collection, idx) => {
+      const collectionRef = doc(database, "collections", collection.id);
+      return updateDoc(collectionRef, {
+        index: idx + 1,
+        updatedAt: currentTimestamp()
+      });
+    });
+
+    await Promise.all(updatePromises);
+
+    revalidatePath("/admin/storefront");
+    revalidatePath("/");
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Collection indices reordered successfully"
+    };
+  } catch (error) {
+    console.error("Error reordering collection indices:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to reorder collection indices"
     };
   }
 }
