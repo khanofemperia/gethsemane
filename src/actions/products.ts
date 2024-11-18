@@ -61,7 +61,7 @@ export async function CreateProductAction(data: CreateProductType) {
 
     await setDoc(documentRef, product);
 
-    revalidatePath("/admin/shop/products");
+    revalidatePath("/admin/products");
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -135,11 +135,11 @@ export async function UpdateProductAction(
 
     // Revalidate paths to update products data
     revalidatePath(
-      `/admin/shop/products/${currentProduct.slug}-${currentProduct.id}`
+      `/admin/products/${currentProduct.slug}-${currentProduct.id}`
     ); // Admin edit product page
-    revalidatePath("/admin/shop/products"); // Admin products page
-    revalidatePath("/admin/shop/upsells/[id]", "page"); // Admin edit upsell page
-    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath("/admin/products"); // Admin products page
+    revalidatePath("/admin/upsells/[id]", "page"); // Admin edit upsell page
+    revalidatePath("/admin/collections/[slug]", "page"); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/${currentProduct.slug}-${currentProduct.id}`); // Public product details page
     revalidatePath("/collections/[slug]", "page"); // Public single collection page
@@ -183,11 +183,11 @@ export async function SetUpsellAction(data: {
     // Revalidate paths to update products data
     const productData = (await getDoc(productDocRef)).data() as ProductType;
     revalidatePath(
-      `/admin/shop/products/${productData.slug}-${productData.id}`
+      `/admin/products/${productData.slug}-${productData.id}`
     ); // Admin edit product page
-    revalidatePath("/admin/shop/products"); // Admin products page
-    revalidatePath("/admin/shop/upsells/[id]", "page"); // Admin edit upsell page
-    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath("/admin/products"); // Admin products page
+    revalidatePath("/admin/upsells/[id]", "page"); // Admin edit upsell page
+    revalidatePath("/admin/collections/[slug]", "page"); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/${productData.slug}-${productData.id}`); // Public product details page
     revalidatePath("/collections/[slug]", "page"); // Public single collection page
@@ -220,11 +220,11 @@ export async function RemoveUpsellAction(data: {
     // Revalidate paths to update products data
     const productData = (await getDoc(productDocRef)).data() as ProductType;
     revalidatePath(
-      `/admin/shop/products/${productData.slug}-${productData.id}`
+      `/admin/products/${productData.slug}-${productData.id}`
     ); // Admin edit product page
-    revalidatePath("/admin/shop/products"); // Admin products page
-    revalidatePath("/admin/shop/upsells/[id]", "page"); // Admin edit upsell page
-    revalidatePath("/admin/shop/collections/[slug]", "page"); // Admin edit collection page
+    revalidatePath("/admin/products"); // Admin products page
+    revalidatePath("/admin/upsells/[id]", "page"); // Admin edit upsell page
+    revalidatePath("/admin/collections/[slug]", "page"); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/${productData.slug}-${productData.id}`); // Public product details page
     revalidatePath("/collections/[slug]", "page"); // Public single collection page

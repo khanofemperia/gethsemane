@@ -62,7 +62,7 @@ export async function CreateCollectionAction(data: {
 
     await Promise.all([setDoc(documentRef, newCollection), ...updatePromises]);
 
-    revalidatePath("/admin/shop");
+    revalidatePath("/admin/storefront");
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -127,9 +127,9 @@ export async function ChangeCollectionIndexAction(data: {
 
     // Revalidate paths to update collections data
     const collectionData = collectionOneBeforeUpdate;
-    revalidatePath("/admin/shop"); // Admin shop page
+    revalidatePath("/admin/storefront"); // Admin storefront page
     revalidatePath(
-      `/admin/shop/collections/${collectionData.slug}-${collectionData.id}`
+      `/admin/collections/${collectionData.slug}-${collectionData.id}`
     ); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/collections/${collectionData.slug}-${collectionData.id}`); // Public collection page
@@ -195,8 +195,8 @@ export async function UpdateCollectionAction(data: {
 
     // Revalidate paths to update collections data
     const collectionData = collectionSnapshot.data();
-    revalidatePath("/admin/shop"); // Admin shop page
-    revalidatePath(`/admin/shop/collections/${collectionData.slug}-${data.id}`); // Admin edit collection page
+    revalidatePath("/admin/storefront"); // Admin storefront page
+    revalidatePath(`/admin/collections/${collectionData.slug}-${data.id}`); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/collections/${collectionData.slug}-${data.id}`); // Public collection page
 
@@ -275,9 +275,9 @@ export async function AddProductAction(data: {
     });
 
     // Revalidate paths to update collections data
-    revalidatePath("/admin/shop"); // Admin shop page
+    revalidatePath("/admin/storefront"); // Admin storefront page
     revalidatePath(
-      `/admin/shop/collections/${collectionData.slug}-${collectionId}`
+      `/admin/collections/${collectionData.slug}-${collectionId}`
     ); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
@@ -334,9 +334,9 @@ export async function RemoveProductAction(data: {
     });
 
     // Revalidate paths to update collections data
-    revalidatePath("/admin/shop"); // Admin shop page
+    revalidatePath("/admin/storefront"); // Admin storefront page
     revalidatePath(
-      `/admin/shop/collections/${collectionData.slug}-${collectionId}`
+      `/admin/collections/${collectionData.slug}-${collectionId}`
     ); // Admin edit collection page
     revalidatePath("/"); // Public main page
     revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
@@ -424,9 +424,9 @@ export async function ChangeProductIndexAction(data: {
       });
 
       // Revalidate paths to update collections data
-      revalidatePath("/admin/shop"); // Admin shop page
+      revalidatePath("/admin/storfront"); // Admin storefront page
       revalidatePath(
-        `/admin/shop/collections/${collectionData.slug}-${collectionId}`
+        `/admin/collections/${collectionData.slug}-${collectionId}`
       ); // Admin edit collection page
       revalidatePath("/"); // Public main page
       revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
@@ -465,7 +465,7 @@ export async function DeleteCollectionAction(data: { id: string }) {
     await deleteDoc(collectionDocRef);
 
     // Revalidate affected paths
-    revalidatePath("/admin/shop/collections"); // Admin collections page
+    revalidatePath("/admin/collections"); // Admin collections page
     revalidatePath("/"); // Public main page
 
     return {

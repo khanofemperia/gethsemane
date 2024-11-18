@@ -23,7 +23,7 @@ export async function CreateUpsellAction(
     };
 
     await setDoc(documentRef, upsell);
-    revalidatePath("/admin/shop/upsells");
+    revalidatePath("/admin/upsells");
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -54,15 +54,15 @@ export async function UpdateUpsellAction(
     await setDoc(docRef, updatedUpsell);
 
     // Revalidate paths to update upsell data
-    revalidatePath(`/admin/shop/upsells/${data.id}`, "page"); // Admin edit upsell page
-    revalidatePath("/admin/shop/upsells"); // Admin upsells page
+    revalidatePath(`/admin/upsells/${data.id}`, "page"); // Admin edit upsell page
+    revalidatePath("/admin/upsells"); // Admin upsells page
     revalidatePath(`/`); // Public main page
 
     // Revalidate products related to the updated upsell
     if (currentUpsell.products.length > 0) {
       currentUpsell.products.forEach((product) => {
         revalidatePath(`/${product.slug}-${product.id}`); // Public product details page
-        revalidatePath(`/admin/shop/products/${product.slug}-${product.id}`); // Admin edit product page
+        revalidatePath(`/admin/products/${product.slug}-${product.id}`); // Admin edit product page
       });
     }
 
@@ -90,7 +90,7 @@ export async function DeleteUpsellAction(data: { id: string }) {
 
     await deleteDoc(upsellDocRef);
 
-    revalidatePath("/admin/shop/upsells"); // Admin upsells page
+    revalidatePath("/admin/upsells"); // Admin upsells page
     revalidatePath("/"); // Public main page
 
     return {

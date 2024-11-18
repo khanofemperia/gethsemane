@@ -21,7 +21,7 @@ export async function UpdatePageHeroAction(data: {
     await updateDoc(documentRef, updatedPageHeroData);
 
     // Revalidate paths to update page hero data
-    revalidatePath("/admin/shop"); // Admin shop page
+    revalidatePath("/admin/storefront"); // Admin storefront page
     revalidatePath("/"); // Public main page
 
     return {
