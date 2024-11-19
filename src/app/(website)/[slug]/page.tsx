@@ -59,6 +59,7 @@ export default async function ProductDetails({
   const hasColor = product.options.colors.length > 0;
   const hasSize = Object.keys(product.options.sizes).length > 0;
 
+  
   return (
     <>
       <ProductDetailsWrapper
