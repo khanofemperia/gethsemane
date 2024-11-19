@@ -314,33 +314,35 @@ export default async function ProductDetails({
                   <div>
                     <div className="flex flex-col gap-5">
                       <p className="text-sm text-gray">{name}</p>
-                      <div className="flex flex-col gap-4">
-                        <div
-                          className="text-lg leading-[26px] [&>:last-child]:mb-0"
-                          dangerouslySetInnerHTML={{
-                            __html: highlights.headline || "",
-                          }}
-                        />
-                        <ul className="text-sm list-inside *:leading-5">
-                          {highlights.keyPoints
-                            .slice()
-                            .sort((a, b) => a.index - b.index)
-                            .map((point) => (
-                              <li
-                                key={point.index}
-                                className="flex items-start gap-1 mb-2 last:mb-0"
-                              >
-                                <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
-                                  <CheckmarkIcon
-                                    className="fill-green -ml-1"
-                                    size={20}
-                                  />
-                                </div>
-                                <span>{point.text}</span>
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
+                      {highlights.headline && (
+                        <div className="flex flex-col gap-4">
+                          <div
+                            className="text-lg leading-[26px] [&>:last-child]:mb-0"
+                            dangerouslySetInnerHTML={{
+                              __html: highlights.headline || "",
+                            }}
+                          />
+                          <ul className="text-sm list-inside *:leading-5">
+                            {highlights.keyPoints
+                              .slice()
+                              .sort((a, b) => a.index - b.index)
+                              .map((point) => (
+                                <li
+                                  key={point.index}
+                                  className="flex items-start gap-1 mb-2 last:mb-0"
+                                >
+                                  <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
+                                    <CheckmarkIcon
+                                      className="fill-green -ml-1"
+                                      size={20}
+                                    />
+                                  </div>
+                                  <span>{point.text}</span>
+                                </li>
+                              ))}
+                          </ul>
+                        </div>
+                      )}
                       <div className="flex flex-col gap-5">
                         <div className="w-max flex items-center justify-center">
                           {Number(pricing.salePrice) ? (
