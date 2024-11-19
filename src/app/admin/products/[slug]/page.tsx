@@ -98,35 +98,39 @@ export default async function EditProduct({
   } = product as ProductWithUpsellType;
 
   function calculateUpsell(
-    currentProduct: { 
-      salePrice?: number | string; 
-      basePrice?: number | string; 
-    }, 
-    upsell: { 
-      pricing: { 
-        salePrice?: number | string; 
-        basePrice?: number | string; 
-      } 
+    currentProduct: {
+      salePrice?: number | string;
+      basePrice?: number | string;
+    },
+    upsell: {
+      pricing: {
+        salePrice?: number | string;
+        basePrice?: number | string;
+      };
     } | null
   ) {
     if (!upsell) return null;
-  
-    const originalPrice =
-      Number(currentProduct.salePrice || currentProduct.basePrice || 0);
-  
-    const upsellPrice =
-      Number(upsell.pricing.salePrice || upsell.pricing.basePrice || 0);
-  
+
+    const originalPrice = Number(
+      currentProduct.salePrice || currentProduct.basePrice || 0
+    );
+
+    const upsellPrice = Number(
+      upsell.pricing.salePrice || upsell.pricing.basePrice || 0
+    );
+
     const additionalSpend = upsellPrice - originalPrice;
     const percentageIncrease = (additionalSpend / originalPrice) * 100;
-  
+
     return {
       additionalSpend: Math.round(additionalSpend).toFixed(2),
       percentageIncrease: percentageIncrease.toFixed(0),
     };
   }
-  
-  const upsellDetails = upsell ? calculateUpsell(product.pricing, upsell) : null;
+
+  const upsellDetails = upsell
+    ? calculateUpsell(product.pricing, upsell)
+    : null;
 
   const hasBasicDetails = category && name && pricing.basePrice && slug && id;
   const hasOnPageSeo =
@@ -138,9 +142,6 @@ export default async function EditProduct({
     sourceInfo.storeId &&
     sourceInfo.storeUrl &&
     sourceInfo.productUrl;
-
-    return <></>;
-
 
   return (
     <>
