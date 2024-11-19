@@ -50,7 +50,6 @@ import {
   UpsellOverlay,
 } from "@/components/admin/EditProduct/UpsellOverlay ";
 import { getProducts } from "@/actions/get/products";
-import { getUpsells } from "@/actions/get/upsells";
 
 export default async function EditProduct({
   params,
@@ -58,7 +57,25 @@ export default async function EditProduct({
   params: { slug: string };
 }) {
   const productId = params.slug.split("-").pop() as string;
-  const [product] = (await getProducts({ ids: [productId] })) || [];
+  const [product] =
+    (await getProducts({
+      ids: [productId],
+      fields: [
+        "id",
+        "category",
+        "name",
+        "slug",
+        "pricing",
+        "images",
+        "options",
+        "description",
+        "highlights",
+        "sourceInfo",
+        "seo",
+        "visibility",
+        "upsell",
+      ],
+    })) || [];
 
   if (!product) {
     notFound();
@@ -77,42 +94,39 @@ export default async function EditProduct({
     sourceInfo,
     seo,
     visibility,
-    upsell: upsellId,
-  } = product as ProductType;
-
-  const fetchedUpsells = upsellId
-    ? await getUpsells({ ids: [upsellId] })
-    : null;
-
-  const upsell = fetchedUpsells ? fetchedUpsells[0] : null;
+    upsell,
+  } = product as ProductWithUpsellType;
 
   function calculateUpsell(
-    currentProduct: PricingType,
-    upsell: UpsellType | null
+    currentProduct: { 
+      salePrice?: number | string; 
+      basePrice?: number | string; 
+    }, 
+    upsell: { 
+      pricing: { 
+        salePrice?: number | string; 
+        basePrice?: number | string; 
+      } 
+    } | null
   ) {
     if (!upsell) return null;
-
+  
     const originalPrice =
-      Number(currentProduct.salePrice) || Number(currentProduct.basePrice);
-
+      Number(currentProduct.salePrice || currentProduct.basePrice || 0);
+  
     const upsellPrice =
-      Number(upsell.pricing.salePrice) || Number(upsell.pricing.basePrice);
-
+      Number(upsell.pricing.salePrice || upsell.pricing.basePrice || 0);
+  
     const additionalSpend = upsellPrice - originalPrice;
     const percentageIncrease = (additionalSpend / originalPrice) * 100;
-
+  
     return {
       additionalSpend: Math.round(additionalSpend).toFixed(2),
       percentageIncrease: percentageIncrease.toFixed(0),
     };
   }
-
-  const upsellDetails = upsell
-    ? calculateUpsell(
-        pricing,
-        upsell
-      )
-    : null;
+  
+  const upsellDetails = upsell ? calculateUpsell(product.pricing, upsell) : null;
 
   const hasBasicDetails = category && name && pricing.basePrice && slug && id;
   const hasOnPageSeo =
@@ -124,6 +138,9 @@ export default async function EditProduct({
     sourceInfo.storeId &&
     sourceInfo.storeUrl &&
     sourceInfo.productUrl;
+
+    return <></>;
+
 
   return (
     <>

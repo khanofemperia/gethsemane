@@ -39,7 +39,7 @@ export async function getProducts(
 ): Promise<(ProductType | ProductWithUpsellType)[] | null> {
   const { ids = [], fields = [], visibility, category } = options;
 
-  const includeUpsells = !fields.length || fields.includes("upsell");
+  const includeUpsell = fields.includes("upsell");
 
   // Build the base query
   const productsRef = collection(database, "products");
@@ -91,7 +91,7 @@ export async function getProducts(
 
       // Fetch upsell details if requested and available
       if (
-        includeUpsells &&
+        includeUpsell &&
         product.upsell &&
         typeof product.upsell === "string" &&
         product.upsell.trim()

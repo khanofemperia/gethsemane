@@ -133,7 +133,7 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
     visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
     createdAt: string;
     updatedAt: string;
-    products: {
+    products: Array<{
       id: string;
       name: string;
       slug: string;
@@ -158,7 +158,7 @@ type ProductWithUpsellType = Omit<ProductType, "upsell"> & {
           };
         };
       };
-    }[];
+    }>;
   };
 };
 
