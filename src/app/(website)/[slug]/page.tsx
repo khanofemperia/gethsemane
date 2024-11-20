@@ -1,4 +1,3 @@
-import Options from "@/components/website/Product/Options";
 import ImageCarousel from "@/components/website/Product/ImageCarousel";
 import { CheckmarkIcon, ChevronLeftIcon } from "@/icons";
 import Images from "@/components/website/Product/Images";
@@ -17,6 +16,8 @@ import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { getCart } from "@/actions/get/cart";
 import { getCategories } from "@/actions/get/categories";
 import { getProducts } from "@/actions/get/products";
+import { Options } from "@/components/website/Product/Options";
+import ProductDescriptionWrapper from "@/components/website/ProductDescriptionWrapper";
 
 export default async function ProductDetails({
   params,
@@ -519,19 +520,19 @@ export default async function ProductDetails({
                   </div>
                 </div>
               </div>
-              <div className="w-full pr-[70px] mx-auto">
+              <ProductDescriptionWrapper>
                 <div className="w-[580px]">
                   <div
                     className={`
-                    [&>p>img]:max-w-[500px] [&>p>img]:rounded-xl [&>p>img]:my-7 
-                    [&>:last-child]:mb-0 [&>:first-child]:mt-0 [&>:first-child>img]:mt-0 [&>:last-child>img]:mb-0
-                  `}
+                      [&>p>img]:max-w-[500px] [&>p>img]:rounded-xl [&>p>img]:my-7 
+                      [&>:last-child]:mb-0 [&>:first-child]:mt-0 [&>:first-child>img]:mt-0 [&>:last-child>img]:mb-0
+                    `}
                     dangerouslySetInnerHTML={{
                       __html: description || "",
                     }}
                   />
                 </div>
-              </div>
+              </ProductDescriptionWrapper>
             </div>
           </div>
         </main>

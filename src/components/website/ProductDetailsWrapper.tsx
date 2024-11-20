@@ -2,12 +2,13 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { StickyBar } from "./Product/StickyBar";
-import Options from "@/components/website/Product/Options";
 import Footer from "./Footer";
 import { CartIcon } from "@/icons";
 import Image from "next/image";
 import Link from "next/link";
 import { HiMiniChevronDown } from "react-icons/hi2";
+import { Options } from "./Product/Options";
+import { useScrollStore } from "@/zustand/website/scrollStore";
 
 export function ProductDetailsWrapper({
   children,
@@ -28,9 +29,10 @@ export function ProductDetailsWrapper({
 }) {
   const [isCategoriesDropdownVisible, setCategoriesDropdownVisible] =
     useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const categoriesRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const setScrollPosition = useScrollStore((state) => state.setScrollPosition);
+  const shouldShowBar = useScrollStore((state) => state.shouldShowBar);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,7 +51,7 @@ export function ProductDetailsWrapper({
         wrapperElement.removeEventListener("scroll", handleScroll);
       }
     };
-  }, []);
+  }, [setScrollPosition]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -170,10 +172,10 @@ export function ProductDetailsWrapper({
             deviceIdentifier={deviceIdentifier}
           />
         }
-        scrollPosition={scrollPosition}
         hasColor={hasColor}
         hasSize={hasSize}
         cart={cart}
+        isHidden={!shouldShowBar}
       />
       <Footer />
     </div>

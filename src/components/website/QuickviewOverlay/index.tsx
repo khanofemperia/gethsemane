@@ -6,12 +6,12 @@ import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import Images from "../Product/Images";
 import { formatThousands } from "@/lib/utils/common";
-import Options from "@/components/website/Product/Options";
 import styles from "./styles.module.css";
 import { useRouter } from "next/navigation";
 import { CartAndUpgradeButtons } from "../Product/CartAndUpgradeButtons";
 import { SizeChartOverlay } from "../Product/SizeChartOverlay";
 import clsx from "clsx";
+import { Options } from "../Product/Options";
 
 export function QuickviewButton({
   onClick,

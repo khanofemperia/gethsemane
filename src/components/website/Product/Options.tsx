@@ -10,7 +10,7 @@ import clsx from "clsx";
 import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
 import { getCart } from "@/actions/get/cart";
 
-export default function ProductOptions({
+export function Options({
   productInfo,
   isStickyBarInCartIndicator,
   deviceIdentifier,

@@ -11,32 +11,26 @@ import { useEffect, useState, useTransition } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { UpsellReviewButton } from "../UpsellReviewOverlay";
 
-const SCROLL_THRESHOLD = 1040;
-
 export function StickyBar({
   productInfo,
   optionsComponent,
-  scrollPosition,
   hasColor,
   hasSize,
   cart,
+  isHidden,
 }: {
   optionsComponent: JSX.Element;
-  scrollPosition: number;
   hasColor: boolean;
   hasSize: boolean;
   cart: CartType | null;
   productInfo: ProductInfoType;
+  isHidden: boolean;
 }) {
-  const [barIsHidden, setBarIsHidden] = useState(true);
   const [isPending, startTransition] = useTransition();
-  const [isInCart, setIsInCart] = useState<boolean>(false);
-
+  const [isInCart, setIsInCart] = useState(false);
   const selectedColor = useOptionsStore((state) => state.selectedColor);
   const selectedSize = useOptionsStore((state) => state.selectedSize);
   const showAlert = useAlertStore((state) => state.showAlert);
-
-  const { pricing, upsell, images, name } = productInfo;
 
   useEffect(() => {
     setIsInCart(
@@ -89,21 +83,15 @@ export function StickyBar({
     });
   };
 
-  useEffect(() => {
-    if (scrollPosition >= SCROLL_THRESHOLD) {
-      setBarIsHidden(false);
-    } else {
-      setBarIsHidden(true);
-    }
-  }, [scrollPosition]);
+  const { pricing, upsell, images, name } = productInfo;
 
   return (
     <div
       className={clsx(
-        "hidden md:block w-full py-4 px-5 fixed top-0 border-b -translate-y-full bg-white",
+        "hidden md:block w-full py-4 px-5 fixed top-0 border-b bg-white transition-transform duration-150 ease-in-out",
         {
-          "-translate-y-full": barIsHidden,
-          "translate-y-0 ease-in-out duration-150 transition": !barIsHidden,
+          "-translate-y-full": isHidden,
+          "translate-y-0": !isHidden,
         }
       )}
     >
@@ -182,7 +170,7 @@ export function StickyBar({
                   }}
                 />
               </div>
-              {!barIsHidden && (
+              {!isHidden && (
                 <div
                   className={clsx(
                     "peer-hover:block hidden py-[18px] px-6 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:right-20 min-[840px]:before:right-24 absolute top-[58px]",
