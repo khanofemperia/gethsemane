@@ -6,10 +6,9 @@ import Footer from "./Footer";
 import { CartIcon } from "@/icons";
 import Image from "next/image";
 import Link from "next/link";
-import { HiMiniBars3, HiMiniChevronDown } from "react-icons/hi2";
 import { Options } from "./Product/Options";
 import { useScrollStore } from "@/zustand/website/scrollStore";
-import { MobileNavbarOverlay } from "./MobileNavbarOverlay";
+import { MobileNavbarButton, MobileNavbarOverlay } from "./MobileNavbarOverlay";
 
 export function ProductDetailsWrapper({
   children,
@@ -114,12 +113,7 @@ export function ProductDetailsWrapper({
                 </span>
               )}
             </Link>
-            <button
-              className="h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
-              aria-label="Menu"
-            >
-              <HiMiniBars3 size={26} />
-            </button>
+            <MobileNavbarButton />
           </div>
         </div>
       </nav>
