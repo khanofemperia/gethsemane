@@ -35,6 +35,31 @@ export function MobileNavbarOverlay() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Media query for md breakpoint (typically 768px)
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+
+    // Handler to close overlay when screen size increases
+    const handleMediaQueryChange = (
+      e: MediaQueryListEvent | MediaQueryList
+    ) => {
+      if (e.matches && isMobileNavbarOverlayVisible) {
+        hideMobileNavbarOverlay();
+      }
+    };
+
+    // Check initial state
+    handleMediaQueryChange(mediaQuery);
+
+    // Add listener for changes
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+
+    // Cleanup
+    return () => {
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    };
+  }, [isMobileNavbarOverlayVisible, hideMobileNavbarOverlay]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         overlayRef.current &&
@@ -59,7 +84,7 @@ export function MobileNavbarOverlay() {
       {isMobileNavbarOverlayVisible && (
         <div
           ref={overlayRef}
-          className="fixed top-0 bottom-0 left-0 right-0 z-40 transition duration-300 ease-in-out bg-glass-black backdrop-blur-sm md:overflow-x-hidden md:overflow-y-visible md:custom-scrollbar"
+          className="md:hidden fixed top-0 bottom-0 left-0 right-0 z-40 transition duration-300 ease-in-out bg-glass-black backdrop-blur-sm md:overflow-x-hidden md:overflow-y-visible md:custom-scrollbar"
         >
           <div
             ref={menuRef}

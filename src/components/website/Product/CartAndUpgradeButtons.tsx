@@ -106,7 +106,7 @@ export function CartAndUpgradeButtons({
               onClick={handleAddToCart}
               disabled={isPending}
               className={clsx(
-                "flex items-center justify-center w-full max-w-60 rounded-full cursor-pointer border border-[#b27100] text-white text-sm font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] min-[896px]:text-base min-[896px]:h-12",
+                "flex items-center justify-center w-full md:max-w-60 rounded-full cursor-pointer border border-[#b27100] text-white text-sm font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] min-[896px]:text-base min-[896px]:h-12",
                 !isPending &&
                   "hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]",
                 isPending && "!cursor-context-menu opacity-50"
