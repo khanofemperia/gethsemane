@@ -55,7 +55,7 @@ export function ProductDetailsWrapper({
         isHidden={!shouldShowBar}
       />
       <MobileNavbarOverlay />
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }
