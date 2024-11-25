@@ -75,7 +75,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-[946px] px-5 mx-auto">
+      <div className="w-full max-w-[946px] min-[1120px]:max-w-[984px] px-5 mx-auto">
         <div className="flex gap-10">
           <div className="w-full">
             <h3 className="font-semibold mb-4">Company</h3>
