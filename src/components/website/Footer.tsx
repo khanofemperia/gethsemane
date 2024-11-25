@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full p-5 pt-6 pb-24 mt-16 bg-lightgray">
-      <div className="max-w-[948px] mx-auto">
+    <footer className="w-full pt-6 pb-24 mt-16 bg-lightgray">
+      <div className="max-w-[486px] px-5 mx-auto">
         <div className="flex flex-col gap-10">
           <div>
             <h3 className="font-semibold mb-4">Stay Connected</h3>
