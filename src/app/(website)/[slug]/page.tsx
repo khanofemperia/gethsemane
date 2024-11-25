@@ -78,7 +78,7 @@ export default async function ProductDetails({
         }}
       >
         <main>
-          <div className="sm:hidden">
+          <div className="md:hidden">
             <div>
               <div className="w-full relative select-none">
                 <button
@@ -307,7 +307,7 @@ export default async function ProductDetails({
               </div>
             </div>
           </div>
-          <div className="hidden sm:block w-max mx-auto">
+          <div className="hidden md:block w-max mx-auto">
             <div className="w-full max-w-[945px] pt-5 px-5 min-[1120px]:px-0 flex flex-col gap-12">
               <div className="flex gap-5 items-start justify-start relative">
                 <div className="sticky top-5 max-w-[650px] flex flex-col gap-16">
