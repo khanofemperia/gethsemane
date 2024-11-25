@@ -8,10 +8,10 @@ import Images from "../Product/Images";
 import { formatThousands } from "@/lib/utils/common";
 import styles from "./styles.module.css";
 import { useRouter } from "next/navigation";
-import { CartAndUpgradeButtons } from "../Product/CartAndUpgradeButtons";
 import { SizeChartOverlay } from "../Product/SizeChartOverlay";
 import clsx from "clsx";
 import { Options } from "../Product/Options";
+import { CartAndUpgradeButtons } from "../Product/CartAndUpgradeButtons";
 
 export function QuickviewButton({
   onClick,

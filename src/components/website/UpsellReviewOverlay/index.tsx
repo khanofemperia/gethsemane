@@ -3,7 +3,7 @@
 import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
 import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { ProductImageCarouselOverlay } from "./ProductImageCarouselOverlay";
+import { ProductImageCarouselOverlay } from "../ProductImageCarouselOverlay";
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useEffect, useState, useTransition } from "react";
 import { AddToCartAction } from "@/actions/shopping-cart";
@@ -12,6 +12,7 @@ import { formatThousands } from "@/lib/utils/common";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
+import styles from "./styles.module.css";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { Spinner } from "@/ui/Spinners/Default";
@@ -36,7 +37,7 @@ export function UpsellReviewButton({
     <button
       type="button"
       onClick={openOverlay}
-      className="flex items-center justify-center w-full max-w-60 rounded-full cursor-pointer border border-[#b27100] text-white text-sm font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:text-base min-[896px]:h-12"
+      className={`flex items-center justify-center w-full max-w-60 rounded-full cursor-pointer border border-[#b27100] text-white text-xs ${styles.button} min-[896px]:text-base font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:h-12`}
     >
       Yes, Let's Upgrade
     </button>
