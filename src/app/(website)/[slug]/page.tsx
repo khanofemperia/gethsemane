@@ -79,7 +79,7 @@ export default async function ProductDetails({
       >
         <main>
           <div className="sm:hidden">
-            <div className="pb-28">
+            <div>
               <div className="w-full relative select-none">
                 <button
                   type="button"
@@ -296,7 +296,7 @@ export default async function ProductDetails({
                 </div>
               </div>
             </div>
-            <div className="h-[72px] pt-[6px] pb-5 px-5 border-t border-[#e6e8ec] bg-white fixed bottom-0 left-0 right-0">
+            <div className="h-[72px] pt-[6px] pb-5 px-5 border-t border-[#e6e8ec] bg-white fixed z-10 bottom-0 left-0 right-0">
               <div className="max-w-[486px] mx-auto flex gap-[6px] justify-center">
                 <CartAndUpgradeButtons
                   product={product}

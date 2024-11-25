@@ -1,45 +1,10 @@
 import Link from "next/link";
 
 export default function Footer() {
-  const sections = [
-    {
-      title: "Get Help",
-      links: [
-        { name: "Contact us", href: "#" },
-        { name: "Track order", href: "#" },
-        { name: "Returns & refunds", href: "#" },
-        { name: "Shipping info", href: "#" },
-        { name: "FAQs", href: "#" },
-      ],
-    },
-    {
-      title: "Company",
-      links: [
-        { name: "About us", href: "#" },
-        { name: "Privacy policy", href: "#" },
-        { name: "Terms of service", href: "#" },
-      ],
-    },
-  ];
-
   return (
-    <footer className="w-full p-10 pb-16 mt-16 bg-lightgray">
-      <div className="w-[948px] mx-auto">
-        <div className="grid grid-cols-3 gap-10">
-          {sections.map((section, idx) => (
-            <div key={idx}>
-              <h3 className="font-semibold mb-4">{section.title}</h3>
-              {section.links.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.href}
-                  className="block w-max text-sm text-gray mb-2 hover:underline"
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-          ))}
+    <footer className="w-full p-10 pb-28 mt-16 bg-lightgray">
+      <div className="w-[948px] !w-full mx-auto">
+        <div className="flex flex-col gap-10">
           <div>
             <h3 className="font-semibold mb-4">Stay Connected</h3>
             <span className="block text-sm text-gray mb-3">
@@ -56,6 +21,56 @@ export default function Footer() {
                   placeholder="Enter your email"
                 />
               </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2">
+            <div>
+              <h3 className="font-semibold mb-4">Company</h3>
+              <Link
+                href="#"
+                className="block w-max text-sm text-gray mb-2 hover:underline"
+              >
+                About us
+              </Link>
+              <Link
+                href="#"
+                className="block w-max text-sm text-gray mb-2 hover:underline"
+              >
+                Privacy policy
+              </Link>
+              <Link
+                href="#"
+                className="block w-max text-sm text-gray mb-2 hover:underline"
+              >
+                Terms of service
+              </Link>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Get Help</h3>
+              <Link
+                href="#"
+                className="block w-max text-sm text-gray mb-2 hover:underline"
+              >
+                Contact us
+              </Link>
+              <Link
+                href="#"
+                className="block w-max text-sm text-gray mb-2 hover:underline"
+              >
+                Track order
+              </Link>
+              <Link
+                href="#"
+                className="block w-max text-sm text-gray mb-2 hover:underline"
+              >
+                Returns & refunds
+              </Link>
+              <Link
+                href="#"
+                className="block w-max text-sm text-gray mb-2 hover:underline"
+              >
+                FAQs
+              </Link>
             </div>
           </div>
         </div>
