@@ -307,13 +307,13 @@ export default async function ProductDetails({
               </div>
             </div>
           </div>
-          <div className="hidden md:block w-max mx-auto">
-            <div className="w-full max-w-[945px] pt-5 px-5 min-[1120px]:px-0 flex flex-col gap-12">
+          <div className="hidden md:block">
+            <div className="px-12 pt-5 mx-auto max-w-[1040px]">
               <div className="flex gap-5 items-start justify-start relative">
                 <div className="sticky top-5 max-w-[650px] flex flex-col gap-16">
                   <Images images={images} productName={name} />
                 </div>
-                <div className="sticky top-5 pt-5 min-w-[340px] w-[340px] min-[896px]:min-w-[400px] min-[896px]:w-[400px]">
+                <div className="sticky top-5 pt-5 w-[320px] min-[896px]:w-[340px]">
                   <div>
                     <div className="flex flex-col gap-5">
                       <p className="line-clamp-2 text-sm text-gray">{name}</p>
@@ -522,19 +522,21 @@ export default async function ProductDetails({
                   </div>
                 </div>
               </div>
-              <div className="w-full pr-[70px] mx-auto">
-                <div className="w-[580px]">
-                  <div
-                    className={`
+              {description && (
+                <div className="w-full mt-12 pr-[70px] mx-auto">
+                  <div className="w-[580px]">
+                    <div
+                      className={`
                     [&>p>img]:max-w-[500px] [&>p>img]:rounded-xl [&>p>img]:my-7 
                     [&>:last-child]:mb-0 [&>:first-child]:mt-0 [&>:first-child>img]:mt-0 [&>:last-child>img]:mb-0
                   `}
-                    dangerouslySetInnerHTML={{
-                      __html: description || "",
-                    }}
-                  />
+                      dangerouslySetInnerHTML={{
+                        __html: description || "",
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </main>
