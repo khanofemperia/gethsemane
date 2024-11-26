@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full pt-6 pb-24 mt-16 bg-lightgray">
+    <footer className="w-full pt-6 pb-24 mt-14 bg-lightgray">
       <div className="md:hidden max-w-[486px] px-5 mx-auto">
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-8">
           <div>
             <h3 className="font-semibold mb-4">Stay Connected</h3>
             <span className="block text-sm text-gray mb-3">
@@ -75,7 +75,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-[946px] min-[1120px]:max-w-[984px] px-5 mx-auto">
+      <div className="hidden md:block w-full max-w-[946px] min-[1120px]:max-w-[984px] px-5 mx-auto">
         <div className="flex gap-10">
           <div className="w-full">
             <h3 className="font-semibold mb-4">Company</h3>
