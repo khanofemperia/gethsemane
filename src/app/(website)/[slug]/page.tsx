@@ -94,7 +94,9 @@ export default async function ProductDetails({
               </div>
               <div className="max-w-[486px] mx-auto">
                 <div className="px-5 pt-3 flex flex-col gap-4">
-                  <p className="line-clamp-2 text-sm text-gray">{name}</p>
+                  <p className="-mb-1 line-clamp-2 leading-[1.125rem] text-[0.75rem] text-gray">
+                    {name}
+                  </p>
                   {highlights.headline && (
                     <div className="flex flex-col gap-4">
                       <div
@@ -182,7 +184,7 @@ export default async function ProductDetails({
                 <div className="px-5">
                   {upsell && upsell.products && upsell.products.length > 0 && (
                     <div
-                      className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
+                      className={`${styles.customBorder} mt-7 pt-5 pb-[26px] w-full max-w-[280px] rounded-md select-none bg-white`}
                     >
                       <div className="w-full">
                         <div>
@@ -282,7 +284,7 @@ export default async function ProductDetails({
                       </div>
                     </div>
                   )}
-                  <div className="mt-16">
+                  <div className="mt-14">
                     <div
                       className={`
                     [&>p>img]:max-w-[500px] [&>p>img]:rounded-xl [&>p>img]:my-7 
@@ -308,15 +310,17 @@ export default async function ProductDetails({
             </div>
           </div>
           <div className="hidden md:block">
-            <div className="px-12 pt-5 mx-auto max-w-[1040px]">
+            <div className="px-9 pt-5 mx-auto max-w-[1040px]">
               <div className="flex gap-5 items-start justify-start relative">
                 <div className="sticky top-5 max-w-[650px] flex flex-col gap-16">
                   <Images images={images} productName={name} />
                 </div>
-                <div className="sticky top-5 pt-5 w-[320px] min-[896px]:w-[340px]">
+                <div className="sticky top-5 pt-5 w-[328px] min-w-[328px] min-[896px]:w-[340px]">
                   <div>
                     <div className="flex flex-col gap-5">
-                      <p className="line-clamp-2 text-sm text-gray">{name}</p>
+                      <p className="-mb-1 line-clamp-2 leading-[1.125rem] text-[0.75rem] text-gray">
+                        {name}
+                      </p>
                       {highlights.headline && (
                         <div className="flex flex-col gap-4">
                           <div

@@ -122,7 +122,7 @@ function DesktopNavbar({
   };
 
   return (
-    <div className="hidden md:flex justify-between gap-1 flex-col md:flex-row w-full max-w-[1080px] mx-auto px-6 py-2 relative">
+    <div className="hidden md:flex justify-between gap-1 flex-col md:flex-row w-full max-w-[1080px] mx-auto px-4 py-2 relative">
       <div className="flex items-center gap-5">
         <Link
           href="/"
