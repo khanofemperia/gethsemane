@@ -37,10 +37,10 @@ export async function DiscoveryProducts({
 
   return (
     <div>
-      <h2 className="mb-4 font-semibold line-clamp-3 md:text-xl">
+      <h2 className="mb-4 font-semibold line-clamp-3 md:text-xl md:w-[calc(100%-20px)] md:mx-auto">
         {heading}
       </h2>
-      <div className="select-none w-full flex flex-wrap gap-2">
+      <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
         {filteredProducts.map((product) => (
           <DiscoveryProductCard
             key={product.id}

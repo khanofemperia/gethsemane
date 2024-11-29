@@ -19,7 +19,7 @@ export function FeaturedProducts({
 
   return (
     <div>
-      <div className="mb-4 flex items-center gap-4">
+      <div className="mb-4 flex items-center gap-4 md:w-[calc(100%-20px)] md:mx-auto">
         <h2 className="font-semibold line-clamp-3 md:text-xl">{title}</h2>
         <Link
           href={`/collection/${slug}-${id}`}
@@ -28,7 +28,7 @@ export function FeaturedProducts({
           See more
         </Link>
       </div>
-      <div className="relative select-none overflow-hidden flex gap-2">
+      <div className="relative select-none flex gap-2 md:gap-0">
         {products.slice(0, 3).map((product) => (
           <DiscoveryProductCard
             key={product.id}
