@@ -1,5 +1,5 @@
 import { getProducts } from "@/actions/get/products";
-import { DiscoveryProductCard } from "./DiscoveryProductCard";
+import { ProductCard } from "./ProductCard";
 
 export async function DiscoveryProducts({
   heading = "Explore Your Interests",
@@ -42,7 +42,7 @@ export async function DiscoveryProducts({
       </h2>
       <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
         {filteredProducts.map((product) => (
-          <DiscoveryProductCard
+          <ProductCard
             key={product.id}
             product={product}
             cart={cart}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { DiscoveryProductCard } from "./DiscoveryProductCard";
+import { ProductCard } from "./ProductCard";
 
 export function FeaturedProducts({
   collection,
@@ -30,7 +30,7 @@ export function FeaturedProducts({
       </div>
       <div className="md:hidden overflow-hidden flex gap-2 relative select-none">
         {products.slice(0, 3).map((product) => (
-          <DiscoveryProductCard
+          <ProductCard
             key={product.id}
             product={product}
             cart={cart}
@@ -40,7 +40,7 @@ export function FeaturedProducts({
       </div>
       <div className="hidden md:flex gap-0 relative select-none">
         {products.slice(0, 3).map((product) => (
-          <DiscoveryProductCard
+          <ProductCard
             key={product.id}
             product={product}
             cart={cart}

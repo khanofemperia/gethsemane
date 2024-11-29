@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./styles.module.css";
 
-export function DiscoveryProductCard({
+export function ProductCard({
   product,
   cart,
   deviceIdentifier,
