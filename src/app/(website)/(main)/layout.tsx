@@ -1,4 +1,4 @@
-import Footer from "@/components/website/Footer";
+import { Footer } from "@/components/website/Footer";
 import { NavbarWrapper } from "@/components/website/Navbar/Wrapper";
 
 export default async function WebsiteLayout({

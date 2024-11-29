@@ -1,15 +1,14 @@
 import Link from "next/link";
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="w-full pt-6 pb-24 mt-14 bg-lightgray">
-      <div className="md:hidden max-w-[486px] px-5 mx-auto">
+      <div className="md:hidden px-5 mx-auto">
         <div className="flex flex-col gap-8">
           <div>
-            <h3 className="font-semibold mb-4">Stay Connected</h3>
-            <span className="block text-sm text-gray mb-3">
+            <h4 className="block text-sm text-gray mb-3">
               Subscribe to our newsletter <br /> for exclusive deals and updates
-            </span>
+            </h4>
             <div className="relative h-11 w-[270px]">
               <button className="peer w-[104px] h-[40px] absolute left-[164px] top-1/2 -translate-y-1/2 rounded font-semibold text-white">
                 Subscribe
@@ -126,10 +125,9 @@ export default function Footer() {
             </Link>
           </div>
           <div className="w-[270px]">
-            <h3 className="font-semibold mb-4">Stay Connected</h3>
-            <span className="block text-sm text-gray mb-3">
+            <h4 className="block text-sm text-gray mb-3">
               Subscribe to our newsletter <br /> for exclusive deals and updates
-            </span>
+            </h4>
             <div className="relative h-11 w-[270px]">
               <button className="peer w-[104px] h-[40px] absolute left-[164px] top-1/2 -translate-y-1/2 rounded font-semibold text-white">
                 Subscribe
