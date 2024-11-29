@@ -9,3 +9,10 @@
     min-width: calc(33.33% - 6px);
   }
 }
+
+@media (min-width: 768px) {
+  .productCard {
+    width: 33.33%;
+    min-width: 33.33%;
+  }
+}

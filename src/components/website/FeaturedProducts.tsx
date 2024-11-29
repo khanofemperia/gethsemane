@@ -28,7 +28,17 @@ export function FeaturedProducts({
           See more
         </Link>
       </div>
-      <div className="relative select-none flex gap-2 md:gap-0">
+      <div className="md:hidden overflow-hidden flex gap-2 relative select-none">
+        {products.slice(0, 3).map((product) => (
+          <DiscoveryProductCard
+            key={product.id}
+            product={product}
+            cart={cart}
+            deviceIdentifier={deviceIdentifier}
+          />
+        ))}
+      </div>
+      <div className="hidden md:flex gap-0 relative select-none">
         {products.slice(0, 3).map((product) => (
           <DiscoveryProductCard
             key={product.id}
