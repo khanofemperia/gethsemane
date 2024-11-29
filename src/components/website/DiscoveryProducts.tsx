@@ -36,7 +36,7 @@ export async function DiscoveryProducts({
   });
 
   return (
-    <div className="px-2">
+    <div>
       <h2 className="mb-4 font-semibold line-clamp-3 md:text-xl">
         {heading}
       </h2>

@@ -51,7 +51,7 @@ export default async function Home() {
           categoriesData.categories.length > 0 && (
             <Categories categories={categoriesData.categories} />
           )} */}
-        <div className="mt-12 max-w-[968px] mx-auto flex flex-col gap-10">
+        <div className="mt-12 px-5 max-w-[968px] mx-auto flex flex-col gap-10">
           {combinedCollections.map((collection, index) => (
             <div key={index}>
               {renderCollection(collection, cart, deviceIdentifier)}
