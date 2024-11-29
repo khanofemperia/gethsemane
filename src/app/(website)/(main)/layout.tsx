@@ -8,7 +8,7 @@ export default async function WebsiteLayout({
 }>) {
   return (
     <>
-      <NavbarWrapper />
+      {/* <NavbarWrapper /> */}
       <main className="mt-[108px] md:mt-[56px] min-h-[calc(100vh-116px)] md:min-h-[calc(100vh-64px)]">
         {children}
       </main>

@@ -4,8 +4,9 @@ import { QuickviewButton } from "@/components/website/QuickviewOverlay";
 import { formatThousands } from "@/lib/utils/common";
 import Image from "next/image";
 import Link from "next/link";
+import styles from "./styles.module.css";
 
-export function ProductCard({
+export function DiscoveryProductCard({
   product,
   cart,
   deviceIdentifier,
@@ -15,7 +16,7 @@ export function ProductCard({
   deviceIdentifier: string;
 }) {
   return (
-    <div className="min-w-[244px] w-[244px] md:min-w-[33.333333%] md:w-[33.333333%] p-[10px] cursor-pointer rounded-2xl ease-in-out duration-300 transition hover:shadow-[0px_0px_4px_rgba(0,0,0,0.35)]">
+    <div className={styles.productCard}>
       <Link
         href={`/${product.slug}-${product.id}`}
         className="w-full aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-white"
@@ -28,8 +29,8 @@ export function ProductCard({
           priority={true}
         />
       </Link>
-      <div className="pt-[10px] flex flex-col gap-[6px]">
-        <p className="text-sm line-clamp-1">{product.name}</p>
+      <div className="pt-2 flex flex-col gap-[6px]">
+        <p className="text-xs line-clamp-1">{product.name}</p>
         <div className="flex items-center justify-between w-full">
           <div className="w-max flex items-center justify-center">
             {Number(product.pricing.salePrice) ? (

@@ -1,5 +1,5 @@
 import { getProducts } from "@/actions/get/products";
-import { ProductCard } from "./ProductCard";
+import { DiscoveryProductCard } from "./DiscoveryProductCard";
 
 export async function DiscoveryProducts({
   heading = "Explore Your Interests",
@@ -36,13 +36,13 @@ export async function DiscoveryProducts({
   });
 
   return (
-    <div>
-      <h2 className="w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
+    <div className="px-2">
+      <h2 className="mb-4 font-semibold line-clamp-3 md:text-xl">
         {heading}
       </h2>
-      <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
+      <div className="select-none w-full flex flex-wrap gap-2">
         {filteredProducts.map((product) => (
-          <ProductCard
+          <DiscoveryProductCard
             key={product.id}
             product={product}
             cart={cart}

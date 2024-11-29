@@ -1,8 +1,7 @@
 "use client";
 
-import useEmblaCarousel from "embla-carousel-react";
 import Link from "next/link";
-import { ProductCard } from "./ProductCard";
+import { DiscoveryProductCard } from "./DiscoveryProductCard";
 
 export function FeaturedProducts({
   collection,
@@ -13,21 +12,15 @@ export function FeaturedProducts({
   cart: CartType | null;
   deviceIdentifier: string;
 }) {
-  const [emblaRef] = useEmblaCarousel({
-    align: "start",
-  });
-
   const { id, slug, title } = collection;
   const products = collection.products as (ProductWithUpsellType & {
     index: number;
   })[];
 
   return (
-    <>
-      <div className="w-[calc(100%-20px)] mx-auto mb-4 flex items-center gap-4">
-        <h2 className="font-semibold line-clamp-3 md:text-xl">
-          {title}
-        </h2>
+    <div className="px-2">
+      <div className="mb-4 flex items-center gap-4">
+        <h2 className="font-semibold line-clamp-3 md:text-xl">{title}</h2>
         <Link
           href={`/collection/${slug}-${id}`}
           className="text-sm rounded-full px-3 h-8 text-nowrap flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
@@ -35,19 +28,17 @@ export function FeaturedProducts({
           See more
         </Link>
       </div>
-      <div className="embla relative select-none" ref={emblaRef}>
-        <div className="embla__container w-full flex gap-1 md:gap-0">
-          {products.slice(0, 3).map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              cart={cart}
-              deviceIdentifier={deviceIdentifier}
-            />
-          ))}
-        </div>
+      <div className="relative select-none overflow-hidden flex gap-2">
+        {products.slice(0, 3).map((product) => (
+          <DiscoveryProductCard
+            key={product.id}
+            product={product}
+            cart={cart}
+            deviceIdentifier={deviceIdentifier}
+          />
+        ))}
       </div>
-    </>
+    </div>
   );
 }
 
