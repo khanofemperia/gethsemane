@@ -110,7 +110,7 @@ export default function Navbar({
               priority
             />
           </Link>
-          <div className="flex gap-3 h-10">
+          {/* <div className="flex gap-3 h-10">
             <Link
               href="/new-arrivals"
               className="hover:bg-lightgray h-10 text-sm font-semibold px-2 rounded-full flex items-center transition duration-300 ease-in-out"
@@ -155,7 +155,7 @@ export default function Navbar({
             >
               Track Order
             </Link>
-          </div>
+          </div> */}
         </div>
         <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-[160px] h-10 flex items-center justify-end">
           <Link

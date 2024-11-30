@@ -8,8 +8,8 @@ export default async function WebsiteLayout({
 }>) {
   return (
     <>
-      {/* <NavbarWrapper /> */}
-      <main className="mt-[108px] md:mt-[56px] min-h-[calc(100vh-116px)] md:min-h-[calc(100vh-64px)]">
+      <NavbarWrapper />
+      <main className="pt-[57px] min-h-[calc(100vh-116px)] md:min-h-[calc(100vh-64px)]">
         {children}
       </main>
       <Footer />
