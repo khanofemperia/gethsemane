@@ -13,6 +13,8 @@ import { getCollections } from "@/actions/get/collections";
 import { getCategories } from "@/actions/get/categories";
 import { getPageHero } from "@/actions/get/pageHero";
 import { getProducts } from "@/actions/get/products";
+import { MobileNavbarButton, MobileNavbarOverlay } from "@/components/website/MobileNavbarOverlay";
+import { CartIcon } from "@/icons";
 
 export default async function Home() {
   const [collections, categoriesData, pageHero] = await Promise.all([
@@ -67,6 +69,7 @@ export default async function Home() {
       </div>
       <QuickviewOverlay />
       <UpsellReviewOverlay cart={cart} />
+      <MobileNavbarOverlay />
       <ShowAlert />
     </>
   );

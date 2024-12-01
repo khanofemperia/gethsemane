@@ -53,7 +53,6 @@ export function ProductDetailsWrapper({
         cart={cart}
         isHidden={!shouldShowBar}
       />
-      <MobileNavbarOverlay />
       <Footer />
     </div>
   );
