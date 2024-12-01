@@ -98,21 +98,21 @@ export default function Navbar({
       )}
     >
       <MobileNavbar itemsInCart={itemsInCart} />
-      {/* <DesktopNavbar
+      <DesktopNavbar
         itemsInCart={itemsInCart}
         categories={categories}
         toggleCategoriesDropdown={toggleCategoriesDropdown}
         isCategoriesDropdownVisible={isCategoriesDropdownVisible}
         categoriesRef={categoriesRef}
         handleCategoryClick={handleCategoryClick}
-      /> */}
+      />
     </nav>
   );
 }
 
 function MobileNavbar({ itemsInCart }: { itemsInCart: number }) {
   return (
-    <div className="md:hiddenss flex items-center justify-between w-full max-w-[1080px] mx-auto px-6 py-2">
+    <div className="md:hidden flex items-center justify-between w-full max-w-[1080px] mx-auto px-6 py-2">
       <Link
         href="/"
         className="h-12 min-w-[168px] w-[168px] flex items-center justify-center"

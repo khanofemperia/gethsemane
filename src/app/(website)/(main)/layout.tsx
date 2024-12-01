@@ -1,4 +1,5 @@
 import { Footer } from "@/components/website/Footer";
+import { MobileNavbarOverlay } from "@/components/website/MobileNavbarOverlay";
 import { NavbarWrapper } from "@/components/website/Navbar/Wrapper";
 
 export default async function WebsiteLayout({
@@ -13,6 +14,7 @@ export default async function WebsiteLayout({
         {children}
       </main>
       <Footer />
+      <MobileNavbarOverlay />
     </>
   );
 }
