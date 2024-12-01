@@ -159,7 +159,7 @@ function DesktopNavbar({
   handleCategoryClick: (categoryName: string) => void;
 }) {
   return (
-    <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex justify-between gap-1 flex-col md:flex-row">
+    <div className="hidden md:flex w-full max-w-[1080px] mx-auto px-6 py-2 flex-col md:flex-row justify-between gap-1 relative">
       <div className="flex items-center gap-5">
         <Link
           href="/"
