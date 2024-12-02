@@ -17,6 +17,7 @@ import { SizeChartOverlay } from "../Product/SizeChartOverlay";
 import clsx from "clsx";
 import { Options } from "../Product/Options";
 import { CartAndUpgradeButtons } from "../Product/CartAndUpgradeButtons";
+import "@/components/shared/TextEditor/theme/index.css";
 
 export function QuickviewButton({
   onClick,
@@ -129,8 +130,6 @@ function MobileProductDetails({
   const hasColor = selectedProduct.options.colors.length > 0;
   const hasSize = Object.keys(selectedProduct.options.sizes).length > 0;
 
-  console.log(selectedProduct.images);
-
   return (
     <div className="absolute bottom-0 left-0 right-0 top-16 bg-white rounded-t-xl flex flex-col">
       <div className="flex items-center justify-end px-2 py-1">
@@ -143,7 +142,7 @@ function MobileProductDetails({
         </button>
       </div>
       <div className="w-full h-full invisible-scrollbar overflow-x-hidden overflow-y-visible">
-        <div className="h-52 flex gap-2 px-2 invisible-scrollbar overflow-y-hidden overflow-x-visible">
+        <div className="h-52 flex gap-2 px-5 invisible-scrollbar overflow-y-hidden overflow-x-visible">
           {[selectedProduct.images.main, ...selectedProduct.images.gallery].map(
             (image, index) => (
               <div key={index} className="h-full aspect-square bg-lightgray">
@@ -158,6 +157,234 @@ function MobileProductDetails({
               </div>
             )
           )}
+        </div>
+        <div className="px-5 pt-5 pb-28 max-w-[486px] mx-auto">
+          <div className="flex flex-col gap-4">
+            <p className="-mb-1 line-clamp-2 leading-[1.125rem] text-[0.75rem] text-gray">
+              {selectedProduct.name}
+            </p>
+            {selectedProduct.highlights.headline && (
+              <div className="flex flex-col gap-4">
+                <div
+                  className="text-lg leading-[26px] [&>:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{
+                    __html: selectedProduct.highlights.headline || "",
+                  }}
+                />
+                <ul className="text-sm list-inside *:leading-5">
+                  {selectedProduct.highlights.keyPoints
+                    .slice()
+                    .sort((a, b) => a.index - b.index)
+                    .map((point) => (
+                      <li
+                        key={point.index}
+                        className="flex items-start gap-1 mb-2 last:mb-0"
+                      >
+                        <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
+                          <CheckmarkIcon
+                            className="fill-green -ml-1"
+                            size={20}
+                          />
+                        </div>
+                        <span>{point.text}</span>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
+            <div className="flex flex-col gap-5">
+              <div className="w-max flex items-center justify-center">
+                {Number(selectedProduct.pricing.salePrice) ? (
+                  <div className="flex items-center gap-[6px]">
+                    <div
+                      className={clsx(
+                        "flex items-baseline",
+                        !selectedProduct.upsell && "text-[rgb(168,100,0)]"
+                      )}
+                    >
+                      <span className="text-[0.813rem] leading-3 font-semibold">
+                        $
+                      </span>
+                      <span className="text-lg font-bold">
+                        {Math.floor(Number(selectedProduct.pricing.salePrice))}
+                      </span>
+                      <span className="text-[0.813rem] leading-3 font-semibold">
+                        {(Number(selectedProduct.pricing.salePrice) % 1)
+                          .toFixed(2)
+                          .substring(1)}
+                      </span>
+                    </div>
+                    <span className="text-[0.813rem] leading-3 text-gray line-through">
+                      $
+                      {formatThousands(
+                        Number(selectedProduct.pricing.basePrice)
+                      )}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-baseline">
+                    <span className="text-[0.813rem] leading-3 font-semibold">
+                      $
+                    </span>
+                    <span className="text-lg font-bold">
+                      {Math.floor(Number(selectedProduct.pricing.basePrice))}
+                    </span>
+                    <span className="text-[0.813rem] leading-3 font-semibold">
+                      {(Number(selectedProduct.pricing.basePrice) % 1)
+                        .toFixed(2)
+                        .substring(1)}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <Options
+                productInfo={{
+                  id: selectedProduct.id,
+                  name: selectedProduct.name,
+                  pricing: selectedProduct.pricing,
+                  images: selectedProduct.images,
+                  options: selectedProduct.options,
+                }}
+                isStickyBarInCartIndicator={false}
+                deviceIdentifier={deviceIdentifier}
+              />
+            </div>
+          </div>
+          <div>
+            {selectedProduct.upsell &&
+              selectedProduct.upsell.products &&
+              selectedProduct.upsell.products.length > 0 && (
+                <div
+                  className={`${styles.customBorder} mt-7 pt-5 pb-[26px] w-full max-w-[280px] rounded-md select-none bg-white`}
+                >
+                  <div className="w-full">
+                    <div>
+                      <h2 className="mb-1 font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                        UPGRADE MY ORDER
+                      </h2>
+                      <div className="w-max mx-auto flex items-center justify-center">
+                        {Number(selectedProduct.upsell.pricing.salePrice) ? (
+                          <div className="flex items-center gap-[6px]">
+                            <div className="flex items-baseline text-[rgb(168,100,0)]">
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(
+                                  Number(
+                                    selectedProduct.upsell.pricing.salePrice
+                                  )
+                                )}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(
+                                  Number(
+                                    selectedProduct.upsell.pricing.salePrice
+                                  ) % 1
+                                )
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
+                            <span className="text-[0.813rem] leading-3 text-gray line-through">
+                              $
+                              {formatThousands(
+                                Number(selectedProduct.upsell.pricing.basePrice)
+                              )}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex items-baseline text-[rgb(168,100,0)]">
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              $
+                            </span>
+                            <span className="text-lg font-bold">
+                              {Math.floor(
+                                Number(selectedProduct.upsell.pricing.basePrice)
+                              )}
+                            </span>
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              {(
+                                Number(
+                                  selectedProduct.upsell.pricing.basePrice
+                                ) % 1
+                              )
+                                .toFixed(2)
+                                .substring(1)}
+                            </span>
+                            <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                              today
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
+                      <Image
+                        src={selectedProduct.upsell.mainImage}
+                        alt="Upgrade order"
+                        width={240}
+                        height={240}
+                        priority
+                      />
+                    </div>
+                    <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
+                      <ul className="*:flex *:justify-between">
+                        {selectedProduct.upsell.products.map(
+                          (product, index) => (
+                            <li key={index}>
+                              <p className="text-gray">{product.name}</p>
+                              <p>
+                                <span
+                                  className={`${
+                                    selectedProduct.upsell.pricing.salePrice >
+                                      0 &&
+                                    selectedProduct.upsell.pricing.salePrice <
+                                      selectedProduct.upsell.pricing.basePrice
+                                      ? "line-through text-gray"
+                                      : "text-gray"
+                                  }`}
+                                >
+                                  ${formatThousands(Number(product.basePrice))}
+                                </span>
+                              </p>
+                            </li>
+                          )
+                        )}
+                        {selectedProduct.upsell.pricing.salePrice > 0 &&
+                          selectedProduct.upsell.pricing.salePrice <
+                            selectedProduct.upsell.pricing.basePrice && (
+                            <li className="mt-2 flex items-center rounded font-semibold">
+                              <p className="mx-auto">
+                                You Save $
+                                {formatThousands(
+                                  Number(
+                                    selectedProduct.upsell.pricing.basePrice
+                                  ) -
+                                    Number(
+                                      selectedProduct.upsell.pricing.salePrice
+                                    )
+                                )}
+                              </p>
+                            </li>
+                          )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+            <div className="mt-14">
+              <div
+                className={`
+                    [&>p>img]:max-w-[500px] [&>p>img]:rounded-xl [&>p>img]:my-7 
+                    [&>:last-child]:mb-0 [&>:first-child]:mt-0 [&>:first-child>img]:mt-0 [&>:last-child>img]:mb-0
+                  `}
+                dangerouslySetInnerHTML={{
+                  __html: selectedProduct.description || "",
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
