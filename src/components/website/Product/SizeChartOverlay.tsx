@@ -19,18 +19,6 @@ export function SizeChartOverlay({
   );
   const hideOverlay = useOverlayStore((state) => state.hideOverlay);
 
-  useEffect(() => {
-    if (isOverlayVisible) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "visible";
-    }
-
-    return () => {
-      document.body.style.overflow = "visible";
-    };
-  }, [isOverlayVisible]);
-
   return (
     <>
       {isOverlayVisible && productInfo.options.sizes && (

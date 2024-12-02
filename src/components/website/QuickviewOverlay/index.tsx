@@ -57,34 +57,18 @@ export function QuickviewButton({
 
 export function QuickviewOverlay() {
   const router = useRouter();
-
   const hideOverlay = useQuickviewStore((state) => state.hideOverlay);
   const isVisible = useQuickviewStore((state) => state.isVisible);
   const cart = useQuickviewStore((state) => state.cart);
   const selectedProduct = useQuickviewStore((state) => state.selectedProduct);
   const deviceIdentifier = useQuickviewStore((state) => state.deviceIdentifier);
 
-  const [hasSize, setHasSize] = useState(false);
-  const [hasColor, setHasColor] = useState(false);
-
-  useEffect(() => {
-    if (selectedProduct) {
-      setHasColor(selectedProduct.options.colors.length > 0);
-      setHasSize(Object.keys(selectedProduct.options.sizes).length > 0);
-    }
-  }, [selectedProduct]);
-
   useEffect(() => {
     hideOverlay();
   }, []);
 
   useEffect(() => {
-    if (isVisible) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "visible";
-    }
-
+    document.body.style.overflow = isVisible ? "hidden" : "visible";
     return () => {
       document.body.style.overflow = "visible";
     };
@@ -97,283 +81,19 @@ export function QuickviewOverlay() {
   return (
     <>
       {isVisible && selectedProduct && (
-        <div className="custom-scrollbar flex justify-center w-screen h-screen overflow-x-hidden overflow-y-visible z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
-          <div className="w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
-            <div className="pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
-              <div className="w-[556px] flex flex-col gap-16">
-                <Images
-                  images={selectedProduct.images}
-                  productName={selectedProduct.name}
-                />
-              </div>
-              <div className="w-[400px]">
-                <div>
-                  <div className="flex flex-col gap-5 pt-4">
-                    <p className="line-clamp-2 text-sm text-gray">
-                      {selectedProduct.name}
-                    </p>
-                    {selectedProduct.highlights.headline && (
-                      <div className="flex flex-col gap-4">
-                        <div
-                          className="text-lg leading-[26px] [&>:last-child]:mb-0"
-                          dangerouslySetInnerHTML={{
-                            __html: selectedProduct.highlights.headline || "",
-                          }}
-                        />
-                        <ul className="text-sm list-inside *:leading-[22px]">
-                          {selectedProduct.highlights.keyPoints
-                            .slice()
-                            .sort((a, b) => a.index - b.index)
-                            .map((point) => (
-                              <li
-                                key={point.index}
-                                className="flex items-start gap-2 mb-[7px] last:mb-0"
-                              >
-                                <CheckmarkIcon
-                                  className="fill-green mt-[1px] -ml-[1px]"
-                                  size={19}
-                                />
-                                <span>{point.text}</span>
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    )}
-                    <div className="flex flex-col gap-5">
-                      <div className="w-max flex items-center justify-center">
-                        {Number(selectedProduct.pricing.salePrice) ? (
-                          <div className="flex items-center gap-[6px]">
-                            <div
-                              className={clsx(
-                                "flex items-baseline",
-                                !selectedProduct.upsell &&
-                                  "text-[rgb(168,100,0)]"
-                              )}
-                            >
-                              <span className="text-[0.813rem] leading-3 font-semibold">
-                                $
-                              </span>
-                              <span className="text-lg font-bold">
-                                {Math.floor(
-                                  Number(selectedProduct.pricing.salePrice)
-                                )}
-                              </span>
-                              <span className="text-[0.813rem] leading-3 font-semibold">
-                                {(Number(selectedProduct.pricing.salePrice) % 1)
-                                  .toFixed(2)
-                                  .substring(1)}
-                              </span>
-                            </div>
-                            <span className="text-[0.813rem] leading-3 text-gray line-through">
-                              $
-                              {formatThousands(
-                                Number(selectedProduct.pricing.basePrice)
-                              )}
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="flex items-baseline">
-                            <span className="text-[0.813rem] leading-3 font-semibold">
-                              $
-                            </span>
-                            <span className="text-lg font-bold">
-                              {Math.floor(
-                                Number(selectedProduct.pricing.basePrice)
-                              )}
-                            </span>
-                            <span className="text-[0.813rem] leading-3 font-semibold">
-                              {(Number(selectedProduct.pricing.basePrice) % 1)
-                                .toFixed(2)
-                                .substring(1)}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      {(hasSize || hasColor) && (
-                        <Options
-                          productInfo={{
-                            id: selectedProduct.id,
-                            name: selectedProduct.name,
-                            pricing: selectedProduct.pricing,
-                            images: selectedProduct.images,
-                            options: selectedProduct.options,
-                          }}
-                          isStickyBarInCartIndicator={false}
-                          deviceIdentifier={deviceIdentifier}
-                        />
-                      )}
-                    </div>
-                  </div>
-                  {selectedProduct.upsell &&
-                    selectedProduct.upsell.products.length > 0 && (
-                      <div
-                        className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
-                      >
-                        <div className="w-full">
-                          <div>
-                            <h2 className="mb-1 font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
-                              UPGRADE MY ORDER
-                            </h2>
-                            <div className="w-max mx-auto flex items-center justify-center">
-                              {Number(
-                                selectedProduct.upsell.pricing.salePrice
-                              ) ? (
-                                <div className="flex items-center gap-[6px]">
-                                  <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                    <span className="text-[0.813rem] leading-3 font-semibold">
-                                      $
-                                    </span>
-                                    <span className="text-lg font-bold">
-                                      {Math.floor(
-                                        Number(
-                                          selectedProduct.upsell.pricing
-                                            .salePrice
-                                        )
-                                      )}
-                                    </span>
-                                    <span className="text-[0.813rem] leading-3 font-semibold">
-                                      {(
-                                        Number(
-                                          selectedProduct.upsell.pricing
-                                            .salePrice
-                                        ) % 1
-                                      )
-                                        .toFixed(2)
-                                        .substring(1)}
-                                    </span>
-                                  </div>
-                                  <span className="text-[0.813rem] leading-3 text-gray line-through">
-                                    $
-                                    {formatThousands(
-                                      Number(
-                                        selectedProduct.upsell.pricing.basePrice
-                                      )
-                                    )}
-                                  </span>
-                                </div>
-                              ) : (
-                                <div className="flex items-baseline text-[rgb(168,100,0)]">
-                                  <span className="text-[0.813rem] leading-3 font-semibold">
-                                    $
-                                  </span>
-                                  <span className="text-lg font-bold">
-                                    {Math.floor(
-                                      Number(
-                                        selectedProduct.upsell.pricing.basePrice
-                                      )
-                                    )}
-                                  </span>
-                                  <span className="text-[0.813rem] leading-3 font-semibold">
-                                    {(
-                                      Number(
-                                        selectedProduct.upsell.pricing.basePrice
-                                      ) % 1
-                                    )
-                                      .toFixed(2)
-                                      .substring(1)}
-                                  </span>
-                                  <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
-                                    today
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
-                            <Image
-                              src={selectedProduct.upsell.mainImage}
-                              alt="Upgrade order"
-                              width={240}
-                              height={240}
-                              priority
-                            />
-                          </div>
-                          <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
-                            <ul className="*:flex *:justify-between">
-                              {selectedProduct.upsell.products.map(
-                                (product) => (
-                                  <li key={product.id}>
-                                    <p className="text-gray">{product.name}</p>
-                                    <p>
-                                      <span
-                                        className={`${
-                                          selectedProduct.upsell.pricing
-                                            .salePrice > 0 &&
-                                          selectedProduct.upsell.pricing
-                                            .salePrice <
-                                            selectedProduct.upsell.pricing
-                                              .basePrice
-                                            ? "line-through text-gray"
-                                            : "text-gray"
-                                        }`}
-                                      >
-                                        $
-                                        {formatThousands(
-                                          Number(product.basePrice)
-                                        )}
-                                      </span>
-                                    </p>
-                                  </li>
-                                )
-                              )}
-                              {selectedProduct.upsell.pricing.salePrice > 0 &&
-                                selectedProduct.upsell.pricing.salePrice <
-                                  selectedProduct.upsell.pricing.basePrice && (
-                                  <li className="mt-2 flex items-center rounded font-semibold">
-                                    <p className="mx-auto">
-                                      You Save $
-                                      {formatThousands(
-                                        Number(
-                                          selectedProduct.upsell.pricing
-                                            .basePrice
-                                        ) -
-                                          Number(
-                                            selectedProduct.upsell.pricing
-                                              .salePrice
-                                          )
-                                      )}
-                                    </p>
-                                  </li>
-                                )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                </div>
-                <div className="sticky left-0 right-0 bottom-0 z-10 mt-6 pt-1 pb-0 shadow-[0_-12px_16px_2px_white] bg-white">
-                  <div className="flex gap-2 min-[896px]:gap-3">
-                    <CartAndUpgradeButtons
-                      product={selectedProduct}
-                      cart={cart}
-                      hasColor={hasColor}
-                      hasSize={hasSize}
-                    />
-                  </div>
-                  <div className="mt-5">
-                    <button
-                      className="flex items-center text-sm hover:underline"
-                      onClick={() =>
-                        router.push(
-                          `/${selectedProduct.slug}-${selectedProduct.id}`
-                        )
-                      }
-                    >
-                      <span>All details</span>
-                      <ChevronRightIcon size={20} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={hideOverlay}
-              className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
-              type="button"
-            >
-              <CloseIconThin size={24} className="stroke-gray" />
-            </button>
-          </div>
+        <div className="flex justify-center w-screen h-screen z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
+          <MobileProductDetails
+            selectedProduct={selectedProduct}
+            deviceIdentifier={deviceIdentifier}
+            cart={cart}
+            hideOverlay={hideOverlay}
+          />
+          {/* <DesktopProductDetails
+            selectedProduct={selectedProduct}
+            deviceIdentifier={deviceIdentifier}
+            cart={cart}
+            hideOverlay={hideOverlay}
+          /> */}
         </div>
       )}
       <SizeChartOverlay
@@ -386,5 +106,551 @@ export function QuickviewOverlay() {
         }}
       />
     </>
+  );
+}
+
+function MobileProductDetails({
+  selectedProduct,
+  deviceIdentifier,
+  cart,
+  hideOverlay,
+}: {
+  selectedProduct: ProductWithUpsellType;
+  deviceIdentifier: string;
+  cart: CartType | null;
+  hideOverlay: () => void;
+}) {
+  const router = useRouter();
+  const hasColor = selectedProduct.options.colors.length > 0;
+  const hasSize = Object.keys(selectedProduct.options.sizes).length > 0;
+
+  return (
+    <div className="w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
+      <div className="pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
+        <div className="w-[556px] flex flex-col gap-16">
+          <Images
+            images={selectedProduct.images}
+            productName={selectedProduct.name}
+          />
+        </div>
+        <div className="w-[400px]">
+          <div>
+            <div className="flex flex-col gap-5 pt-4">
+              <p className="line-clamp-2 text-sm text-gray">
+                {selectedProduct.name}
+              </p>
+              {selectedProduct.highlights.headline && (
+                <div className="flex flex-col gap-4">
+                  <div
+                    className="text-lg leading-[26px] [&>:last-child]:mb-0"
+                    dangerouslySetInnerHTML={{
+                      __html: selectedProduct.highlights.headline || "",
+                    }}
+                  />
+                  <ul className="text-sm list-inside *:leading-[22px]">
+                    {selectedProduct.highlights.keyPoints
+                      .slice()
+                      .sort((a, b) => a.index - b.index)
+                      .map((point) => (
+                        <li
+                          key={point.index}
+                          className="flex items-start gap-2 mb-[7px] last:mb-0"
+                        >
+                          <CheckmarkIcon
+                            className="fill-green mt-[1px] -ml-[1px]"
+                            size={19}
+                          />
+                          <span>{point.text}</span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
+              <div className="flex flex-col gap-5">
+                <div className="w-max flex items-center justify-center">
+                  {Number(selectedProduct.pricing.salePrice) ? (
+                    <div className="flex items-center gap-[6px]">
+                      <div
+                        className={clsx(
+                          "flex items-baseline",
+                          !selectedProduct.upsell && "text-[rgb(168,100,0)]"
+                        )}
+                      >
+                        <span className="text-[0.813rem] leading-3 font-semibold">
+                          $
+                        </span>
+                        <span className="text-lg font-bold">
+                          {Math.floor(
+                            Number(selectedProduct.pricing.salePrice)
+                          )}
+                        </span>
+                        <span className="text-[0.813rem] leading-3 font-semibold">
+                          {(Number(selectedProduct.pricing.salePrice) % 1)
+                            .toFixed(2)
+                            .substring(1)}
+                        </span>
+                      </div>
+                      <span className="text-[0.813rem] leading-3 text-gray line-through">
+                        $
+                        {formatThousands(
+                          Number(selectedProduct.pricing.basePrice)
+                        )}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-baseline">
+                      <span className="text-[0.813rem] leading-3 font-semibold">
+                        $
+                      </span>
+                      <span className="text-lg font-bold">
+                        {Math.floor(Number(selectedProduct.pricing.basePrice))}
+                      </span>
+                      <span className="text-[0.813rem] leading-3 font-semibold">
+                        {(Number(selectedProduct.pricing.basePrice) % 1)
+                          .toFixed(2)
+                          .substring(1)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {(hasSize || hasColor) && (
+                  <Options
+                    productInfo={{
+                      id: selectedProduct.id,
+                      name: selectedProduct.name,
+                      pricing: selectedProduct.pricing,
+                      images: selectedProduct.images,
+                      options: selectedProduct.options,
+                    }}
+                    isStickyBarInCartIndicator={false}
+                    deviceIdentifier={deviceIdentifier}
+                  />
+                )}
+              </div>
+            </div>
+            {selectedProduct.upsell &&
+              selectedProduct.upsell.products.length > 0 && (
+                <div
+                  className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
+                >
+                  <div className="w-full">
+                    <div>
+                      <h2 className="mb-1 font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                        UPGRADE MY ORDER
+                      </h2>
+                      <div className="w-max mx-auto flex items-center justify-center">
+                        {Number(selectedProduct.upsell.pricing.salePrice) ? (
+                          <div className="flex items-center gap-[6px]">
+                            <div className="flex items-baseline text-[rgb(168,100,0)]">
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(
+                                  Number(
+                                    selectedProduct.upsell.pricing.salePrice
+                                  )
+                                )}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(
+                                  Number(
+                                    selectedProduct.upsell.pricing.salePrice
+                                  ) % 1
+                                )
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
+                            <span className="text-[0.813rem] leading-3 text-gray line-through">
+                              $
+                              {formatThousands(
+                                Number(selectedProduct.upsell.pricing.basePrice)
+                              )}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex items-baseline text-[rgb(168,100,0)]">
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              $
+                            </span>
+                            <span className="text-lg font-bold">
+                              {Math.floor(
+                                Number(selectedProduct.upsell.pricing.basePrice)
+                              )}
+                            </span>
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              {(
+                                Number(
+                                  selectedProduct.upsell.pricing.basePrice
+                                ) % 1
+                              )
+                                .toFixed(2)
+                                .substring(1)}
+                            </span>
+                            <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                              today
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
+                      <Image
+                        src={selectedProduct.upsell.mainImage}
+                        alt="Upgrade order"
+                        width={240}
+                        height={240}
+                        priority
+                      />
+                    </div>
+                    <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
+                      <ul className="*:flex *:justify-between">
+                        {selectedProduct.upsell.products.map((product) => (
+                          <li key={product.id}>
+                            <p className="text-gray">{product.name}</p>
+                            <p>
+                              <span
+                                className={`${
+                                  selectedProduct.upsell.pricing.salePrice >
+                                    0 &&
+                                  selectedProduct.upsell.pricing.salePrice <
+                                    selectedProduct.upsell.pricing.basePrice
+                                    ? "line-through text-gray"
+                                    : "text-gray"
+                                }`}
+                              >
+                                ${formatThousands(Number(product.basePrice))}
+                              </span>
+                            </p>
+                          </li>
+                        ))}
+                        {selectedProduct.upsell.pricing.salePrice > 0 &&
+                          selectedProduct.upsell.pricing.salePrice <
+                            selectedProduct.upsell.pricing.basePrice && (
+                            <li className="mt-2 flex items-center rounded font-semibold">
+                              <p className="mx-auto">
+                                You Save $
+                                {formatThousands(
+                                  Number(
+                                    selectedProduct.upsell.pricing.basePrice
+                                  ) -
+                                    Number(
+                                      selectedProduct.upsell.pricing.salePrice
+                                    )
+                                )}
+                              </p>
+                            </li>
+                          )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+          </div>
+          <div className="sticky left-0 right-0 bottom-0 z-10 mt-6 pt-1 pb-0 shadow-[0_-12px_16px_2px_white] bg-white">
+            <div className="flex gap-2 min-[896px]:gap-3">
+              <CartAndUpgradeButtons
+                product={selectedProduct}
+                cart={cart}
+                hasColor={hasColor}
+                hasSize={hasSize}
+              />
+            </div>
+            <div className="mt-5">
+              <button
+                className="flex items-center text-sm hover:underline"
+                onClick={() =>
+                  router.push(`/${selectedProduct.slug}-${selectedProduct.id}`)
+                }
+              >
+                <span>All details</span>
+                <ChevronRightIcon size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        onClick={hideOverlay}
+        className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
+        type="button"
+      >
+        <CloseIconThin size={24} className="stroke-gray" />
+      </button>
+    </div>
+  );
+}
+
+function DesktopProductDetails({
+  selectedProduct,
+  deviceIdentifier,
+  cart,
+  hideOverlay,
+}: {
+  selectedProduct: ProductWithUpsellType;
+  deviceIdentifier: string;
+  cart: CartType | null;
+  hideOverlay: () => void;
+}) {
+  const router = useRouter();
+  const hasColor = selectedProduct.options.colors.length > 0;
+  const hasSize = Object.keys(selectedProduct.options.sizes).length > 0;
+
+  return (
+    <div className="w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
+      <div className="pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
+        <div className="w-[556px] flex flex-col gap-16">
+          <Images
+            images={selectedProduct.images}
+            productName={selectedProduct.name}
+          />
+        </div>
+        <div className="w-[400px]">
+          <div>
+            <div className="flex flex-col gap-5 pt-4">
+              <p className="line-clamp-2 text-sm text-gray">
+                {selectedProduct.name}
+              </p>
+              {selectedProduct.highlights.headline && (
+                <div className="flex flex-col gap-4">
+                  <div
+                    className="text-lg leading-[26px] [&>:last-child]:mb-0"
+                    dangerouslySetInnerHTML={{
+                      __html: selectedProduct.highlights.headline || "",
+                    }}
+                  />
+                  <ul className="text-sm list-inside *:leading-[22px]">
+                    {selectedProduct.highlights.keyPoints
+                      .slice()
+                      .sort((a, b) => a.index - b.index)
+                      .map((point) => (
+                        <li
+                          key={point.index}
+                          className="flex items-start gap-2 mb-[7px] last:mb-0"
+                        >
+                          <CheckmarkIcon
+                            className="fill-green mt-[1px] -ml-[1px]"
+                            size={19}
+                          />
+                          <span>{point.text}</span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
+              <div className="flex flex-col gap-5">
+                <div className="w-max flex items-center justify-center">
+                  {Number(selectedProduct.pricing.salePrice) ? (
+                    <div className="flex items-center gap-[6px]">
+                      <div
+                        className={clsx(
+                          "flex items-baseline",
+                          !selectedProduct.upsell && "text-[rgb(168,100,0)]"
+                        )}
+                      >
+                        <span className="text-[0.813rem] leading-3 font-semibold">
+                          $
+                        </span>
+                        <span className="text-lg font-bold">
+                          {Math.floor(
+                            Number(selectedProduct.pricing.salePrice)
+                          )}
+                        </span>
+                        <span className="text-[0.813rem] leading-3 font-semibold">
+                          {(Number(selectedProduct.pricing.salePrice) % 1)
+                            .toFixed(2)
+                            .substring(1)}
+                        </span>
+                      </div>
+                      <span className="text-[0.813rem] leading-3 text-gray line-through">
+                        $
+                        {formatThousands(
+                          Number(selectedProduct.pricing.basePrice)
+                        )}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-baseline">
+                      <span className="text-[0.813rem] leading-3 font-semibold">
+                        $
+                      </span>
+                      <span className="text-lg font-bold">
+                        {Math.floor(Number(selectedProduct.pricing.basePrice))}
+                      </span>
+                      <span className="text-[0.813rem] leading-3 font-semibold">
+                        {(Number(selectedProduct.pricing.basePrice) % 1)
+                          .toFixed(2)
+                          .substring(1)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {(hasSize || hasColor) && (
+                  <Options
+                    productInfo={{
+                      id: selectedProduct.id,
+                      name: selectedProduct.name,
+                      pricing: selectedProduct.pricing,
+                      images: selectedProduct.images,
+                      options: selectedProduct.options,
+                    }}
+                    isStickyBarInCartIndicator={false}
+                    deviceIdentifier={deviceIdentifier}
+                  />
+                )}
+              </div>
+            </div>
+            {selectedProduct.upsell &&
+              selectedProduct.upsell.products.length > 0 && (
+                <div
+                  className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
+                >
+                  <div className="w-full">
+                    <div>
+                      <h2 className="mb-1 font-black text-center text-[21px] text-red leading-6 [letter-spacing:-1px] [word-spacing:2px] [text-shadow:_1px_1px_1px_rgba(0,0,0,0.15)] w-[248px] mx-auto">
+                        UPGRADE MY ORDER
+                      </h2>
+                      <div className="w-max mx-auto flex items-center justify-center">
+                        {Number(selectedProduct.upsell.pricing.salePrice) ? (
+                          <div className="flex items-center gap-[6px]">
+                            <div className="flex items-baseline text-[rgb(168,100,0)]">
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(
+                                  Number(
+                                    selectedProduct.upsell.pricing.salePrice
+                                  )
+                                )}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(
+                                  Number(
+                                    selectedProduct.upsell.pricing.salePrice
+                                  ) % 1
+                                )
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
+                            <span className="text-[0.813rem] leading-3 text-gray line-through">
+                              $
+                              {formatThousands(
+                                Number(selectedProduct.upsell.pricing.basePrice)
+                              )}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex items-baseline text-[rgb(168,100,0)]">
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              $
+                            </span>
+                            <span className="text-lg font-bold">
+                              {Math.floor(
+                                Number(selectedProduct.upsell.pricing.basePrice)
+                              )}
+                            </span>
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              {(
+                                Number(
+                                  selectedProduct.upsell.pricing.basePrice
+                                ) % 1
+                              )
+                                .toFixed(2)
+                                .substring(1)}
+                            </span>
+                            <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                              today
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-3 h-[210px] aspect-square mx-auto overflow-hidden">
+                      <Image
+                        src={selectedProduct.upsell.mainImage}
+                        alt="Upgrade order"
+                        width={240}
+                        height={240}
+                        priority
+                      />
+                    </div>
+                    <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
+                      <ul className="*:flex *:justify-between">
+                        {selectedProduct.upsell.products.map((product) => (
+                          <li key={product.id}>
+                            <p className="text-gray">{product.name}</p>
+                            <p>
+                              <span
+                                className={`${
+                                  selectedProduct.upsell.pricing.salePrice >
+                                    0 &&
+                                  selectedProduct.upsell.pricing.salePrice <
+                                    selectedProduct.upsell.pricing.basePrice
+                                    ? "line-through text-gray"
+                                    : "text-gray"
+                                }`}
+                              >
+                                ${formatThousands(Number(product.basePrice))}
+                              </span>
+                            </p>
+                          </li>
+                        ))}
+                        {selectedProduct.upsell.pricing.salePrice > 0 &&
+                          selectedProduct.upsell.pricing.salePrice <
+                            selectedProduct.upsell.pricing.basePrice && (
+                            <li className="mt-2 flex items-center rounded font-semibold">
+                              <p className="mx-auto">
+                                You Save $
+                                {formatThousands(
+                                  Number(
+                                    selectedProduct.upsell.pricing.basePrice
+                                  ) -
+                                    Number(
+                                      selectedProduct.upsell.pricing.salePrice
+                                    )
+                                )}
+                              </p>
+                            </li>
+                          )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+          </div>
+          <div className="sticky left-0 right-0 bottom-0 z-10 mt-6 pt-1 pb-0 shadow-[0_-12px_16px_2px_white] bg-white">
+            <div className="flex gap-2 min-[896px]:gap-3">
+              <CartAndUpgradeButtons
+                product={selectedProduct}
+                cart={cart}
+                hasColor={hasColor}
+                hasSize={hasSize}
+              />
+            </div>
+            <div className="mt-5">
+              <button
+                className="flex items-center text-sm hover:underline"
+                onClick={() =>
+                  router.push(`/${selectedProduct.slug}-${selectedProduct.id}`)
+                }
+              >
+                <span>All details</span>
+                <ChevronRightIcon size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        onClick={hideOverlay}
+        className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
+        type="button"
+      >
+        <CloseIconThin size={24} className="stroke-gray" />
+      </button>
+    </div>
   );
 }
