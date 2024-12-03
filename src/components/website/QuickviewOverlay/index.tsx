@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import {
@@ -62,7 +62,6 @@ export function QuickviewButton({
 }
 
 export function QuickviewOverlay() {
-  const router = useRouter();
   const hideOverlay = useQuickviewStore((state) => state.hideOverlay);
   const isVisible = useQuickviewStore((state) => state.isVisible);
   const cart = useQuickviewStore((state) => state.cart);
@@ -94,12 +93,12 @@ export function QuickviewOverlay() {
             cart={cart}
             hideOverlay={hideOverlay}
           />
-          {/* <DesktopProductDetails
+          <DesktopProductDetails
             selectedProduct={selectedProduct}
             deviceIdentifier={deviceIdentifier}
             cart={cart}
             hideOverlay={hideOverlay}
-          /> */}
+          />
         </div>
       )}
       <SizeChartOverlay
@@ -126,12 +125,11 @@ function MobileProductDetails({
   cart: CartType | null;
   hideOverlay: () => void;
 }) {
-  const router = useRouter();
   const hasColor = selectedProduct.options.colors.length > 0;
   const hasSize = Object.keys(selectedProduct.options.sizes).length > 0;
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 top-16 bg-white rounded-t-xl flex flex-col">
+    <div className="md:hidden absolute bottom-0 left-0 right-0 top-16 bg-white rounded-t-xl flex flex-col">
       <div className="flex items-center justify-end px-2 py-1">
         <button
           onClick={hideOverlay}
@@ -142,17 +140,17 @@ function MobileProductDetails({
         </button>
       </div>
       <div className="w-full h-full invisible-scrollbar overflow-x-hidden overflow-y-visible">
-        <div className="h-52 flex gap-2 px-5 invisible-scrollbar overflow-y-hidden overflow-x-visible">
+        <div className="h-56 min-[486px]:h-72 flex gap-2 px-5 invisible-scrollbar overflow-y-hidden overflow-x-visible">
           {[selectedProduct.images.main, ...selectedProduct.images.gallery].map(
             (image, index) => (
               <div key={index} className="h-full aspect-square bg-lightgray">
                 <Image
                   src={image}
                   alt={selectedProduct.name}
-                  width={208}
-                  height={208}
-                  priority={index === 0}
-                  className="object-cover"
+                  sizes="(max-width: 486px) 244px, 288px"
+                  width={288}
+                  height={288}
+                  priority={true}
                 />
               </div>
             )
@@ -417,7 +415,7 @@ function DesktopProductDetails({
   const hasSize = Object.keys(selectedProduct.options.sizes).length > 0;
 
   return (
-    <div className="w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
+    <div className="hidden md:block w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
       <div className="pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
         <div className="w-[556px] flex flex-col gap-16">
           <Images
