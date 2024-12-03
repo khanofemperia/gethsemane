@@ -415,9 +415,9 @@ function DesktopProductDetails({
   const hasSize = Object.keys(selectedProduct.options.sizes).length > 0;
 
   return (
-    <div className="hidden md:block w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
-      <div className="pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
-        <div className="w-[556px] flex flex-col gap-16">
+    <div className="hidden md:block w-[calc(100%-40px)] max-w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
+      <div className="relative pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
+        <div className="sticky top-0 w-[556px] flex flex-col gap-16">
           <Images
             images={selectedProduct.images}
             productName={selectedProduct.name}
@@ -426,7 +426,7 @@ function DesktopProductDetails({
         <div className="w-[400px]">
           <div>
             <div className="flex flex-col gap-5 pt-4">
-              <p className="line-clamp-2 text-sm text-gray">
+              <p className="-mb-1 line-clamp-2 leading-[1.125rem] text-[0.75rem] text-gray">
                 {selectedProduct.name}
               </p>
               {selectedProduct.highlights.headline && (
@@ -437,19 +437,21 @@ function DesktopProductDetails({
                       __html: selectedProduct.highlights.headline || "",
                     }}
                   />
-                  <ul className="text-sm list-inside *:leading-[22px]">
+                  <ul className="text-sm list-inside *:leading-5">
                     {selectedProduct.highlights.keyPoints
                       .slice()
                       .sort((a, b) => a.index - b.index)
                       .map((point) => (
                         <li
                           key={point.index}
-                          className="flex items-start gap-2 mb-[7px] last:mb-0"
+                          className="flex items-start gap-1 mb-2 last:mb-0"
                         >
-                          <CheckmarkIcon
-                            className="fill-green mt-[1px] -ml-[1px]"
-                            size={19}
-                          />
+                          <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
+                            <CheckmarkIcon
+                              className="fill-green -ml-1"
+                              size={20}
+                            />
+                          </div>
                           <span>{point.text}</span>
                         </li>
                       ))}
@@ -503,22 +505,21 @@ function DesktopProductDetails({
                     </div>
                   )}
                 </div>
-                {(hasSize || hasColor) && (
-                  <Options
-                    productInfo={{
-                      id: selectedProduct.id,
-                      name: selectedProduct.name,
-                      pricing: selectedProduct.pricing,
-                      images: selectedProduct.images,
-                      options: selectedProduct.options,
-                    }}
-                    isStickyBarInCartIndicator={false}
-                    deviceIdentifier={deviceIdentifier}
-                  />
-                )}
+                <Options
+                  productInfo={{
+                    id: selectedProduct.id,
+                    name: selectedProduct.name,
+                    pricing: selectedProduct.pricing,
+                    images: selectedProduct.images,
+                    options: selectedProduct.options,
+                  }}
+                  isStickyBarInCartIndicator={false}
+                  deviceIdentifier={deviceIdentifier}
+                />
               </div>
             </div>
             {selectedProduct.upsell &&
+              selectedProduct.upsell.products &&
               selectedProduct.upsell.products.length > 0 && (
                 <div
                   className={`${styles.customBorder} mt-7 pt-5 pb-[26px] px-6 w-max rounded-md select-none bg-white`}
@@ -596,25 +597,27 @@ function DesktopProductDetails({
                     </div>
                     <div className="w-[184px] mx-auto mt-5 text-xs leading-6 [word-spacing:1px]">
                       <ul className="*:flex *:justify-between">
-                        {selectedProduct.upsell.products.map((product) => (
-                          <li key={product.id}>
-                            <p className="text-gray">{product.name}</p>
-                            <p>
-                              <span
-                                className={`${
-                                  selectedProduct.upsell.pricing.salePrice >
-                                    0 &&
-                                  selectedProduct.upsell.pricing.salePrice <
-                                    selectedProduct.upsell.pricing.basePrice
-                                    ? "line-through text-gray"
-                                    : "text-gray"
-                                }`}
-                              >
-                                ${formatThousands(Number(product.basePrice))}
-                              </span>
-                            </p>
-                          </li>
-                        ))}
+                        {selectedProduct.upsell.products.map(
+                          (product, index) => (
+                            <li key={index}>
+                              <p className="text-gray">{product.name}</p>
+                              <p>
+                                <span
+                                  className={`${
+                                    selectedProduct.upsell.pricing.salePrice >
+                                      0 &&
+                                    selectedProduct.upsell.pricing.salePrice <
+                                      selectedProduct.upsell.pricing.basePrice
+                                      ? "line-through text-gray"
+                                      : "text-gray"
+                                  }`}
+                                >
+                                  ${formatThousands(Number(product.basePrice))}
+                                </span>
+                              </p>
+                            </li>
+                          )
+                        )}
                         {selectedProduct.upsell.pricing.salePrice > 0 &&
                           selectedProduct.upsell.pricing.salePrice <
                             selectedProduct.upsell.pricing.basePrice && (
