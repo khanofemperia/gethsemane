@@ -416,14 +416,14 @@ function DesktopProductDetails({
 
   return (
     <div className="hidden md:block w-[calc(100%-40px)] max-w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
-      <div className="relative pl-8 pr-10 flex flex-row gap-8 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
+      <div className="relative pl-8 pr-7 flex flex-row gap-5 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
         <div className="sticky top-0 w-[556px] flex flex-col gap-16">
           <Images
             images={selectedProduct.images}
             productName={selectedProduct.name}
           />
         </div>
-        <div className="w-[400px]">
+        <div className="min-w-[320px] max-w-[340px]">
           <div>
             <div className="flex flex-col gap-5 pt-4">
               <p className="-mb-1 line-clamp-2 leading-[1.125rem] text-[0.75rem] text-gray">
@@ -666,7 +666,7 @@ function DesktopProductDetails({
       </div>
       <button
         onClick={hideOverlay}
-        className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
+        className="h-9 w-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
         type="button"
       >
         <CloseIconThin size={24} className="stroke-gray" />
