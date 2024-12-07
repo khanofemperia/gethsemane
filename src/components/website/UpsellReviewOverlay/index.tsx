@@ -247,7 +247,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
             handleAddToCart={handleAddToCart}
             calculateSavings={calculateSavings}
           />
-          <UpsellReviewDesktop
+          {/* <UpsellReviewDesktop
             selectedProduct={selectedProduct}
             isProductReady={isProductReady}
             openCarousel={openCarousel}
@@ -261,7 +261,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
             handleInCartButtonClick={handleInCartButtonClick}
             handleAddToCart={handleAddToCart}
             calculateSavings={calculateSavings}
-          />
+          /> */}
         </div>
       )}
       {showCarousel && selectedProductForCarousel && (
@@ -312,7 +312,7 @@ function UpsellReviewMobile({
   }) => string;
 }) {
   return (
-    <div className="md:hidden w-[calc(100%-36px)] max-h-[764px] relative overflow-hidden rounded-2xl shadow-[0px_0px_36px_0px_rgba(255,185,56,0.6)] bg-white">
+    <div className="md:hiddensssss w-[calc(100%-36px)] max-w-[558px] max-h-[764px] relative overflow-hidden rounded-2xl shadow-[0px_0px_36px_0px_rgba(255,185,56,0.6)] bg-white">
       <div className="h-full pt-5 pb-[80px] flex flex-col relative">
         <div className="pb-3">
           <div className="w-max mx-auto flex items-center justify-center">
@@ -367,7 +367,7 @@ function UpsellReviewMobile({
                 key={index}
                 className="w-full flex gap-5 [&:not(:last-child)>div>div:last-child]:border-b [&:not(:last-child)>div>div:last-child]:pb-4"
               >
-                <div className="w-full flex gap-2">
+                <div className="w-full flex gap-3">
                   <div className="h-[150px] w-5 flex items-center">
                     <div
                       className={clsx(
@@ -384,17 +384,9 @@ function UpsellReviewMobile({
                   </div>
                   <div className="flex gap-5 w-[calc(100%-28px)] overflow-hidden">
                     <div className="w-full flex flex-col gap-2">
-                      <Link
-                        href={`${product.slug}-${product.id}`}
-                        target="_blank"
-                        className="text-sm line-clamp-1 w-max flex items-center gap-[2px]"
-                      >
-                        <span>{product.name}</span>
-                        <ChevronRightIcon
-                          size={16}
-                          className="stroke-gray -mt-[2px]"
-                        />
-                      </Link>
+                      <p className="text-sm font-medium line-clamp-1 w-max">
+                        {product.name}
+                      </p>
                       <ProductOptions
                         product={product}
                         selectedOptions={selectedOptions[product.id] || {}}
@@ -411,15 +403,18 @@ function UpsellReviewMobile({
         </div>
         <div className="absolute left-0 right-0 bottom-0">
           <div className="h-[80px] px-5 flex items-start shadow-[0_-12px_16px_2px_white]">
-            {/* <div className="w-full h-12 flex justify-between items-center">
-              <div className="flex gap-2">
+            <div className="w-full h-12 flex justify-between items-center">
+              <div className="flex gap-3">
                 <div className="flex items-center">
                   <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
                     <CheckmarkIcon className="fill-white" size={16} />
                   </div>
                 </div>
-                <span className="font-semibold text-sm">
+                <span className="min-[480px]:hidden font-semibold text-sm">
                   Selections ({readyProducts.length})
+                </span>
+                <span className="hidden min-[480px]:block font-semibold text-sm min-[520px]:text-base">
+                  Confirm selections ({readyProducts.length})
                 </span>
               </div>
               <div className="relative">
@@ -431,28 +426,52 @@ function UpsellReviewMobile({
                     In Cart - See Now
                   </button>
                 ) : (
-                  <button
-                    className={clsx(
-                      "text-sm flex items-center justify-center w-[140px] h-12 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] transition-opacity duration-200",
-                      readyProducts.length !==
-                        selectedProduct?.upsell.products.length ||
+                  <>
+                    <button
+                      className={clsx(
+                        "min-[375px]:hidden text-sm flex items-center justify-center w-max px-[10px] h-10 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] transition-opacity duration-200",
+                        readyProducts.length !==
+                          selectedProduct?.upsell.products.length ||
+                          isAddingToCart
+                          ? "opacity-50 cursor-context-menu"
+                          : "cursor-pointer hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
+                      )}
+                      disabled={
+                        readyProducts.length !==
+                          selectedProduct?.upsell.products.length ||
                         isAddingToCart
-                        ? "opacity-50 cursor-context-menu"
-                        : "cursor-pointer hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
-                    )}
-                    disabled={
-                      readyProducts.length !==
-                        selectedProduct?.upsell.products.length ||
-                      isAddingToCart
-                    }
-                    onClick={handleAddToCart}
-                  >
-                    {isAddingToCart ? (
-                      <Spinner size={24} color="white" />
-                    ) : (
-                      "Add Upgrade"
-                    )}
-                  </button>
+                      }
+                      onClick={handleAddToCart}
+                    >
+                      {isAddingToCart ? (
+                        <Spinner size={24} color="white" />
+                      ) : (
+                        "Get Upgrade"
+                      )}
+                    </button>
+                    <button
+                      className={clsx(
+                        "hidden text-sm min-[520px]:text-base min-[375px]:flex items-center justify-center w-max px-[10px] min-[425px]:px-4 min-[480px]:px-5 h-10 min-[480px]:h-12 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] transition-opacity duration-200",
+                        readyProducts.length !==
+                          selectedProduct?.upsell.products.length ||
+                          isAddingToCart
+                          ? "opacity-50 cursor-context-menu"
+                          : "cursor-pointer hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
+                      )}
+                      disabled={
+                        readyProducts.length !==
+                          selectedProduct?.upsell.products.length ||
+                        isAddingToCart
+                      }
+                      onClick={handleAddToCart}
+                    >
+                      {isAddingToCart ? (
+                        <Spinner size={24} color="white" />
+                      ) : (
+                        "Add Upgrade to Cart"
+                      )}
+                    </button>
+                  </>
                 )}
                 <div
                   className={clsx(
@@ -476,7 +495,7 @@ function UpsellReviewMobile({
                   </p>
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
@@ -740,7 +759,7 @@ function ProductColors({
             onClick={() => onColorSelect(name)}
             key={index}
             className={clsx(
-              "relative min-w-[108px] max-w-[108px] min-h-[108px] max-h-[108px] flex items-center justify-center rounded cursor-pointer overflow-hidden",
+              "relative min-w-[108px] max-w-[108px] min-h-[108px] max-h-[108px] flex items-center justify-center rounded-lg cursor-pointer overflow-hidden",
               { "ring-1 ring-blue ring-offset-2": selectedColor === name }
             )}
           >
