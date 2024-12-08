@@ -468,7 +468,7 @@ function ProductColors({
             key={index}
             className={clsx(
               "relative min-w-[108px] max-w-[108px] min-h-[108px] max-h-[108px] flex items-center justify-center rounded-lg cursor-pointer overflow-hidden",
-              { "ring-1 ring-blue ring-offset-2": selectedColor === name }
+              { "ring-1 ring-black/50 ring-offset-2": selectedColor === name }
             )}
           >
             <Image src={image} alt={name} width={108} height={108} priority />
@@ -502,7 +502,7 @@ function ProductSizeChart({
               onClick={() => onSizeSelect(size)}
               className={clsx(
                 "font-medium text-sm bg-lightgray rounded-full relative px-4 h-7 flex items-center justify-center",
-                { "ring-1 ring-blue ring-offset-2": selectedSize === size }
+                { "ring-1 ring-black/50 ring-offset-2": selectedSize === size }
               )}
             >
               {size}
