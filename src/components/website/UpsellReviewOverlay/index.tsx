@@ -287,10 +287,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
               <div className="pl-5 pt-4 pb-24 flex flex-col gap-5 items-center custom-scrollbar overflow-x-hidden overflow-y-visible">
                 <div className="w-full h-[600px] flex flex-col gap-5">
                   {selectedProduct.upsell.products.map((product, index) => (
-                    <div
-                      key={index}
-                      className="w-full flex gap-5"
-                    >
+                    <div key={index} className="w-full flex gap-5">
                       <div className="w-full flex gap-3">
                         <div className="h-[150px] w-5 flex items-center">
                           <div
@@ -308,9 +305,14 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                         </div>
                         <div className="flex gap-5 w-[calc(100%-28px)] overflow-hidden">
                           <div className="w-full flex flex-col gap-2">
-                            <p className="pl-[3px] text-sm font-medium line-clamp-1 w-max">
-                              {product.name}
-                            </p>
+                            <div>
+                              <div className="mb-[2px] pl-[3px] text-sm font-medium line-clamp-1 w-max">
+                                {product.name}
+                              </div>
+                              <div className="pl-[3px] text-[0.813rem] text-gray line-through line-clamp-1 w-max">
+                                ${product.basePrice}
+                              </div>
+                            </div>
                             <ProductOptions
                               product={product}
                               selectedOptions={
@@ -320,7 +322,10 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                                 updateSelectedOptions(product.id, option, value)
                               }
                             />
-                            <hr className="ml-[3px] mt-2" />
+                            {index <
+                              selectedProduct.upsell.products.length - 1 && (
+                              <hr className="ml-[3px] mt-2" />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -340,7 +345,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                       <span className="min-[480px]:hidden font-semibold text-sm">
                         Selections ({readyProducts.length})
                       </span>
-                      <span className="hidden min-[480px]:block font-semibold text-sm min-[520px]:text-base">
+                      <span className="hidden min-[480px]:block pl-[3px] font-semibold text-sm min-[520px]:text-base">
                         Confirm selections ({readyProducts.length})
                       </span>
                     </div>
@@ -489,15 +494,15 @@ function ProductSizeChart({
   const sizes = rows.map((row) => row[columns[0].label]);
 
   return (
-    <div className="w-full pl-[3px]">
+    <div className="w-full pl-[3px] pr-5">
       <div className="w-full max-w-[298px] flex flex-wrap gap-2">
         {sizes.map((size, index) => (
           <div key={index} className="relative cursor-pointer">
             <div
               onClick={() => onSizeSelect(size)}
               className={clsx(
-                "font-medium text-sm bg-lightgray rounded-full relative px-4 h-7 flex items-center justify-center hover:border-black",
-                { "border-blue hover:border-blue": selectedSize === size }
+                "font-medium text-sm bg-lightgray rounded-full relative px-4 h-7 flex items-center justify-center",
+                { "ring-1 ring-blue ring-offset-2": selectedSize === size }
               )}
             >
               {size}
