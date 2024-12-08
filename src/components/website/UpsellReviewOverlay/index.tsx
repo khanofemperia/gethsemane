@@ -289,7 +289,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                   {selectedProduct.upsell.products.map((product, index) => (
                     <div
                       key={index}
-                      className="w-full flex gap-5 [&:not(:last-child)>div>div:last-child]:border-b [&:not(:last-child)>div>div:last-child]:pb-4"
+                      className="w-full flex gap-5"
                     >
                       <div className="w-full flex gap-3">
                         <div className="h-[150px] w-5 flex items-center">
@@ -308,7 +308,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                         </div>
                         <div className="flex gap-5 w-[calc(100%-28px)] overflow-hidden">
                           <div className="w-full flex flex-col gap-2">
-                            <p className="text-sm font-medium line-clamp-1 w-max">
+                            <p className="pl-[3px] text-sm font-medium line-clamp-1 w-max">
                               {product.name}
                             </p>
                             <ProductOptions
@@ -320,6 +320,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                                 updateSelectedOptions(product.id, option, value)
                               }
                             />
+                            <hr className="ml-[3px] mt-2" />
                           </div>
                         </div>
                       </div>
@@ -455,14 +456,14 @@ function ProductColors({
 }: ProductColorsType) {
   return (
     <div>
-      <div className="pr-5 flex gap-2 invisible-scrollbar overflow-y-hidden overflow-x-visible">
+      <div className="p-[3px] pr-5 flex gap-2 invisible-scrollbar overflow-y-hidden overflow-x-visible">
         {colors.map(({ name, image }, index) => (
           <div
             onClick={() => onColorSelect(name)}
             key={index}
             className={clsx(
               "relative min-w-[108px] max-w-[108px] min-h-[108px] max-h-[108px] flex items-center justify-center rounded-lg cursor-pointer overflow-hidden",
-              { "ring-1 ring-blue ring-offset-0": selectedColor === name }
+              { "ring-1 ring-blue ring-offset-2": selectedColor === name }
             )}
           >
             <Image src={image} alt={name} width={108} height={108} priority />
@@ -488,7 +489,7 @@ function ProductSizeChart({
   const sizes = rows.map((row) => row[columns[0].label]);
 
   return (
-    <div className="w-full">
+    <div className="w-full pl-[3px]">
       <div className="w-full max-w-[298px] flex flex-wrap gap-2">
         {sizes.map((size, index) => (
           <div key={index} className="relative cursor-pointer">
