@@ -306,8 +306,17 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                         <div className="flex gap-5 w-[calc(100%-28px)] overflow-hidden">
                           <div className="w-full flex flex-col gap-2">
                             <div>
-                              <div className="mb-[2px] pl-[3px] text-sm font-medium line-clamp-1 w-max">
-                                {product.name}
+                              <div
+                                onClick={() => openCarousel(product)}
+                                className="mb-[2px] w-max flex items-center gap-[2px] cursor-pointer group"
+                              >
+                                <span className="pl-[3px] text-sm font-medium line-clamp-1 group-hover:underline">
+                                  {product.name}
+                                </span>
+                                <ChevronRightIcon
+                                  size={16}
+                                  className="stroke-gray -mt-[2px]"
+                                />
                               </div>
                               <div className="pl-[3px] text-[0.813rem] text-gray line-through line-clamp-1 w-max">
                                 ${product.basePrice}
@@ -338,17 +347,40 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                   <div className="w-full h-12 flex justify-between items-center">
                     <div className="flex gap-3">
                       <div className="flex items-center">
-                        <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
-                          <CheckmarkIcon className="fill-white" size={16} />
+                        <div
+                          className={clsx(
+                            "w-5 h-5 rounded-full flex items-center justify-center",
+                            readyProducts.length > 0
+                              ? "bg-black"
+                              : "border border-gray"
+                          )}
+                        >
+                          {readyProducts.length > 0 && (
+                            <CheckmarkIcon className="fill-white" size={16} />
+                          )}
                         </div>
                       </div>
-                      <span className="min-[480px]:hidden font-semibold text-sm">
-                        Selections ({readyProducts.length})
-                      </span>
-                      <span className="hidden min-[480px]:block pl-[3px] font-semibold text-sm min-[520px]:text-base">
-                        Confirm selections ({readyProducts.length})
-                      </span>
+                      {readyProducts.length > 0 ? (
+                        <>
+                          <span className="min-[480px]:hidden font-semibold text-sm">
+                            Selections ({readyProducts.length})
+                          </span>
+                          <span className="hidden min-[480px]:block pl-[3px] font-semibold text-sm min-[520px]:text-base">
+                            Confirm selections ({readyProducts.length})
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="min-[480px]:hidden font-semibold text-sm">
+                            Selections (0)
+                          </span>
+                          <span className="hidden min-[480px]:block font-semibold text-sm min-[520px]:text-base">
+                            Selections (0)
+                          </span>
+                        </>
+                      )}
                     </div>
+
                     <div className="relative">
                       {isInCart ? (
                         <button
