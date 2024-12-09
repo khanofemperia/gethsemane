@@ -289,10 +289,10 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                   {selectedProduct.upsell.products.map((product, index) => (
                     <div key={index} className="w-full flex gap-5">
                       <div className="w-full flex gap-3">
-                        <div className="h-[150px] w-5 flex items-center">
+                        <div className="h-[161px] w-5 flex items-end">
                           <div
                             className={clsx(
-                              "w-5 h-5 rounded-full -mb-4 flex items-center justify-center",
+                              "w-5 h-5 rounded-full mb-11 flex items-center justify-center",
                               isProductReady(product.id)
                                 ? "bg-black"
                                 : "border border-gray"
@@ -468,7 +468,7 @@ function ProductColors({
             key={index}
             className={clsx(
               "relative min-w-[108px] max-w-[108px] min-h-[108px] max-h-[108px] flex items-center justify-center rounded-lg cursor-pointer overflow-hidden",
-              { "ring-1 ring-black/50 ring-offset-2": selectedColor === name }
+              { "ring-1 ring-black/60 ring-offset-2": selectedColor === name }
             )}
           >
             <Image src={image} alt={name} width={108} height={108} priority />
@@ -502,7 +502,7 @@ function ProductSizeChart({
               onClick={() => onSizeSelect(size)}
               className={clsx(
                 "font-medium text-sm bg-lightgray rounded-full relative px-4 h-7 flex items-center justify-center",
-                { "ring-1 ring-black/50 ring-offset-2": selectedSize === size }
+                { "ring-1 ring-black/60 ring-offset-2": selectedSize === size }
               )}
             >
               {size}
