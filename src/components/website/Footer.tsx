@@ -6,7 +6,7 @@ export function Footer() {
       <div className="md:hidden px-5 mx-auto">
         <div className="flex flex-col gap-8">
           <div>
-            <h4 className="block text-sm text-gray mb-3">
+            <h4 className="block text-sm mb-3">
               Subscribe to our newsletter <br /> for exclusive deals and updates
             </h4>
             <div className="relative h-11 w-[270px]">
@@ -125,7 +125,7 @@ export function Footer() {
             </Link>
           </div>
           <div className="w-[270px]">
-            <h4 className="block text-sm text-gray mb-3">
+            <h4 className="block text-sm mb-3">
               Subscribe to our newsletter <br /> for exclusive deals and updates
             </h4>
             <div className="relative h-11 w-[270px]">
