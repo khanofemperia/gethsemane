@@ -136,7 +136,7 @@ function MobileProductDetails({
           className="h-7 w-7 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray"
           type="button"
         >
-          <CloseIcon size={18} className="stroke-gray" />
+          <CloseIconThin size={24} className="stroke-gray" />
         </button>
       </div>
       <div className="w-full h-full invisible-scrollbar overflow-x-hidden overflow-y-visible">

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import Image from "next/image";
-import { CloseIconThin } from "@/icons";
+import { CloseIcon, CloseIconThin } from "@/icons";
 
 export function ProductImageCarouselOverlay({
   product,
@@ -23,13 +23,13 @@ export function ProductImageCarouselOverlay({
   }, [product.images.main, product.images.gallery, product.options.colors]);
 
   return (
-    <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-auto z-30 fixed top-0 left-0 bg-black/15">
-      <div className="w-[calc(100%-36px)] max-w-[580px] max-h-[764px] relative overflow-hidden rounded-2xl shadow bg-white">
-        <div className="h-full pt-5 pb-8 flex flex-col relative">
-          <div className="pb-3 px-5">
-            <p className="font-semibold text-center">{product.name}</p>
+    <div className="flex justify-center w-screen h-screen min-[580px]:py-16 min-[580px]:px-5 z-40 fixed top-0 bottom-0 left-0 right-0 bg-black/15">
+      <div className="absolute bottom-0 top-16 min-[580px]:relative min-[580px]:top-auto min-[580px]:bottom-auto min-[580px]:h-full max-h-[764px] w-full max-w-[580px] mx-auto bg-white rounded-t-xl min-[580px]:rounded-xl flex flex-col">
+        <div className="h-full pt-4 min-[580px]:pb-5 flex flex-col relative">
+          <div className="pb-[10px] px-5">
+            <p className="font-semibold text-sm text-center">{product.name}</p>
           </div>
-          <div className="pl-5 pr-2 custom-scrollbar overflow-x-hidden overflow-y-auto">
+          <div className="px-5 min-[580px]:pr-2 pb-28 min-[580px]:pb-0 max-[580px]:invisible-scrollbar min-[580px]:custom-scrollbar overflow-x-hidden overflow-y-auto">
             <div className="flex gap-2 flex-col">
               {allImages.map((image) => (
                 <div
@@ -51,7 +51,7 @@ export function ProductImageCarouselOverlay({
         <button
           type="button"
           onClick={onClose}
-          className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center transition hover:bg-lightgray"
+          className="aspect-square w-7 min-[580px]:w-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center transition active:bg-lightgray min-[580px]:hover:bg-lightgray"
           aria-label="Close carousel"
         >
           <CloseIconThin size={24} className="stroke-gray" />
