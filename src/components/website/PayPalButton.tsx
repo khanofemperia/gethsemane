@@ -4,7 +4,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useEffect, useState, useCallback } from "react";
 
 const initialOptions = {
-  clientId: process.env.PAYPAL_CLIENT_ID || "",
+  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
   currency: "USD",
   intent: "capture",
 };

@@ -108,15 +108,15 @@ export function MobileNavbarOverlay() {
               />
             </Link>
             <div className="mt-5 flex flex-col gap-1 *:h-10 *:ml-2 *:w-max *:text-lg *:font-medium *:rounded-full *:flex *:items-center">
-              <Link href="#">New Arrivals</Link>
-              <Link href="#">Dresses</Link>
-              <Link href="#">Tops</Link>
-              <Link href="#">Bottoms</Link>
-              <Link href="#">Outerwear</Link>
-              <Link href="#">Shoes</Link>
-              <Link href="#">Accessories</Link>
-              <Link href="#">Men</Link>
-              <Link href="#">Catch-All</Link>
+              <Link href="/new-arrivals">New Arrivals</Link>
+              <Link href="/category/dresses">Dresses</Link>
+              <Link href="/category/tops">Tops</Link>
+              <Link href="/category/bottoms">Bottoms</Link>
+              <Link href="/category/outerwear">Outerwear</Link>
+              <Link href="/category/shoes">Shoes</Link>
+              <Link href="/category/accessories">Accessories</Link>
+              <Link href="/category/men">Men</Link>
+              <Link href="/category/catch-all">Catch-All</Link>
             </div>
           </div>
           <button
