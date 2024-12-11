@@ -90,7 +90,7 @@ export default async function Cart() {
                 priority
               />
             </Link>
-            <div className="flex items-center gap-[10px] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+            {/* <div className="flex items-center gap-[10px] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
               {!sortedCartItems || sortedCartItems.length === 0 ? (
                 <h2 className="font-semibold text-lg">Your cart is empty</h2>
               ) : (
@@ -101,7 +101,7 @@ export default async function Cart() {
                   </span>
                 </>
               )}
-            </div>
+            </div> */}
           </div>
         </nav>
         <div className="max-w-[968px] mx-auto flex flex-col gap-10">
