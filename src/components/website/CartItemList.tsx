@@ -125,7 +125,7 @@ export default function CartItemList({
 
   return (
     <div className="relative flex flex-row gap-16 pt-8">
-      <div className="min-w-[560px] max-w-[560px] h-max">
+      {/* <div className="min-w-[560px] max-w-[560px] h-max">
         <div className="flex flex-col gap-5">
           <div className="flex gap-5">
             <div className="flex items-center">
@@ -355,8 +355,8 @@ export default function CartItemList({
             })}
           </div>
         </div>
-      </div>
-      <div className="select-none min-w-[340px] max-w-[340px] sticky top-16 h-max flex flex-col gap-4">
+      </div> */}
+      {/* <div className="select-none min-w-[340px] max-w-[340px] sticky top-16 h-max flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <div className="flex gap-[6px] items-center">
             <TbLock className="stroke-green -ml-[1px]" size={20} />
@@ -459,8 +459,58 @@ export default function CartItemList({
           </div>
         </div>
         {selectedItems.size > 0 && (
-          <PayPalButton cart={getSelectedCartItems()} />
+          <PayPalButton showLabel={true} cart={getSelectedCartItems()} />
         )}
+      </div> */}
+      <MobilePriceDetails
+        selectedItems={selectedItems}
+        getSelectedCartItems={getSelectedCartItems}
+        calculateTotal={calculateTotal}
+        toggleAll={toggleAll}
+      />
+    </div>
+  );
+}
+
+function MobilePriceDetails({
+  selectedItems,
+  getSelectedCartItems,
+  calculateTotal,
+  toggleAll,
+}: {
+  selectedItems: Set<string>;
+  getSelectedCartItems: () => CartItemType[];
+  calculateTotal: () => number;
+  toggleAll: () => void;
+}) {
+  return (
+    <div className="border-t bg-white fixed bottom-0 left-0 right-0 z-10 p-5 w-full h-28">
+      <div className="flex items-center justify-between">
+        <div className="w-max flex items-center gap-1">
+          {selectedItems.size > 0 ? (
+            <div className="flex items-baseline">
+              <span className="text-sm font-semibold">$</span>
+              <span className="text-xl font-bold">
+                {Math.floor(Number(calculateTotal()))}
+              </span>
+              <span className="text-sm font-semibold">
+                {(Number(calculateTotal()) % 1).toFixed(2).substring(1)}
+              </span>
+            </div>
+          ) : (
+            <button
+              onClick={toggleAll}
+              className="text-sm text-blue px-3 w-max h-8 rounded-full cursor-pointer flex items-center justify-center border border-[#d9d8d6] shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.1)]"
+            >
+              Select all items
+            </button>
+          )}
+        </div>
+        <div className="w-[200px] h-[35px]">
+          {selectedItems.size > 0 && (
+            <PayPalButton showLabel={false} cart={getSelectedCartItems()} />
+          )}
+        </div>
       </div>
     </div>
   );

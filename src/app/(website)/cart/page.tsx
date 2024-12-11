@@ -125,13 +125,15 @@ export default async function Cart() {
               <CartItemList cartItems={sortedCartItems} />
             )}
           </div>
-          <DiscoveryProducts
-            page="CART"
-            heading="Add These to Your Cart"
-            excludeIds={excludeIdsFromDiscoveryProducts}
-            deviceIdentifier={deviceIdentifier}
-            cart={cart}
-          />
+          <div className="px-5">
+            <DiscoveryProducts
+              page="CART"
+              heading="Add These to Your Cart"
+              excludeIds={excludeIdsFromDiscoveryProducts}
+              deviceIdentifier={deviceIdentifier}
+              cart={cart}
+            />
+          </div>
         </div>
       </div>
       <ShowAlert />

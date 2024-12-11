@@ -9,7 +9,7 @@ const initialOptions = {
   intent: "capture",
 };
 
-export function PayPalButton({ cart }: { cart: Cart }) {
+export function PayPalButton({ cart, showLabel }: { cart: Cart; showLabel: boolean }) {
   const [key, setKey] = useState(() => cart.length);
 
   useEffect(() => {
@@ -74,7 +74,8 @@ export function PayPalButton({ cart }: { cart: Cart }) {
           shape: "pill",
           layout: "horizontal",
           color: "gold",
-          label: "pay",
+          tagline: showLabel,
+          label: showLabel ? "pay" : "paypal",
         }}
         createOrder={createOrder}
         onApprove={onApprove}
