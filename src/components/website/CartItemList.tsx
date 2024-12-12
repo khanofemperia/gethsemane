@@ -125,6 +125,237 @@ export default function CartItemList({
 
   return (
     <div className="relative flex flex-row gap-16 pt-8">
+      <div className="max-w-full">
+        <div className="flex flex-col gap-5">
+          <div className="flex gap-3">
+            <div className="flex items-center">
+              <div
+                onClick={toggleAll}
+                className={clsx(
+                  "w-5 h-5 cursor-pointer rounded-full flex items-center justify-center ease-in-out duration-200 transition",
+                  selectedItems.size === cartItems.length
+                    ? "bg-black"
+                    : "border border-neutral-400"
+                )}
+              >
+                {selectedItems.size > 0 && (
+                  <CheckmarkIcon className="fill-white" size={16} />
+                )}
+              </div>
+            </div>
+            <span className="font-semibold">
+              {selectedItems.size > 0
+                ? `Checkout (${selectedItems.size} ${
+                    selectedItems.size === 1 ? "Item" : "Items"
+                  })`
+                : "Select items for checkout"}
+            </span>
+          </div>
+          <div className="flex flex-col gap-5">
+            {cartItems.map((item) => {
+              const isSelected = selectedItems.has(item.variantId);
+
+              if (item.type === "product") {
+                const productOptions = formatProductOptions(
+                  item.color,
+                  item.size
+                );
+                return (
+                  <div key={item.index} className="flex gap-3">
+                    <div className="flex items-center">
+                      <div
+                        onClick={() => toggleItem(item.variantId)}
+                        className={clsx(
+                          "w-5 h-5 cursor-pointer rounded-full flex items-center justify-center ease-in-out duration-200 transition",
+                          isSelected ? "bg-black" : "border border-neutral-400"
+                        )}
+                      >
+                        {isSelected && (
+                          <CheckmarkIcon className="fill-white" size={16} />
+                        )}
+                      </div>
+                    </div>
+                    <div className="min-w-[108px] max-w-[108px] min-h-[108px] max-h-[108px] overflow-hidden rounded-lg flex items-center justify-center">
+                      <Image
+                        src={item.mainImage}
+                        alt={item.name}
+                        width={108}
+                        height={108}
+                        priority
+                      />
+                    </div>
+                    <div className="w-full pr-3 flex flex-col gap-1">
+                      <div className="min-w-full h-5 flex items-center justify-between gap-5">
+                        <Link
+                          href={`${item.slug}-${item.baseProductId}`}
+                          target="_blank"
+                          className="text-gray text-xs line-clamp-1 hover:underline"
+                        >
+                          {item.name}
+                        </Link>
+                        <RemoveFromCartButton
+                          type="product"
+                          variantId={item.variantId}
+                        />
+                      </div>
+                      {productOptions && (
+                        <span className="mb-1 text-xs font-medium">
+                          {productOptions}
+                        </span>
+                      )}
+                      <div className="w-max flex items-center justify-center">
+                        {Number(item.pricing.salePrice) ? (
+                          <div className="flex items-center gap-[6px]">
+                            <div className="flex items-baseline text-[rgb(168,100,0)]">
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(Number(item.pricing.salePrice))}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(Number(item.pricing.salePrice) % 1)
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                            </div>
+                            <span className="text-[0.813rem] leading-3 text-gray line-through">
+                              ${formatThousands(Number(item.pricing.basePrice))}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex items-baseline">
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              $
+                            </span>
+                            <span className="text-lg font-bold">
+                              {Math.floor(Number(item.pricing.basePrice))}
+                            </span>
+                            <span className="text-[0.813rem] leading-3 font-semibold">
+                              {(Number(item.pricing.basePrice) % 1)
+                                .toFixed(2)
+                                .substring(1)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              } else if (item.type === "upsell") {
+                return (
+                  <div key={item.index} className="flex gap-3">
+                    <div className="flex items-center">
+                      <div
+                        onClick={() => toggleItem(item.variantId)}
+                        className={clsx(
+                          "w-5 h-5 cursor-pointer rounded-full flex items-center justify-center ease-in-out duration-200 transition",
+                          isSelected ? "bg-black" : "border border-neutral-400"
+                        )}
+                      >
+                        {isSelected && (
+                          <CheckmarkIcon className="fill-white" size={16} />
+                        )}
+                      </div>
+                    </div>
+                    <div className="relative w-[calc(100%-32px)] p-5 pr-0 rounded-lg bg-[#fffbf6] border border-[#fceddf]">
+                      <div className="mb-5 min-w-full h-5 flex gap-5 items-center justify-between">
+                        <div className="w-max flex items-center justify-center">
+                          {Number(item.pricing.salePrice) ? (
+                            <div className="flex items-center gap-[6px]">
+                              <div className="flex items-baseline text-[rgb(168,100,0)]">
+                                <span className="text-[0.813rem] leading-3 font-semibold">
+                                  $
+                                </span>
+                                <span className="text-xl font-bold">
+                                  {Math.floor(Number(item.pricing.salePrice))}
+                                </span>
+                                <span className="text-[0.813rem] leading-3 font-semibold">
+                                  {(Number(item.pricing.salePrice) % 1)
+                                    .toFixed(2)
+                                    .substring(1)}
+                                </span>
+                              </div>
+                              <span className="text-[0.813rem] leading-3 text-gray line-through">
+                                $
+                                {formatThousands(
+                                  Number(item.pricing.basePrice)
+                                )}
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="flex items-baseline text-[rgb(168,100,0)]">
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                $
+                              </span>
+                              <span className="text-lg font-bold">
+                                {Math.floor(Number(item.pricing.basePrice))}
+                              </span>
+                              <span className="text-[0.813rem] leading-3 font-semibold">
+                                {(Number(item.pricing.basePrice) % 1)
+                                  .toFixed(2)
+                                  .substring(1)}
+                              </span>
+                              <span className="ml-1 text-[0.813rem] leading-3 font-semibold">
+                                today
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="pr-5 flex gap-2 invisible-scrollbar overflow-y-hidden overflow-x-visible">
+                        {item.products.map((product) => {
+                          const productOptions = formatProductOptions(
+                            product.color,
+                            product.size
+                          );
+                          return (
+                            <div
+                              key={product.id}
+                              className="last:mb-0 min-w-[108px]"
+                            >
+                              <div className="mb-2 w-full h-[108px] rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
+                                <Image
+                                  src={product.mainImage}
+                                  alt={product.name}
+                                  width={108}
+                                  height={108}
+                                  priority
+                                />
+                              </div>
+                              <div className="flex flex-col gap-[2px]">
+                                <Link
+                                  href={`${product.slug}-${product.id}`}
+                                  target="_blank"
+                                  className="text-gray text-xs hover:underline w-max"
+                                >
+                                  {product.name.length > 18
+                                    ? `${product.name.slice(0, 18)}...`
+                                    : product.name}
+                                </Link>
+                                {productOptions && (
+                                  <span className="text-xs font-medium">
+                                    {productOptions}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <RemoveFromCartButton
+                        type="upsell"
+                        variantId={item.variantId}
+                      />
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </div>
+        </div>
+      </div>
       {/* <div className="min-w-[560px] max-w-[560px] h-max">
         <div className="flex flex-col gap-5">
           <div className="flex gap-5">

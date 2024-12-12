@@ -105,22 +105,8 @@ export default async function Cart() {
           </div>
         </nav>
         <div className="max-w-[968px] mx-auto flex flex-col gap-10">
-          <div className="mx-auto">
-            <div
-              className={clsx(
-                sortedCartItems?.length === 0
-                  ? "flex flex-col items-center py-16 text-lg"
-                  : "hidden"
-              )}
-            >
-              <Image
-                src="/icons/cart-thin.svg"
-                alt="Cart"
-                width={80}
-                height={80}
-                priority={true}
-              />
-            </div>
+          <div className="w-full px-5 mx-auto">
+            <EmptyCartState sortedCartItems={sortedCartItems} />
             {sortedCartItems?.length > 0 && (
               <CartItemList cartItems={sortedCartItems} />
             )}
@@ -316,6 +302,31 @@ const getUpsell = async ({
 
   return upsell;
 };
+
+// -- Compo --
+function EmptyCartState({
+  sortedCartItems,
+}: {
+  sortedCartItems: Array<CartItemType>;
+}) {
+  return (
+    <div
+      className={clsx(
+        sortedCartItems?.length === 0
+          ? "flex flex-col items-center py-16 text-lg"
+          : "hidden"
+      )}
+    >
+      <Image
+        src="/icons/cart-thin.svg"
+        alt="Cart"
+        width={80}
+        height={80}
+        priority={true}
+      />
+    </div>
+  );
+}
 
 // -- Type Definitions --
 
