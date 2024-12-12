@@ -103,7 +103,7 @@ export default function CartItemList({
   const formatProductOptions = (color?: string, size?: string) => {
     if (!color && !size) return null;
     if (color && size) return `${color} / ${size}`;
-    return color || size;
+    return color || `Size (${size})`;
   };
 
   const calculateTotal = () => {
@@ -125,7 +125,7 @@ export default function CartItemList({
 
   return (
     <div className="relative flex flex-row gap-16 pt-8">
-      <div className="max-w-full">
+      <div className="w-full max-w-[560px] h-max">
         <div className="flex flex-col gap-5">
           <div className="flex gap-3">
             <div className="flex items-center">
@@ -716,7 +716,7 @@ function MobilePriceDetails({
 }) {
   return (
     <div className="pt-[6px] pb-4 px-5 border-t border-[#e6e8ec] bg-white fixed z-10 bottom-0 left-0 right-0">
-      <div className="flex items-center justify-between">
+      <div className="flex gap-4 items-center justify-end">
         <div className="w-max flex items-center gap-1">
           {selectedItems.size > 0 ? (
             <div className="flex items-baseline">
