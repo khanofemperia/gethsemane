@@ -175,14 +175,25 @@ export default function CartItemList({
                         )}
                       </div>
                     </div>
-                    <div className="min-w-[108px] max-w-[108px] min-h-[108px] max-h-[108px] overflow-hidden rounded-lg flex items-center justify-center">
-                      <Image
-                        src={item.mainImage}
-                        alt={item.name}
-                        width={108}
-                        height={108}
-                        priority
-                      />
+                    <div>
+                      <div className="min-[580px]:hidden flex items-center justify-center min-w-[108px] max-w-[108px] min-h-[108px] max-h-[108px] overflow-hidden rounded-lg">
+                        <Image
+                          src={item.mainImage}
+                          alt={item.name}
+                          width={108}
+                          height={108}
+                          priority
+                        />
+                      </div>
+                      <div className="hidden min-[580px]:flex items-center justify-center min-[580px]:min-w-[146px] min-[580px]:max-w-[146px] min-[580px]:min-h-[146px] min-[580px]:max-h-[146px] overflow-hidden rounded-lg">
+                        <Image
+                          src={item.mainImage}
+                          alt={item.name}
+                          width={146}
+                          height={146}
+                          priority
+                        />
+                      </div>
                     </div>
                     <div className="w-full pr-3 flex flex-col gap-1">
                       <div className="min-w-full h-5 flex items-center justify-between gap-3">
@@ -312,14 +323,23 @@ export default function CartItemList({
                           return (
                             <div
                               key={product.id}
-                              className="last:mb-0 min-w-[108px]"
+                              className="last:mb-0 min-w-[108px] min-[580px]:min-w-[146px]"
                             >
-                              <div className="mb-2 w-full h-[108px] rounded-md overflow-hidden border border-[#fceddf] bg-white flex items-center justify-center">
+                              <div className="min-[580px]:hidden flex items-center justify-center mb-2 w-full h-[108px] rounded-md overflow-hidden border border-[#fceddf] bg-white">
                                 <Image
                                   src={product.mainImage}
                                   alt={product.name}
                                   width={108}
                                   height={108}
+                                  priority
+                                />
+                              </div>
+                              <div className="hidden min-[580px]:flex items-center justify-center mb-2 w-full h-[146px] rounded-md overflow-hidden border border-[#fceddf] bg-white">
+                                <Image
+                                  src={product.mainImage}
+                                  alt={product.name}
+                                  width={146}
+                                  height={146}
                                   priority
                                 />
                               </div>
@@ -372,9 +392,7 @@ export default function CartItemList({
           </div>
           <div className="flex gap-[6px] items-center">
             <TbTruck className="stroke-green" size={20} />
-            <span className="text-sm text-gray">
-              Free Shipping for You
-            </span>
+            <span className="text-sm text-gray">Free Shipping for You</span>
           </div>
         </div>
         <div className="mb-2 flex items-center gap-1">
