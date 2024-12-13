@@ -356,7 +356,7 @@ export default function CartItemList({
           </div>
         </div>
       </div>
-      <div className="hidden md:flex flex-col gap-3 h-max min-w-[276px] max-w-[276px] sticky top-16 select-none">
+      <div className="hidden md:flex flex-col gap-3 h-max min-w-[276px] max-w-[276px] lg:min-w-[300px] lg:max-w-[300px] sticky top-16 select-none">
         <div className="flex flex-col gap-2">
           <div className="flex gap-[6px] items-center">
             <TbLock className="stroke-green -ml-[1px]" size={20} />
