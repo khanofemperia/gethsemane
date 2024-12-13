@@ -124,8 +124,8 @@ export default function CartItemList({
   };
 
   return (
-    <div className="relative flex flex-row gap-16 pt-8">
-      <div className="w-full max-w-[560px] h-max">
+    <div className="relative flex flex-row gap-10 pt-8 w-full">
+      <div className="w-full h-max">
         <div className="flex flex-col gap-5">
           <div className="flex gap-3">
             <div className="flex items-center">
@@ -356,6 +356,118 @@ export default function CartItemList({
           </div>
         </div>
       </div>
+      <div className="hidden md:flex flex-col gap-3 h-max min-w-[258px] max-w-[258px] sticky top-16 select-none">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-[6px] items-center">
+            <TbLock className="stroke-green -ml-[1px]" size={20} />
+            <span className="text-xs text-gray">
+              Secure Checkout with SSL Encryption
+            </span>
+          </div>
+          <div className="flex gap-[6px] items-center">
+            <PiShieldCheckBold className="fill-green" size={18} />
+            <span className="text-xs text-gray ml-[1px]">
+              Safe and Trusted Payment Methods
+            </span>
+          </div>
+          <div className="flex gap-[6px] items-center">
+            <TbTruck className="stroke-green" size={20} />
+            <span className="text-xs text-gray">Free Shipping for You</span>
+          </div>
+        </div>
+        <div className="mb-2 flex items-center gap-1">
+          {selectedItems.size > 0 ? (
+            <>
+              <span className="font-medium">
+                Total ({selectedItems.size}{" "}
+                {selectedItems.size === 1 ? "Item" : "Items"}):
+              </span>
+              <div className="flex items-baseline">
+                <span className="text-sm font-semibold">$</span>
+                <span className="text-xl font-bold">
+                  {Math.floor(Number(calculateTotal()))}
+                </span>
+                <span className="text-sm font-semibold">
+                  {(Number(calculateTotal()) % 1).toFixed(2).substring(1)}
+                </span>
+              </div>
+            </>
+          ) : (
+            <button
+              onClick={toggleAll}
+              className="text-sm text-blue px-3 w-max h-8 rounded-full cursor-pointer flex items-center justify-center border border-[#d9d8d6] shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.1)]"
+            >
+              Select all items
+            </button>
+          )}
+        </div>
+        <div
+          className={clsx(
+            selectedItems.size ? "flex items-center mb-2" : "hidden"
+          )}
+        >
+          <div className="h-[20px] rounded-[3px] flex items-center justify-center">
+            <Image
+              src="/images/payment-methods/visa.svg"
+              alt="Visa"
+              width={34}
+              height={34}
+              priority={true}
+              draggable={false}
+            />
+          </div>
+          <div className="ml-[10px] h-[18px] w-[36px] rounded-[3px] flex items-center justify-center">
+            <Image
+              className="-ml-[4px]"
+              src="/images/payment-methods/mastercard.svg"
+              alt="Mastercard"
+              width={38}
+              height={38}
+              priority={true}
+              draggable={false}
+            />
+          </div>
+          <div className="ml-[5px] h-[20px] overflow-hidden rounded-[3px] flex items-center justify-center">
+            <Image
+              src="/images/payment-methods/american-express.png"
+              alt="American Express"
+              width={60}
+              height={20}
+              priority={true}
+              draggable={false}
+            />
+          </div>
+          <div className="ml-[10px] h-[20px] rounded-[3px] flex items-center justify-center">
+            <Image
+              src="/images/payment-methods/discover.svg"
+              alt="Discover"
+              width={64}
+              height={14}
+              priority={true}
+              draggable={false}
+            />
+          </div>
+          <div className="ml-[10px] h-[20px] rounded-[3px] flex items-center justify-center">
+            <Image
+              src="/images/payment-methods/diners-club-international.svg"
+              alt="Diners Club International"
+              width={68}
+              height={10}
+              priority={true}
+              draggable={false}
+            />
+          </div>
+        </div>
+        {selectedItems.size > 0 && (
+          <PayPalButton showLabel={true} cart={getSelectedCartItems()} />
+        )}
+      </div>
+      <MobilePriceDetails
+        selectedItems={selectedItems}
+        getSelectedCartItems={getSelectedCartItems}
+        calculateTotal={calculateTotal}
+        toggleAll={toggleAll}
+      />
       {/* <div className="min-w-[560px] max-w-[560px] h-max">
         <div className="flex flex-col gap-5">
           <div className="flex gap-5">
@@ -693,12 +805,6 @@ export default function CartItemList({
           <PayPalButton showLabel={true} cart={getSelectedCartItems()} />
         )}
       </div> */}
-      <MobilePriceDetails
-        selectedItems={selectedItems}
-        getSelectedCartItems={getSelectedCartItems}
-        calculateTotal={calculateTotal}
-        toggleAll={toggleAll}
-      />
     </div>
   );
 }
@@ -715,8 +821,8 @@ function MobilePriceDetails({
   toggleAll: () => void;
 }) {
   return (
-    <div className="pt-[6px] pb-4 px-5 border-t border-[#e6e8ec] bg-white fixed z-10 bottom-0 left-0 right-0">
-      <div className="flex gap-4 items-center justify-end">
+    <div className="md:hidden pt-[6px] pb-4 px-5 border-t border-[#e6e8ec] bg-white fixed z-10 bottom-0 left-0 right-0">
+      <div className="flex gap-4 items-center justify-end mx-auto w-full max-w-[524px]">
         <div className="w-max flex items-center gap-1">
           {selectedItems.size > 0 ? (
             <div className="flex items-baseline">

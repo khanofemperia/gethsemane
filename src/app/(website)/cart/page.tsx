@@ -74,7 +74,7 @@ export default async function Cart() {
     <>
       <div
         id="scrollable-parent"
-        className="pb-32 h-screen overflow-x-hidden overflow-y-auto custom-scrollbar"
+        className="pb-32 h-screen overflow-x-hidden overflow-y-auto invisible-scrollbar"
       >
         <nav className="h-16 border-b">
           <div className="w-full max-w-[1080px] mx-auto py-2 px-5 min-[1120px]:px-0 relative flex gap-1 flex-col md:flex-row">
@@ -104,7 +104,7 @@ export default async function Cart() {
             </div> */}
           </div>
         </nav>
-        <div className="max-w-[968px] mx-auto flex flex-col gap-10">
+        <div className="w-full max-w-[580px] mx-auto flex flex-col gap-10">
           <div className="w-full px-5 mx-auto">
             <EmptyCartState sortedCartItems={sortedCartItems} />
             {sortedCartItems?.length > 0 && (
