@@ -185,7 +185,7 @@ export default function CartItemList({
                       />
                     </div>
                     <div className="w-full pr-3 flex flex-col gap-1">
-                      <div className="min-w-full h-5 flex items-center justify-between gap-5">
+                      <div className="min-w-full h-5 flex items-center justify-between gap-3">
                         <Link
                           href={`${item.slug}-${item.baseProductId}`}
                           target="_blank"
@@ -356,23 +356,25 @@ export default function CartItemList({
           </div>
         </div>
       </div>
-      <div className="hidden md:flex flex-col gap-3 h-max min-w-[258px] max-w-[258px] sticky top-16 select-none">
+      <div className="hidden md:flex flex-col gap-3 h-max min-w-[276px] max-w-[276px] sticky top-16 select-none">
         <div className="flex flex-col gap-2">
           <div className="flex gap-[6px] items-center">
             <TbLock className="stroke-green -ml-[1px]" size={20} />
-            <span className="text-xs text-gray">
+            <span className="text-sm text-gray">
               Secure Checkout with SSL Encryption
             </span>
           </div>
           <div className="flex gap-[6px] items-center">
             <PiShieldCheckBold className="fill-green" size={18} />
-            <span className="text-xs text-gray ml-[1px]">
+            <span className="text-sm text-gray ml-[1px]">
               Safe and Trusted Payment Methods
             </span>
           </div>
           <div className="flex gap-[6px] items-center">
             <TbTruck className="stroke-green" size={20} />
-            <span className="text-xs text-gray">Free Shipping for You</span>
+            <span className="text-sm text-gray">
+              Free Shipping for You
+            </span>
           </div>
         </div>
         <div className="mb-2 flex items-center gap-1">

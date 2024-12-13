@@ -104,7 +104,7 @@ export default async function Cart() {
             </div> */}
           </div>
         </nav>
-        <div className="w-full max-w-[580px] mx-auto flex flex-col gap-10">
+        <div className="w-full max-w-[580px] md:max-w-[968px] mx-auto flex flex-col gap-10">
           <div className="w-full px-5 mx-auto">
             <EmptyCartState sortedCartItems={sortedCartItems} />
             {sortedCartItems?.length > 0 && (
