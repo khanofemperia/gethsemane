@@ -77,10 +77,10 @@ export default async function Cart() {
         className="pb-32 h-screen overflow-x-hidden overflow-y-auto invisible-scrollbar"
       >
         <nav className="h-16 border-b">
-          <div className="w-full max-w-[1080px] mx-auto py-2 px-5 min-[1120px]:px-0 relative flex gap-1 flex-col md:flex-row">
+          <div className="md:hidden flex items-center w-full max-w-[1080px] mx-auto pl-4 py-2">
             <Link
               href="/"
-              className="h-12 min-w-[168px] w-[168px] pl-2 md:pl-0 flex items-center"
+              className="h-12 min-w-[168px] w-[168px] flex items-center justify-center"
             >
               <Image
                 src="/images/logos/cherlygood_wordmark.svg"
@@ -90,18 +90,6 @@ export default async function Cart() {
                 priority
               />
             </Link>
-            {/* <div className="flex items-center gap-[10px] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
-              {!sortedCartItems || sortedCartItems.length === 0 ? (
-                <h2 className="font-semibold text-lg">Your cart is empty</h2>
-              ) : (
-                <>
-                  <h2 className="font-semibold text-lg">Cart</h2>
-                  <span className="font-medium text-sm text-green">
-                    Free shipping
-                  </span>
-                </>
-              )}
-            </div> */}
           </div>
         </nav>
         <div className="w-full max-w-[580px] md:max-w-[968px] mx-auto flex flex-col gap-10">
