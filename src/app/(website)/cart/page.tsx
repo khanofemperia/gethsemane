@@ -77,7 +77,7 @@ export default async function Cart() {
         className="pb-32 h-screen overflow-x-hidden overflow-y-auto invisible-scrollbar"
       >
         <nav className="h-16 border-b">
-          <div className="md:hidden flex items-center w-full max-w-[1080px] mx-auto pl-4 py-2">
+          <div className="flex items-center w-full max-w-[1080px] mx-auto pl-4 py-2">
             <Link
               href="/"
               className="h-12 min-w-[168px] w-[168px] flex items-center justify-center"
