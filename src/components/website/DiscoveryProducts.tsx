@@ -37,8 +37,6 @@ export async function DiscoveryProducts({
     return true;
   });
 
-  console.log("filteredProducts:", filteredProducts);
-
   return (
     <div>
       <div className="mb-4 flex items-center gap-4 h-8 md:w-[calc(100%-20px)] md:mx-auto">
