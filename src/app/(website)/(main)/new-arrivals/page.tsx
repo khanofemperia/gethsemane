@@ -40,7 +40,7 @@ export default async function NewArrivals({
 
   return (
     <>
-      <div className="max-w-[968px] mx-auto px-5 pt-8">
+      <div className="max-w-5xl mx-auto px-5 pt-8">
         {products && (
           <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
             {products.map((product, index) => (

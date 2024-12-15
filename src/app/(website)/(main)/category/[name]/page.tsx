@@ -47,8 +47,8 @@ export default async function Categories({
 
   return (
     <>
-      <div className="max-w-[968px] mx-auto px-5 pt-8">
-        <h2 className="mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
+      <div className="max-w-5xl mx-auto px-5 pt-8">
+        <h2 className="md:w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
           {displayName}
         </h2>
         <div>
