@@ -93,7 +93,7 @@ export default function Navbar({
   return (
     <nav
       className={clsx(
-        "w-full max-h-[116px] md:max-h-16 z-20 fixed top-0 border-b transition duration-100 ease-in-out bg-white",
+        "w-full z-20 fixed top-0 border-b transition duration-100 bg-white",
         !isScrollingUp && prevScrollPosition >= 154 && "-translate-y-full"
       )}
     >

@@ -76,11 +76,11 @@ export default async function Cart() {
         id="scrollable-parent"
         className="pb-32 h-screen overflow-x-hidden overflow-y-auto invisible-scrollbar"
       >
-        <nav className="h-16 border-b">
-          <div className="flex items-center w-full max-w-[1080px] mx-auto pl-4 py-2">
+        <nav className="w-full border-b">
+          <div className="w-full max-w-[1080px] mx-auto px-6 py-2">
             <Link
               href="/"
-              className="h-12 min-w-[168px] w-[168px] flex items-center justify-center"
+              className="h-10 min-w-[168px] w-[168px] pl-2 flex items-center"
             >
               <Image
                 src="/images/logos/cherlygood_wordmark.svg"
@@ -300,9 +300,7 @@ function EmptyCartState({
   return (
     <div
       className={clsx(
-        sortedCartItems?.length === 0
-          ? "flex flex-col items-center py-16 text-lg"
-          : "hidden"
+        sortedCartItems?.length === 0 ? "flex justify-center py-16" : "hidden"
       )}
     >
       <Image
