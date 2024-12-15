@@ -16,18 +16,20 @@ export default async function NewArrivals({
   const deviceIdentifier = cookies().get("device_identifier")?.value || "";
   const cart = await getCart(deviceIdentifier);
 
+  const productFields = [
+    "id",
+    "name",
+    "slug",
+    "description",
+    "pricing",
+    "images",
+    "options",
+    "upsell",
+    "highlights",
+  ];
+
   const allProducts = (await getProducts({
-    fields: [
-      "id",
-      "name",
-      "slug",
-      "description",
-      "pricing",
-      "images",
-      "options",
-      "upsell",
-      "highlights",
-    ],
+    fields: productFields,
   })) as ProductWithUpsellType[];
 
   const itemsPerPage = 2;
@@ -38,9 +40,9 @@ export default async function NewArrivals({
 
   return (
     <>
-      <div className="max-w-[968px] mx-auto pt-10">
+      <div className="max-w-[968px] mx-auto px-5 pt-8">
         {products && (
-          <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
+          <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
             {products.map((product, index) => (
               <ProductCard
                 key={product.id || index}
