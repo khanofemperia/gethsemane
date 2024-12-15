@@ -7,6 +7,7 @@ import Link from "next/link";
 import { HiMiniBars3 } from "react-icons/hi2";
 import { useRef, useEffect } from "react";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 export function MobileNavbarButton() {
   const showMobileNavbarOverlay = useMobileNavbarStore(
@@ -31,15 +32,13 @@ export function MobileNavbarOverlay() {
   const isMobileNavbarOverlayVisible = useMobileNavbarStore(
     (state) => state.isMobileNavbarOverlayVisible
   );
-
+  const router = useRouter();
   const overlayRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Media query for md breakpoint (typically 768px)
     const mediaQuery = window.matchMedia("(min-width: 768px)");
 
-    // Handler to close overlay when screen size increases
     const handleMediaQueryChange = (
       e: MediaQueryListEvent | MediaQueryList
     ) => {
@@ -48,13 +47,9 @@ export function MobileNavbarOverlay() {
       }
     };
 
-    // Check initial state
     handleMediaQueryChange(mediaQuery);
-
-    // Add listener for changes
     mediaQuery.addEventListener("change", handleMediaQueryChange);
 
-    // Cleanup
     return () => {
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
@@ -80,6 +75,11 @@ export function MobileNavbarOverlay() {
     }
   }, [isMobileNavbarOverlayVisible, hideMobileNavbarOverlay]);
 
+  const handleNavigation = (path: string) => {
+    router.push(path);
+    hideMobileNavbarOverlay();
+  };
+
   return (
     <>
       <div
@@ -95,8 +95,8 @@ export function MobileNavbarOverlay() {
           className="absolute right-0 bottom-0 top-0 h-full w-3/4 max-w-80 px-5 pt-3 bg-white"
         >
           <div className="h-full">
-            <Link
-              href="/"
+            <button
+              onClick={() => handleNavigation("/")}
               className="h-12 min-w-[168px] w-[168px] ml-[2px] flex items-center justify-center"
             >
               <Image
@@ -106,17 +106,35 @@ export function MobileNavbarOverlay() {
                 height={40}
                 priority
               />
-            </Link>
+            </button>
             <div className="mt-5 flex flex-col gap-1 *:h-10 *:ml-2 *:w-max *:text-lg *:font-medium *:rounded-full *:flex *:items-center">
-              <Link href="/new-arrivals">New Arrivals</Link>
-              <Link href="/category/dresses">Dresses</Link>
-              <Link href="/category/tops">Tops</Link>
-              <Link href="/category/bottoms">Bottoms</Link>
-              <Link href="/category/outerwear">Outerwear</Link>
-              <Link href="/category/shoes">Shoes</Link>
-              <Link href="/category/accessories">Accessories</Link>
-              <Link href="/category/men">Men</Link>
-              <Link href="/category/catch-all">Catch-All</Link>
+              <button onClick={() => handleNavigation("/new-arrivals")}>
+                New Arrivals
+              </button>
+              <button onClick={() => handleNavigation("/category/dresses")}>
+                Dresses
+              </button>
+              <button onClick={() => handleNavigation("/category/tops")}>
+                Tops
+              </button>
+              <button onClick={() => handleNavigation("/category/bottoms")}>
+                Bottoms
+              </button>
+              <button onClick={() => handleNavigation("/category/outerwear")}>
+                Outerwear
+              </button>
+              <button onClick={() => handleNavigation("/category/shoes")}>
+                Shoes
+              </button>
+              <button onClick={() => handleNavigation("/category/accessories")}>
+                Accessories
+              </button>
+              <button onClick={() => handleNavigation("/category/men")}>
+                Men
+              </button>
+              <button onClick={() => handleNavigation("/category/catch-all")}>
+                Catch-All
+              </button>
             </div>
           </div>
           <button
