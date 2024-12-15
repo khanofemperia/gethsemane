@@ -19,38 +19,41 @@ export default async function Categories({
   const deviceIdentifier = cookies().get("device_identifier")?.value || "";
   const cart = await getCart(deviceIdentifier);
 
+  const productFields = [
+    "id",
+    "name",
+    "slug",
+    "description",
+    "pricing",
+    "images",
+    "options",
+    "upsell",
+    "highlights",
+  ];
+
   const allProducts =
     ((await getProducts({
       category: params.name,
+      fields: productFields,
     })) as ProductWithUpsellType[]) || [];
 
   const itemsPerPage = 2;
   const totalPages = Math.ceil(allProducts.length / itemsPerPage);
   const currentPage = Math.max(1, Math.min(page, totalPages));
-  const start = (currentPage - 1) * itemsPerPage;
-  const products = allProducts.slice(start, start + itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const products = allProducts.slice(startIndex, startIndex + itemsPerPage);
 
-  let displayName;
-  switch (params.name.toLowerCase()) {
-    case "men":
-      displayName = `Shop Men`;
-      break;
-    case "catch-all":
-      displayName = "Catch-All";
-      break;
-    default:
-      displayName = `Women's ${capitalizeFirstLetter(params.name)}`;
-  }
+  const displayName = getDisplayName(params.name);
 
   return (
     <>
-      <div className="max-w-[968px] mx-auto pt-10">
-        <h2 className="w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
+      <div className="max-w-[968px] mx-auto px-5 pt-8">
+        <h2 className="mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
           {displayName}
         </h2>
         <div>
-          {products && (
-            <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
+          {products.length > 0 ? (
+            <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
               {products.map((product, index) => (
                 <ProductCard
                   key={product.id || index}
@@ -60,6 +63,10 @@ export default async function Categories({
                 />
               ))}
             </div>
+          ) : (
+            <p className="text-center">
+              No products available in this category.
+            </p>
           )}
         </div>
         <Pagination currentPage={currentPage} totalPages={totalPages} />
@@ -69,4 +76,15 @@ export default async function Categories({
       <ShowAlert />
     </>
   );
+}
+
+function getDisplayName(category: string): string {
+  switch (category.toLowerCase()) {
+    case "men":
+      return "Shop Men";
+    case "catch-all":
+      return "Catch-All";
+    default:
+      return `Women's ${capitalizeFirstLetter(category)}`;
+  }
 }

@@ -18,10 +18,23 @@ export default async function Collections({
   const deviceIdentifier = cookies().get("device_identifier")?.value || "";
   const cart = await getCart(deviceIdentifier);
 
+  const productFields = [
+    "id",
+    "name",
+    "slug",
+    "description",
+    "pricing",
+    "images",
+    "options",
+    "upsell",
+    "highlights",
+  ];
+
   const [collection] =
     (await getCollections({
       ids: [params.slug.split("-").pop() as string],
       includeProducts: true,
+      fields: productFields,
     })) || [];
 
   const itemsPerPage = 2;
@@ -32,29 +45,29 @@ export default async function Collections({
 
   return (
     <>
-      <div className="max-w-[968px] mx-auto pt-10">
-        <h2 className="w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
+      <div className="max-w-[968px] mx-auto px-5 pt-8">
+        <h2 className="mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
           {collection.title}
         </h2>
         <div>
-          {products && (
-            <>
-              <div className="select-none w-full flex flex-wrap gap-1 md:gap-0">
-                {products.filter(Boolean).map((product, index) => (
-                  <ProductCard
-                    key={index}
-                    product={
-                      product as ProductWithUpsellType & { index: number }
-                    }
-                    cart={cart}
-                    deviceIdentifier={deviceIdentifier}
-                  />
-                ))}
-              </div>
-              <Pagination currentPage={currentPage} totalPages={totalPages} />
-            </>
+          {products.length > 0 ? (
+            <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
+              {products.filter(Boolean).map((product, index) => (
+                <ProductCard
+                  key={index}
+                  product={product as ProductWithUpsellType & { index: number }}
+                  cart={cart}
+                  deviceIdentifier={deviceIdentifier}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-center">
+              No products available in this collection.
+            </p>
           )}
         </div>
+        <Pagination currentPage={currentPage} totalPages={totalPages} />
       </div>
       <QuickviewOverlay />
       <UpsellReviewOverlay cart={cart} />

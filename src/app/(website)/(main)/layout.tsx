@@ -10,7 +10,7 @@ export default async function WebsiteLayout({
   return (
     <>
       <NavbarWrapper />
-      <main className="pt-[57px] min-h-[calc(100vh-116px)] md:min-h-[calc(100vh-64px)]">
+      <main className="pt-[65px] md:pt-[57px]">
         {children}
       </main>
       <Footer />

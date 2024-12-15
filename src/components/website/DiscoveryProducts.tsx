@@ -14,7 +14,7 @@ export async function DiscoveryProducts({
   cart: CartType | null;
   deviceIdentifier: string;
 }) {
-  const fields = [
+  const productfields = [
     "id",
     "name",
     "slug",
@@ -26,7 +26,9 @@ export async function DiscoveryProducts({
     "highlights",
   ];
 
-  const products = (await getProducts({ fields })) as ProductWithUpsellType[];
+  const products = (await getProducts({
+    fields: productfields,
+  })) as ProductWithUpsellType[];
 
   const filteredProducts = products.filter((product) => {
     if (page === "HOME" || page === "CART") {
@@ -34,6 +36,8 @@ export async function DiscoveryProducts({
     }
     return true;
   });
+
+  console.log("filteredProducts:", filteredProducts);
 
   return (
     <div>
