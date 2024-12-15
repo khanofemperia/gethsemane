@@ -1,5 +1,6 @@
 import { getCart } from "@/actions/get/cart";
 import { getCollections } from "@/actions/get/collections";
+import { CatalogEmptyState } from "@/components/website/CatalogEmptyState";
 import { Pagination } from "@/components/website/Pagination";
 import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
@@ -43,29 +44,27 @@ export default async function Collections({
   const start = (currentPage - 1) * itemsPerPage;
   const products = collection.products.slice(start, start + itemsPerPage);
 
+  if (!products.length) {
+    return <CatalogEmptyState />;
+  }
+
   return (
     <>
       <div className="max-w-5xl mx-auto px-5 pt-8">
-        <h2 className="md:w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
-          {collection.title}
-        </h2>
         <div>
-          {products.length > 0 ? (
-            <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
-              {products.filter(Boolean).map((product, index) => (
-                <ProductCard
-                  key={index}
-                  product={product as ProductWithUpsellType & { index: number }}
-                  cart={cart}
-                  deviceIdentifier={deviceIdentifier}
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="text-center">
-              No products available in this collection.
-            </p>
-          )}
+          <h2 className="md:w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
+            {collection.title}
+          </h2>
+          <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
+            {products.filter(Boolean).map((product, index) => (
+              <ProductCard
+                key={index}
+                product={product as ProductWithUpsellType & { index: number }}
+                cart={cart}
+                deviceIdentifier={deviceIdentifier}
+              />
+            ))}
+          </div>
         </div>
         <Pagination currentPage={currentPage} totalPages={totalPages} />
       </div>

@@ -1,5 +1,6 @@
 import { getCart } from "@/actions/get/cart";
 import { getProducts } from "@/actions/get/products";
+import { CatalogEmptyState } from "@/components/website/CatalogEmptyState";
 import { Pagination } from "@/components/website/Pagination";
 import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
@@ -38,21 +39,23 @@ export default async function NewArrivals({
   const start = (currentPage - 1) * itemsPerPage;
   const products = allProducts.slice(start, start + itemsPerPage);
 
+  if (!products.length) {
+    return <CatalogEmptyState />;
+  }
+
   return (
     <>
       <div className="max-w-5xl mx-auto px-5 pt-8">
-        {products && (
-          <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
-            {products.map((product, index) => (
-              <ProductCard
-                key={product.id || index}
-                product={product}
-                cart={cart}
-                deviceIdentifier={deviceIdentifier}
-              />
-            ))}
-          </div>
-        )}
+        <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
+          {products.map((product, index) => (
+            <ProductCard
+              key={product.id || index}
+              product={product}
+              cart={cart}
+              deviceIdentifier={deviceIdentifier}
+            />
+          ))}
+        </div>
         <Pagination currentPage={currentPage} totalPages={totalPages} />
       </div>
       <QuickviewOverlay />

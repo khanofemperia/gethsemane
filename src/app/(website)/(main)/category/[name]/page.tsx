@@ -1,5 +1,6 @@
 import { getCart } from "@/actions/get/cart";
 import { getProducts } from "@/actions/get/products";
+import { CatalogEmptyState } from "@/components/website/CatalogEmptyState";
 import { Pagination } from "@/components/website/Pagination";
 import { ProductCard } from "@/components/website/ProductCard";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
@@ -7,7 +8,6 @@ import ShowAlert from "@/components/website/ShowAlert";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { capitalizeFirstLetter } from "@/lib/utils/common";
 import { cookies } from "next/headers";
-import Image from "next/image";
 
 export default async function Categories({
   params,
@@ -47,41 +47,27 @@ export default async function Categories({
   const displayName = getDisplayName(params.name);
 
   if (!products.length) {
-    return (
-      <div className="flex flex-col gap-4 items-center pt-16">
-        <div>
-          <Image
-            src="/icons/package.svg"
-            alt="Package Icon"
-            width={80}
-            height={80}
-            priority={true}
-          />
-        </div>
-        <div className="text-center">
-          <h3 className="font-semibold mb-1">We're restocking!</h3>
-          <p className="text-sm text-gray">Check back soon for fresh finds</p>
-        </div>
-      </div>
-    );
+    return <CatalogEmptyState />;
   }
 
   return (
     <>
       <div className="max-w-5xl mx-auto px-5 pt-8">
-        <h2 className="md:w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
-          {displayName}
-        </h2>
         <div>
-          <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
-            {products.map((product, index) => (
-              <ProductCard
-                key={product.id || index}
-                product={product}
-                cart={cart}
-                deviceIdentifier={deviceIdentifier}
-              />
-            ))}
+          <h2 className="md:w-[calc(100%-20px)] mx-auto mb-4 font-semibold line-clamp-3 md:text-xl">
+            {displayName}
+          </h2>
+          <div>
+            <div className="select-none w-full flex flex-wrap gap-2 md:gap-0">
+              {products.map((product, index) => (
+                <ProductCard
+                  key={product.id || index}
+                  product={product}
+                  cart={cart}
+                  deviceIdentifier={deviceIdentifier}
+                />
+              ))}
+            </div>
           </div>
         </div>
         <Pagination currentPage={currentPage} totalPages={totalPages} />
