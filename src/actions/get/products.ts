@@ -9,6 +9,7 @@ import {
   where,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
+import { capitalizeFirstLetter } from "@/lib/utils/common";
 
 /**
  * Unified function to get products with flexible filtering and field selection.
@@ -52,7 +53,7 @@ export async function getProducts(
     conditions.push(where("visibility", "==", visibility));
   }
   if (category) {
-    conditions.push(where("category", "==", category));
+    conditions.push(where("category", "==", capitalizeFirstLetter(category)));
   }
 
   const firestoreQuery =
