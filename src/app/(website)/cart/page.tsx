@@ -74,7 +74,7 @@ export default async function Cart() {
     <>
       <div
         id="scrollable-parent"
-        className="pb-32 h-screen overflow-x-hidden overflow-y-auto invisible-scrollbar"
+        className="pb-32 h-screen overflow-x-hidden overflow-y-auto max-[1024px]:invisible-scrollbar lg:custom-scrollbar"
       >
         <nav className="w-full border-b">
           <div className="w-full max-w-[1080px] mx-auto px-6 py-2">
