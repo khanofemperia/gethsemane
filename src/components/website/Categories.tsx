@@ -32,10 +32,10 @@ export function Categories({
   return (
     <div className="relative pt-5 w-full max-w-max mx-auto">
       <div
-        className="embla relative select-none overflow-hidden w-full max-w-[768px] lg:max-w-[828px] py-1 px-3 md:px-1 mx-auto"
+        className="embla relative select-none overflow-hidden w-full py-1 px-3 md:px-1 mx-auto"
         ref={emblaRef}
       >
-        <div className="embla__container max-w-[452px] md:max-w-[570px] lg:max-w-none flex cursor-context-menu">
+        <div className="embla__container max-w-[464px] md:max-w-[582px] lg:max-w-[760px] flex cursor-context-menu">
           {categories.map(({ index, name, image }) => (
             <Link
               href={`/category/${name.toLowerCase()}`}
@@ -122,7 +122,7 @@ export const PrevButton: React.FC<PropType> = (props) => {
 
   return (
     <button
-      className="embla__button embla__button--prev disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute left-4 lg:-left-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
+      className="embla__button embla__button--prev disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute left-4 top-[44px] bg-neutral-800 bg-opacity-60 backdrop-blur-sm flex items-center justify-center transition active:bg-opacity-85 lg:hover:bg-opacity-85"
       type="button"
       {...restProps}
     >
@@ -137,7 +137,7 @@ export const NextButton: React.FC<PropType> = (props) => {
 
   return (
     <button
-      className="embla__button embla__button--next disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute right-4 lg:-right-3 top-[44px] bg-neutral-800 bg-opacity-75 flex items-center justify-center transition duration-300 ease-in-out active:bg-opacity-100 lg:hover:bg-opacity-100"
+      className="embla__button embla__button--next disabled:hidden cursor-pointer w-9 h-9 rounded-full absolute right-4 top-[44px] bg-neutral-800 bg-opacity-60 backdrop-blur-sm flex items-center justify-center transition active:bg-opacity-85 lg:hover:bg-opacity-85"
       type="button"
       {...restProps}
     >

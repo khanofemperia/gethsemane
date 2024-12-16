@@ -15,7 +15,6 @@ import { getCart } from "@/actions/get/cart";
 import { getCategories } from "@/actions/get/categories";
 import { getProducts } from "@/actions/get/products";
 import { Options } from "@/components/website/Product/Options";
-import ProductDescriptionWrapper from "@/components/website/ProductDescriptionWrapper";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
 
@@ -29,7 +28,7 @@ export default async function ProductDetails({
 
   const [cart, categoriesData, fetchedProducts] = await Promise.all([
     getCart(deviceIdentifier),
-    getCategories({ visibility: "HIDDEN" }),
+    getCategories({ visibility: "VISIBLE" }),
     getProducts({
       ids: [params.slug.split("-").pop() as string],
       fields: [
