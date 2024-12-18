@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { SizeChartOverlay } from "../Product/SizeChartOverlay";
 import clsx from "clsx";
 import { Options } from "../Product/Options";
-import { CartAndUpgradeButtons } from "../Product/CartAndUpgradeButtons";
+import { CartAndUpgradeButtons } from "../CartAndUpgradeButtons";
 import "@/components/shared/TextEditor/theme/index.css";
 
 export function QuickviewButton({
@@ -235,17 +235,19 @@ function MobileProductDetails({
                   </div>
                 )}
               </div>
-              <Options
-                productInfo={{
-                  id: selectedProduct.id,
-                  name: selectedProduct.name,
-                  pricing: selectedProduct.pricing,
-                  images: selectedProduct.images,
-                  options: selectedProduct.options,
-                }}
-                isStickyBarInCartIndicator={false}
-                deviceIdentifier={deviceIdentifier}
-              />
+              {(hasColor || hasSize) && (
+                <Options
+                  productInfo={{
+                    id: selectedProduct.id,
+                    name: selectedProduct.name,
+                    pricing: selectedProduct.pricing,
+                    images: selectedProduct.images,
+                    options: selectedProduct.options,
+                  }}
+                  isStickyBarInCartIndicator={false}
+                  deviceIdentifier={deviceIdentifier}
+                />
+              )}
             </div>
           </div>
           <div>
@@ -505,17 +507,19 @@ function DesktopProductDetails({
                     </div>
                   )}
                 </div>
-                <Options
-                  productInfo={{
-                    id: selectedProduct.id,
-                    name: selectedProduct.name,
-                    pricing: selectedProduct.pricing,
-                    images: selectedProduct.images,
-                    options: selectedProduct.options,
-                  }}
-                  isStickyBarInCartIndicator={false}
-                  deviceIdentifier={deviceIdentifier}
-                />
+                {(hasColor || hasSize) && (
+                  <Options
+                    productInfo={{
+                      id: selectedProduct.id,
+                      name: selectedProduct.name,
+                      pricing: selectedProduct.pricing,
+                      images: selectedProduct.images,
+                      options: selectedProduct.options,
+                    }}
+                    isStickyBarInCartIndicator={false}
+                    deviceIdentifier={deviceIdentifier}
+                  />
+                )}
               </div>
             </div>
             {selectedProduct.upsell &&

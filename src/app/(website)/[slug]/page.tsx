@@ -16,7 +16,7 @@ import { getCategories } from "@/actions/get/categories";
 import { getProducts } from "@/actions/get/products";
 import { Options } from "@/components/website/Product/Options";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-import { CartAndUpgradeButtons } from "@/components/website/Product/CartAndUpgradeButtons";
+import { CartAndUpgradeButtons } from "@/components/website/CartAndUpgradeButtons";
 
 export default async function ProductDetails({
   params,
@@ -167,17 +167,19 @@ export default async function ProductDetails({
                         </div>
                       )}
                     </div>
-                    <Options
-                      productInfo={{
-                        id,
-                        name,
-                        pricing,
-                        images,
-                        options,
-                      }}
-                      isStickyBarInCartIndicator={false}
-                      deviceIdentifier={deviceIdentifier}
-                    />
+                    {(hasColor || hasSize) && (
+                      <Options
+                        productInfo={{
+                          id,
+                          name,
+                          pricing,
+                          images,
+                          options,
+                        }}
+                        isStickyBarInCartIndicator={false}
+                        deviceIdentifier={deviceIdentifier}
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="px-5">
@@ -391,17 +393,19 @@ export default async function ProductDetails({
                             </div>
                           )}
                         </div>
-                        <Options
-                          productInfo={{
-                            id,
-                            name,
-                            pricing,
-                            images,
-                            options,
-                          }}
-                          isStickyBarInCartIndicator={false}
-                          deviceIdentifier={deviceIdentifier}
-                        />
+                        {(hasColor || hasSize) && (
+                          <Options
+                            productInfo={{
+                              id,
+                              name,
+                              pricing,
+                              images,
+                              options,
+                            }}
+                            isStickyBarInCartIndicator={false}
+                            deviceIdentifier={deviceIdentifier}
+                          />
+                        )}
                       </div>
                     </div>
                     {upsell &&

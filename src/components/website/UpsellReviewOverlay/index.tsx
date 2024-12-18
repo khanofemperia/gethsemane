@@ -10,13 +10,11 @@ import { AddToCartAction } from "@/actions/shopping-cart";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { formatThousands } from "@/lib/utils/common";
 import Image from "next/image";
-import Link from "next/link";
 import clsx from "clsx";
 import styles from "./styles.module.css";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { Spinner } from "@/ui/Spinners/Default";
-import { BiExpandAlt } from "react-icons/bi";
 
 export function UpsellReviewButton({
   product,
@@ -37,7 +35,7 @@ export function UpsellReviewButton({
     <button
       type="button"
       onClick={openOverlay}
-      className={`flex items-center justify-center w-full max-w-60 rounded-full cursor-pointer border border-[#b27100] text-white text-xs ${styles.button} min-[896px]:text-base font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:h-12`}
+      className={`flex items-center justify-center w-full h-11 max-w-60 rounded-full cursor-pointer border border-[#b27100] text-white text-xs ${styles.button} min-[896px]:text-base font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] hover:bg-[#cc8100] hover:[background:linear-gradient(to_bottom,_#cc8100_5%,_#e29000_100%)] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]`}
     >
       Yes, Let's Upgrade
     </button>
@@ -344,7 +342,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
               </div>
               <div className="absolute left-0 right-0 bottom-0">
                 <div className="h-[80px] px-5 flex items-start shadow-[0_-12px_16px_2px_white]">
-                  <div className="w-full h-12 flex justify-between items-center">
+                  <div className="w-full h-11 flex justify-between items-center">
                     <div className="flex gap-3">
                       <div className="flex items-center">
                         <div
@@ -380,20 +378,27 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                         </>
                       )}
                     </div>
-
                     <div className="relative">
                       {isInCart ? (
-                        <button
-                          onClick={handleInCartButtonClick}
-                          className="animate-fade px-8 flex items-center justify-center w-full rounded-full cursor-pointer border border-[#c5c3c0] text-blue font-semibold h-[44px] shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)] min-[896px]:h-12"
-                        >
-                          In Cart - See Now
-                        </button>
+                        <>
+                          <button
+                            onClick={handleInCartButtonClick}
+                            className="min-[365px]:hidden animate-fade px-3 flex items-center justify-center w-full h-11 rounded-full cursor-pointer border border-[#c5c3c0] text-blue text-sm font-semibold shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
+                          >
+                            View in Cart
+                          </button>
+                          <button
+                            onClick={handleInCartButtonClick}
+                            className="hidden animate-fade px-4 min-[365px]:flex items-center justify-center w-full h-11 rounded-full cursor-pointer border border-[#c5c3c0] text-blue text-sm font-semibold shadow-[inset_0px_1px_0px_0px_#ffffff] [background:linear-gradient(to_bottom,_#faf9f8_5%,_#eae8e6_100%)] bg-[#faf9f8] hover:[background:linear-gradient(to_bottom,_#eae8e6_5%,_#faf9f8_100%)] hover:bg-[#eae8e6] active:shadow-[inset_0_3px_8px_rgba(0,0,0,0.14)]"
+                          >
+                            In Cart - See Now
+                          </button>
+                        </>
                       ) : (
                         <>
                           <button
                             className={clsx(
-                              "min-[375px]:hidden text-sm flex items-center justify-center w-max px-[10px] h-10 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] transition-opacity duration-200",
+                              "min-[375px]:hidden text-sm flex items-center justify-center min-w-28 max-w-28 px-[10px] h-11 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] transition-opacity duration-200",
                               readyProducts.length !==
                                 selectedProduct?.upsell.products.length ||
                                 isAddingToCart
@@ -415,7 +420,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                           </button>
                           <button
                             className={clsx(
-                              "hidden text-sm min-[520px]:text-base min-[375px]:flex items-center justify-center w-max px-[10px] min-[425px]:px-4 min-[480px]:px-5 h-10 min-[520px]:h-12 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] transition-opacity duration-200",
+                              "hidden text-sm min-[375px]:flex items-center justify-center min-w-[160px] max-w-60 min-[425px]:min-w-[172px] px-[10px] min-[425px]:px-4 min-[480px]:px-5 h-11 rounded-full border border-[#b27100] text-white font-semibold shadow-[inset_0px_1px_0px_0px_#ffa405] [background:linear-gradient(to_bottom,_#e29000_5%,_#cc8100_100%)] bg-[#e29000] transition-opacity duration-200",
                               readyProducts.length !==
                                 selectedProduct?.upsell.products.length ||
                                 isAddingToCart
@@ -439,7 +444,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                       )}
                       <div
                         className={clsx(
-                          "animate-fade-right absolute right-0 bottom-14 w-[248px] py-3 px-4 rounded-xl bg-[#373737] before:content-[''] before:w-[10px] before:h-[10px] before:bg-[#373737] before:rounded-br-[2px] before:rotate-45 before:origin-bottom-left before:absolute before:-bottom-0 before:right-12",
+                          "animate-fade-right absolute right-0 bottom-12 min-[520px]:bottom-14 w-[248px] py-3 px-4 rounded-xl bg-[#373737] before:content-[''] before:w-[10px] before:h-[10px] before:bg-[#373737] before:rounded-br-[2px] before:rotate-45 before:origin-bottom-left before:absolute before:-bottom-0 before:right-12",
                           {
                             hidden:
                               readyProducts.length !==
