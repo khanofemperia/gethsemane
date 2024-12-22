@@ -51,18 +51,20 @@ export default async function Home() {
           categoriesData.categories.length > 0 && (
             <Categories categories={categoriesData.categories} />
           )}
-        <div className="mt-8 px-5 max-w-5xl mx-auto flex flex-col gap-10">
+        <div className="mt-8 max-w-5xl mx-auto flex flex-col gap-10">
           {combinedCollections.map((collection, index) => (
             <div key={index}>
               {renderCollection(collection, cart, deviceIdentifier)}
             </div>
           ))}
-          <DiscoveryProducts
-            page="HOME"
-            excludeIds={excludeIdsFromDiscoveryProducts}
-            deviceIdentifier={deviceIdentifier}
-            cart={cart}
-          />
+          <div className="px-5">
+            <DiscoveryProducts
+              page="HOME"
+              excludeIds={excludeIdsFromDiscoveryProducts}
+              deviceIdentifier={deviceIdentifier}
+              cart={cart}
+            />
+          </div>
         </div>
       </div>
       <QuickviewOverlay />
