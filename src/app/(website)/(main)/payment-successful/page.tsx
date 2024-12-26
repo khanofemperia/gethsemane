@@ -1,6 +1,15 @@
 import Link from "next/link";
 
-export default async function PaymentSuccessful() {
+export default async function PaymentSuccessful({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const email =
+    typeof searchParams.email === "string"
+      ? decodeURIComponent(searchParams.email)
+      : null;
+
   return (
     <div>
       <div className="w-max mx-auto">
@@ -9,7 +18,11 @@ export default async function PaymentSuccessful() {
             Payment successful, thanks so much!
           </h1>
           <p>We're sending confirmation to</p>
-          <p className="text-blue font-medium">mycustomer@gmail.com</p>
+          {email ? (
+            <p className="text-blue font-medium">{email}</p>
+          ) : (
+            <p className="text-blue font-medium">your email address</p>
+          )}
         </div>
         <Link
           href="/"

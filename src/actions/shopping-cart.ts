@@ -263,3 +263,66 @@ export async function RemoveFromCartAction({
     };
   }
 }
+
+export async function ClearPurchasedItemsAction({
+  variantIds,
+}: {
+  variantIds: string[];
+}) {
+  const deviceIdentifier = cookies().get("device_identifier")?.value;
+
+  if (!deviceIdentifier) {
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Cart not found",
+    };
+  }
+
+  try {
+    const collectionRef = collection(database, "carts");
+    const snapshot = await getDocs(
+      query(collectionRef, where("device_identifier", "==", deviceIdentifier))
+    );
+
+    if (snapshot.empty) {
+      return {
+        type: AlertMessageType.ERROR,
+        message: "Cart not found",
+      };
+    }
+
+    const cartDoc = snapshot.docs[0].ref;
+    const existingCartItems = snapshot.docs[0].data().items;
+
+    // Filter out the purchased items
+    const remainingItems = existingCartItems.filter(
+      (item: { variantId: string }) => !variantIds.includes(item.variantId)
+    );
+
+    // Reindex remaining items
+    const reindexedItems = remainingItems.map((item: any, index: number) => ({
+      ...item,
+      index: index + 1,
+    }));
+
+    await runTransaction(database, async (transaction) => {
+      return transaction.update(cartDoc, {
+        items: reindexedItems,
+        updatedAt: serverTimestamp(),
+      });
+    });
+
+    revalidatePath("/cart");
+
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Cart updated successfully",
+    };
+  } catch (error) {
+    console.error("Error clearing purchased items from cart:", error);
+    return {
+      type: AlertMessageType.ERROR,
+      message: "Failed to update cart",
+    };
+  }
+}

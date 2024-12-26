@@ -1,7 +1,14 @@
 "use client";
 
+import { ClearPurchasedItemsAction } from "@/actions/shopping-cart";
+import { AlertMessageType } from "@/lib/sharedTypes";
+import { useAlertStore } from "@/zustand/website/alertStore";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second between retries
 
 const initialOptions = {
   clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
@@ -9,14 +16,62 @@ const initialOptions = {
   intent: "capture",
 };
 
-export function PayPalButton({ cart, showLabel }: { cart: Cart; showLabel: boolean }) {
+export function PayPalButton({
+  cart,
+  showLabel,
+}: {
+  cart: Cart;
+  showLabel: boolean;
+}) {
+  const router = useRouter();
   const [key, setKey] = useState(() => cart.length);
+  const { showAlert, hideAlert } = useAlertStore();
 
   useEffect(() => {
     setKey(cart.length);
   }, [cart]);
 
   const cartItems = generateCartItems(cart);
+
+  const clearCartWithRetries = async (
+    variantIds: string[]
+  ): Promise<boolean> => {
+    // First attempt - no alert
+    const initialResult = await ClearPurchasedItemsAction({ variantIds });
+    if (initialResult.type !== AlertMessageType.ERROR) {
+      return true; // Successfully cleared cart
+    }
+
+    // If first attempt failed, start retry process
+    let attempt = 2; // Start counting from 2 since we already did attempt 1
+
+    while (attempt <= MAX_RETRIES) {
+      try {
+        showAlert({
+          message: `Updating cart - Retry ${attempt - 1}/${MAX_RETRIES - 1}`,
+          type: AlertMessageType.NEUTRAL,
+        });
+
+        // Wait before retry
+        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+
+        const clearResult = await ClearPurchasedItemsAction({ variantIds });
+
+        if (clearResult.type !== AlertMessageType.ERROR) {
+          hideAlert();
+          return true;
+        }
+
+        attempt++;
+      } catch (error) {
+        console.error(`Cart clear attempt ${attempt} failed:`, error);
+        attempt++;
+      }
+    }
+
+    hideAlert();
+    return false;
+  };
 
   const createOrder = useCallback(async () => {
     try {
@@ -55,8 +110,25 @@ export function PayPalButton({ cart, showLabel }: { cart: Cart; showLabel: boole
 
       const orderData = await response.json();
 
+      // Clear purchased items from cart with retries
+      const variantIds = cart.map((item) => item.variantId);
+      const clearSuccess = await clearCartWithRetries(variantIds);
+
+      if (!clearSuccess) {
+        console.error("Failed to clear cart after maximum retries");
+      }
+
+      // Redirect to success page regardless of cart clear status
+      const encodedEmail = encodeURIComponent(orderData.order.payer.email);
+      router.push(`/payment-successful?email=${encodedEmail}`);
+
       return orderData;
     } catch (error) {
+      showAlert({
+        message:
+          "Your payment couldn't be processed. Please try again or use a different payment method.",
+        type: AlertMessageType.ERROR,
+      });
       console.error("Failed to capture order:", error);
       throw error;
     }
@@ -161,8 +233,22 @@ type CartItem = {
   quantity: number;
 };
 
+type ProductCartItem = {
+  baseProductId: string;
+  variantId: string;
+  name: string;
+  type: "product";
+  pricing: {
+    basePrice: number;
+    salePrice: number;
+  };
+  size?: string;
+  color?: string;
+};
+
 type UpsellCartItem = {
   baseUpsellId: string;
+  variantId: string;
   type: "upsell";
   pricing: {
     salePrice: number;
@@ -175,18 +261,6 @@ type UpsellCartItem = {
     size: string;
     color: string;
   }>;
-};
-
-type ProductCartItem = {
-  baseProductId: string;
-  name: string;
-  type: "product";
-  pricing: {
-    basePrice: number;
-    salePrice: number;
-  };
-  size?: string;
-  color?: string;
 };
 
 type Cart = (ProductCartItem | UpsellCartItem)[];
