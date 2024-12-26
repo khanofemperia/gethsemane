@@ -1,14 +1,26 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 export default async function PaymentSuccessful({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  // Check for valid payment session
+  const paymentSuccess = cookies().get("payment_success");
+  if (!paymentSuccess) {
+    redirect("/");
+  }
+
+  // Get and validate email
   const email =
     typeof searchParams.email === "string"
       ? decodeURIComponent(searchParams.email)
-      : null;
+      : redirect("/");
+
+  // Note: Cookie will be cleared automatically after 5 minutes
+  // or when the browser is closed due to the Max-Age setting
 
   return (
     <div>
@@ -18,11 +30,7 @@ export default async function PaymentSuccessful({
             Payment successful, thanks so much!
           </h1>
           <p>We're sending confirmation to</p>
-          {email ? (
-            <p className="text-blue font-medium">{email}</p>
-          ) : (
-            <p className="text-blue font-medium">your email address</p>
-          )}
+          <p className="text-blue font-medium">{email}</p>
         </div>
         <Link
           href="/"

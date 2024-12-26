@@ -118,7 +118,15 @@ export function PayPalButton({
         console.error("Failed to clear cart after maximum retries");
       }
 
-      // Redirect to success page regardless of cart clear status
+      await fetch("/api/paypal/verify-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ success: true }),
+      });
+
+      // Redirect to success page
       const encodedEmail = encodeURIComponent(orderData.order.payer.email);
       router.push(`/payment-successful?email=${encodedEmail}`);
 
