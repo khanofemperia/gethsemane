@@ -3,6 +3,7 @@ import { getCategories } from "@/actions/get/categories";
 import { getOrders } from "@/actions/get/orders";
 import { getProducts } from "@/actions/get/products";
 import { formatThousands } from "@/lib/utils/common";
+import clsx from "clsx";
 import Link from "next/link";
 
 class StoreGrowthMetrics {
@@ -628,6 +629,116 @@ const ProductStatus = ({ products }: { products: ProductType[] | null }) => {
   );
 };
 
+const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
+  const determineCartStatus = (updatedAt: string) => {
+    const now = new Date();
+    const updatedDate = new Date(updatedAt);
+    const differenceInMs = now.getTime() - updatedDate.getTime();
+    const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
+
+    if (differenceInDays < 1) {
+      return "Active";
+    } else if (differenceInDays >= 1 && differenceInDays <= 7) {
+      return "Idle";
+    } else if (differenceInDays > 7 && differenceInDays <= 30) {
+      return "Abandoned";
+    } else {
+      return "Dead";
+    }
+  };
+
+  const statusCounts = carts.reduce(
+    (acc, cart) => {
+      const status = determineCartStatus(cart.updatedAt);
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    },
+    { Active: 0, Idle: 0, Abandoned: 0, Dead: 0 }
+  );
+
+  return (
+    <div className="rounded-md border overflow-hidden">
+      <table className="w-full text-left text-sm">
+        <thead>
+          <tr className="bg-neutral-100">
+            <th className="py-2 px-4 font-medium text-gray">Status</th>
+            <th className="py-2 px-4 font-medium text-gray">Cart Count</th>
+            <th className="py-2 px-4 font-medium text-gray">Total Value</th>
+            <th className="py-2 px-4 font-medium text-gray">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+            <td className="py-2 px-4 font-medium text-green-700">
+              <span className="inline-block bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
+                Active
+              </span>
+            </td>
+            <td
+              className={clsx("py-2 px-4", {
+                "font-semibold": statusCounts.Active !== 0,
+              })}
+            >
+              {statusCounts.Active}
+            </td>
+            <td className="py-2 px-4 font-semibold">$15,680</td>
+            <td className="py-2 px-4">Carts within &lt; 24 hours.</td>
+          </tr>
+          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+            <td className="py-2 px-4 font-medium text-yellow-700">
+              <span className="inline-block bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">
+                Idle
+              </span>
+            </td>
+            <td
+              className={clsx("py-2 px-4", {
+                "font-semibold": statusCounts.Idle !== 0,
+              })}
+            >
+              {statusCounts.Idle}
+            </td>
+            <td className="py-2 px-4 font-semibold">$42,560</td>
+            <td className="py-2 px-4">Carts inactive for 1-7 days.</td>
+          </tr>
+          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+            <td className="py-2 px-4 font-medium text-gray-700">
+              <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
+                Abandoned
+              </span>
+            </td>
+            <td
+              className={clsx("py-2 px-4", {
+                "font-semibold": statusCounts.Abandoned !== 0,
+              })}
+            >
+              {statusCounts.Abandoned}
+            </td>
+
+            <td className="py-2 px-4 font-semibold">$67,450</td>
+            <td className="py-2 px-4">Carts abandoned for 7-30 days.</td>
+          </tr>
+          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+            <td className="py-2 px-4 font-medium">
+              <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs">
+                Dead
+              </span>
+            </td>
+            <td
+              className={clsx("py-2 px-4", {
+                "font-semibold": statusCounts.Dead !== 0,
+              })}
+            >
+              {statusCounts.Dead}
+            </td>
+            <td className="py-2 px-4 font-semibold">$98,760</td>
+            <td className="py-2 px-4">Carts older than 30 days.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 // const CartStatusBreakdown = ({
 //   carts,
 //   products,
@@ -778,93 +889,6 @@ const ProductStatus = ({ products }: { products: ProductType[] | null }) => {
 //   </table>
 // </div>;
 // };
-
-const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
-  const determineCartStatus = (updatedAt: string) => {
-    const now = new Date();
-    const updatedDate = new Date(updatedAt);
-    const differenceInMs = now.getTime() - updatedDate.getTime();
-    const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
-
-    if (differenceInDays < 1) {
-      return "Active";
-    } else if (differenceInDays >= 1 && differenceInDays <= 7) {
-      return "Idle";
-    } else if (differenceInDays > 7 && differenceInDays <= 30) {
-      return "Abandoned";
-    } else {
-      return "Dead";
-    }
-  };
-
-  const statusCounts = carts.reduce(
-    (acc, cart) => {
-      const status = determineCartStatus(cart.updatedAt);
-      acc[status] = (acc[status] || 0) + 1;
-      return acc;
-    },
-    { Active: 0, Idle: 0, Abandoned: 0, Dead: 0 }
-  );
-
-  return (
-    <div className="rounded-md border overflow-hidden">
-      <table className="w-full text-left text-sm">
-        <thead>
-          <tr className="bg-neutral-100">
-            <th className="py-2 px-4 font-medium text-gray">Status</th>
-            <th className="py-2 px-4 font-medium text-gray">Cart Count</th>
-            <th className="py-2 px-4 font-medium text-gray">Total Value</th>
-            <th className="py-2 px-4 font-medium text-gray">Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-            <td className="py-2 px-4 font-medium text-green-700">
-              <span className="inline-block bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
-                Active
-              </span>
-            </td>
-            <td className="py-2 px-4 font-semibold">{statusCounts.Active}</td>
-            <td className="py-2 px-4 font-semibold">$15,680</td>
-            <td className="py-2 px-4">Carts within &lt; 24 hours.</td>
-          </tr>
-          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-            <td className="py-2 px-4 font-medium text-yellow-700">
-              <span className="inline-block bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">
-                Idle
-              </span>
-            </td>
-            <td className="py-2 px-4 font-semibold">{statusCounts.Idle}</td>
-            <td className="py-2 px-4 font-semibold">$42,560</td>
-            <td className="py-2 px-4">Carts inactive for 1-7 days.</td>
-          </tr>
-          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-            <td className="py-2 px-4 font-medium text-gray-700">
-              <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
-                Abandoned
-              </span>
-            </td>
-            <td className="py-2 px-4 font-semibold">
-              {statusCounts.Abandoned}
-            </td>
-            <td className="py-2 px-4 font-semibold">$67,450</td>
-            <td className="py-2 px-4">Carts abandoned for 7-30 days.</td>
-          </tr>
-          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-            <td className="py-2 px-4 font-medium">
-              <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs">
-                Dead
-              </span>
-            </td>
-            <td className="py-2 px-4 font-semibold">{statusCounts.Dead}</td>
-            <td className="py-2 px-4 font-semibold">$98,760</td>
-            <td className="py-2 px-4">Carts older than 30 days.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
-};
 
 // -- Type Definitions --
 
