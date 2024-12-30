@@ -6,7 +6,7 @@ import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { ProductImageCarouselOverlay } from "../ProductImageCarouselOverlay";
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { useEffect, useState, useTransition } from "react";
-import { AddToCartAction } from "@/actions/shopping-cart";
+import { AddToCartAction } from "@/actions/cart";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { formatThousands } from "@/lib/utils/common";
 import Image from "next/image";

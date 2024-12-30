@@ -1,4 +1,4 @@
-import { getCart } from "@/actions/get/cart";
+import { getCart } from "@/actions/get/carts";
 import { getCollections } from "@/actions/get/collections";
 import { CatalogEmptyState } from "@/components/website/CatalogEmptyState";
 import { Pagination } from "@/components/website/Pagination";

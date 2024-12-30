@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import Navbar from ".";
-import { getCart } from "@/actions/get/cart";
+import { getCart } from "@/actions/get/carts";
 import { getCategories } from "@/actions/get/categories";
 
 export async function NavbarWrapper() {

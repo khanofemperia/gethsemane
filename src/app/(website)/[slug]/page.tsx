@@ -11,7 +11,7 @@ import { ProductDetailsWrapper } from "@/components/website/ProductDetailsWrappe
 import { SizeChartOverlay } from "@/components/website/Product/SizeChartOverlay";
 import clsx from "clsx";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
-import { getCart } from "@/actions/get/cart";
+import { getCart } from "@/actions/get/carts";
 import { getCategories } from "@/actions/get/categories";
 import { getProducts } from "@/actions/get/products";
 import { Options } from "@/components/website/Product/Options";

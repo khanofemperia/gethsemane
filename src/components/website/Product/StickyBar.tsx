@@ -1,6 +1,6 @@
 "use client";
 
-import { AddToCartAction } from "@/actions/shopping-cart";
+import { AddToCartAction } from "@/actions/cart";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { formatThousands } from "@/lib/utils/common";
 import { useAlertStore } from "@/zustand/website/alertStore";

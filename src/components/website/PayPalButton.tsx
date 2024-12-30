@@ -1,6 +1,6 @@
 "use client";
 
-import { ClearPurchasedItemsAction } from "@/actions/shopping-cart";
+import { ClearPurchasedItemsAction } from "@/actions/cart";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";

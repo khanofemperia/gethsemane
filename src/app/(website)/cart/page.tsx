@@ -10,7 +10,7 @@ import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
 import CartItemList from "@/components/website/CartItemList";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import clsx from "clsx";
-import { getCart } from "@/actions/get/cart";
+import { getCart } from "@/actions/get/carts";
 import { getProducts } from "@/actions/get/products";
 
 export default async function Cart() {

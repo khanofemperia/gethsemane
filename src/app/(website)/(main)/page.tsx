@@ -8,7 +8,7 @@ import ShowAlert from "@/components/website/ShowAlert";
 import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { getCart } from "@/actions/get/cart";
+import { getCart } from "@/actions/get/carts";
 import { getCollections } from "@/actions/get/collections";
 import { getCategories } from "@/actions/get/categories";
 import { getPageHero } from "@/actions/get/pageHero";

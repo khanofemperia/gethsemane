@@ -4,7 +4,7 @@ import { useAlertStore } from "@/zustand/website/alertStore";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { useTransition, useEffect } from "react";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { AddToCartAction } from "@/actions/shopping-cart";
+import { AddToCartAction } from "@/actions/cart";
 import { Spinner } from "@/ui/Spinners/Default";
 import clsx from "clsx";
 import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";

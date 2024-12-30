@@ -201,7 +201,8 @@ export async function RemoveFromCartAction({
 }: {
   variantId: string;
 }) {
-  const deviceIdentifier = cookies().get("device_identifier")?.value;
+  const cookieStore = cookies();
+  const deviceIdentifier = cookieStore.get("device_identifier")?.value;
 
   if (!deviceIdentifier) {
     return {
@@ -231,6 +232,27 @@ export async function RemoveFromCartAction({
         item.variantId !== variantId
     );
 
+    // If this was the last item, delete the cart and remove the cookie
+    if (filteredItems.length === 0) {
+      await runTransaction(database, async (transaction) => {
+        return transaction.delete(cartDoc);
+      });
+
+      // Remove the device_identifier cookie
+      cookieStore.delete({
+        name: "device_identifier",
+        path: "/",
+      });
+
+      revalidatePath("/cart");
+
+      return {
+        type: AlertMessageType.SUCCESS,
+        message: "Cart cleared",
+      };
+    }
+
+    // Otherwise, update the cart as before
     const sortedItems = filteredItems.sort(
       (a: any, b: any) => a.index - b.index
     );

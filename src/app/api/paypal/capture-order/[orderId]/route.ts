@@ -5,8 +5,9 @@ import { database } from "@/lib/firebase";
 import { cookies } from "next/headers";
 import { getDoc } from "firebase/firestore";
 import { generateAccessToken } from "@/lib/utils/orders";
-import { getCart } from "@/actions/get/cart";
+import { getCart } from "@/actions/get/carts";
 import { getProducts } from "@/actions/get/products";
+import { revalidatePath } from "next/cache";
 
 export async function POST(
   _request: NextRequest,
@@ -90,6 +91,9 @@ export async function POST(
 
     const orderRef = doc(database, "orders", orderData.id);
     await setDoc(orderRef, newOrder);
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/orders");
 
     return NextResponse.json({
       message: "Order captured and saved successfully",

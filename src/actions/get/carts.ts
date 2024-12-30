@@ -9,9 +9,74 @@ import {
   runTransaction,
   serverTimestamp,
   where,
+  FirestoreError,
+  writeBatch,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 import { revalidatePath } from "next/cache";
+
+export async function getCarts(): Promise<CartType[]> {
+  try {
+    const collectionRef = collection(database, "carts");
+    const snapshot = await getDocs(collectionRef);
+
+    if (snapshot.empty) {
+      return [];
+    }
+
+    // Process carts in batches of 10 for better performance
+    const batchSize = 10;
+    const carts = [];
+    const batch = writeBatch(database);
+    let needsUpdate = false;
+
+    for (let i = 0; i < snapshot.docs.length; i += batchSize) {
+      const batchDocs = snapshot.docs.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batchDocs.map(async (cartDoc) => {
+          const cartData = cartDoc.data();
+          const validatedItems = await validateCartItems(cartData.items || []);
+
+          if (validatedItems.length !== cartData.items?.length) {
+            const reindexedItems = validatedItems.map((item, index) => ({
+              ...item,
+              index: index + 1,
+            }));
+
+            batch.update(cartDoc.ref, {
+              items: reindexedItems,
+              updatedAt: serverTimestamp(),
+            });
+            needsUpdate = true;
+          }
+
+          return {
+            id: cartDoc.id,
+            device_identifier: cartData.device_identifier,
+            items: validatedItems,
+          };
+        })
+      );
+
+      carts.push(...batchResults);
+    }
+
+    // Only commit batch if there were updates
+    if (needsUpdate) {
+      await batch.commit();
+      revalidatePath("/cart");
+    }
+
+    return carts;
+  } catch (error) {
+    if (error instanceof FirestoreError) {
+      console.error(`Firestore error fetching carts: ${error.code}`, error);
+    } else {
+      console.error("Error fetching carts:", error);
+    }
+    return [];
+  }
+}
 
 export async function getCart(
   deviceIdentifier: string | undefined
@@ -33,11 +98,9 @@ export async function getCart(
     const cartDoc = snapshot.docs[0];
     const cartData = cartDoc.data();
 
-    // Validate and filter cart items
-    const validatedItems = await validateCartItems(cartData.items);
+    const validatedItems = await validateCartItems(cartData.items || []);
 
-    // Update the cart if items were removed
-    if (validatedItems.length !== cartData.items.length) {
+    if (validatedItems.length !== cartData.items?.length) {
       const reindexedItems = validatedItems.map((item, index) => ({
         ...item,
         index: index + 1,
@@ -59,7 +122,11 @@ export async function getCart(
       items: validatedItems,
     };
   } catch (error) {
-    console.error("Error fetching cart:", error);
+    if (error instanceof FirestoreError) {
+      console.error(`Firestore error fetching cart: ${error.code}`, error);
+    } else {
+      console.error("Error fetching cart:", error);
+    }
     return null;
   }
 }
@@ -69,9 +136,13 @@ export async function getCart(
 async function validateCartItems(
   items: (CartProductItemType | CartUpsellItemType)[]
 ): Promise<(CartProductItemType | CartUpsellItemType)[]> {
+  if (!items?.length) return [];
+
   const validatedItems = await Promise.all(
     items.map(async (item) => {
       try {
+        if (!item || !item.type) return null;
+
         if (item.type === "product") {
           const exists = await checkDocumentExists(
             "products",

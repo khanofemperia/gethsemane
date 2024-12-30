@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { TrashIcon } from "@/icons";
-import { RemoveFromCartAction } from "@/actions/shopping-cart";
+import { RemoveFromCartAction } from "@/actions/cart";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { DashSpinner } from "@/ui/Spinners/DashSpinner";
