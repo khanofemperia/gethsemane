@@ -77,6 +77,7 @@ export async function AddToCartAction(data: {
       revalidatePath("/");
       revalidatePath("/cart");
       revalidatePath("/[slug]", "page");
+      revalidatePath("/admin");
 
       return {
         type: AlertMessageType.SUCCESS,
@@ -164,6 +165,7 @@ export async function AddToCartAction(data: {
     revalidatePath("/");
     revalidatePath("/cart");
     revalidatePath("/[slug]", "page");
+    revalidatePath("/admin");
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -245,6 +247,7 @@ export async function RemoveFromCartAction({
       });
 
       revalidatePath("/cart");
+      revalidatePath("/admin");
 
       return {
         type: AlertMessageType.SUCCESS,
@@ -272,6 +275,7 @@ export async function RemoveFromCartAction({
     });
 
     revalidatePath("/cart");
+    revalidatePath("/admin");
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -335,6 +339,7 @@ export async function ClearPurchasedItemsAction({
     });
 
     revalidatePath("/cart");
+    revalidatePath("/admin");
 
     return {
       type: AlertMessageType.SUCCESS,

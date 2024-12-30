@@ -229,7 +229,11 @@ type ProductType = {
     headline: string;
     keyPoints: KeyPointsType[];
   };
-  pricing: PricingType;
+  pricing: {
+    basePrice: number;
+    salePrice: number;
+    discountPercentage: number;
+  };
   images: {
     main: string;
     gallery: string[];
@@ -301,6 +305,8 @@ type CartType = {
   id: string;
   device_identifier: string;
   items: Array<CartProductItemType | CartUpsellItemType>;
+  createdAt: string;
+  updatedAt: string;
 };
 
 //

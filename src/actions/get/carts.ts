@@ -17,63 +17,23 @@ import { revalidatePath } from "next/cache";
 
 export async function getCarts(): Promise<CartType[]> {
   try {
-    const collectionRef = collection(database, "carts");
-    const snapshot = await getDocs(collectionRef);
+    const snapshot = await getDocs(collection(database, "carts"));
 
     if (snapshot.empty) {
       return [];
     }
 
-    // Process carts in batches of 10 for better performance
-    const batchSize = 10;
-    const carts = [];
-    const batch = writeBatch(database);
-    let needsUpdate = false;
-
-    for (let i = 0; i < snapshot.docs.length; i += batchSize) {
-      const batchDocs = snapshot.docs.slice(i, i + batchSize);
-      const batchResults = await Promise.all(
-        batchDocs.map(async (cartDoc) => {
-          const cartData = cartDoc.data();
-          const validatedItems = await validateCartItems(cartData.items || []);
-
-          if (validatedItems.length !== cartData.items?.length) {
-            const reindexedItems = validatedItems.map((item, index) => ({
-              ...item,
-              index: index + 1,
-            }));
-
-            batch.update(cartDoc.ref, {
-              items: reindexedItems,
-              updatedAt: serverTimestamp(),
-            });
-            needsUpdate = true;
-          }
-
-          return {
-            id: cartDoc.id,
-            device_identifier: cartData.device_identifier,
-            items: validatedItems,
-          };
-        })
-      );
-
-      carts.push(...batchResults);
-    }
-
-    // Only commit batch if there were updates
-    if (needsUpdate) {
-      await batch.commit();
-      revalidatePath("/cart");
-    }
-
-    return carts;
+    return snapshot.docs.map((cartDoc) => {
+      const cartData = cartDoc.data();
+      return {
+        id: cartDoc.id,
+        device_identifier: cartData.device_identifier,
+        items: cartData.items || [],
+        createdAt: cartData.createdAt?.toDate().toISOString(),
+        updatedAt: cartData.updatedAt?.toDate().toISOString(),
+      };
+    });
   } catch (error) {
-    if (error instanceof FirestoreError) {
-      console.error(`Firestore error fetching carts: ${error.code}`, error);
-    } else {
-      console.error("Error fetching carts:", error);
-    }
     return [];
   }
 }
@@ -120,6 +80,8 @@ export async function getCart(
       id: cartDoc.id,
       device_identifier: cartData.device_identifier,
       items: validatedItems,
+      createdAt: cartData.createdAt,
+      updatedAt: cartData.updatedAt,
     };
   } catch (error) {
     if (error instanceof FirestoreError) {
@@ -209,4 +171,6 @@ type CartType = {
   id: string;
   device_identifier: any;
   items: (CartProductItemType | CartUpsellItemType)[];
+  createdAt: string;
+  updatedAt: string;
 };

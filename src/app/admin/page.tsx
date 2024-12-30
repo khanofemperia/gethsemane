@@ -99,7 +99,7 @@ class StoreGrowthMetrics {
 export default async function Overview() {
   const orders = (await getOrders()) as PaymentTransaction[];
   const products = (await getProducts({
-    fields: ["visibility"],
+    fields: ["visibility", "pricing"],
   })) as ProductType[] | null;
   const carts = await getCarts();
 
@@ -628,61 +628,183 @@ const ProductStatus = ({ products }: { products: ProductType[] | null }) => {
   );
 };
 
+// const CartStatusBreakdown = ({
+//   carts,
+//   products,
+// }: {
+//   carts: CartType[];
+//   products: ProductType[] | null;
+// }) => {
+//   console.log(carts);
+//   return (
+//     <div className="rounded-md border overflow-hidden">
+//       <table className="w-full text-left text-sm">
+//         <thead>
+//           <tr className="bg-neutral-100">
+//             <th className="py-2 px-4 font-medium text-gray">Status</th>
+//             <th className="py-2 px-4 font-medium text-gray">Cart Count</th>
+//             <th className="py-2 px-4 font-medium text-gray">Total Value</th>
+//             <th className="py-2 px-4 font-medium text-gray">Description</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+//             <td className="py-2 px-4 font-medium text-green-700">
+//               <span className="inline-block bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
+//                 Active
+//               </span>
+//             </td>
+//             <td className="py-2 px-4 font-semibold">234</td>
+//             <td className="py-2 px-4 font-semibold">$15,680</td>
+//             <td className="py-2 px-4">Carts within &lt; 24 hours.</td>
+//           </tr>
+//           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+//             <td className="py-2 px-4 font-medium text-yellow-700">
+//               <span className="inline-block bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">
+//                 Idle
+//               </span>
+//             </td>
+//             <td className="py-2 px-4 font-semibold">567</td>
+//             <td className="py-2 px-4 font-semibold">$42,560</td>
+//             <td className="py-2 px-4">Carts inactive for 1-7 days.</td>
+//           </tr>
+//           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+//             <td className="py-2 px-4 font-medium text-gray-700">
+//               <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
+//                 Abandoned
+//               </span>
+//             </td>
+//             <td className="py-2 px-4 font-semibold">890</td>
+//             <td className="py-2 px-4 font-semibold">$67,450</td>
+//             <td className="py-2 px-4">Carts abandoned for 7-30 days.</td>
+//           </tr>
+//           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+//             <td className="py-2 px-4 font-medium">
+//               <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs">
+//                 Dead
+//               </span>
+//             </td>
+//             <td className="py-2 px-4 font-semibold">1,234</td>
+//             <td className="py-2 px-4 font-semibold">$98,760</td>
+//             <td className="py-2 px-4">Carts older than 30 days.</td>
+//           </tr>
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// };
+
+// const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
+//   const determineCartStatus = (updatedAt: string) => {
+//     const now = new Date();
+//     const updatedDate = new Date(updatedAt);
+//     const differenceInMs = now.getTime() - updatedDate.getTime();
+//     const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
+
+//     if (differenceInDays < 1) {
+//       return "Active";
+//     } else if (differenceInDays >= 1 && differenceInDays <= 7) {
+//       return "Idle";
+//     } else if (differenceInDays > 7 && differenceInDays <= 30) {
+//       return "Abandoned";
+//     } else {
+//       return "Dead";
+//     }
+//   };
+
+//   const statusCounts = carts.reduce(
+//     (acc, cart) => {
+//       const status = determineCartStatus(cart.updatedAt);
+//       acc[status] = (acc[status] || 0) + 1;
+//       return acc;
+//     },
+//     { Active: 0, Idle: 0, Abandoned: 0, Dead: 0 }
+//   );
+
+//   console.log(statusCounts);
+
+// return <div className="rounded-md border overflow-hidden">
+//   <table className="w-full text-left text-sm">
+//     <thead>
+//       <tr className="bg-neutral-100">
+//         <th className="py-2 px-4 font-medium text-gray">Status</th>
+//         <th className="py-2 px-4 font-medium text-gray">Cart Count</th>
+//         <th className="py-2 px-4 font-medium text-gray">Total Value</th>
+//         <th className="py-2 px-4 font-medium text-gray">Description</th>
+//       </tr>
+//     </thead>
+//     <tbody>
+//       <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+//         <td className="py-2 px-4 font-medium text-green-700">
+//           <span className="inline-block bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
+//             Active
+//           </span>
+//         </td>
+//         <td className="py-2 px-4 font-semibold">234</td>
+//         <td className="py-2 px-4 font-semibold">$15,680</td>
+//         <td className="py-2 px-4">Carts within &lt; 24 hours.</td>
+//       </tr>
+//       <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+//         <td className="py-2 px-4 font-medium text-yellow-700">
+//           <span className="inline-block bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">
+//             Idle
+//           </span>
+//         </td>
+//         <td className="py-2 px-4 font-semibold">567</td>
+//         <td className="py-2 px-4 font-semibold">$42,560</td>
+//         <td className="py-2 px-4">Carts inactive for 1-7 days.</td>
+//       </tr>
+//       <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+//         <td className="py-2 px-4 font-medium text-gray-700">
+//           <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
+//             Abandoned
+//           </span>
+//         </td>
+//         <td className="py-2 px-4 font-semibold">890</td>
+//         <td className="py-2 px-4 font-semibold">$67,450</td>
+//         <td className="py-2 px-4">Carts abandoned for 7-30 days.</td>
+//       </tr>
+//       <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+//         <td className="py-2 px-4 font-medium">
+//           <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs">
+//             Dead
+//           </span>
+//         </td>
+//         <td className="py-2 px-4 font-semibold">1,234</td>
+//         <td className="py-2 px-4 font-semibold">$98,760</td>
+//         <td className="py-2 px-4">Carts older than 30 days.</td>
+//       </tr>
+//     </tbody>
+//   </table>
+// </div>;
+// };
+
 const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
-  const getTimeDifference = (cartId: string) => {
-    // For demo, using random ID as proxy for time
-    // In real app, would use actual timestamp
-    const hash = cartId
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return Math.floor(hash % 40); // 0-40 days difference
+  const determineCartStatus = (updatedAt: string) => {
+    const now = new Date();
+    const updatedDate = new Date(updatedAt);
+    const differenceInMs = now.getTime() - updatedDate.getTime();
+    const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
+
+    if (differenceInDays < 1) {
+      return "Active";
+    } else if (differenceInDays >= 1 && differenceInDays <= 7) {
+      return "Idle";
+    } else if (differenceInDays > 7 && differenceInDays <= 30) {
+      return "Abandoned";
+    } else {
+      return "Dead";
+    }
   };
 
-  const calculateCartStats = () => {
-    const stats = {
-      active: { count: 0, value: 0 },
-      idle: { count: 0, value: 0 },
-      abandoned: { count: 0, value: 0 },
-      dead: { count: 0, value: 0 },
-    };
-
-    carts.forEach((cart) => {
-      const daysOld = getTimeDifference(cart.id);
-      const cartValue = cart.items.reduce((total, item) => {
-        if (item.type === "product") {
-          return total + 100; // Would use actual product price
-        } else {
-          return total + item.products.length * 100; // Would use actual upsell prices
-        }
-      }, 0);
-
-      if (daysOld < 1) {
-        stats.active.count++;
-        stats.active.value += cartValue;
-      } else if (daysOld < 7) {
-        stats.idle.count++;
-        stats.idle.value += cartValue;
-      } else if (daysOld < 30) {
-        stats.abandoned.count++;
-        stats.abandoned.value += cartValue;
-      } else {
-        stats.dead.count++;
-        stats.dead.value += cartValue;
-      }
-    });
-
-    return stats;
-  };
-
-  const stats = calculateCartStats();
-
-  if (!carts || carts.length === 0) {
-    return (
-      <div className="text-center py-8 text-gray-500">
-        No cart data available
-      </div>
-    );
-  }
+  const statusCounts = carts.reduce(
+    (acc, cart) => {
+      const status = determineCartStatus(cart.updatedAt);
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    },
+    { Active: 0, Idle: 0, Abandoned: 0, Dead: 0 }
+  );
 
   return (
     <div className="rounded-md border overflow-hidden">
@@ -697,45 +819,35 @@ const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
         </thead>
         <tbody>
           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-            <td className="py-2 px-4 font-medium">
+            <td className="py-2 px-4 font-medium text-green-700">
               <span className="inline-block bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
                 Active
               </span>
             </td>
-            <td className="py-2 px-4 font-semibold">{stats.active.count}</td>
-            <td className="py-2 px-4 font-semibold">
-              {stats.active.value > 0
-                ? `$${stats.active.value.toLocaleString()}`
-                : "0"}
-            </td>
+            <td className="py-2 px-4 font-semibold">{statusCounts.Active}</td>
+            <td className="py-2 px-4 font-semibold">$15,680</td>
             <td className="py-2 px-4">Carts within &lt; 24 hours.</td>
           </tr>
           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-            <td className="py-2 px-4 font-medium">
+            <td className="py-2 px-4 font-medium text-yellow-700">
               <span className="inline-block bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">
                 Idle
               </span>
             </td>
-            <td className="py-2 px-4 font-semibold">{stats.idle.count}</td>
-            <td className="py-2 px-4 font-semibold">
-              {stats.idle.value > 0
-                ? `$${stats.idle.value.toLocaleString()}`
-                : "0"}
-            </td>
+            <td className="py-2 px-4 font-semibold">{statusCounts.Idle}</td>
+            <td className="py-2 px-4 font-semibold">$42,560</td>
             <td className="py-2 px-4">Carts inactive for 1-7 days.</td>
           </tr>
           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-            <td className="py-2 px-4 font-medium">
+            <td className="py-2 px-4 font-medium text-gray-700">
               <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
                 Abandoned
               </span>
             </td>
-            <td className="py-2 px-4 font-semibold">{stats.abandoned.count}</td>
             <td className="py-2 px-4 font-semibold">
-              {stats.abandoned.value > 0
-                ? `$${stats.abandoned.value.toLocaleString()}`
-                : "0"}
+              {statusCounts.Abandoned}
             </td>
+            <td className="py-2 px-4 font-semibold">$67,450</td>
             <td className="py-2 px-4">Carts abandoned for 7-30 days.</td>
           </tr>
           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
@@ -744,12 +856,8 @@ const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
                 Dead
               </span>
             </td>
-            <td className="py-2 px-4 font-semibold">{stats.dead.count}</td>
-            <td className="py-2 px-4 font-semibold">
-              {stats.dead.value > 0
-                ? `$${stats.dead.value.toLocaleString()}`
-                : "0"}
-            </td>
+            <td className="py-2 px-4 font-semibold">{statusCounts.Dead}</td>
+            <td className="py-2 px-4 font-semibold">$98,760</td>
             <td className="py-2 px-4">Carts older than 30 days.</td>
           </tr>
         </tbody>
