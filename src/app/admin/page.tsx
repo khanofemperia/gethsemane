@@ -2,6 +2,7 @@ import { getCarts } from "@/actions/get/carts";
 import { getCategories } from "@/actions/get/categories";
 import { getOrders } from "@/actions/get/orders";
 import { getProducts } from "@/actions/get/products";
+import { getUpsells } from "@/actions/get/upsells";
 import { formatThousands } from "@/lib/utils/common";
 import clsx from "clsx";
 import Link from "next/link";
@@ -98,11 +99,16 @@ class StoreGrowthMetrics {
 }
 
 export default async function Overview() {
-  const orders = (await getOrders()) as PaymentTransaction[];
-  const products = (await getProducts({
-    fields: ["visibility", "pricing"],
-  })) as ProductType[] | null;
-  const carts = await getCarts();
+  const [orders, products, upsells, carts] = await Promise.all([
+    getOrders() as Promise<PaymentTransaction[]>,
+    getProducts({ fields: ["visibility", "pricing"] }) as Promise<
+      ProductType[] | null
+    >,
+    getUpsells({ fields: ["visibility", "pricing"] }) as Promise<
+      UpsellType[] | null
+    >,
+    getCarts(),
+  ]);
 
   return (
     <div className="max-w-[812px] flex flex-col gap-10 px-5">
@@ -133,7 +139,11 @@ export default async function Overview() {
       <div>
         <h2 className="font-semibold text-xl mb-6">Cart Status Breakdown</h2>
         <div className="w-full p-5 relative shadow rounded-xl bg-white">
-          <CartStatusBreakdown carts={carts} />
+          <CartStatusBreakdown
+            carts={carts}
+            products={products}
+            upsells={upsells}
+          />
         </div>
       </div>
     </div>
@@ -629,7 +639,15 @@ const ProductStatus = ({ products }: { products: ProductType[] | null }) => {
   );
 };
 
-const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
+const CartStatusBreakdown = ({
+  carts,
+  products,
+  upsells,
+}: {
+  carts: CartType[];
+  products: ProductType[] | null;
+  upsells: UpsellType[] | null;
+}) => {
   const determineCartStatus = (updatedAt: string) => {
     const now = new Date();
     const updatedDate = new Date(updatedAt);
@@ -647,6 +665,28 @@ const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
     }
   };
 
+  const calculateCartValue = (cart: CartType) => {
+    let totalValue = 0;
+
+    cart.items.forEach((item) => {
+      if (item.type === "product") {
+        const product = products?.find((p) => p.id === item.baseProductId);
+        if (product) {
+          const price = parseFloat(String(product.pricing.basePrice));
+          totalValue += price;
+        }
+      } else if (item.type === "upsell") {
+        const upsell = upsells?.find((u) => u.id === item.baseUpsellId);
+        if (upsell) {
+          const price = parseFloat(String(upsell.pricing.basePrice));
+          totalValue += price;
+        }
+      }
+    });
+
+    return totalValue;
+  };
+
   const statusCounts = carts.reduce(
     (acc, cart) => {
       const status = determineCartStatus(cart.updatedAt);
@@ -654,6 +694,25 @@ const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
       return acc;
     },
     { Active: 0, Idle: 0, Abandoned: 0, Dead: 0 }
+  );
+
+  const statusBreakdown = carts.reduce(
+    (acc, cart) => {
+      const status = determineCartStatus(cart.updatedAt);
+      const value = calculateCartValue(cart);
+
+      acc[status] = {
+        count: (acc[status]?.count || 0) + 1,
+        value: (acc[status]?.value || 0) + value,
+      };
+      return acc;
+    },
+    {
+      Active: { count: 0, value: 0 },
+      Idle: { count: 0, value: 0 },
+      Abandoned: { count: 0, value: 0 },
+      Dead: { count: 0, value: 0 },
+    }
   );
 
   return (
@@ -679,9 +738,20 @@ const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
                 "font-semibold": statusCounts.Active !== 0,
               })}
             >
-              {statusCounts.Active}
+              {statusBreakdown.Active.count}
             </td>
-            <td className="py-2 px-4 font-semibold">$15,680</td>
+            <td
+              className={clsx(
+                "py-2 px-4",
+                statusBreakdown.Active.value && "font-semibold"
+              )}
+            >
+              {statusBreakdown.Active.value
+                ? `$${statusBreakdown.Active.value.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                  })}`
+                : 0}
+            </td>
             <td className="py-2 px-4">Carts within &lt; 24 hours.</td>
           </tr>
           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
@@ -695,9 +765,20 @@ const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
                 "font-semibold": statusCounts.Idle !== 0,
               })}
             >
-              {statusCounts.Idle}
+              {statusBreakdown.Idle.count}
             </td>
-            <td className="py-2 px-4 font-semibold">$42,560</td>
+            <td
+              className={clsx(
+                "py-2 px-4",
+                statusBreakdown.Idle.value && "font-semibold"
+              )}
+            >
+              {statusBreakdown.Idle.value
+                ? `$${statusBreakdown.Idle.value.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                  })}`
+                : 0}
+            </td>
             <td className="py-2 px-4">Carts inactive for 1-7 days.</td>
           </tr>
           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
@@ -711,10 +792,20 @@ const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
                 "font-semibold": statusCounts.Abandoned !== 0,
               })}
             >
-              {statusCounts.Abandoned}
+              {statusBreakdown.Abandoned.count}
             </td>
-
-            <td className="py-2 px-4 font-semibold">$67,450</td>
+            <td
+              className={clsx(
+                "py-2 px-4",
+                statusBreakdown.Abandoned.value && "font-semibold"
+              )}
+            >
+              {statusBreakdown.Abandoned.value
+                ? `$${statusBreakdown.Abandoned.value.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                  })}`
+                : 0}
+            </td>
             <td className="py-2 px-4">Carts abandoned for 7-30 days.</td>
           </tr>
           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
@@ -728,9 +819,20 @@ const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
                 "font-semibold": statusCounts.Dead !== 0,
               })}
             >
-              {statusCounts.Dead}
+              {statusBreakdown.Dead.count}
             </td>
-            <td className="py-2 px-4 font-semibold">$98,760</td>
+            <td
+              className={clsx(
+                "py-2 px-4",
+                statusBreakdown.Dead.value && "text-red-700"
+              )}
+            >
+              {statusBreakdown.Dead.value
+                ? `$${statusBreakdown.Dead.value.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                  })}`
+                : 0}
+            </td>
             <td className="py-2 px-4">Carts older than 30 days.</td>
           </tr>
         </tbody>
@@ -738,159 +840,6 @@ const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
     </div>
   );
 };
-
-// const CartStatusBreakdown = ({
-//   carts,
-//   products,
-// }: {
-//   carts: CartType[];
-//   products: ProductType[] | null;
-// }) => {
-//   console.log(carts);
-//   return (
-//     <div className="rounded-md border overflow-hidden">
-//       <table className="w-full text-left text-sm">
-//         <thead>
-//           <tr className="bg-neutral-100">
-//             <th className="py-2 px-4 font-medium text-gray">Status</th>
-//             <th className="py-2 px-4 font-medium text-gray">Cart Count</th>
-//             <th className="py-2 px-4 font-medium text-gray">Total Value</th>
-//             <th className="py-2 px-4 font-medium text-gray">Description</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-//             <td className="py-2 px-4 font-medium text-green-700">
-//               <span className="inline-block bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
-//                 Active
-//               </span>
-//             </td>
-//             <td className="py-2 px-4 font-semibold">234</td>
-//             <td className="py-2 px-4 font-semibold">$15,680</td>
-//             <td className="py-2 px-4">Carts within &lt; 24 hours.</td>
-//           </tr>
-//           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-//             <td className="py-2 px-4 font-medium text-yellow-700">
-//               <span className="inline-block bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">
-//                 Idle
-//               </span>
-//             </td>
-//             <td className="py-2 px-4 font-semibold">567</td>
-//             <td className="py-2 px-4 font-semibold">$42,560</td>
-//             <td className="py-2 px-4">Carts inactive for 1-7 days.</td>
-//           </tr>
-//           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-//             <td className="py-2 px-4 font-medium text-gray-700">
-//               <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
-//                 Abandoned
-//               </span>
-//             </td>
-//             <td className="py-2 px-4 font-semibold">890</td>
-//             <td className="py-2 px-4 font-semibold">$67,450</td>
-//             <td className="py-2 px-4">Carts abandoned for 7-30 days.</td>
-//           </tr>
-//           <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-//             <td className="py-2 px-4 font-medium">
-//               <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs">
-//                 Dead
-//               </span>
-//             </td>
-//             <td className="py-2 px-4 font-semibold">1,234</td>
-//             <td className="py-2 px-4 font-semibold">$98,760</td>
-//             <td className="py-2 px-4">Carts older than 30 days.</td>
-//           </tr>
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// const CartStatusBreakdown = ({ carts }: { carts: CartType[] }) => {
-//   const determineCartStatus = (updatedAt: string) => {
-//     const now = new Date();
-//     const updatedDate = new Date(updatedAt);
-//     const differenceInMs = now.getTime() - updatedDate.getTime();
-//     const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
-
-//     if (differenceInDays < 1) {
-//       return "Active";
-//     } else if (differenceInDays >= 1 && differenceInDays <= 7) {
-//       return "Idle";
-//     } else if (differenceInDays > 7 && differenceInDays <= 30) {
-//       return "Abandoned";
-//     } else {
-//       return "Dead";
-//     }
-//   };
-
-//   const statusCounts = carts.reduce(
-//     (acc, cart) => {
-//       const status = determineCartStatus(cart.updatedAt);
-//       acc[status] = (acc[status] || 0) + 1;
-//       return acc;
-//     },
-//     { Active: 0, Idle: 0, Abandoned: 0, Dead: 0 }
-//   );
-
-//   console.log(statusCounts);
-
-// return <div className="rounded-md border overflow-hidden">
-//   <table className="w-full text-left text-sm">
-//     <thead>
-//       <tr className="bg-neutral-100">
-//         <th className="py-2 px-4 font-medium text-gray">Status</th>
-//         <th className="py-2 px-4 font-medium text-gray">Cart Count</th>
-//         <th className="py-2 px-4 font-medium text-gray">Total Value</th>
-//         <th className="py-2 px-4 font-medium text-gray">Description</th>
-//       </tr>
-//     </thead>
-//     <tbody>
-//       <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-//         <td className="py-2 px-4 font-medium text-green-700">
-//           <span className="inline-block bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
-//             Active
-//           </span>
-//         </td>
-//         <td className="py-2 px-4 font-semibold">234</td>
-//         <td className="py-2 px-4 font-semibold">$15,680</td>
-//         <td className="py-2 px-4">Carts within &lt; 24 hours.</td>
-//       </tr>
-//       <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-//         <td className="py-2 px-4 font-medium text-yellow-700">
-//           <span className="inline-block bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs">
-//             Idle
-//           </span>
-//         </td>
-//         <td className="py-2 px-4 font-semibold">567</td>
-//         <td className="py-2 px-4 font-semibold">$42,560</td>
-//         <td className="py-2 px-4">Carts inactive for 1-7 days.</td>
-//       </tr>
-//       <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-//         <td className="py-2 px-4 font-medium text-gray-700">
-//           <span className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
-//             Abandoned
-//           </span>
-//         </td>
-//         <td className="py-2 px-4 font-semibold">890</td>
-//         <td className="py-2 px-4 font-semibold">$67,450</td>
-//         <td className="py-2 px-4">Carts abandoned for 7-30 days.</td>
-//       </tr>
-//       <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
-//         <td className="py-2 px-4 font-medium">
-//           <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs">
-//             Dead
-//           </span>
-//         </td>
-//         <td className="py-2 px-4 font-semibold">1,234</td>
-//         <td className="py-2 px-4 font-semibold">$98,760</td>
-//         <td className="py-2 px-4">Carts older than 30 days.</td>
-//       </tr>
-//     </tbody>
-//   </table>
-// </div>;
-// };
-
-// -- Type Definitions --
 
 type ProductInUpsell = {
   mainImage: string;

@@ -64,7 +64,11 @@ type UpsellType = {
   visibility: VisibilityType;
   createdAt: string;
   updatedAt: string;
-  pricing: PricingType;
+  pricing: {
+    basePrice: number;
+    salePrice: number;
+    discountPercentage: number;
+  };
   products: Array<{
     index: number;
     id: string;
