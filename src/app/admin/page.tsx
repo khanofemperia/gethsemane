@@ -849,8 +849,6 @@ const CartStatusBreakdown = ({
   );
 };
 
-import React from "react";
-
 const UpsellPerformance = ({ upsells }: { upsells: UpsellType[] | null }) => {
   // Calculate active upsells (PUBLISHED only)
   const activeUpsells =
