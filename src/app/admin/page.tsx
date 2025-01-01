@@ -904,7 +904,7 @@ const UpsellPerformance = ({ upsells }: { upsells: UpsellType[] | null }) => {
             <td className="py-2 px-4 font-semibold">
               {metrics.totalRevenue !== 0
                 ? `$${metrics.totalRevenue.toLocaleString()}`
-                : ""}
+                : "0"}
             </td>
             <td className="py-2 px-4">
               Compare upsell revenue to single-item sales to evaluate the value
@@ -918,7 +918,7 @@ const UpsellPerformance = ({ upsells }: { upsells: UpsellType[] | null }) => {
             <td className="py-2 px-4 font-semibold">
               {metrics.discountLoss !== 0
                 ? `$${metrics.discountLoss.toLocaleString()}`
-                : ""}
+                : "0"}
             </td>
             <td className="py-2 px-4">
               Refine discount strategies to minimize revenue loss while
@@ -930,7 +930,7 @@ const UpsellPerformance = ({ upsells }: { upsells: UpsellType[] | null }) => {
             <td className="py-2 px-4 font-semibold">
               {avgSavings !== 0
                 ? `$${Math.round(avgSavings).toLocaleString()}`
-                : ""}
+                : "0"}
             </td>
             <td className="py-2 px-4">
               Make sure upsells are sustainably boosting profits, not just
