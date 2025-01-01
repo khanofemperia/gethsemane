@@ -513,7 +513,12 @@ const RevenueByCategory = async ({
   );
 
   const sortedCategories = Object.entries(allTimeRevenue)
-    .sort(([, a], [, b]) => b.revenue - a.revenue)
+    .sort(([nameA, dataA], [nameB, dataB]) => {
+      // Sort by monthly revenue contribution
+      const monthlyRevenueA = monthlyRevenue[nameA]?.revenue || 0;
+      const monthlyRevenueB = monthlyRevenue[nameB]?.revenue || 0;
+      return monthlyRevenueB - monthlyRevenueA;
+    })
     .map(([name, data]) => ({
       name,
       category: data.category,
@@ -633,7 +638,7 @@ const CartStatusBreakdown = ({
   products: ProductType[] | null;
   upsells: UpsellType[] | null;
 }) => {
-/*  console.log(JSON.stringify(carts, null, 2));
+  /*  console.log(JSON.stringify(carts, null, 2));
 
   [
     {
