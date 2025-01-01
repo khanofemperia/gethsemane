@@ -104,7 +104,7 @@ export default async function Overview() {
     getProducts({ fields: ["visibility", "pricing"] }) as Promise<
       ProductType[] | null
     >,
-    getUpsells({ fields: ["visibility", "pricing"] }) as Promise<
+    getUpsells({ fields: ["visibility", "pricing", "products"] }) as Promise<
       UpsellType[] | null
     >,
     getCarts(),
@@ -144,6 +144,12 @@ export default async function Overview() {
             products={products}
             upsells={upsells}
           />
+        </div>
+      </div>
+      <div>
+        <h2 className="font-semibold text-xl mb-6">Upsell Performance</h2>
+        <div className="w-full p-5 relative shadow rounded-xl bg-white">
+          <UpsellPerformance upsells={upsells} />
         </div>
       </div>
     </div>
@@ -556,7 +562,9 @@ const RevenueByCategory = async ({
             <th className="py-2 px-4 font-medium text-gray">
               All-Time Revenue
             </th>
-            <th className="py-2 px-4 font-medium text-gray">Contribution</th>
+            <th className="py-2 px-4 font-medium text-gray">
+              Contribution (This Month)
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -834,6 +842,100 @@ const CartStatusBreakdown = ({
                 : 0}
             </td>
             <td className="py-2 px-4">Carts older than 30 days.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+import React from "react";
+
+const UpsellPerformance = ({ upsells }: { upsells: UpsellType[] | null }) => {
+  // Calculate active upsells (PUBLISHED only)
+  const activeUpsells =
+    upsells?.filter((u) => u.visibility === "PUBLISHED").length || 0;
+
+  // Calculate total potential revenue and actual revenue with discounts
+  const metrics = upsells?.reduce(
+    (acc, upsell) => {
+      if (upsell.visibility !== "PUBLISHED") return acc;
+
+      const baseRevenue = upsell.pricing.basePrice;
+      const actualRevenue =
+        upsell.pricing.salePrice || upsell.pricing.basePrice;
+
+      return {
+        totalRevenue: acc.totalRevenue + baseRevenue,
+        discountLoss: acc.discountLoss + (baseRevenue - actualRevenue),
+      };
+    },
+    { totalRevenue: 0, discountLoss: 0 }
+  ) || { totalRevenue: 0, discountLoss: 0 };
+
+  // Calculate average customer savings
+  const avgSavings = activeUpsells ? metrics.discountLoss / activeUpsells : 0;
+
+  return (
+    <div className="rounded-md border overflow-hidden">
+      <table className="w-full text-left text-sm">
+        <thead>
+          <tr className="bg-neutral-100">
+            <th className="w-56 py-2 px-4 text-sm font-medium text-gray">
+              Metric
+            </th>
+            <th className="py-2 px-4 text-sm font-medium text-gray">Value</th>
+            <th className="py-2 px-4 text-sm font-medium text-gray">
+              Description
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+            <td className="py-2 px-4 font-medium">Active Upsells</td>
+            <td className="py-2 px-4 font-semibold">{activeUpsells}</td>
+            <td className="py-2 px-4">
+              Test combinations to find the most profitable upsells with the
+              least discount impact.
+            </td>
+          </tr>
+          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+            <td className="py-2 px-4 font-medium">Revenue from Upsells</td>
+            <td className="py-2 px-4 font-semibold">
+              {metrics.totalRevenue !== 0
+                ? `$${metrics.totalRevenue.toLocaleString()}`
+                : ""}
+            </td>
+            <td className="py-2 px-4">
+              Compare upsell revenue to single-item sales to evaluate the value
+              of upsells.
+            </td>
+          </tr>
+          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+            <td className="py-2 px-4 font-medium">
+              Revenue Lost via Discounts
+            </td>
+            <td className="py-2 px-4 font-semibold">
+              {metrics.discountLoss !== 0
+                ? `$${metrics.discountLoss.toLocaleString()}`
+                : ""}
+            </td>
+            <td className="py-2 px-4">
+              Refine discount strategies to minimize revenue loss while
+              maintaining customer value.
+            </td>
+          </tr>
+          <tr className="border-t border-[#dcdfe3] hover:bg-neutral-200">
+            <td className="py-2 px-4 font-medium">Avg. Customer Savings</td>
+            <td className="py-2 px-4 font-semibold">
+              {avgSavings !== 0
+                ? `$${Math.round(avgSavings).toLocaleString()}`
+                : ""}
+            </td>
+            <td className="py-2 px-4">
+              Make sure upsells are sustainably boosting profits, not just
+              moving stock.
+            </td>
           </tr>
         </tbody>
       </table>

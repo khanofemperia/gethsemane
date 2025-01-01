@@ -57,6 +57,7 @@ export async function UpdateUpsellAction(
     revalidatePath(`/admin/upsells/${data.id}`, "page"); // Admin edit upsell page
     revalidatePath("/admin/upsells"); // Admin upsells page
     revalidatePath(`/`); // Public main page
+    revalidatePath("/admin"); // Admin overview page
 
     // Revalidate products related to the updated upsell
     if (currentUpsell.products.length > 0) {
@@ -80,7 +81,7 @@ export async function DeleteUpsellAction(data: { id: string }) {
   try {
     const upsellDocRef = doc(database, "upsells", data.id);
     const upsellSnap = await getDoc(upsellDocRef);
-    
+
     if (!upsellSnap.exists()) {
       return {
         type: AlertMessageType.ERROR,
@@ -90,6 +91,7 @@ export async function DeleteUpsellAction(data: { id: string }) {
 
     await deleteDoc(upsellDocRef);
 
+    revalidatePath("/admin"); // Admin overview page
     revalidatePath("/admin/upsells"); // Admin upsells page
     revalidatePath("/"); // Public main page
 

@@ -88,10 +88,14 @@ type SizeChartType = {
 type UpsellType = {
   id: string;
   mainImage: string;
-  visibility: VisibilityType;
+  visibility: "DRAFT" | "PUBLISHED" | "HIDDEN";
   createdAt: string;
   updatedAt: string;
-  pricing: PricingType;
+  pricing: {
+    basePrice: number;
+    salePrice: number;
+    discountPercentage: number;
+  };
   products: Array<{
     index: number;
     id: string;
