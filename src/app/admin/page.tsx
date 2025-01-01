@@ -240,16 +240,7 @@ const BestsellingProducts = ({
   const calculateBestSellingProducts = (
     orders: PaymentTransaction[],
     dateFilter: string | null
-  ): Record<
-    string,
-    {
-      revenue: number;
-      quantity: number;
-      name: string;
-      slug: string;
-      id: string;
-    }
-  > => {
+  ) => {
     const products: Record<
       string,
       {
@@ -271,52 +262,40 @@ const BestsellingProducts = ({
       if (dateFilter && !isDateMatch(order.timestamp, dateFilter)) return;
 
       order.items.forEach((item) => {
+        // Handle upsell products
         if (item.type === "upsell") {
           item.products.forEach((product) => {
-            const slug = product.slug;
-            const orderTotal = parseFloat(order.amount.value);
-            const itemCount = order.items.reduce((count, orderItem) => {
-              if (orderItem.type === "upsell") {
-                return count + orderItem.products.length;
-              }
-              return count + 1;
-            }, 0);
-            const revenuePerItem = orderTotal / itemCount;
-
-            if (!products[slug]) {
-              products[slug] = {
+            const baseProductId = product.id;
+            if (!products[baseProductId]) {
+              products[baseProductId] = {
                 revenue: 0,
                 quantity: 0,
                 name: product.name,
                 slug: product.slug,
-                id: product.id,
+                id: baseProductId,
               };
             }
-            products[slug].revenue += revenuePerItem;
-            products[slug].quantity += 1;
+            products[baseProductId].revenue += parseFloat(
+              String(product.basePrice)
+            );
+            products[baseProductId].quantity += 1;
           });
         } else {
-          const slug = item.slug;
-          const orderTotal = parseFloat(order.amount.value);
-          const itemCount = order.items.reduce((count, orderItem) => {
-            if (orderItem.type === "upsell") {
-              return count + orderItem.products.length;
-            }
-            return count + 1;
-          }, 0);
-          const revenuePerItem = orderTotal / itemCount;
-
-          if (!products[slug]) {
-            products[slug] = {
+          // Handle regular products
+          const baseProductId = item.baseProductId;
+          if (!products[baseProductId]) {
+            products[baseProductId] = {
               revenue: 0,
               quantity: 0,
               name: item.name,
               slug: item.slug,
-              id: item.baseProductId,
+              id: baseProductId,
             };
           }
-          products[slug].revenue += revenuePerItem;
-          products[slug].quantity += 1;
+          products[baseProductId].revenue += parseFloat(
+            String(item.pricing.basePrice)
+          );
+          products[baseProductId].quantity += 1;
         }
       });
     });
@@ -324,10 +303,8 @@ const BestsellingProducts = ({
     return products;
   };
 
-  const formatRevenue = (amount: number | string): string => {
-    const numericAmount =
-      typeof amount === "number" ? amount : parseFloat(amount);
-    return `$${numericAmount.toLocaleString("en-US", {
+  const formatRevenue = (amount: number): string => {
+    return `$${amount.toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`;
@@ -345,11 +322,11 @@ const BestsellingProducts = ({
   );
 
   const allProducts = Object.entries(bestSellingThisMonth)
-    .map(([slug, monthData]) => ({
-      id: monthData.id,
+    .map(([baseProductId, monthData]) => ({
+      id: baseProductId,
       name: monthData.name,
       slug: monthData.slug,
-      todayRevenue: bestSellingToday[slug]?.revenue || 0,
+      todayRevenue: bestSellingToday[baseProductId]?.revenue || 0,
       monthRevenue: monthData.revenue,
       monthQuantity: monthData.quantity,
     }))
@@ -384,7 +361,7 @@ const BestsellingProducts = ({
             ({ id, name, slug, todayRevenue, monthRevenue, monthQuantity }) => (
               <tr
                 key={id}
-                className="border-t border-[#dcdfe3] hover:bg-neutral-200"
+                className="border-t border-neutral-200 hover:bg-neutral-50"
               >
                 <td className="py-2 px-4">
                   <Link
