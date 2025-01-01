@@ -633,6 +633,77 @@ const CartStatusBreakdown = ({
   products: ProductType[] | null;
   upsells: UpsellType[] | null;
 }) => {
+/*  console.log(JSON.stringify(carts, null, 2));
+
+  [
+    {
+      id: "43465",
+      device_identifier: "-aipxPFIKmVpeg1LrdnH8",
+      items: [
+        {
+          size: "M",
+          baseProductId: "82938",
+          color: "",
+          type: "product",
+          index: 1,
+          variantId: "68769",
+        },
+      ],
+      createdAt: "2024-12-30T15:36:53.756Z",
+      updatedAt: "2024-12-30T15:36:53.756Z",
+    },
+    {
+      id: "56354",
+      device_identifier: "qTk_-26bVPTBEKCx-mruy",
+      items: [
+        {
+          color: "",
+          size: "",
+          type: "product",
+          baseProductId: "20181",
+          variantId: "39025",
+          index: 1,
+        },
+        {
+          size: "",
+          baseProductId: "65822",
+          variantId: "91738",
+          type: "product",
+          color: "",
+          index: 2,
+        },
+        {
+          variantId: "64778",
+          products: [
+            {
+              color: "Gray",
+              id: "85500",
+              size: "XS",
+            },
+            {
+              color: "Brown",
+              id: "59218",
+              size: "",
+            },
+          ],
+          index: 3,
+          baseUpsellId: "14723",
+          type: "upsell",
+        },
+      ],
+      createdAt: "2024-12-10T15:37:36.209Z",
+      updatedAt: "2024-12-12T13:10:08.539Z",
+    },
+    {
+      id: "64035",
+      device_identifier: "k_fCytqOsaQlcSqKlEaWZ",
+      items: [],
+      createdAt: "2024-12-31T14:09:23.409Z",
+      updatedAt: "2025-01-01T22:40:04.243Z",
+    },
+  ];
+*/
+
   const determineCartStatus = (updatedAt: string) => {
     const now = new Date();
     const updatedDate = new Date(updatedAt);

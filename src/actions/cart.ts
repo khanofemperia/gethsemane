@@ -331,12 +331,21 @@ export async function ClearPurchasedItemsAction({
       index: index + 1,
     }));
 
-    await runTransaction(database, async (transaction) => {
-      return transaction.update(cartDoc, {
-        items: reindexedItems,
-        updatedAt: serverTimestamp(),
+    if (reindexedItems.length === 0) {
+      await runTransaction(database, async (transaction) => {
+        transaction.delete(cartDoc);
       });
-    });
+
+      // Clear the device_identifier cookie since cart is gone
+      cookies().delete("device_identifier");
+    } else {
+      await runTransaction(database, async (transaction) => {
+        return transaction.update(cartDoc, {
+          items: reindexedItems,
+          updatedAt: serverTimestamp(),
+        });
+      });
+    }
 
     revalidatePath("/cart");
     revalidatePath("/admin");
