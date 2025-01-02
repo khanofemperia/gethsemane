@@ -6,12 +6,12 @@ import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { ArrowLeftIcon, CloseIcon } from "@/icons";
-import clsx from "clsx";
-import Image from "next/image";
 import { CiImageOn } from "react-icons/ci";
 import Overlay from "@/ui/Overlay";
 import { UpdatePageHeroAction } from "@/actions/page-hero";
 import { AlertMessageType } from "@/lib/sharedTypes";
+import Image from "next/image";
+import clsx from "clsx";
 
 export function PageHeroButton({ visibility }: { visibility: string }) {
   const HIDDEN = "HIDDEN";
@@ -175,7 +175,7 @@ export function PageHeroOverlay({
     <>
       {isOverlayVisible && (
         <Overlay>
-          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl bg-white md:w-[500px] md:rounded-2xl md:shadow-lg md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
+          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-[20px] overflow-hidden bg-white md:w-[500px] md:rounded-2xl md:shadow-lg md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
             <div className="w-full h-[calc(100vh-188px)] md:h-auto">
               <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
                 <div className="relative flex justify-center items-center w-full h-7">
