@@ -3,7 +3,6 @@
 import { CloseIconThin } from "@/icons";
 import { useMobileNavbarStore } from "@/zustand/website/mobileNavbarStore";
 import Image from "next/image";
-import Link from "next/link";
 import { HiMiniBars3 } from "react-icons/hi2";
 import { useRef, useEffect } from "react";
 import clsx from "clsx";
