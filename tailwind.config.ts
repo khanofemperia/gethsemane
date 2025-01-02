@@ -66,7 +66,7 @@ const config: Config = {
       },
       textColor: {
         gray: customColors.gray,
-        amber: "#A86400", // old version #ba7600
+        amber: { DEFAULT: "#A86400" },
       },
       borderColor: {
         DEFAULT: "#dcdfe4",
