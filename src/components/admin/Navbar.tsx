@@ -2,8 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { HamburgerMenuIcon } from "@/icons";
 import { NewProductMenuButton } from "./NewProduct";
 import { NewUpsellMenuButton } from "./NewUpsell";
@@ -12,11 +10,13 @@ import { DeleteProductAction } from "@/actions/products";
 import { DeleteUpsellAction } from "@/actions/upsells";
 import { DeleteCollectionAction } from "@/actions/collections";
 import { MobileNavbarButton } from "./MobileNavbarOverlay";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
     <nav className="w-full max-h-[116px] md:max-h-16 fixed top-0 z-10 shadow-[0px_1px_2px_#DDDDDD] bg-lightgray">
-      {/* <DesktopNavbar /> */}
+      <DesktopNavbar />
       <MobileNavbar />
     </nav>
   );
@@ -127,11 +127,11 @@ function DesktopNavbar() {
   };
 
   return (
-    <div className="w-full max-w-[1080px] mx-auto px-6 py-2 relative flex justify-between gap-1 flex-col md:flex-row">
+    <div className="hidden md:flex justify-between gap-1 flex-col md:flex-row w-full max-w-[1080px] mx-auto p-2 pl-[14px] relative">
       <div className="flex items-center gap-5">
         <Link
           href="/admin"
-          className="h-12 min-w-[168px] w-[168px] pl-2 flex items-center"
+          className="h-12 min-w-[168px] w-[168px] flex items-center justify-center"
         >
           <Image
             src="/images/logos/cherlygood_wordmark.svg"
@@ -244,7 +244,7 @@ function DesktopNavbar() {
 
 function MobileNavbar() {
   return (
-    <div className="md:hidden flex items-center justify-between w-full max-w-[1080px] mx-auto pl-4 pr-[10px] py-2">
+    <div className="md:hidden flex items-center justify-between w-full max-w-[1080px] mx-auto p-2 pl-[14px]">
       <Link
         href="/admin"
         className="h-12 min-w-[168px] w-[168px] flex items-center justify-center"
