@@ -111,7 +111,7 @@ export default async function Overview() {
   ]);
 
   return (
-    <div className="max-w-[812px] flex flex-col gap-10 px-5">
+    <div className="max-w-[820px] flex flex-col gap-10 px-5">
       <div>
         <h2 className="font-semibold text-xl mb-6">Store Growth</h2>
         <div className="w-full p-5 relative shadow rounded-xl bg-white">
@@ -161,8 +161,8 @@ const StoreGrowth = ({ orders }: { orders: OrderType[] | null }) => {
   const metrics = storeGrowthMetrics.getMetrics();
 
   return (
-    <div className="rounded-md border overflow-hidden">
-      <table className="w-full text-left text-sm">
+    <div className="rounded-md border overflow-y-hidden overflow-x-visible custom-x-scrollbar">
+      <table className="w-max min-w-[738px] text-left text-sm bg-white">
         <thead>
           <tr className="bg-neutral-100">
             <th className="py-2 px-4 font-medium text-gray">Metric</th>
@@ -342,8 +342,8 @@ const BestsellingProducts = ({
   }
 
   return (
-    <div className="rounded-md border overflow-hidden">
-      <table className="w-full text-left text-sm">
+    <div className="rounded-md border overflow-y-hidden overflow-x-visible custom-x-scrollbar">
+      <table className="w-max min-w-[738px] text-left text-sm bg-white">
         <thead>
           <tr className="bg-neutral-100">
             <th className="py-2 px-4 font-medium text-gray">Product</th>
@@ -361,7 +361,7 @@ const BestsellingProducts = ({
             ({ id, name, slug, todayRevenue, monthRevenue, monthQuantity }) => (
               <tr
                 key={id}
-                className="border-t border-neutral-200 hover:bg-neutral-50"
+                className="border-t border-neutral-200 hover:bg-neutral-200"
               >
                 <td className="py-2 px-4">
                   <Link
@@ -533,15 +533,15 @@ const RevenueByCategory = async ({
   }
 
   return (
-    <div className="rounded-md border overflow-hidden">
-      <table className="w-full text-left text-sm">
+    <div className="rounded-md border overflow-y-hidden overflow-x-visible custom-x-scrollbar">
+      <table className="w-max min-w-[738px] text-left text-sm bg-white">
         <thead>
           <tr className="bg-neutral-100">
-            <th className="py-2 px-4 font-medium text-gray">Category</th>
+            <th className="w-40 py-2 px-4 font-medium text-gray">Category</th>
             <th className="py-2 px-4 font-medium text-gray">
               Revenue (This Month)
             </th>
-            <th className="py-2 px-4 font-medium text-gray">
+            <th className="w-44 py-2 px-4 font-medium text-gray">
               All-Time Revenue
             </th>
             <th className="py-2 px-4 font-medium text-gray">
@@ -595,8 +595,8 @@ const ProductStatus = ({ products }: { products: ProductType[] | null }) => {
   const hiddenProducts = products.filter((p) => p.visibility !== "PUBLISHED");
 
   return (
-    <div className="rounded-md border overflow-hidden">
-      <table className="w-full text-left text-sm">
+    <div className="rounded-md border overflow-y-hidden overflow-x-visible custom-x-scrollbar">
+      <table className="w-max min-w-[738px] text-left text-sm bg-white">
         <thead>
           <tr className="bg-neutral-100">
             <th className="py-2 px-4 font-medium text-gray">Status</th>
@@ -638,77 +638,6 @@ const CartStatusBreakdown = ({
   products: ProductType[] | null;
   upsells: UpsellType[] | null;
 }) => {
-  /*  console.log(JSON.stringify(carts, null, 2));
-
-  [
-    {
-      id: "43465",
-      device_identifier: "-aipxPFIKmVpeg1LrdnH8",
-      items: [
-        {
-          size: "M",
-          baseProductId: "82938",
-          color: "",
-          type: "product",
-          index: 1,
-          variantId: "68769",
-        },
-      ],
-      createdAt: "2024-12-30T15:36:53.756Z",
-      updatedAt: "2024-12-30T15:36:53.756Z",
-    },
-    {
-      id: "56354",
-      device_identifier: "qTk_-26bVPTBEKCx-mruy",
-      items: [
-        {
-          color: "",
-          size: "",
-          type: "product",
-          baseProductId: "20181",
-          variantId: "39025",
-          index: 1,
-        },
-        {
-          size: "",
-          baseProductId: "65822",
-          variantId: "91738",
-          type: "product",
-          color: "",
-          index: 2,
-        },
-        {
-          variantId: "64778",
-          products: [
-            {
-              color: "Gray",
-              id: "85500",
-              size: "XS",
-            },
-            {
-              color: "Brown",
-              id: "59218",
-              size: "",
-            },
-          ],
-          index: 3,
-          baseUpsellId: "14723",
-          type: "upsell",
-        },
-      ],
-      createdAt: "2024-12-10T15:37:36.209Z",
-      updatedAt: "2024-12-12T13:10:08.539Z",
-    },
-    {
-      id: "64035",
-      device_identifier: "k_fCytqOsaQlcSqKlEaWZ",
-      items: [],
-      createdAt: "2024-12-31T14:09:23.409Z",
-      updatedAt: "2025-01-01T22:40:04.243Z",
-    },
-  ];
-*/
-
   const determineCartStatus = (updatedAt: string) => {
     const now = new Date();
     const updatedDate = new Date(updatedAt);
@@ -777,8 +706,8 @@ const CartStatusBreakdown = ({
   );
 
   return (
-    <div className="rounded-md border overflow-hidden">
-      <table className="w-full text-left text-sm">
+    <div className="rounded-md border overflow-y-hidden overflow-x-visible custom-x-scrollbar">
+      <table className="w-max min-w-[738px] text-left text-sm bg-white">
         <thead>
           <tr className="bg-neutral-100">
             <th className="py-2 px-4 font-medium text-gray">Status</th>
@@ -928,14 +857,14 @@ const UpsellPerformance = ({ upsells }: { upsells: UpsellType[] | null }) => {
   const avgSavings = activeUpsells ? metrics.discountLoss / activeUpsells : 0;
 
   return (
-    <div className="rounded-md border overflow-hidden">
-      <table className="w-full text-left text-sm">
+    <div className="rounded-md border overflow-y-hidden overflow-x-visible custom-x-scrollbar">
+      <table className="w-max min-w-[738px] text-left text-sm bg-white">
         <thead>
           <tr className="bg-neutral-100">
             <th className="w-56 py-2 px-4 text-sm font-medium text-gray">
               Metric
             </th>
-            <th className="py-2 px-4 text-sm font-medium text-gray">Value</th>
+            <th className="w-32 py-2 px-4 text-sm font-medium text-gray">Value</th>
             <th className="py-2 px-4 text-sm font-medium text-gray">
               Description
             </th>
