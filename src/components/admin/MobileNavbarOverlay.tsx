@@ -11,6 +11,8 @@ import { DeleteProductAction } from "@/actions/products";
 import { DeleteUpsellAction } from "@/actions/upsells";
 import { DeleteCollectionAction } from "@/actions/collections";
 import { NewCollectionMenuButton } from "./Storefront/NewCollection";
+import { NewProductMenuButton } from "./NewProduct";
+import { NewUpsellMenuButton } from "./NewUpsell";
 
 export function MobileNavbarButton() {
   const showMobileNavbarOverlay = useMobileNavbarStore(
@@ -167,7 +169,7 @@ export function MobileNavbarOverlay() {
         >
           <div className="h-full">
             <button
-              onClick={() => handleNavigation("/")}
+              onClick={() => handleNavigation("/admin")}
               className="h-12 min-w-[168px] w-[168px] ml-[2px] flex items-center justify-center"
             >
               <Image
@@ -179,14 +181,49 @@ export function MobileNavbarOverlay() {
               />
             </button>
             <div className="flex flex-col gap-4 mt-5 ml-2">
-              <div className="flex flex-col gap-1 *:h-10 *:w-max *:text-lg *:font-medium *:rounded-full *:flex *:items-center">
+              <div className="flex flex-col gap-1">
                 {isCollectionListPage && (
                   <NewCollectionMenuButton
                     closeMenu={hideMobileNavbarOverlay}
                   />
                 )}
+                {isProductListPage && (
+                  <NewProductMenuButton closeMenu={hideMobileNavbarOverlay} />
+                )}
+                {isUpsellListPage && (
+                  <NewUpsellMenuButton closeMenu={hideMobileNavbarOverlay} />
+                )}
+                {isProductEditingPage && (
+                  <>
+                    <button
+                      onClick={() => {
+                        handleNavigation(`/${productSlug}`);
+                        hideMobileNavbarOverlay();
+                      }}
+                      className="h-10 w-max text-lg font-medium rounded-full flex items-center md:h-9 md:w-[calc(100%-10px)] md:mx-auto md:px-3 md:text-sm md:font-semibold md:rounded-md md:cursor-pointer md:transition md:active:bg-lightgray md:hover:bg-lightgray"
+                    >
+                      Visit product
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      disabled={isDeleting}
+                      className="h-10 w-max text-lg text-red font-medium rounded-full flex items-center md:h-9 md:w-[calc(100%-10px)] md:mx-auto md:px-3 md:text-sm md:font-semibold md:rounded-md md:cursor-pointer md:transition md:active:bg-lightgray md:hover:bg-lightgray"
+                    >
+                      {isDeleting ? "Deleting..." : "Delete"}
+                    </button>
+                  </>
+                )}
+                {(isUpsellEditingPage || isCollectionEditingPage) && (
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-red text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray hover:bg-lightgray disabled:opacity-50"
+                  >
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </button>
+                )}
               </div>
-              <hr />
+              {showSeparator && <hr />}
               <div className="flex flex-col gap-1 *:h-10 *:w-max *:text-lg *:font-medium *:rounded-full *:flex *:items-center">
                 <button onClick={() => handleNavigation("/admin/storefront")}>
                   Storefront
@@ -203,10 +240,7 @@ export function MobileNavbarOverlay() {
               </div>
               <hr />
               <div className="flex flex-col gap-1 *:h-9 *:w-max *:text-sm *:font-medium *:rounded-full *:flex *:items-center">
-                <button
-                  onClick={() => handleNavigation("/")}
-                  className="text-yellow-700"
-                >
+                <button onClick={() => handleNavigation("/")}>
                   Public website
                 </button>
                 <button onClick={() => handleNavigation("#")}>Sign out</button>

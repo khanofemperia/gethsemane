@@ -167,6 +167,11 @@ function DesktopNavbar() {
 
           {isMenuDropdownVisible && (
             <div className="w-[148px] absolute top-[52px] right-0 z-20 py-[5px] rounded-md shadow-dropdown bg-white">
+              {isCollectionListPage && (
+                <NewCollectionMenuButton
+                  closeMenu={() => setMenuDropdownVisible(false)}
+                />
+              )}
               {isProductListPage && (
                 <NewProductMenuButton
                   closeMenu={() => setMenuDropdownVisible(false)}
@@ -174,11 +179,6 @@ function DesktopNavbar() {
               )}
               {isUpsellListPage && (
                 <NewUpsellMenuButton
-                  closeMenu={() => setMenuDropdownVisible(false)}
-                />
-              )}
-              {isCollectionListPage && (
-                <NewCollectionMenuButton
                   closeMenu={() => setMenuDropdownVisible(false)}
                 />
               )}

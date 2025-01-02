@@ -21,7 +21,9 @@ import { CreateCollectionAction } from "@/actions/collections";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
-export function NewCollectionMenuButton({ closeMenu }: NewCollectionMenuButtonType) {
+export function NewCollectionMenuButton({
+  closeMenu,
+}: NewCollectionMenuButtonType) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
   const setNavbarMenu = useNavbarMenuStore((state) => state.setNavbarMenu);
   const pageName = useOverlayStore((state) => state.pages.storefront.name);
@@ -36,13 +38,15 @@ export function NewCollectionMenuButton({ closeMenu }: NewCollectionMenuButtonTy
   };
 
   return (
-    <button
-      type="button"
-      className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
-      onClick={openOverlay}
-    >
-      New collection
-    </button>
+    <>
+      <button
+        type="button"
+        className="h-10 w-max text-lg font-medium rounded-full flex items-center md:h-9 md:w-[calc(100%-10px)] md:mx-auto md:px-3 md:text-sm md:font-semibold md:rounded-md md:cursor-pointer md:transition md:active:bg-lightgray md:hover:bg-lightgray"
+        onClick={openOverlay}
+      >
+        New collection
+      </button>
+    </>
   );
 }
 
