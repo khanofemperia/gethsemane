@@ -373,7 +373,7 @@ export function PageHeroOverlay({
                 </div>
               </div>
             </div>
-            <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
+            <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0 bg-white">
               <button
                 onClick={handleSave}
                 disabled={loading}

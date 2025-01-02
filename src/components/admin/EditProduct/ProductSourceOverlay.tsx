@@ -124,7 +124,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
     <>
       {isOverlayVisible && (
         <Overlay>
-          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl overflow-hidden bg-white md:w-[520px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
+          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-[20px] overflow-hidden bg-white md:w-[520px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
             <form onSubmit={handleSave}>
               <div className="w-full h-[calc(100vh-188px)] md:h-auto">
                 <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
@@ -292,7 +292,7 @@ export function ProductSourceOverlay({ data }: { data: DataType }) {
                   </div>
                 </div>
               </div>
-              <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0">
+              <div className="md:hidden w-full pb-5 pt-2 px-5 absolute bottom-0 bg-white">
                 <button
                   type="submit"
                   disabled={loading}
