@@ -36,29 +36,26 @@ export default async function OrderDetails({
 
   await updateUpsellProductNames(order);
 
-  function formatOrderPlacedDate(order: OrderDetailsType): string {
-    const dateObj = new Date(
-      order.purchase_units[0].payments.captures[0].create_time
-    );
+  const formatOrderPlacedDate = (order: OrderDetailsType): string => {
+    if (typeof window === "undefined") {
+      return "";
+    }
 
-    const formattedDateTime = dateObj.toLocaleString("en-US", {
+    const createTime = order.purchase_units[0].payments.captures[0].create_time;
+    const date = new Date(createTime);
+
+    const formattedDateTime = date.toLocaleString("en-US", {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "UTC",
     });
 
-    const [datePart, timePart] = formattedDateTime.split(" at ");
-
-    const timezone = dateObj
-      .toLocaleTimeString("en-US", { timeZoneName: "short" })
-      .split(" ")
-      .pop();
-
-    return `${datePart}, ${timePart.trim()} (${timezone})`;
-  }
+    return formattedDateTime;
+  };
 
   function getPayPalUrl(captureId: string) {
     return `${PAYPAL_BASE_URL}${captureId}`;
@@ -76,7 +73,7 @@ export default async function OrderDetails({
 
   return (
     <>
-      <div className="w-full max-w-[768px] flex flex-col gap-10">
+      <div className="max-w-[768px] flex flex-col gap-10 px-5">
         <div>
           <div className="mb-6">
             <h2 className="font-semibold text-xl mb-3">Order summary</h2>
@@ -88,7 +85,7 @@ export default async function OrderDetails({
           </div>
           <div className="relative flex items-center justify-between shadow rounded-xl bg-white">
             <div className="w-full flex flex-col px-5">
-              <div className="flex flex-col gap-2 py-5 border-b">
+              <div className="flex flex-col gap-4 py-5 border-b">
                 <div className="flex gap-5 text-sm">
                   <h3 className="min-w-[78px] max-w-[78px] text-gray">
                     Transaction
@@ -110,7 +107,7 @@ export default async function OrderDetails({
                   </span>
                 </div>
               </div>
-              <div className="flex flex-col gap-2 py-5 border-b">
+              <div className="flex flex-col gap-4 py-5 border-b">
                 <div className="flex gap-5 text-sm">
                   <h3 className="min-w-[78px] max-w-[78px] text-gray">
                     Shipping
@@ -151,7 +148,7 @@ export default async function OrderDetails({
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-2 py-5 border-b">
+              <div className="flex flex-col gap-4 py-5 border-b">
                 <div className="flex gap-5 text-sm">
                   <h3 className="min-w-[78px] max-w-[78px] text-gray">
                     Customer
@@ -163,12 +160,12 @@ export default async function OrderDetails({
                 </div>
                 <div className="flex gap-5 text-sm">
                   <h3 className="min-w-[78px] max-w-[78px] text-gray">Email</h3>
-                  <span className="w-full font-medium">
+                  <span className="w-full font-medium break-all">
                     {paypalOrder.payer.email_address}
                   </span>
                 </div>
               </div>
-              <div className="flex flex-col gap-2 py-5">
+              <div className="flex flex-col gap-4 py-5">
                 <div className="flex gap-5 text-sm">
                   <h3 className="min-w-[78px] max-w-[78px] text-gray">ID</h3>
                   <Link href={paypalUrl} target="_blank">
@@ -235,7 +232,7 @@ export default async function OrderDetails({
                           priority
                         />
                       </div>
-                      <div className="w-full pr-3 flex flex-col gap-1">
+                      <div className="w-full flex flex-col gap-1">
                         <Link
                           href={`${item.slug}-${item.baseProductId}`}
                           target="_blank"
