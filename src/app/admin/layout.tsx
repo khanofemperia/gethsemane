@@ -1,4 +1,4 @@
-import { MobileNavbarOverlay } from "@/components/admin/MobileNavbarOverlay";
+import { MobileNavbarOverlay } from "@/components/admin/Navbar/MobileNavbarOverlay";
 import Navbar from "@/components/admin/Navbar";
 
 export default function AdminLayout({

@@ -10,9 +10,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { DeleteProductAction } from "@/actions/products";
 import { DeleteUpsellAction } from "@/actions/upsells";
 import { DeleteCollectionAction } from "@/actions/collections";
-import { NewCollectionMenuButton } from "./Storefront/NewCollection";
-import { NewProductMenuButton } from "./NewProduct";
-import { NewUpsellMenuButton } from "./NewUpsell";
+import { NewCollectionMenuButton } from "../Storefront/NewCollection";
+import { NewProductMenuButton } from "../NewProduct";
+import { NewUpsellMenuButton } from "../NewUpsell";
 
 export function MobileNavbarButton() {
   const showMobileNavbarOverlay = useMobileNavbarStore(
@@ -207,7 +207,7 @@ export function MobileNavbarOverlay() {
                     <button
                       onClick={handleDelete}
                       disabled={isDeleting}
-                      className="h-10 w-max text-lg font-medium rounded-full flex items-center md:h-9 md:w-[calc(100%-10px)] md:mx-auto md:px-3 md:text-sm md:font-semibold md:rounded-md md:cursor-pointer md:transition md:active:bg-lightgray md:hover:bg-lightgray"
+                      className="h-10 w-max text-lg text-red font-medium rounded-full flex items-center md:h-9 md:w-[calc(100%-10px)] md:mx-auto md:px-3 md:text-sm md:font-semibold md:rounded-md md:cursor-pointer md:transition md:active:bg-lightgray md:hover:bg-lightgray"
                     >
                       {isDeleting ? "Deleting..." : "Delete"}
                     </button>
