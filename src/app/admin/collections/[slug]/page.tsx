@@ -53,10 +53,11 @@ export default async function EditCollection({
     (collection.products || []).map((product) => [product.id, product.index])
   );
 
-  const collectionProducts = await getProducts({
-    ids: Array.from(productIndexes.keys()),
-    fields: ["id", "slug", "images", "name", "pricing"],
-  });
+  const collectionProducts =
+    (await getProducts({
+      ids: Array.from(productIndexes.keys()),
+      fields: ["id", "slug", "images", "name", "pricing"],
+    })) || [];
 
   const sortedProducts = (collectionProducts || [])
     .map((product) => ({

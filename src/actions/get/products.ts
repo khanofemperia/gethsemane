@@ -15,7 +15,7 @@ import { capitalizeFirstLetter } from "@/lib/utils/common";
  * Unified function to get products with flexible filtering and field selection.
  *
  * @example Get a single product
- * const product = await getProducts({ ids: ["product-id"] });
+ * const product = await getProducts({ ids: ["id1"] });
  *
  * @example Get multiple products with specific fields
  * const products = await getProducts({
@@ -38,7 +38,12 @@ import { capitalizeFirstLetter } from "@/lib/utils/common";
 export async function getProducts(
   options: GetProductsOptionsType = {}
 ): Promise<(ProductType | ProductWithUpsellType)[] | null> {
-  const { ids = [], fields = [], visibility, category } = options;
+  const { ids, fields = [], visibility, category } = options;
+
+  // Return null only when empty IDs array is explicitly passed
+  if (ids && Array.isArray(ids) && ids.length === 0) {
+    return null;
+  }
 
   const includeUpsell = fields.includes("upsell");
 
@@ -46,7 +51,8 @@ export async function getProducts(
   const productsRef = collection(database, "products");
   let conditions: any[] = [];
 
-  if (ids.length > 0) {
+  // Only add ID condition if IDs were explicitly provided
+  if (ids && ids.length > 0) {
     conditions.push(where("__name__", "in", ids));
   }
   if (visibility) {
@@ -67,7 +73,7 @@ export async function getProducts(
     return null;
   }
 
-  // Process products
+  // Rest of the function remains the same
   const products = await Promise.all(
     snapshot.docs.map(async (docSnapshot) => {
       const data = docSnapshot.data();
@@ -90,7 +96,6 @@ export async function getProducts(
         visibility: data["visibility"],
       };
 
-      // Fetch upsell details if requested and available
       if (
         includeUpsell &&
         product.upsell &&

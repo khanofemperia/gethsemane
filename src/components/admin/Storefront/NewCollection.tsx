@@ -156,6 +156,20 @@ export function NewCollectionOverlay() {
       endDate.toISOString().split("T")[0];
 
   const handleSave = async () => {
+    if (!title.trim()) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Enter a collection title");
+      setShowAlert(true);
+      return;
+    }
+
+    if (!slug.trim()) {
+      setAlertMessageType(AlertMessageType.ERROR);
+      setAlertMessage("Enter a collection slug");
+      setShowAlert(true);
+      return;
+    }
+
     if (!isValidDateRange) {
       setAlertMessageType(AlertMessageType.ERROR);
       setAlertMessage("Start date must be before end date");

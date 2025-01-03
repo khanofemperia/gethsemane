@@ -292,7 +292,7 @@ export function PageHeroOverlay({
                         Desktop (1440x360 px)
                       </h2>
                       <div className="w-full border rounded-md overflow-hidden">
-                        <div className="w-full min-h-[104px] flex items-center justify-center overflow-hidden">
+                        <div className="w-full min-h-[59px] flex items-center justify-center overflow-hidden">
                           {desktopImage && isValidRemoteImage(desktopImage) ? (
                             isGifImage(desktopImage) ? (
                               <Image
@@ -333,7 +333,7 @@ export function PageHeroOverlay({
                         Mobile (960x1280 px)
                       </h2>
                       <div className="w-full max-w-[416px] border rounded-md overflow-hidden">
-                        <div className="w-full h-[552px] flex items-center justify-center overflow-hidden">
+                        <div className="w-full min-h-[314px] flex items-center justify-center overflow-hidden">
                           {mobileImage && isValidRemoteImage(mobileImage) ? (
                             isGifImage(mobileImage) ? (
                               <Image
