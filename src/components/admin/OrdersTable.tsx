@@ -107,12 +107,15 @@ export default function OrdersTable({
   };
 
   const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
+    if (typeof window === "undefined") {
+      return "";
+    }
 
+    const date = new Date(dateString);
     return date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-      hour12: true,
+      hour12: false,
       timeZoneName: "short",
     });
   };
