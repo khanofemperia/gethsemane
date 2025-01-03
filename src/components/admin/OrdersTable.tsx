@@ -97,19 +97,23 @@ export default function OrdersTable({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
+
     return date.toLocaleDateString("en-US", {
       year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
     });
   };
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
+
     return date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-      hour12: false,
+      hour12: true,
+      timeZoneName: "short",
     });
   };
 
@@ -151,8 +155,7 @@ export default function OrdersTable({
                           </td>
                           <td className="px-3 w-[120px] min-w-[120px]">
                             <p className="font-medium">
-                              {/* {formatTime(timestamp)} */}
-                              14:10
+                              {formatTime(timestamp)}
                             </p>
                           </td>
                           <td className="px-3 w-[140px] min-w-[140px]">
