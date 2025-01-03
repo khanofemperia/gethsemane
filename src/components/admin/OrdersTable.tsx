@@ -27,9 +27,15 @@ export default function OrdersTable({
       };
     }
 
+    // Sort orders by timestamp in descending order (latest first)
+    const sortedData = [...data].sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
-    const paginatedArray = data.slice(startIndex, endIndex);
+    const paginatedArray = sortedData.slice(startIndex, endIndex);
     const totalPages = Math.ceil(data.length / rowsPerPage);
 
     return {
@@ -95,29 +101,36 @@ export default function OrdersTable({
     setIsPageInRange(true);
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (
+    dateString: string,
+    timeZone = "Europe/Athens"
+  ): string => {
     const date = new Date(dateString);
-
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
-      timeZone: "UTC",
+      timeZone,
     });
   };
 
-  const formatTime = (dateString: string) => {
+  const formatTime = (
+    dateString: string,
+    timeZone = "Europe/Athens"
+  ): string => {
     if (typeof window === "undefined") {
       return "";
     }
 
     const date = new Date(dateString);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZoneName: "short",
-    });
+    return date
+      .toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone,
+      })
+      .replace("24:", "00:");
   };
 
   return (

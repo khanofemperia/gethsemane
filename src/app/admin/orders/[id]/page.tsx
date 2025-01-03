@@ -36,26 +36,25 @@ export default async function OrderDetails({
 
   await updateUpsellProductNames(order);
 
-  const formatOrderPlacedDate = (order: OrderDetailsType): string => {
-    if (typeof window === "undefined") {
-      return "";
-    }
-
+  function formatOrderPlacedDate(
+    order: OrderDetailsType,
+    timeZone = "Europe/Athens"
+  ): string {
     const createTime = order.purchase_units[0].payments.captures[0].create_time;
     const date = new Date(createTime);
 
-    const formattedDateTime = date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: "UTC",
-    });
-
-    return formattedDateTime;
-  };
+    return date
+      .toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone,
+      })
+      .replace("24:", "00:");
+  }
 
   function getPayPalUrl(captureId: string) {
     return `${PAYPAL_BASE_URL}${captureId}`;
