@@ -221,8 +221,8 @@ export default async function OrderDetails({
                     item.size
                   );
                   return (
-                    <div key={item.index} className="flex gap-5">
-                      <div className="min-w-32 max-w-32 min-h-32 max-h-32 overflow-hidden rounded-lg flex items-center justify-center">
+                    <div key={item.index} className="flex gap-2 min-[425px]:gap-3">
+                      <div className="min-w-24 max-w-24 h-24 min-[425px]:min-w-32 min-[425px]:max-w-32 min-[425px]:h-32 overflow-hidden rounded-lg flex items-center justify-center">
                         <Image
                           src={item.mainImage}
                           alt={item.name}
@@ -233,7 +233,7 @@ export default async function OrderDetails({
                       </div>
                       <div className="w-full flex flex-col gap-1">
                         <Link
-                          href={`${item.slug}-${item.baseProductId}`}
+                          href={`/${item.slug}-${item.baseProductId}`}
                           target="_blank"
                           className="text-xs text-gray line-clamp-1 hover:underline"
                         >
