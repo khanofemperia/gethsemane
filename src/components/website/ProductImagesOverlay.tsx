@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import Image from "next/image";
-import { CloseIcon, CloseIconThin } from "@/icons";
+import { CloseIconThin } from "@/icons";
 
-export function ProductImageCarouselOverlay({
+export function ProductImagesOverlay({
   product,
   onClose,
-}: ProductImageCarouselOverlayType) {
+}: ProductImagesOverlayType) {
   const allImages = useMemo(() => {
     const primaryImages: ProductImage[] = [
       { src: product.images.main, alt: product.name },
@@ -24,9 +24,9 @@ export function ProductImageCarouselOverlay({
 
   return (
     <div className="flex justify-center w-full h-dvh min-[580px]:py-16 min-[580px]:px-5 z-40 fixed top-0 bottom-0 left-0 right-0 bg-black/15">
-      <div className="absolute bottom-0 top-16 min-[580px]:relative min-[580px]:top-auto min-[580px]:bottom-auto min-[580px]:h-full max-h-[764px] w-full max-w-[580px] mx-auto bg-white rounded-t-xl min-[580px]:rounded-xl flex flex-col">
+      <div className="absolute bottom-0 top-16 min-[580px]:relative min-[580px]:top-auto min-[580px]:bottom-auto min-[580px]:h-full max-h-[764px] w-full max-w-[580px] mx-auto bg-white rounded-t-[20px] min-[580px]:rounded-xl flex flex-col">
         <div className="h-full pt-4 min-[580px]:pb-5 flex flex-col relative">
-          <div className="pb-[10px] px-5">
+          <div className="pb-3 px-5">
             <p className="font-semibold text-sm text-center">{product.name}</p>
           </div>
           <div className="px-5 min-[580px]:pr-2 pb-28 min-[580px]:pb-0 max-[580px]:invisible-scrollbar min-[580px]:custom-scrollbar overflow-x-hidden overflow-y-auto">
@@ -51,7 +51,7 @@ export function ProductImageCarouselOverlay({
         <button
           type="button"
           onClick={onClose}
-          className="aspect-square w-7 min-[580px]:w-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center transition active:bg-lightgray min-[580px]:hover:bg-lightgray"
+          className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center transition active:bg-lightgray min-[580px]:hover:bg-lightgray"
           aria-label="Close carousel"
         >
           <CloseIconThin size={24} className="stroke-gray" />
@@ -68,7 +68,7 @@ type ProductImage = {
   alt: string;
 };
 
-type ProductImageCarouselOverlayType = {
+type ProductImagesOverlayType = {
   product: {
     name: string;
     images: {
