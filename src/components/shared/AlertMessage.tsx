@@ -40,7 +40,7 @@ export default function AlertMessage({
       ref={overlayRef}
       id="alert-message-overlay"
       className={clsx(
-        "select-none flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-50 fixed top-0 bottom-0 left-0 right-0 transition duration-300 ease-in-out",
+        "select-none flex justify-center py-20 w-full h-dvh overflow-x-hidden overflow-y-visible z-50 fixed top-0 bottom-0 left-0 right-0 transition duration-300 ease-in-out",
         { "bg-green-400/30": type.toUpperCase() === SUCCESS },
         { "bg-red-400/30": type.toUpperCase() === ERROR },
         { "bg-black/30": type.toUpperCase() === NEUTRAL }

@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import AlertMessage from "../shared/AlertMessage";
-import { NewUpsellEmptyGridButton } from "./NewUpsell";
+import { NewUpsellEmptyGridButton } from "./NewUpsellOverlay";
 
 const PUBLISHED = "PUBLISHED";
 const DRAFT = "DRAFT";

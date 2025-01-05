@@ -11,7 +11,7 @@ import {
   ChangeCollectionIndexButton,
   ChangeCollectionIndexOverlay,
 } from "./ChangeCollectionIndexOverlay";
-import { NewCollectionEmptyTableButton } from "./NewCollection";
+import { NewCollectionEmptyTableButton } from "./NewCollectionOverlay";
 
 export default function CollectionTable({
   collections,

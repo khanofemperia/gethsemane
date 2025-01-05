@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { CartIcon } from "@/icons";
 import { HiMiniChevronDown } from "react-icons/hi2";
 import Link from "next/link";
-import { MobileNavbarButton } from "../MobileNavbarOverlay";
+import { MobileNavbarButton } from "./MobileNavbarOverlay";
 
 export default function Navbar({
   itemsInCart,

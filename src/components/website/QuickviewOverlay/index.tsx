@@ -86,7 +86,7 @@ export function QuickviewOverlay() {
   return (
     <>
       {isVisible && selectedProduct && (
-        <div className="flex justify-center w-screen h-screen z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
+        <div className="flex justify-center w-full h-dvh z-20 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
           <MobileProductDetails
             selectedProduct={selectedProduct}
             deviceIdentifier={deviceIdentifier}

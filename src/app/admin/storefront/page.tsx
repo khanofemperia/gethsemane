@@ -4,9 +4,9 @@ import { getPageHero } from "@/actions/get/pageHero";
 import {
   CategoriesButton,
   CategoriesOverlay,
-} from "@/components/admin/Storefront/Categories";
+} from "@/components/admin/Storefront/CategoriesOverlay";
 import CollectionTable from "@/components/admin/Storefront/CollectionTable";
-import { NewCollectionOverlay } from "@/components/admin/Storefront/NewCollection";
+import { NewCollectionOverlay } from "@/components/admin/Storefront/NewCollectionOverlay";
 import {
   PageHeroButton,
   PageHeroOverlay,

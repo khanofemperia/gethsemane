@@ -1,6 +1,6 @@
 "use client";
 
-import { NewProductEmptyGridButton } from "@/components/admin/NewProduct";
+import { NewProductEmptyGridButton } from "@/components/admin/NewProductOverlay";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { capitalizeFirstLetter, formatThousands } from "@/lib/utils/common";
 import clsx from "clsx";

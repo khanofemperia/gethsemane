@@ -10,9 +10,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { DeleteProductAction } from "@/actions/products";
 import { DeleteUpsellAction } from "@/actions/upsells";
 import { DeleteCollectionAction } from "@/actions/collections";
-import { NewCollectionMenuButton } from "../Storefront/NewCollection";
-import { NewProductMenuButton } from "../NewProduct";
-import { NewUpsellMenuButton } from "../NewUpsell";
+import { NewCollectionMenuButton } from "../Storefront/NewCollectionOverlay";
+import { NewProductMenuButton } from "../NewProductOverlay";
+import { NewUpsellMenuButton } from "../NewUpsellOverlay";
 
 export function MobileNavbarButton() {
   const showMobileNavbarOverlay = useMobileNavbarStore(
@@ -154,66 +154,53 @@ export function MobileNavbarOverlay() {
   };
 
   return (
-    <>
+    <div
+      ref={overlayRef}
+      className={clsx(
+        isMobileNavbarOverlayVisible
+          ? "md:hidden fixed w-full h-dvh top-0 bottom-0 left-0 right-0 z-40 transition bg-glass-black backdrop-blur-sm md:overflow-x-hidden md:overflow-y-visible md:custom-scrollbar"
+          : "hidden"
+      )}
+    >
       <div
-        ref={overlayRef}
-        className={clsx(
-          isMobileNavbarOverlayVisible
-            ? "md:hidden fixed top-0 bottom-0 left-0 right-0 z-40 transition duration-300 ease-in-out bg-glass-black backdrop-blur-sm md:overflow-x-hidden md:overflow-y-visible md:custom-scrollbar"
-            : "hidden"
-        )}
+        ref={menuRef}
+        className="absolute right-0 bottom-0 top-0 h-full w-3/4 max-w-80 px-5 pt-3 bg-white"
       >
-        <div
-          ref={menuRef}
-          className="absolute right-0 bottom-0 top-0 h-full w-3/4 max-w-80 px-5 pt-3 bg-white"
-        >
-          <div className="h-full">
-            <button
-              onClick={() => handleNavigation("/admin")}
-              className="h-12 min-w-[168px] w-[168px] ml-[2px] flex items-center justify-center"
-            >
-              <Image
-                src="/images/logos/cherlygood_wordmark.svg"
-                alt="Cherly Good"
-                width={160}
-                height={40}
-                priority
-              />
-            </button>
-            <div className="flex flex-col gap-4 mt-5 ml-2">
-              <div className="flex flex-col gap-1">
-                {isCollectionListPage && (
-                  <NewCollectionMenuButton
-                    closeMenu={hideMobileNavbarOverlay}
-                  />
-                )}
-                {isProductListPage && (
-                  <NewProductMenuButton closeMenu={hideMobileNavbarOverlay} />
-                )}
-                {isUpsellListPage && (
-                  <NewUpsellMenuButton closeMenu={hideMobileNavbarOverlay} />
-                )}
-                {isProductEditingPage && (
-                  <>
-                    <button
-                      onClick={() => {
-                        handleNavigation(`/${productSlug}`);
-                        hideMobileNavbarOverlay();
-                      }}
-                      className="h-10 w-max text-lg font-medium rounded-full flex items-center md:h-9 md:w-[calc(100%-10px)] md:mx-auto md:px-3 md:text-sm md:font-semibold md:rounded-md md:cursor-pointer md:transition md:active:bg-lightgray md:hover:bg-lightgray"
-                    >
-                      Visit product
-                    </button>
-                    <button
-                      onClick={handleDelete}
-                      disabled={isDeleting}
-                      className="h-10 w-max text-lg text-red font-medium rounded-full flex items-center md:h-9 md:w-[calc(100%-10px)] md:mx-auto md:px-3 md:text-sm md:font-semibold md:rounded-md md:cursor-pointer md:transition md:active:bg-lightgray md:hover:bg-lightgray"
-                    >
-                      {isDeleting ? "Deleting..." : "Delete"}
-                    </button>
-                  </>
-                )}
-                {(isUpsellEditingPage || isCollectionEditingPage) && (
+        <div className="h-full">
+          <button
+            onClick={() => handleNavigation("/admin")}
+            className="h-12 min-w-[168px] w-[168px] ml-[2px] flex items-center justify-center"
+          >
+            <Image
+              src="/images/logos/cherlygood_wordmark.svg"
+              alt="Cherly Good"
+              width={160}
+              height={40}
+              priority
+            />
+          </button>
+          <div className="flex flex-col gap-4 mt-5 ml-2">
+            <div className="flex flex-col gap-1">
+              {isCollectionListPage && (
+                <NewCollectionMenuButton closeMenu={hideMobileNavbarOverlay} />
+              )}
+              {isProductListPage && (
+                <NewProductMenuButton closeMenu={hideMobileNavbarOverlay} />
+              )}
+              {isUpsellListPage && (
+                <NewUpsellMenuButton closeMenu={hideMobileNavbarOverlay} />
+              )}
+              {isProductEditingPage && (
+                <>
+                  <button
+                    onClick={() => {
+                      handleNavigation(`/${productSlug}`);
+                      hideMobileNavbarOverlay();
+                    }}
+                    className="h-10 w-max text-lg font-medium rounded-full flex items-center md:h-9 md:w-[calc(100%-10px)] md:mx-auto md:px-3 md:text-sm md:font-semibold md:rounded-md md:cursor-pointer md:transition md:active:bg-lightgray md:hover:bg-lightgray"
+                  >
+                    Visit product
+                  </button>
                   <button
                     onClick={handleDelete}
                     disabled={isDeleting}
@@ -221,41 +208,50 @@ export function MobileNavbarOverlay() {
                   >
                     {isDeleting ? "Deleting..." : "Delete"}
                   </button>
-                )}
-              </div>
-              {showSeparator && <hr />}
-              <div className="flex flex-col gap-1 *:h-10 *:w-max *:text-lg *:font-medium *:rounded-full *:flex *:items-center">
-                <button onClick={() => handleNavigation("/admin/storefront")}>
-                  Storefront
+                </>
+              )}
+              {(isUpsellEditingPage || isCollectionEditingPage) && (
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="h-10 w-max text-lg text-red font-medium rounded-full flex items-center md:h-9 md:w-[calc(100%-10px)] md:mx-auto md:px-3 md:text-sm md:font-semibold md:rounded-md md:cursor-pointer md:transition md:active:bg-lightgray md:hover:bg-lightgray"
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
                 </button>
-                <button onClick={() => handleNavigation("/admin/products")}>
-                  Products
-                </button>
-                <button onClick={() => handleNavigation("/admin/upsells")}>
-                  Upsells
-                </button>
-                <button onClick={() => handleNavigation("/admin/orders")}>
-                  Orders
-                </button>
-              </div>
-              <hr />
-              <div className="flex flex-col gap-1 *:h-9 *:w-max *:text-sm *:font-medium *:rounded-full *:flex *:items-center">
-                <button onClick={() => handleNavigation("/")}>
-                  Public website
-                </button>
-                <button onClick={() => handleNavigation("#")}>Sign out</button>
-              </div>
+              )}
+            </div>
+            {showSeparator && <hr />}
+            <div className="flex flex-col gap-1 *:h-10 *:w-max *:text-lg *:font-medium *:rounded-full *:flex *:items-center">
+              <button onClick={() => handleNavigation("/admin/storefront")}>
+                Storefront
+              </button>
+              <button onClick={() => handleNavigation("/admin/products")}>
+                Products
+              </button>
+              <button onClick={() => handleNavigation("/admin/upsells")}>
+                Upsells
+              </button>
+              <button onClick={() => handleNavigation("/admin/orders")}>
+                Orders
+              </button>
+            </div>
+            <hr />
+            <div className="flex flex-col gap-1 *:h-9 *:w-max *:text-sm *:font-medium *:rounded-full *:flex *:items-center">
+              <button onClick={() => handleNavigation("/")}>
+                Public website
+              </button>
+              <button onClick={() => handleNavigation("#")}>Sign out</button>
             </div>
           </div>
-          <button
-            onClick={hideMobileNavbarOverlay}
-            className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
-            type="button"
-          >
-            <CloseIconThin size={24} className="stroke-gray" />
-          </button>
         </div>
+        <button
+          onClick={hideMobileNavbarOverlay}
+          className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
+          type="button"
+        >
+          <CloseIconThin size={24} className="stroke-gray" />
+        </button>
       </div>
-    </>
+    </div>
   );
 }

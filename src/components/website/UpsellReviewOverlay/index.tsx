@@ -229,7 +229,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
   return (
     <>
       {isVisible && selectedProduct && (
-        <div className="custom-scrollbar flex justify-center py-20 w-screen h-screen overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
+        <div className="custom-scrollbar flex justify-center py-20 w-full h-dvh overflow-x-hidden overflow-y-visible z-30 fixed top-0 bottom-0 left-0 right-0 bg-black bg-opacity-40 backdrop-blur-sm">
           <div className="w-[calc(100%-36px)] max-w-[500px] max-h-[764px] relative overflow-hidden rounded-2xl shadow-[0px_0px_36px_0px_rgba(255,185,56,0.6)] bg-white">
             <div className="h-full pt-5 pb-[80px] flex flex-col relative">
               <div className="pb-3">

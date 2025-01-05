@@ -23,7 +23,7 @@ export function ProductImageCarouselOverlay({
   }, [product.images.main, product.images.gallery, product.options.colors]);
 
   return (
-    <div className="flex justify-center w-screen h-screen min-[580px]:py-16 min-[580px]:px-5 z-40 fixed top-0 bottom-0 left-0 right-0 bg-black/15">
+    <div className="flex justify-center w-full h-dvh min-[580px]:py-16 min-[580px]:px-5 z-40 fixed top-0 bottom-0 left-0 right-0 bg-black/15">
       <div className="absolute bottom-0 top-16 min-[580px]:relative min-[580px]:top-auto min-[580px]:bottom-auto min-[580px]:h-full max-h-[764px] w-full max-w-[580px] mx-auto bg-white rounded-t-xl min-[580px]:rounded-xl flex flex-col">
         <div className="h-full pt-4 min-[580px]:pb-5 flex flex-col relative">
           <div className="pb-[10px] px-5">

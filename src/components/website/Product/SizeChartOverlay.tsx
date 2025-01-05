@@ -3,7 +3,6 @@
 import { CloseIconThin } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { productInternationalSizes } from "@/lib/utils/common";
-import { useEffect } from "react";
 
 export function SizeChartOverlay({
   productInfo,
@@ -22,7 +21,7 @@ export function SizeChartOverlay({
   return (
     <>
       {isOverlayVisible && productInfo.options.sizes && (
-        <div className="overlay fixed top-0 bottom-0 left-0 right-0 z-50 transition duration-300 ease-in-out bg-glass-black backdrop-blur-sm md:overflow-x-hidden md:overflow-y-visible md:custom-scrollbar">
+        <div className="overlay fixed w-full h-dvh top-0 bottom-0 left-0 right-0 z-50 transition bg-glass-black backdrop-blur-sm md:overflow-x-hidden md:overflow-y-visible md:custom-scrollbar">
           <div className="size-chart-container absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-3xl overflow-hidden bg-white md:w-max md:min-w-[516px] md:max-w-[740px] md:rounded-2xl md:shadow md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
             <h2 className="font-semibold text-center pt-5 pb-2">
               Product measurements

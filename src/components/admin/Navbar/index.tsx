@@ -3,9 +3,9 @@
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { HamburgerMenuIcon } from "@/icons";
-import { NewProductMenuButton } from "../NewProduct";
-import { NewUpsellMenuButton } from "../NewUpsell";
-import { NewCollectionMenuButton } from "../Storefront/NewCollection";
+import { NewProductMenuButton } from "../NewProductOverlay";
+import { NewUpsellMenuButton } from "../NewUpsellOverlay";
+import { NewCollectionMenuButton } from "../Storefront/NewCollectionOverlay";
 import { DeleteProductAction } from "@/actions/products";
 import { DeleteUpsellAction } from "@/actions/upsells";
 import { DeleteCollectionAction } from "@/actions/collections";

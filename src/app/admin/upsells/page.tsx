@@ -1,5 +1,5 @@
 import { getUpsells } from "@/actions/get/upsells";
-import { NewUpsellOverlay } from "@/components/admin/NewUpsell";
+import { NewUpsellOverlay } from "@/components/admin/NewUpsellOverlay";
 import UpsellGrid from "@/components/admin/UpsellGrid";
 
 export default async function Upsells() {

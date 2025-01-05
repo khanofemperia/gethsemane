@@ -1,5 +1,5 @@
 import { getProducts } from "@/actions/get/products";
-import { NewProductOverlay } from "@/components/admin/NewProduct";
+import { NewProductOverlay } from "@/components/admin/NewProductOverlay";
 import ProductGrid from "@/components/admin/ProductGrid";
 
 export default async function Products() {
