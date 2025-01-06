@@ -17,6 +17,7 @@ import { getProducts } from "@/actions/get/products";
 import { Options } from "@/components/website/Product/Options";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { CartAndUpgradeButtons } from "@/components/website/CartAndUpgradeButtons";
+import { BackButton } from "@/components/website/BackButton";
 
 export default async function ProductDetails({
   params,
@@ -80,15 +81,7 @@ export default async function ProductDetails({
           <div className="md:hidden">
             <div>
               <div className="w-full relative select-none">
-                <button
-                  type="button"
-                  className="h-9 w-9 bg-black/80 rounded-full flex items-center justify-center absolute top-4 left-5 z-10 transition duration-300 ease-in-out active:bg-black"
-                >
-                  <ChevronLeftIcon
-                    className="stroke-white mr-[2px]"
-                    size={22}
-                  />
-                </button>
+                <BackButton />
                 <ImageCarousel images={images} productName={name} />
               </div>
               <div className="max-w-[486px] mx-auto">

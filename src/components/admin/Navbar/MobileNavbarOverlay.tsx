@@ -158,7 +158,7 @@ export function MobileNavbarOverlay() {
       ref={overlayRef}
       className={clsx(
         isMobileNavbarOverlayVisible
-          ? "md:hidden fixed w-full h-dvh top-0 bottom-0 left-0 right-0 z-40 transition bg-glass-black backdrop-blur-sm md:overflow-x-hidden md:overflow-y-visible md:custom-scrollbar"
+          ? "md:hidden fixed w-full h-screen top-0 bottom-0 left-0 right-0 z-40 transition bg-glass-black backdrop-blur-sm md:overflow-x-hidden md:overflow-y-visible md:custom-scrollbar"
           : "hidden"
       )}
     >

@@ -3,12 +3,14 @@
 import Image from "next/image";
 import { ChevronRightIcon } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { InCartIndicator } from "./InCartIndicator";
 import clsx from "clsx";
 import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
 import { getCart } from "@/actions/get/carts";
+import debounce from "lodash/debounce";
+import { getDeviceIdentifier } from "@/actions/get/deviceIdentifier";
 
 export function Options({
   productInfo,
@@ -56,33 +58,82 @@ export function Options({
   const hasColor = productInfo.options.colors.length > 0;
   const hasSize = Object.keys(productInfo.options.sizes).length > 0;
 
+  const checkIfInCart = useCallback(
+    (currentCart: CartType | null) => {
+      if (!currentCart) {
+        setIsInCart(false);
+        return;
+      }
+
+      const isItemInCart = currentCart.items.some((item) => {
+        if (item.type !== "product") return false;
+
+        const baseMatch = item.baseProductId === productInfo.id;
+        if (!hasColor && !hasSize) return baseMatch;
+        if (hasColor && !hasSize)
+          return baseMatch && item.color === selectedColor;
+        if (!hasColor && hasSize)
+          return baseMatch && item.size === selectedSize;
+        return (
+          baseMatch &&
+          item.color === selectedColor &&
+          item.size === selectedSize
+        );
+      });
+
+      setIsInCart(isItemInCart);
+    },
+    [
+      productInfo.id,
+      selectedColor,
+      selectedSize,
+      hasColor,
+      hasSize,
+      setIsInCart,
+    ]
+  );
+
+  const fetchCart = useCallback(async () => {
+    try {
+      // Fetch the latest deviceIdentifier dynamically
+      const currentDeviceId = await getDeviceIdentifier();
+
+      if (!currentDeviceId) {
+        console.error("Device identifier is missing");
+        setCart(null);
+        return;
+      }
+
+      const fetchedCart = await getCart(currentDeviceId);
+      if (fetchedCart) {
+        setCart(fetchedCart);
+        checkIfInCart(fetchedCart);
+      }
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
+    }
+  }, [checkIfInCart]);
+
+  // Debounced fetchCart to reduce redundant calls
+  const debouncedFetchCart = useCallback(
+    debounce(() => {
+      fetchCart();
+    }, 500),
+    [fetchCart]
+  );
+
+  // Trigger cart fetch when options change
+  useEffect(() => {
+    debouncedFetchCart();
+    return () => {
+      debouncedFetchCart.cancel();
+    };
+  }, [selectedColor, selectedSize, debouncedFetchCart]);
+
   useEffect(() => {
     setProductId(productInfo.id);
     resetOptions();
   }, [productInfo.id, setProductId, resetOptions]);
-
-  useEffect(() => {
-    const fetchCart = async () => {
-      const cart = await getCart(deviceIdentifier);
-      setCart(cart);
-    };
-    fetchCart();
-  }, [deviceIdentifier]);
-
-  useEffect(() => {
-    setIsInCart(
-      cart?.items.some((item) => {
-        if (item.type === "product") {
-          return (
-            item.baseProductId === productInfo.id &&
-            item.color === selectedColor &&
-            item.size === selectedSize
-          );
-        }
-        return false;
-      }) ?? false
-    );
-  }, [cart, productInfo.id, selectedColor, selectedSize, setIsInCart]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -189,7 +240,6 @@ export function Options({
           <div className="text-sm font-medium">{getButtonText()}</div>
           <ChevronRightIcon className="-mr-[8px] stroke-[#828282]" size={20} />
         </button>
-
         {isDropdownVisible && (
           <div className="absolute top-[42px] left-0 z-20 pb-2">
             <div className="w-max min-w-[238px] max-w-[288px] p-5 rounded-xl shadow-dropdown bg-white before:content-[''] before:w-[14px] before:h-[14px] before:bg-white before:rounded-tl-[2px] before:rotate-45 before:origin-top-left before:absolute before:-top-[10px] before:border-l before:border-t before:border-[#d9d9d9] before:left-16 min-[840px]:before:right-24">

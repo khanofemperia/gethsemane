@@ -129,7 +129,7 @@ function MobileProductDetails({
   const hasSize = Object.keys(selectedProduct.options.sizes).length > 0;
 
   return (
-    <div className="md:hidden absolute bottom-0 left-0 right-0 top-16 bg-white rounded-t-xl flex flex-col">
+    <div className="md:hidden absolute bottom-0 left-0 right-0 top-16 bg-white rounded-t-[20px] flex flex-col">
       <div className="flex items-center justify-end px-2 py-1">
         <button
           onClick={hideOverlay}

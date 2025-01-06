@@ -33,7 +33,7 @@ export function SizeChartOverlay({
                   overlayName: overlayName,
                 });
               }}
-              className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
+              className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
               type="button"
             >
               <CloseIconThin size={24} className="stroke-gray" />
