@@ -80,8 +80,8 @@ export async function getCart(
       id: cartDoc.id,
       device_identifier: cartData.device_identifier,
       items: validatedItems,
-      createdAt: cartData.createdAt,
-      updatedAt: cartData.updatedAt,
+      createdAt: cartData.createdAt?.toDate().toISOString(),
+      updatedAt: cartData.updatedAt?.toDate().toISOString(),
     };
   } catch (error) {
     if (error instanceof FirestoreError) {
