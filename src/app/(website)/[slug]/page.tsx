@@ -18,6 +18,7 @@ import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { CartAndUpgradeButtons } from "@/components/website/CartAndUpgradeButtons";
 import { BackButton } from "@/components/website/BackButton";
 import { ImageGallery } from "@/components/website/ProductDetails/ImageGallery";
+import { ImageGalleryWrapper } from "@/components/website/ProductDetails/ImageGalleryWrapper";
 import { ProductInfoWrapper } from "@/components/website/ProductDetails/ProductInfoWrapper";
 
 export default async function ProductDetails({
@@ -360,9 +361,9 @@ function DesktopProductDetails({
     <div className="hidden md:block">
       <div className="px-9 pt-5 mx-auto max-w-[1040px]">
         <div className="flex gap-5 items-start justify-start relative">
-          <div className="sticky top-5 max-w-[650px] flex flex-col gap-16">
+          <ImageGalleryWrapper>
             <ImageGallery images={images} productName={name} />
-          </div>
+          </ImageGalleryWrapper>
           <ProductInfoWrapper>
             <div>
               <div className="flex flex-col gap-5">
