@@ -1,6 +1,5 @@
-import ImageCarousel from "@/components/website/Product/ImageCarousel";
-import { CheckmarkIcon, ChevronLeftIcon } from "@/icons";
-import Images from "@/components/website/Product/Images";
+import ImageCarousel from "@/components/website/ProductDetails/ImageCarousel";
+import { CheckmarkIcon } from "@/icons";
 import Image from "next/image";
 import { cookies } from "next/headers";
 import styles from "./styles.module.css";
@@ -8,16 +7,18 @@ import { formatThousands } from "@/lib/utils/common";
 import "@/components/shared/TextEditor/theme/index.css";
 import ShowAlert from "@/components/website/ShowAlert";
 import { ProductDetailsWrapper } from "@/components/website/ProductDetailsWrapper";
-import { SizeChartOverlay } from "@/components/website/Product/SizeChartOverlay";
+import { SizeChartOverlay } from "@/components/website/ProductDetails/SizeChartOverlay";
 import clsx from "clsx";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { getCart } from "@/actions/get/carts";
 import { getCategories } from "@/actions/get/categories";
 import { getProducts } from "@/actions/get/products";
-import { Options } from "@/components/website/Product/Options";
+import { Options } from "@/components/website/ProductDetails/Options";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { CartAndUpgradeButtons } from "@/components/website/CartAndUpgradeButtons";
 import { BackButton } from "@/components/website/BackButton";
+import { ImageGallery } from "@/components/website/ProductDetails/ImageGallery";
+import { ProductInfoWrapper } from "@/components/website/ProductDetails/ProductInfoWrapper";
 
 export default async function ProductDetails({
   params,
@@ -360,9 +361,9 @@ function DesktopProductDetails({
       <div className="px-9 pt-5 mx-auto max-w-[1040px]">
         <div className="flex gap-5 items-start justify-start relative">
           <div className="sticky top-5 max-w-[650px] flex flex-col gap-16">
-            <Images images={images} productName={name} />
+            <ImageGallery images={images} productName={name} />
           </div>
-          <div className="sticky top-5 pt-5 w-[328px] min-w-[328px] min-[896px]:w-[340px]">
+          <ProductInfoWrapper>
             <div>
               <div className="flex flex-col gap-5">
                 <p className="-mb-1 line-clamp-2 leading-[1.125rem] text-[0.75rem] text-gray">
@@ -564,7 +565,7 @@ function DesktopProductDetails({
                 />
               </div>
             </div>
-          </div>
+          </ProductInfoWrapper>
         </div>
         {description && (
           <div className="w-full mt-12 pr-[70px] mx-auto">

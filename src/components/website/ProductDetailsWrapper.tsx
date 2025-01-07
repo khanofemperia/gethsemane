@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { StickyBar } from "./Product/StickyBar";
+import { StickyBar } from "./ProductDetails/StickyBar";
 import { CartIcon } from "@/icons";
 import Image from "next/image";
 import Link from "next/link";
-import { Options } from "./Product/Options";
+import { Options } from "./ProductDetails/Options";
 import { useScrollStore } from "@/zustand/website/scrollStore";
 import { useRouter } from "next/navigation";
 import { HiMiniChevronDown } from "react-icons/hi2";
@@ -30,7 +30,6 @@ export function ProductDetailsWrapper({
 }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const shouldShowBar = useScrollStore((state) => state.shouldShowBar);
 
   const [isCategoriesDropdownVisible, setCategoriesDropdownVisible] =
     useState(false);
@@ -43,8 +42,6 @@ export function ProductDetailsWrapper({
       if (wrapperRef.current) {
         const scrollPosition = wrapperRef.current.scrollTop;
         setScrollPosition(scrollPosition);
-        // Show sticky bar when scroll position exceeds 200px
-        setShouldShowBar(scrollPosition > 200);
       }
     };
 
@@ -190,7 +187,6 @@ export function ProductDetailsWrapper({
         hasColor={hasColor}
         hasSize={hasSize}
         cart={cart}
-        isHidden={!shouldShowBar}
       />
       <Footer />
     </div>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import styles from "./styles.module.css";
 
-export default function Images({ images, productName }: ProductImagesType) {
+export function ImageGallery({ images, productName }: ProductImagesType) {
   const [currentImage, setCurrentImage] = useState(images.main);
 
   const handleImageSelect = (image: string) => {

@@ -6,18 +6,17 @@ import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import {
   CheckmarkIcon,
   ChevronRightIcon,
-  CloseIcon,
   CloseIconThin,
 } from "@/icons";
-import Images from "../Product/Images";
 import { formatThousands } from "@/lib/utils/common";
 import styles from "./styles.module.css";
 import { useRouter } from "next/navigation";
-import { SizeChartOverlay } from "../Product/SizeChartOverlay";
+import { SizeChartOverlay } from "../ProductDetails/SizeChartOverlay";
 import clsx from "clsx";
-import { Options } from "../Product/Options";
+import { Options } from "../ProductDetails/Options";
 import { CartAndUpgradeButtons } from "../CartAndUpgradeButtons";
 import "@/components/shared/TextEditor/theme/index.css";
+import { ImageGallery } from "../ProductDetails/ImageGallery";
 
 export function QuickviewButton({
   onClick,
@@ -420,7 +419,7 @@ function DesktopProductDetails({
     <div className="hidden md:block w-[calc(100%-40px)] max-w-max max-h-[554px] py-8 absolute top-16 bottom-16 bg-white mx-auto shadow rounded-2xl">
       <div className="relative pl-8 pr-7 flex flex-row gap-5 custom-scrollbar max-h-[554px] h-full overflow-x-hidden overflow-y-visible">
         <div className="sticky top-0 w-[556px] flex flex-col gap-16">
-          <Images
+          <ImageGallery
             images={selectedProduct.images}
             productName={selectedProduct.name}
           />
