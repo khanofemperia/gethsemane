@@ -36,11 +36,15 @@ export function ProductDetailsWrapper({
     useState(false);
   const categoriesRef = useRef<HTMLDivElement>(null);
   const setScrollPosition = useScrollStore((state) => state.setScrollPosition);
+  const setShouldShowBar = useScrollStore((state) => state.setShouldShowBar);
 
   useEffect(() => {
     const handleScroll = () => {
       if (wrapperRef.current) {
-        setScrollPosition(wrapperRef.current.scrollTop);
+        const scrollPosition = wrapperRef.current.scrollTop;
+        setScrollPosition(scrollPosition);
+        // Show sticky bar when scroll position exceeds 200px
+        setShouldShowBar(scrollPosition > 200);
       }
     };
 
@@ -54,7 +58,7 @@ export function ProductDetailsWrapper({
         wrapperElement.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [setScrollPosition]);
+  }, [setScrollPosition, setShouldShowBar]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
