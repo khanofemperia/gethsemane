@@ -3,14 +3,11 @@
 import Image from "next/image";
 import { ChevronRightIcon } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { InCartIndicator } from "./InCartIndicator";
 import clsx from "clsx";
 import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
-import { getCart } from "@/actions/get/carts";
-import debounce from "lodash/debounce";
-import { getDeviceIdentifier } from "@/actions/get/deviceIdentifier";
 
 export function Options({
   productInfo,
@@ -41,11 +38,11 @@ export function Options({
   deviceIdentifier: string;
 }) {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [cart, setCart] = useState<CartType | null>(null);
-  const [inCartSelections, setInCartSelections] = useState<string[]>([]);
+  const [localSelections, setLocalSelections] = useState<string[]>([]);
   const [currentSelectionKey, setCurrentSelectionKey] = useState<string | null>(
     null
   );
+
   const selectedColor = useOptionsStore((state) => state.selectedColor);
   const selectedSize = useOptionsStore((state) => state.selectedSize);
   const isInCart = useOptionsStore((state) => state.isInCart);
@@ -60,153 +57,39 @@ export function Options({
   const hasColor = productInfo.options.colors.length > 0;
   const hasSize = Object.keys(productInfo.options.sizes).length > 0;
 
-  // Generate current selection key whenever options change
   useEffect(() => {
-    const selectionKey = `${productInfo.id}-${selectedColor || "none"}-${
-      selectedSize || "none"
-    }`;
-    setCurrentSelectionKey(selectionKey.toLowerCase());
+    const selectionKeyParts = [
+      productInfo.id.toLowerCase(),
+      selectedColor?.toLowerCase(),
+      selectedSize?.toLowerCase(),
+    ];
+
+    const selectionKey = selectionKeyParts.filter(Boolean).join("-");
+    setCurrentSelectionKey(selectionKey);
   }, [selectedColor, selectedSize, productInfo.id]);
 
-  // Watch for external isInCart changes (when item is added to cart)
   useEffect(() => {
+    const isInLocalCart = currentSelectionKey
+      ? localSelections.includes(currentSelectionKey)
+      : false;
+    setIsInCart(isInLocalCart);
+
     if (
       isInCart &&
       currentSelectionKey &&
-      !inCartSelections.includes(currentSelectionKey)
+      !localSelections.includes(currentSelectionKey)
     ) {
-      setInCartSelections((prev) => [...prev, currentSelectionKey]);
+      setLocalSelections((prev) => [...prev, currentSelectionKey]);
     }
-  }, [isInCart, currentSelectionKey, inCartSelections]); // Added inCartSelections dependency
+  }, [isInCart, currentSelectionKey, localSelections, productInfo.id]);
 
-  const checkIfInCart = useCallback(
-    (currentCart: CartType | null) => {
-      if (!currentCart) {
-        setIsInCart(false);
-        return;
-      }
-
-      const cartSelectionKeys: string[] = [];
-
-      currentCart.items.forEach((item) => {
-        if (item.type !== "product" || item.baseProductId !== productInfo.id)
-          return;
-
-        const itemKey = `${item.baseProductId}-${item.color || "none"}-${
-          item.size || "none"
-        }`.toLowerCase();
-        cartSelectionKeys.push(itemKey);
-      });
-
-      setInCartSelections(cartSelectionKeys);
-
-      if (currentSelectionKey) {
-        const isItemInCart = cartSelectionKeys.includes(currentSelectionKey);
-        setIsInCart(isItemInCart);
-      }
-    },
-    [productInfo.id, currentSelectionKey, setIsInCart]
-  );
-
-  const fetchCart = useCallback(async () => {
-    try {
-      const currentDeviceId = await getDeviceIdentifier();
-      if (!currentDeviceId) {
-        console.error("Device identifier is missing");
-        setCart(null);
-        return;
-      }
-
-      const fetchedCart = await getCart(currentDeviceId);
-      if (fetchedCart) {
-        setCart(fetchedCart);
-        checkIfInCart(fetchedCart);
-      }
-    } catch (error) {
-      console.error("Failed to fetch cart:", error);
-    }
-  }, [checkIfInCart]);
-
-  const debouncedFetchCart = useCallback(
-    debounce(() => {
-      fetchCart();
-    }, 500),
-    [fetchCart]
-  );
-
-  // const checkLocalCartState = useCallback(() => {
-  //   console.log("Checking local cart state:");
-  //   console.log("Current selection key:", currentSelectionKey);
-  //   console.log("Cached selections:", inCartSelections);
-
-  //   if (!currentSelectionKey) return false;
-
-  //   const isItemInCart = inCartSelections.includes(currentSelectionKey);
-
-  //   // Only set isInCart if the state would actually change
-  //   if (isItemInCart && !isInCart) {
-  //     setIsInCart(true);
-  //   } else if (!isItemInCart && isInCart) {
-  //     setIsInCart(false);
-  //   }
-
-  //   return isItemInCart;
-  // }, [currentSelectionKey, inCartSelections, isInCart, setIsInCart]);
-  const checkLocalCartState = useCallback(() => {
-    console.log("Checking local cart state:");
-    console.log("Current selection key:", currentSelectionKey);
-    console.log("Cached selections:", inCartSelections);
-
-    if (!currentSelectionKey) return false;
-
-    const isItemInCart = inCartSelections.includes(currentSelectionKey);
-
-    // Always update isInCart state to match the cached selections
-    setIsInCart(isItemInCart);
-
-    // Remove the condition that was preventing state updates
-    // if (isItemInCart && !isInCart) {
-    //   setIsInCart(true);
-    // } else if (!isItemInCart && isInCart) {
-    //   setIsInCart(false);
-    // }
-
-    return isItemInCart;
-  }, [currentSelectionKey, inCartSelections, setIsInCart]); // Removed isInCart from dependencies
-
-  // Check local cache first, then fetch if needed
-  // useEffect(() => {
-  //   const isInLocalCache = checkLocalCartState();
-
-  //   // Only fetch if not in cache AND we have a valid selection
-  //   if (!isInLocalCache && currentSelectionKey) {
-  //     debouncedFetchCart();
-  //   }
-
-  //   return () => {
-  //     debouncedFetchCart.cancel();
-  //   };
-  // }, [currentSelectionKey]); // Simplified dependencies
   useEffect(() => {
-    if (currentSelectionKey) {
-      const isInLocalCache = checkLocalCartState();
-
-      if (!isInLocalCache) {
-        debouncedFetchCart();
-      }
-    }
-
-    return () => {
-      debouncedFetchCart.cancel();
-    };
-  }, [currentSelectionKey, checkLocalCartState, debouncedFetchCart]);
-
-  // Reset everything when product changes
-  useEffect(() => {
+    // Reset everything when product changes
     setProductId(productInfo.id);
     resetOptions();
-    setInCartSelections([]);
-    setIsInCart(false); // Also reset isInCart state
+    setIsInCart(false);
+    setLocalSelections([]);
+    setDropdownVisible(false);
   }, [productInfo.id, setProductId, resetOptions, setIsInCart]);
 
   useEffect(() => {
