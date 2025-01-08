@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseIconThin } from "@/icons";
+import { X } from "lucide-react";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { productInternationalSizes } from "@/lib/utils/common";
 
@@ -36,7 +36,7 @@ export function SizeChartOverlay({
               className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
               type="button"
             >
-              <CloseIconThin size={24} className="stroke-gray" />
+              <X color="#6c6c6c" strokeWidth={1.5} />
             </button>
             <div className="w-full h-[calc(100%-52px)] px-5 pb-10 invisible-scrollbar overflow-x-hidden overflow-y-visible">
               <div className="w-full max-w-[602px] mx-auto flex flex-col gap-6 mt-6">

@@ -3,11 +3,10 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import clsx from "clsx";
-import { CartIcon } from "@/icons";
-import { HiMiniChevronDown } from "react-icons/hi2";
-import Link from "next/link";
 import { MobileNavbarButton } from "./MobileNavbarOverlay";
+import { ShoppingCart, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import clsx from "clsx";
 
 export default function Navbar({
   itemsInCart,
@@ -130,7 +129,7 @@ function MobileNavbar({ itemsInCart }: { itemsInCart: number }) {
           href="/cart"
           className="relative h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
         >
-          <CartIcon size={26} />
+          <ShoppingCart size={24} strokeWidth={2.5} />
           {itemsInCart > 0 && (
             <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
               {itemsInCart}
@@ -190,8 +189,9 @@ function DesktopNavbar({
                 )}
               >
                 <span>Categories</span>
-                <HiMiniChevronDown
+                <ChevronDown
                   size={18}
+                  strokeWidth={2}
                   className={`-mr-1 transition-transform duration-300 ${
                     isCategoriesDropdownVisible ? "rotate-180" : ""
                   }`}
@@ -225,7 +225,7 @@ function DesktopNavbar({
           href="/cart"
           className="relative h-11 w-11 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"
         >
-          <CartIcon size={26} />
+          <ShoppingCart strokeWidth={2.5} />
           {itemsInCart > 0 && (
             <span className="absolute top-[4px] left-[30px] min-w-5 w-max h-5 px-1 rounded-full text-sm font-medium flex items-center justify-center text-white bg-red">
               {itemsInCart}

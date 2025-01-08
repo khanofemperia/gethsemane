@@ -3,11 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
-import {
-  CheckmarkIcon,
-  ChevronRightIcon,
-  CloseIconThin,
-} from "@/icons";
+import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import { formatThousands } from "@/lib/utils/common";
 import styles from "./styles.module.css";
 import { useRouter } from "next/navigation";
@@ -17,6 +13,7 @@ import { Options } from "../ProductDetails/Options";
 import { CartAndUpgradeButtons } from "../CartAndUpgradeButtons";
 import "@/components/shared/TextEditor/theme/index.css";
 import { ImageGallery } from "../ProductDetails/ImageGallery";
+import { X, ChevronRight } from "lucide-react";
 
 export function QuickviewButton({
   onClick,
@@ -661,7 +658,11 @@ function DesktopProductDetails({
                 }
               >
                 <span>All details</span>
-                <ChevronRightIcon size={20} />
+                <ChevronRight
+                  size={18}
+                  strokeWidth={2}
+                  className="-mr-[8px]"
+                />
               </button>
             </div>
           </div>
@@ -672,7 +673,7 @@ function DesktopProductDetails({
         className="h-9 w-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
         type="button"
       >
-        <CloseIconThin size={24} className="stroke-gray" />
+        <X color="#6c6c6c" strokeWidth={1.5} />
       </button>
     </div>
   );

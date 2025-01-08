@@ -1,7 +1,6 @@
 "use client";
 
 import { useUpsellReviewStore } from "@/zustand/website/upsellReviewStore";
-import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
 import { ProductImagesOverlay } from "../ProductImagesOverlay";
 import { useAlertStore } from "@/zustand/website/alertStore";
@@ -15,6 +14,7 @@ import styles from "./styles.module.css";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { Spinner } from "@/ui/Spinners/Default";
+import { X, ChevronRight, Check } from "lucide-react";
 
 export function UpsellReviewButton({
   product,
@@ -297,7 +297,11 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                             )}
                           >
                             {isProductReady(product.id) && (
-                              <CheckmarkIcon className="fill-white" size={16} />
+                              <Check
+                                color="#ffffff"
+                                size={18}
+                                strokeWidth={2}
+                              />
                             )}
                           </div>
                         </div>
@@ -311,9 +315,11 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                                 <span className="pl-[3px] text-sm font-medium line-clamp-1 group-hover:underline">
                                   {product.name}
                                 </span>
-                                <ChevronRightIcon
-                                  size={16}
-                                  className="stroke-gray -mt-[2px]"
+                                <ChevronRight
+                                  color="#6c6c6c"
+                                  size={18}
+                                  strokeWidth={2}
+                                  className="-mt-[2px]"
                                 />
                               </div>
                               <div className="pl-[3px] text-[0.813rem] text-gray line-through line-clamp-1 w-max">
@@ -354,7 +360,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                           )}
                         >
                           {readyProducts.length > 0 && (
-                            <CheckmarkIcon className="fill-white" size={16} />
+                            <Check color="#ffffff" size={18} strokeWidth={2} />
                           )}
                         </div>
                       </div>
@@ -474,7 +480,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
               onClick={hideOverlay}
               className="w-9 h-9 rounded-full absolute top-[6px] right-[6px] flex items-center justify-center ease-in-out transition duration-300 hover:bg-lightgray"
             >
-              <CloseIconThin size={24} className="stroke-gray" />
+              <X color="#6c6c6c" strokeWidth={1.5} />
             </button>
           </div>
         </div>
@@ -582,9 +588,11 @@ function ProductSizeChart({
               </ul>
             )}
           </div>
-          <ChevronRightIcon
-            className="absolute top-[50%] -translate-y-1/2 right-[6px] stroke-[#828282]"
-            size={20}
+          <ChevronRight
+            color="#828282"
+            size={18}
+            strokeWidth={2}
+            className="absolute top-[50%] -translate-y-1/2 right-[6px]"
           />
         </div>
       )}

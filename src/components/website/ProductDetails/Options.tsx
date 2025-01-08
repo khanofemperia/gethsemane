@@ -9,6 +9,7 @@ import { InCartIndicator } from "./InCartIndicator";
 import clsx from "clsx";
 import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
 import { useProductColorImageStore } from "@/zustand/website/ProductColorImageStore";
+import { ChevronRight } from "lucide-react";
 
 export function Options({
   productInfo,
@@ -196,7 +197,12 @@ export function Options({
           className="h-8 w-max px-4 rounded-full flex items-center justify-center gap-[2px] ease-in-out duration-300 transition bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
         >
           <div className="text-sm font-medium">{getButtonText()}</div>
-          <ChevronRightIcon className="-mr-[8px] stroke-[#828282]" size={20} />
+          <ChevronRight
+            color="#828282"
+            size={18}
+            strokeWidth={2}
+            className="-mr-[8px]"
+          />
         </button>
         {isDropdownVisible && (
           <div className="absolute top-[42px] left-0 z-20 pb-2">
@@ -204,7 +210,7 @@ export function Options({
               {hasColor && hasSize && (
                 <div className="flex flex-col gap-4 select-none">
                   <ProductColors colors={productInfo.options.colors} />
-                  <ProductSizeChart
+                  <ProductSizes
                     sizeChart={productInfo.options.sizes}
                     onSizeChartClick={handleSizeChartClick}
                   />
@@ -214,7 +220,7 @@ export function Options({
                 <ProductColors colors={productInfo.options.colors} />
               )}
               {!hasColor && hasSize && (
-                <ProductSizeChart
+                <ProductSizes
                   sizeChart={productInfo.options.sizes}
                   onSizeChartClick={handleSizeChartClick}
                 />
@@ -270,7 +276,7 @@ function ProductColors({ colors }: ProductColorsType) {
   );
 }
 
-function ProductSizeChart({
+function ProductSizes({
   sizeChart,
   onSizeChartClick,
 }: {
@@ -293,7 +299,7 @@ function ProductSizeChart({
           <div key={index} className="relative cursor-pointer">
             <div
               onClick={() => setSelectedSize(size)}
-              className={`font-medium border rounded-full relative px-4 h-7 flex items-center justify-center hover:border-black ${
+              className={`font-medium text-sm border rounded-full relative px-4 h-7 flex items-center justify-center hover:border-black ${
                 selectedSize === size &&
                 "border-white hover:border-white before:border before:border-blue before:content-[''] before:h-8 before:w-[calc(100%_+_8px)] before:absolute before:rounded-full"
               }`}
@@ -344,9 +350,11 @@ function ProductSizeChart({
               </ul>
             )}
           </div>
-          <ChevronRightIcon
-            className="absolute top-[50%] -translate-y-1/2 right-[6px] stroke-[#828282]"
-            size={20}
+          <ChevronRight
+            color="#828282"
+            size={18}
+            strokeWidth={2}
+            className="absolute top-[50%] -translate-y-1/2 right-[6px]"
           />
         </div>
       )}

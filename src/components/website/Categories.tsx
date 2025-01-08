@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ComponentPropsWithRef, useCallback, useEffect, useState } from "react";
 import { EmblaCarouselType } from "embla-carousel";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export function Categories({
   categories,
@@ -126,7 +127,7 @@ export const PrevButton: React.FC<PropType> = (props) => {
       type="button"
       {...restProps}
     >
-      <ChevronLeftIcon className="stroke-white mr-[2px]" size={22} />
+      <ChevronLeft color="#ffffff" strokeWidth={1.5} className="mr-[2px]" />
       {children}
     </button>
   );
@@ -141,7 +142,7 @@ export const NextButton: React.FC<PropType> = (props) => {
       type="button"
       {...restProps}
     >
-      <ChevronRightIcon className="stroke-white ml-[2px]" size={22} />
+      <ChevronRight color="#ffffff" strokeWidth={1.5} className="ml-[2px]" />
       {children}
     </button>
   );
