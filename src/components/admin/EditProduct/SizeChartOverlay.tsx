@@ -1,10 +1,9 @@
 "use client";
 
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { CloseIcon, EditIcon } from "@/icons";
+import { X, Pencil, Minus, Plus } from "lucide-react";
 import Overlay from "@/ui/Overlay";
 import { useState, useEffect, useCallback } from "react";
-import { HiPlus, HiMinus } from "react-icons/hi";
 import SizesTable from "./SizesTable";
 import { clsx } from "clsx";
 import AlertMessage from "@/components/shared/AlertMessage";
@@ -26,7 +25,7 @@ export function SizeChartButton() {
       type="button"
       className="w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
     >
-      <EditIcon size={20} />
+      <Pencil size={18} strokeWidth={1.75} />
     </button>
   );
 }
@@ -251,7 +250,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                     type="button"
                     className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
                   >
-                    <CloseIcon size={18} />
+                    <X color="#6c6c6c" size={18} strokeWidth={2} />
                   </button>
                 </div>
               </div>
@@ -298,16 +297,14 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                         onClick={removeRow}
                         className="h-6 w-9 grid place-items-center ease-in-out duration-300 transition hover:bg-neutral-200"
                       >
-                        <HiMinus className="fill-stone-500" size={20} />
+                        <Minus color="#78716c" size={18} strokeWidth={2} />
                       </button>
                       <div className="w-[1px] bg-[#dcdfe4]"></div>
                       <button
                         type="button"
                         onClick={addRow}
                         className="h-6 w-9 grid place-items-center ease-in-out duration-300 transition hover:bg-neutral-200"
-                      >
-                        <HiPlus className="fill-gray" size={18} />
-                      </button>
+                      ></button>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -318,7 +315,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                         onClick={removeColumn}
                         className="h-6 w-9 grid place-items-center ease-in-out duration-300 transition hover:bg-neutral-200"
                       >
-                        <HiMinus className="fill-gray" size={20} />
+                        <Minus color="#6c6c6c" size={18} strokeWidth={2} />
                       </button>
                       <div className="w-[1px] bg-[#dcdfe4]"></div>
                       <button
@@ -326,7 +323,7 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                         onClick={addColumn}
                         className="h-6 w-9 grid place-items-center ease-in-out duration-300 transition hover:bg-neutral-200"
                       >
-                        <HiPlus className="fill-gray" size={18} />
+                        <Plus color="#6c6c6c" size={18} strokeWidth={2} />
                       </button>
                     </div>
                   </div>
