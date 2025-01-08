@@ -260,7 +260,7 @@ function ProductColors({ colors }: ProductColorsType) {
           <div
             onClick={() => handleColorSelect(name, image)}
             key={index}
-            className={`relative w-[40px] h-[40px] flex items-center justify-center cursor-pointer hover:before:content-[''] hover:before:h-12 hover:before:w-12 hover:before:absolute hover:before:rounded-[6px] hover:before:border hover:before:border-black ${
+            className={`relative w-[40px] h-[40px] flex items-center justify-center cursor-pointer hover:before:content-[''] hover:before:h-12 hover:before:w-12 hover:before:absolute hover:before:rounded-[6px] ${
               selectedColor === name &&
               "before:content-[''] before:h-12 before:w-12 before:absolute before:rounded-[6px] before:border before:border-black/60 hover:before:!border-black/60"
             }`}
@@ -298,7 +298,7 @@ function ProductSizes({
           <div key={index} className="relative cursor-pointer">
             <div
               onClick={() => setSelectedSize(size)}
-              className={`font-medium text-sm border rounded-full relative px-4 h-7 flex items-center justify-center hover:border-black ${
+              className={`font-medium text-sm border rounded-full relative px-4 h-7 flex items-center justify-center ${
                 selectedSize === size &&
                 "border-white hover:border-white before:border before:border-black/60 before:content-[''] before:h-8 before:w-[calc(100%_+_8px)] before:absolute before:rounded-full"
               }`}
