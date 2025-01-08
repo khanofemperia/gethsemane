@@ -120,7 +120,7 @@ export function CartAndUpgradeButtons({
                 isPending && "!cursor-context-menu opacity-50"
               )}
             >
-              {isPending ? <Spinner size={28} color="white" /> : "Add to cart"}
+              {isPending ? <Spinner size={28} color="white" /> : "Add to Cart"}
             </button>
           ) : (
             <button
@@ -131,7 +131,7 @@ export function CartAndUpgradeButtons({
                 isPending && "cursor-context-menu opacity-50"
               )}
             >
-              {isPending ? <Spinner size={28} color="gray" /> : "Add to cart"}
+              {isPending ? <Spinner size={28} color="gray" /> : "Add to Cart"}
             </button>
           )}
         </>
