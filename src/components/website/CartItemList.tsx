@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { RemoveFromCartButton } from "@/components/website/RemoveFromCartButton";
-import { CheckmarkIcon } from "@/icons";
 import { formatThousands } from "@/lib/utils/common";
 import { PiShieldCheckBold } from "react-icons/pi";
 import { TbLock, TbTruck } from "react-icons/tb";
@@ -10,12 +9,9 @@ import { PayPalButton } from "@/components/website/PayPalButton";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
+import { Check } from "lucide-react";
 
-export default function CartItemList({
-  cartItems,
-}: {
-  cartItems: CartItemType[];
-}) {
+export function CartItemList({ cartItems }: { cartItems: CartItemType[] }) {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(
     new Set(cartItems.map((item) => item.variantId))
   );
@@ -139,7 +135,7 @@ export default function CartItemList({
                 )}
               >
                 {selectedItems.size > 0 && (
-                  <CheckmarkIcon className="fill-white" size={16} />
+                  <Check color="#ffffff" size={16} strokeWidth={2} />
                 )}
               </div>
             </div>
@@ -171,7 +167,7 @@ export default function CartItemList({
                         )}
                       >
                         {isSelected && (
-                          <CheckmarkIcon className="fill-white" size={16} />
+                          <Check color="#ffffff" size={16} strokeWidth={2} />
                         )}
                       </div>
                     </div>
@@ -265,7 +261,7 @@ export default function CartItemList({
                         )}
                       >
                         {isSelected && (
-                          <CheckmarkIcon className="fill-white" size={16} />
+                          <Check color="#ffffff" size={16} strokeWidth={2} />
                         )}
                       </div>
                     </div>

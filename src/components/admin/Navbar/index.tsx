@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { HamburgerMenuIcon } from "@/icons";
+import { Menu } from "lucide-react";
 import { NewProductMenuButton } from "../NewProductOverlay";
 import { NewUpsellMenuButton } from "../NewUpsellOverlay";
 import { NewCollectionMenuButton } from "../Storefront/NewCollectionOverlay";
@@ -162,7 +162,7 @@ function DesktopNavbar() {
             onClick={toggleMenuDropdown}
             className="h-11 w-11 rounded-full flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray-dimmed"
           >
-            <HamburgerMenuIcon size={24} />
+            <Menu strokeWidth={2.5} />
           </button>
 
           {isMenuDropdownVisible && (

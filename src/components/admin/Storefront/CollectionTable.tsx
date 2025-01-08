@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeftIcon, ChevronRightIcon, EditIcon } from "@/icons";
+import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 import { capitalizeFirstLetter } from "@/lib/utils/common";
 import clsx from "clsx";
 import Link from "next/link";
@@ -248,9 +248,10 @@ export default function CollectionTable({
                                     )}
                                   >
                                     <span className="text-gray">Launch</span>
-                                    <ChevronRightIcon
-                                      className="stroke-gray"
+                                    <ChevronRight
+                                      color="#828282"
                                       size={16}
+                                      strokeWidth={2}
                                     />
                                     <span
                                       className={clsx({
@@ -288,9 +289,10 @@ export default function CollectionTable({
                                     )}
                                   >
                                     <span className="text-gray">End date</span>
-                                    <ChevronRightIcon
-                                      className="stroke-gray"
+                                    <ChevronRight
+                                      color="#828282"
                                       size={16}
+                                      strokeWidth={2}
                                     />
                                     <span
                                       className={clsx({
@@ -342,7 +344,7 @@ export default function CollectionTable({
                                 href={`/admin/collections/${slug}-${id}`}
                                 className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray lg:hover:bg-lightgray"
                               >
-                                <EditIcon size={20} />
+                                <Pencil size={18} strokeWidth={1.75} />
                               </Link>
                               <ChangeCollectionIndexButton
                                 data={{ id, title, index: String(index) }}
@@ -364,7 +366,7 @@ export default function CollectionTable({
                   onClick={handlePrevious}
                   className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
                 >
-                  <ChevronLeftIcon className="-ml-[2px]" size={24} />
+                  <ChevronLeft color="#6c6c6c" strokeWidth={1.5} />
                 </button>
                 <input
                   value={pageJumpValue}
@@ -391,7 +393,7 @@ export default function CollectionTable({
                   onClick={handleNext}
                   className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed "
                 >
-                  <ChevronRightIcon className="-mr-[2px]" size={24} />
+                  <ChevronRight color="#6c6c6c" strokeWidth={1.5} />
                 </button>
               </div>
             </div>

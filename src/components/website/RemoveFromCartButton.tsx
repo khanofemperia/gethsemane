@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { TrashIcon } from "@/icons";
+import { Trash } from "lucide-react";
 import { RemoveFromCartAction } from "@/actions/cart";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { useAlertStore } from "@/zustand/website/alertStore";
@@ -17,7 +17,7 @@ export function RemoveFromCartButton({
 }) {
   const [isPending, startTransition] = useTransition();
 
-  const showAlert = useAlertStore(state => state.showAlert);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const handleRemove = () => {
     startTransition(async () => {
@@ -47,7 +47,7 @@ export function RemoveFromCartButton({
       {isPending ? (
         <DashSpinner size={18} color="#6c6c6c" />
       ) : (
-        <TrashIcon size={18} className="fill-neutral-400" />
+        <Trash color="#a3a3a3" size={18} strokeWidth={1.5} />
       )}
     </button>
   );

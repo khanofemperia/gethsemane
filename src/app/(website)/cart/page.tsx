@@ -1,17 +1,17 @@
 import ShowAlert from "@/components/website/ShowAlert";
 import { cookies } from "next/headers";
-import Image from "next/image";
-import Link from "next/link";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { database } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
-import CartItemList from "@/components/website/CartItemList";
+import { CartItemList } from "@/components/website/CartItemList";
 import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
-import clsx from "clsx";
 import { getCart } from "@/actions/get/carts";
 import { getProducts } from "@/actions/get/products";
+import Image from "next/image";
+import Link from "next/link";
+import clsx from "clsx";
 
 export default async function Cart() {
   const cookieStore = cookies();

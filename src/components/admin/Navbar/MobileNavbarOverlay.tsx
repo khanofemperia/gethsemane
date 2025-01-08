@@ -1,9 +1,8 @@
 "use client";
 
-import { CloseIconThin } from "@/icons";
 import { useMobileNavbarStore } from "@/zustand/admin/mobileNavbarStore";
 import Image from "next/image";
-import { HiMiniBars3 } from "react-icons/hi2";
+import { Menu, X } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
@@ -25,7 +24,7 @@ export function MobileNavbarButton() {
       className="h-12 w-12 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
       aria-label="Menu"
     >
-      <HiMiniBars3 size={26} />
+      <Menu strokeWidth={2.5} />
     </button>
   );
 }
@@ -249,7 +248,7 @@ export function MobileNavbarOverlay() {
           className="h-9 w-9 rounded-full absolute right-3 top-2 flex items-center justify-center transition duration-300 ease-in-out hover:bg-lightgray"
           type="button"
         >
-          <CloseIconThin size={24} className="stroke-gray" />
+          <X color="#6c6c6c" strokeWidth={1.5} />
         </button>
       </div>
     </div>

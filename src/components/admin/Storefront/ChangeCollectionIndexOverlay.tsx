@@ -10,6 +10,7 @@ import Overlay from "@/ui/Overlay";
 import { ChangeCollectionIndexAction } from "@/actions/collections";
 import { useItemSelectorStore } from "@/zustand/admin/itemSelectorStore";
 import { AlertMessageType } from "@/lib/sharedTypes";
+import { Repeat, X } from "lucide-react";
 
 export function ChangeCollectionIndexButton({
   data,
@@ -35,7 +36,7 @@ export function ChangeCollectionIndexButton({
       onClick={handleClick}
       className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray lg:hover:bg-lightgray"
     >
-      <ChangeIndexIcon size={18} />
+      <Repeat size={18} strokeWidth={1.75} />
     </button>
   );
 }
