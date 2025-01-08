@@ -4,7 +4,7 @@ import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect, useRef } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, EditIcon } from "@/icons";
+import { ArrowLeft, X, Pencil } from "lucide-react";
 import clsx from "clsx";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { TextEditor } from "@/components/shared/TextEditor";
@@ -23,7 +23,7 @@ export function DescriptionButton({ className }: { className?: string }) {
       type="button"
       className={`w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${className}`}
     >
-      <EditIcon size={20} />
+      <Pencil size={18} strokeWidth={1.75} />
     </button>
   );
 }
@@ -127,7 +127,11 @@ export function DescriptionOverlay({ data }: { data: DataType }) {
                 type="button"
                 className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
               >
-                <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                <ArrowLeft
+                  size={20}
+                  strokeWidth={2}
+                  className="-ml-1 stroke-blue"
+                />
                 <span className="md:hidden font-semibold text-sm text-blue">
                   Description
                 </span>

@@ -5,7 +5,7 @@ import { isValidRemoteImage } from "@/lib/utils/common";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, CloseIcon, EditIcon, MinusIcon } from "@/icons";
+import { ArrowLeft, X, Pencil, Minus } from "lucide-react";
 import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
@@ -26,7 +26,7 @@ export function ImageGalleryButton() {
       type="button"
       className="w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
     >
-      <EditIcon size={20} />
+      <Pencil size={18} strokeWidth={1.75} />
     </button>
   );
 }
@@ -147,7 +147,7 @@ export function ImageGalleryOverlay({ data }: { data: DataType }) {
                     type="button"
                     className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
                   >
-                    <CloseIcon size={18} />
+                    <X color="#6c6c6c" size={18} strokeWidth={2} />
                   </button>
                 </div>
               </div>
@@ -160,7 +160,11 @@ export function ImageGalleryOverlay({ data }: { data: DataType }) {
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                  <ArrowLeft
+                    size={20}
+                    strokeWidth={2}
+                    className="-ml-1 stroke-blue"
+                  />
                   <span className="font-semibold text-sm text-blue">
                     Images
                   </span>
@@ -219,7 +223,7 @@ export function ImageGalleryOverlay({ data }: { data: DataType }) {
                         onClick={() => removeImage(index)}
                         className="h-8 w-8 rounded-full flex items-center justify-center absolute top-2 right-2 transition duration-300 ease-in-out backdrop-blur border border-red bg-red/70 active:bg-red"
                       >
-                        <MinusIcon className="fill-white" size={20} />
+                        <Minus color="#ffffff" strokeWidth={1.75} />
                       </button>
                     </div>
                     <div className="w-full h-9 border-t">

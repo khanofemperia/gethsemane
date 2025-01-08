@@ -4,12 +4,12 @@ import AlertMessage from "@/components/shared/AlertMessage";
 import { FormEvent, useState, useEffect, useRef, ChangeEvent } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, ChevronDownIcon, CloseIcon, EditIcon } from "@/icons";
-import clsx from "clsx";
+import { ArrowLeft, ChevronDown, X, Pencil } from "lucide-react";
 import Overlay from "@/ui/Overlay";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { getCategories } from "@/actions/get/categories";
+import clsx from "clsx";
 
 export function BasicDetailsButton({ className }: { className: string }) {
   const showOverlay = useOverlayStore((state) => state.showOverlay);
@@ -24,7 +24,7 @@ export function BasicDetailsButton({ className }: { className: string }) {
       type="button"
       className={`w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${className}`}
     >
-      <EditIcon size={20} />
+      <Pencil size={18} strokeWidth={1.75} />
     </button>
   );
 }
@@ -222,7 +222,7 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                     type="button"
                     className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
                   >
-                    <CloseIcon size={18} />
+                    <X color="#6c6c6c" size={18} strokeWidth={2} />
                   </button>
                 </div>
               </div>
@@ -234,7 +234,11 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                  <ArrowLeft
+                    size={20}
+                    strokeWidth={2}
+                    className="-ml-1 stroke-blue"
+                  />
                   <span className="font-semibold text-sm text-blue">
                     Basic details
                   </span>
@@ -276,9 +280,10 @@ export function BasicDetailsOverlay({ data }: { data: DataType }) {
                       >
                         {selectedCategory}
                       </span>
-                      <ChevronDownIcon
+                      <ChevronDown
                         className="-mr-[4px] stroke-gray"
                         size={20}
+                        strokeWidth={2}
                       />
                     </button>
                     <div

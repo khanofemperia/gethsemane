@@ -4,7 +4,7 @@ import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect, useRef } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
+import { ArrowLeft, X, Pencil } from "lucide-react";
 import clsx from "clsx";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { ReactSortable } from "react-sortablejs";
@@ -26,7 +26,7 @@ export function HighlightsButton({ className }: { className?: string }) {
       type="button"
       className={`w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${className}`}
     >
-      <EditIcon size={20} />
+      <Pencil size={18} strokeWidth={1.75} />
     </button>
   );
 }
@@ -168,7 +168,11 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                 type="button"
                 className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
               >
-                <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                <ArrowLeft
+                  size={20}
+                  strokeWidth={2}
+                  className="-ml-1 stroke-blue"
+                />
                 <span className="font-semibold text-sm text-blue">
                   Highlights
                 </span>
@@ -244,7 +248,7 @@ export function HighlightsOverlay({ data }: { data: DataType }) {
                             onClick={() => handleRemove(item.id)}
                             className="h-6 min-w-6 max-w-6 rounded-full flex items-center justify-center transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
                           >
-                            <CloseIcon className="fill-gray" size={16} />
+                            <X color="#6c6c6c" size={18} strokeWidth={2} />
                           </button>
                         </div>
                       ))}
