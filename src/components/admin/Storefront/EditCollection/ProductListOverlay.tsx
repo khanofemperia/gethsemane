@@ -4,18 +4,18 @@ import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import {
-  ArrowLeftIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  CloseIcon,
-  EditIcon,
-  PlusIcon,
-} from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { AddProductAction } from "@/actions/collections";
 import Image from "next/image";
+import {
+  Pencil,
+  ArrowLeft,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+} from "lucide-react";
 import { capitalizeFirstLetter, formatThousands } from "@/lib/utils/common";
 import Link from "next/link";
 import {
@@ -43,7 +43,7 @@ export function ProductListButton({ className }: { className: string }) {
       type="button"
       className={`w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${className}`}
     >
-      <EditIcon size={20} />
+      <Pencil size={18} strokeWidth={1.75} />
     </button>
   );
 }
@@ -284,7 +284,7 @@ export function ProductListOverlay({
                       type="button"
                       className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
                     >
-                      <CloseIcon size={18} />
+                      <X color="#6c6c6c" size={18} strokeWidth={2} />
                     </button>
                   </div>
                 </div>
@@ -294,7 +294,11 @@ export function ProductListOverlay({
                     type="button"
                     className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                   >
-                    <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                    <ArrowLeft
+                      size={20}
+                      strokeWidth={2}
+                      className="-ml-1 stroke-blue"
+                    />
                     <span className="font-semibold text-sm text-blue">
                       Products
                     </span>
@@ -374,7 +378,7 @@ export function ProductListOverlay({
                             {loading ? (
                               <Spinner color="gray" />
                             ) : (
-                              <PlusIcon size={22} />
+                              <Plus strokeWidth={1.75} />
                             )}
                           </button>
                         </div>
@@ -497,7 +501,10 @@ export function ProductListOverlay({
                                             href={`/admin/products/${slug}-${id}`}
                                             className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray lg:hover:bg-lightgray"
                                           >
-                                            <EditIcon size={20} />
+                                            <Pencil
+                                              size={18}
+                                              strokeWidth={1.75}
+                                            />
                                           </Link>
                                           <ChangeProductIndexButton
                                             collectionId={data.id}
@@ -526,7 +533,10 @@ export function ProductListOverlay({
                             onClick={handlePrevious}
                             className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
                           >
-                            <ChevronLeftIcon className="-ml-[2px]" size={24} />
+                            <ChevronLeft
+                              strokeWidth={1.5}
+                              className="mr-[2px]"
+                            />
                           </button>
                           <input
                             value={pageJumpValue}
@@ -553,7 +563,10 @@ export function ProductListOverlay({
                             onClick={handleNext}
                             className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition bg-white active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed "
                           >
-                            <ChevronRightIcon className="-mr-[2px]" size={24} />
+                            <ChevronRight
+                              strokeWidth={1.5}
+                              className="ml-[2px]"
+                            />
                           </button>
                         </div>
                       </div>
@@ -593,7 +606,7 @@ export function ProductListOverlay({
                           {loading ? (
                             <Spinner color="gray" />
                           ) : (
-                            <PlusIcon size={22} />
+                            <Plus strokeWidth={1.75} />
                           )}
                         </button>
                       </div>

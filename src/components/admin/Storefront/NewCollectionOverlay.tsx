@@ -11,7 +11,7 @@ import { useState, useEffect, useRef } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { useNavbarMenuStore } from "@/zustand/admin/navbarMenuStore";
-import { ArrowLeftIcon, ChevronDownIcon, CloseIcon } from "@/icons";
+import { ArrowLeft, ChevronDown, X } from "lucide-react";
 import clsx from "clsx";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
@@ -241,7 +241,7 @@ export function NewCollectionOverlay() {
     <>
       {isOverlayVisible && (
         <Overlay>
-          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-[20px] overflow-hidden bg-white md:w-[500px] md:rounded-2xl md:shadow-lg md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
+          <div className="absolute bottom-0 left-0 right-0 w-full h-[calc(100%-60px)] rounded-t-[20px] bg-white md:w-[500px] md:rounded-2xl md:shadow-lg md:h-max md:mx-auto md:mt-20 md:mb-[50vh] md:relative md:bottom-auto md:left-auto md:right-auto md:top-auto md:-translate-x-0">
             <div className="w-full h-[calc(100vh-188px)] md:h-auto">
               <div className="md:hidden flex items-end justify-center pt-4 pb-2 absolute top-0 left-0 right-0 bg-white">
                 <div className="relative flex justify-center items-center w-full h-7">
@@ -251,7 +251,7 @@ export function NewCollectionOverlay() {
                     type="button"
                     className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
                   >
-                    <CloseIcon size={18} />
+                    <X color="#6c6c6c" size={18} strokeWidth={2} />
                   </button>
                 </div>
               </div>
@@ -261,7 +261,11 @@ export function NewCollectionOverlay() {
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                  <ArrowLeft
+                    size={20}
+                    strokeWidth={2}
+                    className="-ml-1 stroke-blue"
+                  />
                   <span className="font-semibold text-sm text-blue">
                     New collection
                   </span>
@@ -305,9 +309,10 @@ export function NewCollectionOverlay() {
                           selectedCollectionType.toLowerCase()
                         )}
                       </span>
-                      <ChevronDownIcon
+                      <ChevronDown
                         className="-mr-[4px] stroke-gray"
                         size={20}
+                        strokeWidth={2}
                       />
                     </button>
                     <div

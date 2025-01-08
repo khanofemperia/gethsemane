@@ -366,7 +366,7 @@ export default function CollectionTable({
                   onClick={handlePrevious}
                   className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
                 >
-                  <ChevronLeft color="#6c6c6c" strokeWidth={1.5} />
+                  <ChevronLeft strokeWidth={1.5} className="mr-[2px]" />
                 </button>
                 <input
                   value={pageJumpValue}
@@ -393,7 +393,7 @@ export default function CollectionTable({
                   onClick={handleNext}
                   className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed "
                 >
-                  <ChevronRight color="#6c6c6c" strokeWidth={1.5} />
+                  <ChevronRight strokeWidth={1.5} className="ml-[2px]" />
                 </button>
               </div>
             </div>

@@ -7,7 +7,7 @@ import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { RemoveProductAction } from "@/actions/collections";
-import { IoCloseCircleOutline } from "react-icons/io5";
+import { CircleX } from "lucide-react";
 import { useItemSelectorStore } from "@/zustand/admin/itemSelectorStore";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
@@ -31,7 +31,7 @@ export function RemoveProductButton({ id }: { id: string }) {
       onClick={handleClick}
       className="h-9 w-9 rounded-full flex items-center justify-center ease-in-out duration-300 transition active:bg-lightgray lg:hover:bg-lightgray"
     >
-      <IoCloseCircleOutline size={24} />
+      <CircleX size={20} strokeWidth={1.75} />
     </button>
   );
 }

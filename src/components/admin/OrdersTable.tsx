@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { capitalizeFirstLetter } from "@/lib/utils/common";
 import clsx from "clsx";
 import Link from "next/link";
@@ -202,7 +202,7 @@ export default function OrdersTable({
                   onClick={handlePrevious}
                   className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed"
                 >
-                  <ChevronLeftIcon className="-ml-[2px]" size={24} />
+                  <ChevronLeft strokeWidth={1.5} className="mr-[2px]" />
                 </button>
                 <input
                   value={pageJumpValue}
@@ -229,7 +229,7 @@ export default function OrdersTable({
                   onClick={handleNext}
                   className="w-9 h-9 flex items-center justify-center rounded-full ease-in-out duration-300 transition active:bg-lightgray-dimmed lg:hover:bg-lightgray-dimmed "
                 >
-                  <ChevronRightIcon className="-mr-[2px]" size={24} />
+                  <ChevronRight strokeWidth={1.5} className="ml-[2px]" />
                 </button>
               </div>
             </div>

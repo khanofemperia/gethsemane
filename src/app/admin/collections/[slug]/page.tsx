@@ -1,4 +1,5 @@
 import DataChip from "@/ui/DataChip";
+import { Pencil } from "lucide-react";
 import { formatThousands, isValidRemoteImage } from "@/lib/utils/common";
 import { notFound } from "next/navigation";
 import {

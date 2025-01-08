@@ -4,13 +4,12 @@ import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, ChangeIndexIcon, CloseIcon } from "@/icons";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { ChangeCollectionIndexAction } from "@/actions/collections";
 import { useItemSelectorStore } from "@/zustand/admin/itemSelectorStore";
 import { AlertMessageType } from "@/lib/sharedTypes";
-import { Repeat, X } from "lucide-react";
+import { Repeat, X, ArrowLeft } from "lucide-react";
 
 export function ChangeCollectionIndexButton({
   data,
@@ -128,7 +127,7 @@ export function ChangeCollectionIndexOverlay() {
                     type="button"
                     className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
                   >
-                    <CloseIcon size={18} />
+                    <X color="#6c6c6c" size={18} strokeWidth={2} />
                   </button>
                 </div>
               </div>
@@ -138,7 +137,11 @@ export function ChangeCollectionIndexOverlay() {
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                  <ArrowLeft
+                    size={20}
+                    strokeWidth={2}
+                    className="-ml-1 stroke-blue"
+                  />
                   <span className="font-semibold text-sm text-blue">
                     Reposition up/down
                   </span>

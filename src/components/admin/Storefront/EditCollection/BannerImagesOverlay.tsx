@@ -4,7 +4,7 @@ import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeftIcon, CloseIcon, EditIcon } from "@/icons";
+import { Pencil, ArrowLeft, X } from "lucide-react";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { UpdateCollectionAction } from "@/actions/collections";
@@ -26,7 +26,7 @@ export function BannerImagesButton({ className }: { className: string }) {
       type="button"
       className={`w-9 h-9 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${className}`}
     >
-      <EditIcon size={20} />
+      <Pencil size={18} strokeWidth={1.75} />
     </button>
   );
 }
@@ -138,7 +138,7 @@ export function BannerImagesOverlay({
                     type="button"
                     className="w-7 h-7 rounded-full flex items-center justify-center absolute right-4 transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed"
                   >
-                    <CloseIcon size={18} />
+                    <X color="#6c6c6c" size={18} strokeWidth={2} />
                   </button>
                 </div>
               </div>
@@ -148,7 +148,11 @@ export function BannerImagesOverlay({
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                  <ArrowLeft
+                    size={20}
+                    strokeWidth={2}
+                    className="-ml-1 stroke-blue"
+                  />
                   <span className="font-semibold text-sm text-blue">
                     Banner images
                   </span>
