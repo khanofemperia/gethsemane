@@ -1,4 +1,3 @@
-import ImageCarousel from "@/components/website/ProductDetails/ImageCarousel";
 import { CheckmarkIcon } from "@/icons";
 import Image from "next/image";
 import { cookies } from "next/headers";
@@ -17,9 +16,10 @@ import { Options } from "@/components/website/ProductDetails/Options";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
 import { CartAndUpgradeButtons } from "@/components/website/CartAndUpgradeButtons";
 import { BackButton } from "@/components/website/BackButton";
-import { ImageGallery } from "@/components/website/ProductDetails/ImageGallery";
 import { ImageGalleryWrapper } from "@/components/website/ProductDetails/ImageGalleryWrapper";
 import { ProductInfoWrapper } from "@/components/website/ProductDetails/ProductInfoWrapper";
+import { ImageGallery } from "@/components/website/ProductDetails/ImageGallery";
+import { MobileImageCarousel } from "@/components/website/ProductDetails/ImageGallery/MobileImageCarousel";
 
 export default async function ProductDetails({
   params,
@@ -124,7 +124,7 @@ function MobileProductDetails({
       <div>
         <div className="w-full relative select-none">
           <BackButton />
-          <ImageCarousel images={images} productName={name} />
+          <MobileImageCarousel images={images} productName={name} />
         </div>
         <div className="max-w-[486px] mx-auto">
           <div className="px-5 pt-3 flex flex-col gap-4">
