@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
-import { CheckmarkIcon, ChevronRightIcon, CloseIconThin } from "@/icons";
 import { formatThousands } from "@/lib/utils/common";
 import styles from "./styles.module.css";
 import { useRouter } from "next/navigation";
@@ -13,7 +12,7 @@ import { Options } from "../ProductDetails/Options";
 import { CartAndUpgradeButtons } from "../CartAndUpgradeButtons";
 import "@/components/shared/TextEditor/theme/index.css";
 import { ImageGallery } from "../ProductDetails/ImageGallery";
-import { X, ChevronRight } from "lucide-react";
+import { X, ChevronRight, Check } from "lucide-react";
 
 export function QuickviewButton({
   onClick,
@@ -132,7 +131,7 @@ function MobileProductDetails({
           className="h-7 w-7 rounded-full flex items-center justify-center transition duration-300 ease-in-out active:bg-lightgray"
           type="button"
         >
-          <CloseIconThin size={24} className="stroke-gray" />
+          <X color="#6c6c6c" strokeWidth={1.5} />
         </button>
       </div>
       <div className="w-full h-full invisible-scrollbar overflow-x-hidden overflow-y-visible">
@@ -175,9 +174,11 @@ function MobileProductDetails({
                         className="flex items-start gap-1 mb-2 last:mb-0"
                       >
                         <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
-                          <CheckmarkIcon
-                            className="fill-green -ml-1"
+                          <Check
+                            color="#0A8800"
                             size={20}
+                            strokeWidth={2}
+                            className="-ml-1"
                           />
                         </div>
                         <span>{point.text}</span>
@@ -445,9 +446,11 @@ function DesktopProductDetails({
                           className="flex items-start gap-1 mb-2 last:mb-0"
                         >
                           <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
-                            <CheckmarkIcon
-                              className="fill-green -ml-1"
+                            <Check
+                              color="#0A8800"
                               size={20}
+                              strokeWidth={2}
+                              className="-ml-1"
                             />
                           </div>
                           <span>{point.text}</span>
@@ -658,11 +661,7 @@ function DesktopProductDetails({
                 }
               >
                 <span>All details</span>
-                <ChevronRight
-                  size={18}
-                  strokeWidth={2}
-                  className="-mr-[8px]"
-                />
+                <ChevronRight size={18} strokeWidth={2} className="-mr-[8px]" />
               </button>
             </div>
           </div>

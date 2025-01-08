@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ComponentPropsWithRef, useCallback, useEffect, useState } from "react";
 import { EmblaCarouselType } from "embla-carousel";
-import { ChevronLeftIcon, ChevronRightIcon } from "@/icons";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export function Categories({

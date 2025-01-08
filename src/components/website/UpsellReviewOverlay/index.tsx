@@ -299,7 +299,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                             {isProductReady(product.id) && (
                               <Check
                                 color="#ffffff"
-                                size={18}
+                                size={16}
                                 strokeWidth={2}
                               />
                             )}
@@ -360,7 +360,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
                           )}
                         >
                           {readyProducts.length > 0 && (
-                            <Check color="#ffffff" size={18} strokeWidth={2} />
+                            <Check color="#ffffff" size={16} strokeWidth={2} />
                           )}
                         </div>
                       </div>

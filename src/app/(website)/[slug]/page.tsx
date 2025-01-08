@@ -1,4 +1,3 @@
-import { CheckmarkIcon } from "@/icons";
 import Image from "next/image";
 import { cookies } from "next/headers";
 import styles from "./styles.module.css";
@@ -20,6 +19,7 @@ import { ImageGalleryWrapper } from "@/components/website/ProductDetails/ImageGa
 import { ProductInfoWrapper } from "@/components/website/ProductDetails/ProductInfoWrapper";
 import { ImageGallery } from "@/components/website/ProductDetails/ImageGallery";
 import { MobileImageCarousel } from "@/components/website/ProductDetails/ImageGallery/MobileImageCarousel";
+import { Check } from "lucide-react";
 
 export default async function ProductDetails({
   params,
@@ -149,9 +149,11 @@ function MobileProductDetails({
                         className="flex items-start gap-1 mb-2 last:mb-0"
                       >
                         <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
-                          <CheckmarkIcon
-                            className="fill-green -ml-1"
+                          <Check
+                            color="#0A8800"
                             size={20}
+                            strokeWidth={2}
+                            className="-ml-1"
                           />
                         </div>
                         <span>{point.text}</span>
@@ -388,9 +390,11 @@ function DesktopProductDetails({
                             className="flex items-start gap-1 mb-2 last:mb-0"
                           >
                             <div className="min-w-4 max-w-4 min-h-5 max-h-5 flex items-center justify-center">
-                              <CheckmarkIcon
-                                className="fill-green -ml-1"
+                              <Check
+                                color="#0A8800"
                                 size={20}
+                                strokeWidth={2}
+                                className="-ml-1"
                               />
                             </div>
                             <span>{point.text}</span>
