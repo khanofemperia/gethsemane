@@ -1,13 +1,21 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import { useProductColorImageStore } from "@/zustand/website/ProductColorImageStore";
+import Image from "next/image";
 import styles from "./styles.module.css";
 
 export function ImageGallery({ images, productName }: ProductImagesType) {
   const [currentImage, setCurrentImage] = useState(images.main);
+  const selectedColorImage = useProductColorImageStore(
+    (state) => state.selectedColorImage
+  );
+  const resetSelectedColorImage = useProductColorImageStore(
+    (state) => state.resetSelectedColorImage
+  );
 
   const handleImageSelect = (image: string) => {
+    resetSelectedColorImage();
     setCurrentImage(image);
   };
 
@@ -39,7 +47,7 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
       <div className="w-full max-w-[580px] h-full flex flex-col gap-5">
         <div className="w-full aspect-square relative flex items-center justify-center bg-lightgray overflow-hidden rounded-3xl [box-shadow:0px_1.6px_3.6px_rgb(0,_0,_0,_0.4),_0px_0px_2.9px_rgb(0,_0,_0,_0.1)]">
           <Image
-            src={currentImage}
+            src={selectedColorImage || currentImage}
             alt={productName}
             width={510}
             height={510}

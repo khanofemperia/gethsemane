@@ -8,6 +8,7 @@ import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { InCartIndicator } from "./InCartIndicator";
 import clsx from "clsx";
 import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
+import { useProductColorImageStore } from "@/zustand/website/ProductColorImageStore";
 
 export function Options({
   productInfo,
@@ -238,13 +239,21 @@ export function Options({
 function ProductColors({ colors }: ProductColorsType) {
   const selectedColor = useOptionsStore((state) => state.selectedColor);
   const setSelectedColor = useOptionsStore((state) => state.setSelectedColor);
+  const setSelectedColorImage = useProductColorImageStore(
+    (state) => state.setSelectedColorImage
+  );
+
+  const handleColorSelect = (name: string, image: string) => {
+    setSelectedColor(name);
+    setSelectedColorImage(image);
+  };
 
   return (
     <div className="w-full">
       <div className="flex flex-wrap gap-3">
         {colors.map(({ name, image }, index) => (
           <div
-            onClick={() => setSelectedColor(name)}
+            onClick={() => handleColorSelect(name, image)}
             key={index}
             className={`relative w-[40px] h-[40px] flex items-center justify-center cursor-pointer hover:before:content-[''] hover:before:h-12 hover:before:w-12 hover:before:absolute hover:before:rounded-[6px] hover:before:border hover:before:border-black ${
               selectedColor === name &&
