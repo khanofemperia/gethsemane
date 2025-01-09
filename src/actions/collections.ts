@@ -219,15 +219,16 @@ export async function AddProductAction(data: {
 }) {
   try {
     const { collectionId, productId } = data;
-    const productRef = doc(database, "products", productId);
-    const productSnapshot = await getDoc(productRef);
+    
+    // Fetch both documents in parallel
+    const [productSnapshot, collectionSnapshot] = await Promise.all([
+      getDoc(doc(database, "products", productId)),
+      getDoc(doc(database, "collections", collectionId))
+    ]);
 
     if (!productSnapshot.exists()) {
       return { type: AlertMessageType.ERROR, message: "Product not found" };
     }
-
-    const collectionRef = doc(database, "collections", collectionId);
-    const collectionSnapshot = await getDoc(collectionRef);
 
     if (!collectionSnapshot.exists()) {
       return {
@@ -236,13 +237,7 @@ export async function AddProductAction(data: {
       };
     }
 
-    const newProduct = {
-      index: 1,
-      id: productId,
-    };
-
     const collectionData = collectionSnapshot.data();
-
     const collectionProducts = Array.isArray(collectionData.products)
       ? collectionData.products
       : [];
@@ -258,29 +253,30 @@ export async function AddProductAction(data: {
       };
     }
 
+    // Sort and update indices in memory
     collectionProducts.sort((a, b) => a.index - b.index);
+    const updatedProducts = collectionProducts.map((product, index) => ({
+      ...product,
+      index: index + 2
+    }));
 
-    // Update the indexes of existing products
-    const updatedProducts = collectionProducts.map((product, index) => {
-      product.index = index + 2;
-      return { ...product };
-    });
+    // Add new product at the beginning
+    updatedProducts.unshift({ id: productId, index: 1 });
 
-    // Add the new product at the beginning of the array
-    updatedProducts.unshift(newProduct);
-
-    await updateDoc(collectionRef, {
+    // Single write operation
+    await updateDoc(doc(database, "collections", collectionId), {
       products: updatedProducts,
       updatedAt: currentTimestamp(),
     });
 
-    // Revalidate paths to update collections data
-    revalidatePath("/admin/storefront"); // Admin storefront page
-    revalidatePath(
-      `/admin/collections/${collectionData.slug}-${collectionId}`
-    ); // Admin edit collection page
-    revalidatePath("/"); // Public main page
-    revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
+    // Revalidate paths
+    const paths = [
+      "/admin/storefront",
+      `/admin/collections/${collectionData.slug}-${collectionId}`,
+      "/",
+      `/collections/${collectionData.slug}-${collectionId}`
+    ];
+    paths.forEach(path => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -363,19 +359,16 @@ export async function ChangeProductIndexAction(data: {
 }) {
   try {
     const { collectionId, product: productOneChanges } = data;
-    const productOneChangesRef = doc(
-      database,
-      "products",
-      productOneChanges.id
-    );
-    const productOneChangesSnapshot = await getDoc(productOneChangesRef);
+    
+    // Fetch both documents in parallel
+    const [productSnapshot, collectionSnapshot] = await Promise.all([
+      getDoc(doc(database, "products", productOneChanges.id)),
+      getDoc(doc(database, "collections", collectionId))
+    ]);
 
-    if (!productOneChangesSnapshot.exists()) {
+    if (!productSnapshot.exists()) {
       return { type: AlertMessageType.ERROR, message: "Product not found" };
     }
-
-    const collectionRef = doc(database, "collections", collectionId);
-    const collectionSnapshot = await getDoc(collectionRef);
 
     if (!collectionSnapshot.exists()) {
       return {
@@ -407,40 +400,36 @@ export async function ChangeProductIndexAction(data: {
       (item) => item.index === productOneChanges.index
     );
 
-    if (!productTwo) {
+    if (!productTwo || !productOne || productOneIndexBeforeSwap === undefined) {
       return {
         type: AlertMessageType.ERROR,
-        message: "No product found to swap index with",
+        message: "Products not found for index swap",
       };
     }
 
-    if (productOne !== undefined && productOneIndexBeforeSwap !== undefined) {
-      productOne.index = productOneChanges.index;
-      productTwo.index = productOneIndexBeforeSwap;
+    // Perform swap in memory
+    productOne.index = productOneChanges.index;
+    productTwo.index = productOneIndexBeforeSwap;
 
-      await updateDoc(collectionRef, {
-        products: collectionData.products,
-        updatedAt: currentTimestamp(),
-      });
+    // Single write operation
+    await updateDoc(doc(database, "collections", collectionId), {
+      products: collectionData.products,
+      updatedAt: currentTimestamp(),
+    });
 
-      // Revalidate paths to update collections data
-      revalidatePath("/admin/storefront"); // Admin storefront page
-      revalidatePath(
-        `/admin/collections/${collectionData.slug}-${collectionId}`
-      ); // Admin edit collection page
-      revalidatePath("/"); // Public main page
-      revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
+    // Revalidate paths
+    const paths = [
+      "/admin/storefront",
+      `/admin/collections/${collectionData.slug}-${collectionId}`,
+      "/",
+      `/collections/${collectionData.slug}-${collectionId}`
+    ];
+    paths.forEach(path => revalidatePath(path));
 
-      return {
-        type: AlertMessageType.SUCCESS,
-        message: "Product index updated successfully",
-      };
-    } else {
-      return {
-        type: AlertMessageType.ERROR,
-        message: "Failed to update product index",
-      };
-    }
+    return {
+      type: AlertMessageType.SUCCESS,
+      message: "Product index updated successfully",
+    };
   } catch (error) {
     console.error("Error updating product index:", error);
     return {

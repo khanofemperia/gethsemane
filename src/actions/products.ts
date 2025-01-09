@@ -9,10 +9,13 @@ import {
   getDocs,
   updateDoc,
   deleteDoc,
+  writeBatch,
 } from "firebase/firestore";
 import { generateId, currentTimestamp } from "@/lib/utils/common";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
+
+const BATCH_SIZE = 500; // Firestore batch limit
 
 export async function CreateProductAction(data: CreateProductType) {
   try {
@@ -60,7 +63,6 @@ export async function CreateProductAction(data: CreateProductType) {
     };
 
     await setDoc(documentRef, product);
-
     revalidatePath("/admin/products");
 
     return {
@@ -99,53 +101,74 @@ export async function UpdateProductAction(
 
     await setDoc(docRef, updatedProduct);
 
+    // Only proceed with upsell updates if pricing changed
     if (
       data.pricing &&
       (data.pricing.basePrice !== currentProduct.pricing.basePrice ||
         data.pricing.salePrice !== currentProduct.pricing.salePrice)
     ) {
+      // Find all upsells containing this product
       const upsellsRef = collection(database, "upsells");
       const upsellsSnap = await getDocs(upsellsRef);
-
-      for (const upsellDoc of upsellsSnap.docs) {
-        const upsell = upsellDoc.data() as UpsellType;
-        if (upsell.products.some((product) => product.id === data.id)) {
-          const updatedUpsellProducts = upsell.products.map((product) =>
+      
+      const upsellsToUpdate: { id: string; products: UpsellType["products"]; currentPricing: PricingType }[] = [];
+      
+      upsellsSnap.docs.forEach(doc => {
+        const upsell = doc.data() as UpsellType;
+        if (upsell.products.some(product => product.id === data.id)) {
+          const updatedProducts = upsell.products.map(product =>
             product.id === data.id
-              ? {
-                  ...product,
-                  basePrice: Number(data.pricing!.basePrice) || 0,
-                }
+              ? { ...product, basePrice: Number(data.pricing!.basePrice) || 0 }
               : product
           );
-
-          const newUpsellPricing = calculateUpsellPricing(
-            updatedUpsellProducts,
-            upsell.pricing
-          );
-
-          await updateDoc(doc(database, "upsells", upsell.id), {
-            products: updatedUpsellProducts,
-            pricing: newUpsellPricing,
-            updatedAt: currentTimestamp(),
+          
+          upsellsToUpdate.push({
+            id: doc.id,
+            products: updatedProducts,
+            currentPricing: upsell.pricing
           });
+        }
+      });
+
+      // Batch update upsells
+      if (upsellsToUpdate.length > 0) {
+        const batches = [];
+        for (let i = 0; i < upsellsToUpdate.length; i += BATCH_SIZE) {
+          batches.push(upsellsToUpdate.slice(i, i + BATCH_SIZE));
+        }
+
+        for (const batchItems of batches) {
+          const batch = writeBatch(database);
+          
+          batchItems.forEach(({ id, products, currentPricing }) => {
+            const newPricing = calculateUpsellPricing(products, currentPricing);
+            batch.update(doc(database, "upsells", id), {
+              products,
+              pricing: newPricing,
+              updatedAt: currentTimestamp(),
+            });
+          });
+
+          await batch.commit();
         }
       }
     }
 
-    // Revalidate paths to update products data
-    revalidatePath(
-      `/admin/products/${currentProduct.slug}-${currentProduct.id}`
-    ); // Admin edit product page
-    revalidatePath("/admin/products"); // Admin products page
-    revalidatePath("/admin/upsells/[id]", "page"); // Admin edit upsell page
-    revalidatePath("/admin/collections/[slug]", "page"); // Admin edit collection page
-    revalidatePath("/"); // Public main page
-    revalidatePath(`/${currentProduct.slug}-${currentProduct.id}`); // Public product details page
-    revalidatePath("/collections/[slug]", "page"); // Public single collection page
-    revalidatePath("/categories/[slug]", "page"); // Public single category page
-    revalidatePath("/cart"); // Public cart page
-    revalidatePath("/checkout"); // Public checkout page
+    // Revalidate paths
+    const paths = [
+      `/admin/products/${currentProduct.slug}-${currentProduct.id}`,
+      "/admin/products",
+      "/admin/upsells/[id]",
+      "/admin/collections/[slug]",
+      "/",
+      `/${currentProduct.slug}-${currentProduct.id}`,
+      "/collections/[slug]",
+      "/categories/[slug]",
+      "/cart",
+      "/checkout"
+    ];
+
+    paths.forEach(path => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -165,8 +188,10 @@ export async function SetUpsellAction(data: {
   upsellId: string;
 }) {
   try {
-    const upsellDocRef = doc(database, "upsells", data.upsellId);
-    const upsellDocSnap = await getDoc(upsellDocRef);
+    const [upsellDocSnap, productDocSnap] = await Promise.all([
+      getDoc(doc(database, "upsells", data.upsellId)),
+      getDoc(doc(database, "products", data.productId))
+    ]);
 
     if (!upsellDocSnap.exists()) {
       return {
@@ -175,25 +200,26 @@ export async function SetUpsellAction(data: {
       };
     }
 
-    const productDocRef = doc(database, "products", data.productId);
-    await updateDoc(productDocRef, {
+    await updateDoc(doc(database, "products", data.productId), {
       upsell: data.upsellId,
     });
 
-    // Revalidate paths to update products data
-    const productData = (await getDoc(productDocRef)).data() as ProductType;
-    revalidatePath(
-      `/admin/products/${productData.slug}-${productData.id}`
-    ); // Admin edit product page
-    revalidatePath("/admin/products"); // Admin products page
-    revalidatePath("/admin/upsells/[id]", "page"); // Admin edit upsell page
-    revalidatePath("/admin/collections/[slug]", "page"); // Admin edit collection page
-    revalidatePath("/"); // Public main page
-    revalidatePath(`/${productData.slug}-${productData.id}`); // Public product details page
-    revalidatePath("/collections/[slug]", "page"); // Public single collection page
-    revalidatePath("/categories/[slug]", "page"); // Public single category page
-    revalidatePath("/cart"); // Public cart page
-    revalidatePath("/checkout"); // Public checkout page
+    // Revalidate paths
+    const productData = productDocSnap.data() as ProductType;
+    const paths = [
+      `/admin/products/${productData.slug}-${productData.id}`,
+      "/admin/products",
+      "/admin/upsells/[id]",
+      "/admin/collections/[slug]",
+      "/",
+      `/${productData.slug}-${productData.id}`,
+      "/collections/[slug]",
+      "/categories/[slug]",
+      "/cart",
+      "/checkout"
+    ];
+
+    paths.forEach(path => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -213,24 +239,28 @@ export async function RemoveUpsellAction(data: {
 }) {
   try {
     const productDocRef = doc(database, "products", data.productId);
+    const productDocSnap = await getDoc(productDocRef);
+    const productData = productDocSnap.data() as ProductType;
+
     await updateDoc(productDocRef, {
       upsell: "",
     });
 
-    // Revalidate paths to update products data
-    const productData = (await getDoc(productDocRef)).data() as ProductType;
-    revalidatePath(
-      `/admin/products/${productData.slug}-${productData.id}`
-    ); // Admin edit product page
-    revalidatePath("/admin/products"); // Admin products page
-    revalidatePath("/admin/upsells/[id]", "page"); // Admin edit upsell page
-    revalidatePath("/admin/collections/[slug]", "page"); // Admin edit collection page
-    revalidatePath("/"); // Public main page
-    revalidatePath(`/${productData.slug}-${productData.id}`); // Public product details page
-    revalidatePath("/collections/[slug]", "page"); // Public single collection page
-    revalidatePath("/categories/[slug]", "page"); // Public single category page
-    revalidatePath("/cart"); // Public cart page
-    revalidatePath("/checkout"); // Public checkout page
+    // Revalidate paths
+    const paths = [
+      `/admin/products/${productData.slug}-${productData.id}`,
+      "/admin/products",
+      "/admin/upsells/[id]",
+      "/admin/collections/[slug]",
+      "/",
+      `/${productData.slug}-${productData.id}`,
+      "/collections/[slug]",
+      "/categories/[slug]",
+      "/cart",
+      "/checkout"
+    ];
+
+    paths.forEach(path => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -248,7 +278,6 @@ export async function RemoveUpsellAction(data: {
 export async function DeleteProductAction(data: { id: string }) {
   try {
     const productDocRef = doc(database, "products", data.id);
-
     const productSnap = await getDoc(productDocRef);
 
     if (!productSnap.exists()) {
@@ -259,9 +288,13 @@ export async function DeleteProductAction(data: { id: string }) {
     }
 
     await deleteDoc(productDocRef);
-
-    revalidatePath("/admin/products"); // Admin products page
-    revalidatePath("/"); // Public main page
+    
+    const paths = [
+      "/admin/products",
+      "/"
+    ];
+    
+    paths.forEach(path => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
