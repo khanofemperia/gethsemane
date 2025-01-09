@@ -2,17 +2,17 @@
 
 import {
   collection,
-  doc,
-  getDoc,
   getDocs,
   query,
   where,
+  documentId,
 } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 import { capitalizeFirstLetter } from "@/lib/utils/common";
 
+const BATCH_SIZE = 10; // Firestore limitation is 10 items per 'in' query
+
 /**
- * Unified function to get products with flexible filtering and field selection.
  *
  * @example Get a single product
  * const product = await getProducts({ ids: ["id1"] });
@@ -40,7 +40,6 @@ export async function getProducts(
 ): Promise<(ProductType | ProductWithUpsellType)[] | null> {
   const { ids, fields = [], visibility, category } = options;
 
-  // Return null only when empty IDs array is explicitly passed
   if (ids && Array.isArray(ids) && ids.length === 0) {
     return null;
   }
@@ -51,9 +50,8 @@ export async function getProducts(
   const productsRef = collection(database, "products");
   let conditions: any[] = [];
 
-  // Only add ID condition if IDs were explicitly provided
   if (ids && ids.length > 0) {
-    conditions.push(where("__name__", "in", ids));
+    conditions.push(where(documentId(), "in", ids));
   }
   if (visibility) {
     conditions.push(where("visibility", "==", visibility));
@@ -73,97 +71,152 @@ export async function getProducts(
     return null;
   }
 
-  // Rest of the function remains the same
-  const products = await Promise.all(
-    snapshot.docs.map(async (docSnapshot) => {
-      const data = docSnapshot.data();
-      let selectedFields: Partial<ProductType> = {};
+  // Extract products and collect upsell IDs
+  const products: ProductType[] = [];
+  const upsellIds = new Set<string>();
 
-      if (fields.length) {
-        fields.forEach((field) => {
-          if (data.hasOwnProperty(field)) {
-            selectedFields[field as keyof ProductType] = data[field];
-          }
-        });
-      } else {
-        selectedFields = data;
-      }
+  snapshot.docs.forEach((docSnapshot) => {
+    const data = docSnapshot.data();
+    let selectedFields: Partial<ProductType> = {};
 
-      const product = {
-        id: docSnapshot.id,
-        ...selectedFields,
-        updatedAt: data["updatedAt"],
-        visibility: data["visibility"],
-      };
+    if (fields.length) {
+      fields.forEach((field) => {
+        if (data.hasOwnProperty(field)) {
+          selectedFields[field as keyof ProductType] = data[field];
+        }
+      });
+    } else {
+      selectedFields = data;
+    }
 
+    const product = {
+      id: docSnapshot.id,
+      ...selectedFields,
+      updatedAt: data["updatedAt"],
+      visibility: data["visibility"],
+    } as ProductType;
+
+    if (includeUpsell && product.upsell && typeof product.upsell === "string") {
+      upsellIds.add(product.upsell.trim());
+    }
+
+    products.push(product);
+  });
+
+  // Fetch upsells in batches if needed
+  let upsellsMap: Map<string, UpsellType> = new Map();
+
+  if (includeUpsell && upsellIds.size > 0) {
+    upsellsMap = await fetchUpsellsInBatches(Array.from(upsellIds));
+  }
+
+  // Enhance products with upsell details
+  const enhancedProducts = await Promise.all(
+    products.map(async (product) => {
       if (
         includeUpsell &&
         product.upsell &&
         typeof product.upsell === "string" &&
-        product.upsell.trim()
+        upsellsMap.has(product.upsell)
       ) {
-        const upsellDetails = await fetchUpsellDetails(product.upsell);
-        if (upsellDetails) {
-          return {
-            ...product,
-            upsell: upsellDetails,
-          } as ProductWithUpsellType;
-        }
+        return {
+          ...product,
+          upsell: upsellsMap.get(product.upsell),
+        } as ProductWithUpsellType;
       }
-
-      return product as ProductType;
+      return product;
     })
   );
 
-  return products.sort(
+  return enhancedProducts.sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   );
 }
 
-// -- Logic & Utilities --
+async function fetchUpsellsInBatches(
+  upsellIds: string[]
+): Promise<Map<string, UpsellType>> {
+  const upsellsMap = new Map<string, UpsellType>();
+  const batches = [];
 
-async function fetchUpsellDetails(
-  upsellId: string
-): Promise<UpsellType | null> {
-  const upsellDocRef = doc(database, "upsells", upsellId);
-  const upsellSnapshot = await getDoc(upsellDocRef);
-
-  if (!upsellSnapshot.exists()) {
-    return null;
+  // Split upsell IDs into batches
+  for (let i = 0; i < upsellIds.length; i += BATCH_SIZE) {
+    batches.push(upsellIds.slice(i, i + BATCH_SIZE));
   }
 
-  const upsellData = upsellSnapshot.data() as UpsellType;
-  const productsInUpsell = await Promise.all(
-    upsellData.products.map(async (productItem) => {
-      const productDocRef = doc(database, "products", productItem.id);
-      const productSnapshot = await getDoc(productDocRef);
+  // Process each batch
+  for (const batchIds of batches) {
+    const upsellsRef = collection(database, "upsells");
+    const batchQuery = query(upsellsRef, where(documentId(), "in", batchIds));
+    const batchSnapshot = await getDocs(batchQuery);
 
-      if (!productSnapshot.exists()) {
-        return null;
-      }
+    // Collect all product IDs from upsells
+    const productIds = new Set<string>();
+    batchSnapshot.docs.forEach((doc) => {
+      const data = doc.data();
+      data.products.forEach((product: { id: string }) => {
+        productIds.add(product.id);
+      });
+    });
 
-      const productData = productSnapshot.data() as ProductType;
-      return {
-        index: productItem.index,
-        name: productItem.name,
-        id: productData.id,
-        slug: productData.slug,
-        images: productData.images,
-        basePrice: productData.pricing.basePrice,
-        options: productData.options,
-      };
-    })
-  );
+    // Fetch all referenced products in batches
+    const productsMap = new Map<string, ProductType>();
+    const productBatches = [];
+    const productIdsArray = Array.from(productIds);
 
-  return {
-    ...upsellData,
-    products: productsInUpsell.filter(
-      (item): item is UpsellType["products"][number] => item !== null
-    ),
-  };
+    for (let i = 0; i < productIdsArray.length; i += BATCH_SIZE) {
+      productBatches.push(productIdsArray.slice(i, i + BATCH_SIZE));
+    }
+
+    for (const productBatchIds of productBatches) {
+      const productsRef = collection(database, "products");
+      const productsQuery = query(
+        productsRef,
+        where(documentId(), "in", productBatchIds)
+      );
+      const productsSnapshot = await getDocs(productsQuery);
+
+      productsSnapshot.docs.forEach((doc) => {
+        productsMap.set(doc.id, { id: doc.id, ...doc.data() } as ProductType);
+      });
+    }
+
+    // Build complete upsell objects
+    batchSnapshot.docs.forEach((doc) => {
+      const upsellData = doc.data();
+      const productsInUpsell = upsellData.products
+        .map((productItem: { id: string; index: number; name: string }) => {
+          const productData = productsMap.get(productItem.id);
+          if (!productData) return null;
+
+          return {
+            index: productItem.index,
+            name: productItem.name,
+            id: productData.id,
+            slug: productData.slug,
+            images: productData.images,
+            basePrice: productData.pricing.basePrice,
+            options: productData.options,
+          };
+        })
+        .filter(
+          (item: any): item is UpsellType["products"][number] => item !== null
+        );
+
+      upsellsMap.set(doc.id, {
+        id: doc.id,
+        mainImage: upsellData.mainImage,
+        visibility: upsellData.visibility,
+        createdAt: upsellData.createdAt,
+        updatedAt: upsellData.updatedAt,
+        products: productsInUpsell,
+        ...upsellData,
+      } as UpsellType);
+    });
+  }
+
+  return upsellsMap;
 }
-
-// -- Type Definitions --
 
 type GetProductsOptionsType = {
   ids?: string[];
