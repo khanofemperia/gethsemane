@@ -3,6 +3,18 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 
+/**
+ * Retrieve categories from the database, optionally filtered by visibility.
+ *
+ * @example Get all categories
+ * const categories = await getCategories();
+ *
+ * @example Get visible categories
+ * const visibleCategories = await getCategories({ visibility: "visible" });
+ *
+ * @param {VisibilityFilterType} [filter] - Optional filter to restrict categories by visibility.
+ * @returns {Promise<StoreCategoriesType | null>} The categories object or `null` if no categories are found.
+ */
 export async function getCategories(
   filter?: VisibilityFilterType
 ): Promise<StoreCategoriesType | null> {

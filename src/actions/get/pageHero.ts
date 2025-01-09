@@ -3,6 +3,14 @@
 import { database } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
+/**
+ * Retrieve the page hero data for the homepage.
+ * 
+ * @example Get the homepage hero
+ * const pageHero = await getPageHero();
+ *
+ * @returns {Promise<PageHeroType>} The page hero object containing images, title, destination URL, and visibility.
+ */
 export async function getPageHero(): Promise<PageHeroType> {
   const documentRef = doc(database, "pageHero", "homepageHero");
   const snapshot = await getDoc(documentRef);

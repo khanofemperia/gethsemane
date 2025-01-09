@@ -7,13 +7,11 @@ export default async function PaymentSuccessful({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  // Check for valid payment session
   const paymentSuccess = cookies().get("payment_success");
   if (!paymentSuccess) {
     redirect("/");
   }
 
-  // Get and validate email
   const email =
     typeof searchParams.email === "string"
       ? decodeURIComponent(searchParams.email)

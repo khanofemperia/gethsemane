@@ -14,6 +14,14 @@ import {
 import { database } from "@/lib/firebase";
 import { revalidatePath } from "next/cache";
 
+/**
+ * Fetch all carts from the database.
+ *
+ * @example Get all carts
+ * const carts = await getCarts();
+ *
+ * @returns {Promise<CartType[]>} A list of cart objects or an empty array.
+ */
 export async function getCarts(): Promise<CartType[]> {
   try {
     const snapshot = await getDocs(collection(database, "carts"));
@@ -37,6 +45,15 @@ export async function getCarts(): Promise<CartType[]> {
   }
 }
 
+/**
+ * Fetch a single cart by device identifier.
+ *
+ * @example Get a specific cart
+ * const cart = await getCart("device-identifier");
+ *
+ * @param {string | undefined} deviceIdentifier - The unique device identifier of the cart.
+ * @returns {Promise<CartType | null>} The cart object or null if not found 
+ */
 export async function getCart(
   deviceIdentifier: string | undefined
 ): Promise<CartType | null> {

@@ -156,6 +156,8 @@ export default async function Overview() {
   );
 }
 
+// -- UI Components --
+
 const StoreGrowth = ({ orders }: { orders: OrderType[] | null }) => {
   const storeGrowthMetrics = new StoreGrowthMetrics(orders || []);
   const metrics = storeGrowthMetrics.getMetrics();
@@ -922,6 +924,8 @@ const UpsellPerformance = ({ upsells }: { upsells: UpsellType[] | null }) => {
     </div>
   );
 };
+
+// -- Type Definitions --
 
 type ProductInUpsell = {
   mainImage: string;

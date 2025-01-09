@@ -109,6 +109,8 @@ export function QuickviewOverlay() {
   );
 }
 
+// -- UI Components --
+
 function MobileProductDetails({
   selectedProduct,
   deviceIdentifier,

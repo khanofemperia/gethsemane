@@ -4,7 +4,7 @@ import AlertMessage from "@/components/shared/AlertMessage";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeft, X, Edit, Minus, Plus, Pencil } from "lucide-react";
+import { ArrowLeft, X, Minus, Plus, Pencil } from "lucide-react";
 import clsx from "clsx";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";

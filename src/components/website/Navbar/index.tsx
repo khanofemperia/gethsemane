@@ -109,6 +109,8 @@ export default function Navbar({
   );
 }
 
+// -- UI Components --
+
 function MobileNavbar({ itemsInCart }: { itemsInCart: number }) {
   return (
     <div className="md:hidden flex items-center justify-between w-full max-w-[1080px] mx-auto pl-4 pr-[10px] py-2">

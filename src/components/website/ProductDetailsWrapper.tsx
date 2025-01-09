@@ -193,6 +193,8 @@ export function ProductDetailsWrapper({
   );
 }
 
+// -- UI Components --
+
 function Footer() {
   return (
     <footer className="w-full pt-6 pb-24 mt-14 bg-lightgray">

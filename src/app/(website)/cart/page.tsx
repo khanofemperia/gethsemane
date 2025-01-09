@@ -119,6 +119,8 @@ export default async function Cart() {
   );
 }
 
+// -- Logic & Utilities --
+
 const getBaseProducts = async (productIds: string[]) =>
   getProducts({
     ids: productIds,
@@ -292,7 +294,8 @@ const getUpsell = async ({
   return upsell;
 };
 
-// -- Compo --
+// -- UI Components --
+
 function EmptyCartState({
   sortedCartItems,
 }: {

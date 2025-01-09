@@ -3,6 +3,30 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { database } from "@/lib/firebase";
 
+/**
+ * Unified function to retrieve upsells with flexible filtering, field selection, and product inclusion.
+ *
+ * @example Get a single upsell by ID
+ * const upsells = await getUpsells({ ids: ["40"] });
+ *
+ * @example Get multiple upsells with specific fields
+ * const upsells = await getUpsells({
+ *   ids: ["50", "60"],
+ *   fields: ["mainImage", "pricing", "visibility"]
+ * });
+ *
+ * @example Get upsells with products included
+ * const upsells = await getUpsells({
+ *   ids: ["70"],
+ *   includeProducts: true
+ * });
+ *
+ * @example Get all upsells with specific visibility fields
+ * const upsells = await getUpsells({
+ *   fields: ["mainImage", "pricing"],
+ *   includeProducts: true
+ * });
+ */
 export async function getUpsells(
   options: GetUpsellsOptions = {}
 ): Promise<UpsellType[] | null> {

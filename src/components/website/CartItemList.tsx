@@ -488,6 +488,8 @@ export function CartItemList({ cartItems }: { cartItems: CartItemType[] }) {
   );
 }
 
+// -- UI Components --
+
 function MobilePriceDetails({
   selectedItems,
   getSelectedCartItems,

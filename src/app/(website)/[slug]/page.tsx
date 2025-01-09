@@ -101,6 +101,8 @@ export default async function ProductDetails({
   );
 }
 
+// -- UI Components --
+
 function MobileProductDetails({
   product,
   cart,
@@ -591,6 +593,8 @@ function DesktopProductDetails({
     </div>
   );
 }
+
+// -- Type Definitions --
 
 type ProductDetailsType = {
   product: ProductWithUpsellType;

@@ -81,6 +81,8 @@ export function FeaturedProducts({
   );
 }
 
+// -- UI Components --
+
 function CarouselProductCard({
   product,
   cart,

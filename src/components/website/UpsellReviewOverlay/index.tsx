@@ -495,7 +495,7 @@ export function UpsellReviewOverlay({ cart }: { cart: CartType | null }) {
   );
 }
 
-// -- Logic & Utilities --
+// -- UI Components --
 
 function ProductColors({
   colors,
