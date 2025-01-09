@@ -4,15 +4,15 @@ import { useEffect } from "react";
 import Image from "next/image";
 import { useQuickviewStore } from "@/zustand/website/quickviewStore";
 import { formatThousands } from "@/lib/utils/common";
-import styles from "./styles.module.css";
 import { useRouter } from "next/navigation";
 import { SizeChartOverlay } from "../ProductDetails/SizeChartOverlay";
-import clsx from "clsx";
 import { Options } from "../ProductDetails/Options";
 import { CartAndUpgradeButtons } from "../CartAndUpgradeButtons";
 import "@/components/shared/TextEditor/theme/index.css";
 import { ImageGallery } from "../ProductDetails/ImageGallery";
 import { X, ChevronRight, Check } from "lucide-react";
+import styles from "./styles.module.css";
+import clsx from "clsx";
 
 export function QuickviewButton({
   onClick,
