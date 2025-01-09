@@ -11,12 +11,11 @@ import { useState, useEffect, useRef } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
 import { useNavbarMenuStore } from "@/zustand/admin/navbarMenuStore";
-import { ArrowLeft, ChevronDown, X } from "lucide-react";
+import { ArrowLeft, ChevronDown, X, Image as ImageIcon } from "lucide-react";
 import clsx from "clsx";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { CiImageOn } from "react-icons/ci";
 import { CreateCollectionAction } from "@/actions/collections";
 import Overlay from "@/ui/Overlay";
 import { AlertMessageType } from "@/lib/sharedTypes";
@@ -447,9 +446,10 @@ export function NewCollectionOverlay() {
                                 />
                               )
                             ) : (
-                              <CiImageOn
-                                className="fill-neutral-200"
-                                size={80}
+                              <ImageIcon
+                                color="#e5e5e5"
+                                size={52}
+                                strokeWidth={0.75}
                               />
                             )}
                           </div>
@@ -494,9 +494,10 @@ export function NewCollectionOverlay() {
                                 />
                               )
                             ) : (
-                              <CiImageOn
-                                className="fill-neutral-200"
-                                size={80}
+                              <ImageIcon
+                                color="#e5e5e5"
+                                size={52}
+                                strokeWidth={0.75}
                               />
                             )}
                           </div>

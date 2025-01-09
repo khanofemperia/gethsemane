@@ -5,11 +5,10 @@ import { isValidRemoteImage } from "@/lib/utils/common";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeft, X, Pencil, Minus } from "lucide-react";
+import { ArrowLeft, X, Pencil, Minus, Plus } from "lucide-react";
 import clsx from "clsx";
 import Image from "next/image";
 import Overlay from "@/ui/Overlay";
-import { HiOutlinePlus } from "react-icons/hi2";
 import { UpdateProductAction } from "@/actions/products";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
@@ -198,7 +197,7 @@ export function ImageGalleryOverlay({ data }: { data: DataType }) {
                   className="transition duration-300 ease-in-out bg-lightgray active:bg-lightgray-dimmed h-max w-[calc(50%-4px)] min-[425px]:w-[calc(33.333333%-6px)] rounded-md overflow-hidden"
                 >
                   <div className="w-full aspect-square pt-9 flex flex-col items-center justify-center">
-                    <HiOutlinePlus size={40} />
+                    <Plus size={40} strokeWidth={1.25} />
                   </div>
                   <div className="w-full h-9"></div>
                 </button>

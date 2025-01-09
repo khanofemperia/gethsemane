@@ -1,14 +1,13 @@
 "use client";
 
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { X, Pencil, Minus, Plus } from "lucide-react";
+import { X, Pencil, Minus, Plus, ArrowLeft } from "lucide-react";
 import Overlay from "@/ui/Overlay";
 import { useState, useEffect, useCallback } from "react";
 import SizesTable from "./SizesTable";
 import { clsx } from "clsx";
 import AlertMessage from "@/components/shared/AlertMessage";
 import { Spinner } from "@/ui/Spinners/Default";
-import { ArrowLeftIcon } from "@/icons";
 import { AlertMessageType } from "@/lib/sharedTypes";
 import { UpdateProductAction } from "@/actions/products";
 
@@ -262,7 +261,11 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeftIcon className="fill-blue -ml-[2px]" size={20} />
+                  <ArrowLeft
+                    size={20}
+                    strokeWidth={2}
+                    className="-ml-1 stroke-blue"
+                  />
                   <span className="font-semibold text-sm text-blue">Sizes</span>
                 </button>
                 <button
@@ -304,7 +307,9 @@ export function SizeChartOverlay({ data }: { data: DataType }) {
                         type="button"
                         onClick={addRow}
                         className="h-6 w-9 grid place-items-center ease-in-out duration-300 transition hover:bg-neutral-200"
-                      ></button>
+                      >
+                        <Plus color="#6c6c6c" size={18} strokeWidth={2} />
+                      </button>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

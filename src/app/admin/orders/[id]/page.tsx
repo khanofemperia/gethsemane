@@ -111,7 +111,7 @@ export default async function OrderDetails({
                   <h3 className="min-w-[78px] max-w-[78px] text-gray">
                     Shipping
                   </h3>
-                  <div className="flex flex-col gap-2 font-medium">
+                  <div className="flex flex-col gap-1 font-medium">
                     <span>
                       {
                         paypalOrder.purchase_units[0].shipping.address

@@ -5,8 +5,7 @@ import { isGifImage, isValidRemoteImage } from "@/lib/utils/common";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/ui/Spinners/Default";
 import { useOverlayStore } from "@/zustand/admin/overlayStore";
-import { ArrowLeft, X } from "lucide-react";
-import { CiImageOn } from "react-icons/ci";
+import { ArrowLeft, X, Image as ImageIcon } from "lucide-react";
 import Overlay from "@/ui/Overlay";
 import { UpdatePageHeroAction } from "@/actions/page-hero";
 import { AlertMessageType } from "@/lib/sharedTypes";
@@ -194,7 +193,11 @@ export function PageHeroOverlay({
                   type="button"
                   className="h-9 px-3 rounded-full flex items-center gap-1 transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
                 >
-                  <ArrowLeft size={20} strokeWidth={2} className="-ml-1 stroke-blue" />
+                  <ArrowLeft
+                    size={20}
+                    strokeWidth={2}
+                    className="-ml-1 stroke-blue"
+                  />
                   <span className="font-semibold text-sm text-blue">
                     Edit page hero
                   </span>
@@ -224,9 +227,7 @@ export function PageHeroOverlay({
                 <div className="flex flex-col gap-2">
                   <h2 className="text-xs text-gray">Visibility</h2>
                   <div className="px-[10px] py-2 w-full min-[425px]:w-max rounded-md flex gap-4 min-[425px]:gap-4 items-start justify-between bg-lightgray">
-                    <div className="text-sm">
-                      Show hero on storefront
-                    </div>
+                    <div className="text-sm">Show hero on storefront</div>
                     <div
                       onClick={() =>
                         setVisibility((prevVisibility) =>
@@ -312,7 +313,11 @@ export function PageHeroOverlay({
                               />
                             )
                           ) : (
-                            <CiImageOn className="fill-neutral-200" size={80} />
+                            <ImageIcon
+                              color="#e5e5e5"
+                              size={52}
+                              strokeWidth={0.75}
+                            />
                           )}
                         </div>
                         <div className="w-full h-9 border-t overflow-hidden">
@@ -353,7 +358,11 @@ export function PageHeroOverlay({
                               />
                             )
                           ) : (
-                            <CiImageOn className="fill-neutral-200" size={80} />
+                            <ImageIcon
+                              color="#e5e5e5"
+                              size={52}
+                              strokeWidth={0.75}
+                            />
                           )}
                         </div>
                         <div className="w-full h-9 border-t overflow-hidden">

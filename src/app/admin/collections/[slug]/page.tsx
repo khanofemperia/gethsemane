@@ -1,15 +1,12 @@
 import DataChip from "@/ui/DataChip";
-import { Pencil } from "lucide-react";
+import { Hourglass, Clock, Ban, ChevronRight } from "lucide-react";
 import { formatThousands, isValidRemoteImage } from "@/lib/utils/common";
 import { notFound } from "next/navigation";
 import {
   VisibilityButton,
   VisibilityOverlay,
 } from "@/components/admin/Storefront/EditCollection/VisibilityOverlay";
-import { HiOutlineBan, HiOutlineClock } from "react-icons/hi";
-import { IoHourglassOutline } from "react-icons/io5";
 import clsx from "clsx";
-import { ChevronRightIcon } from "@/icons";
 import {
   CampaignDurationButton,
   CampaignDurationOverlay,
@@ -132,22 +129,19 @@ export default async function EditCollection({
                     campaignDuration.startDate,
                     campaignDuration.endDate
                   ) === CAMPAIGN_STATUS_UPCOMING && (
-                    <IoHourglassOutline
-                      className="stroke-gold fill-gold"
-                      size={18}
-                    />
+                    <Hourglass color="#af8100" size={16} strokeWidth={2} />
                   )}
                   {getCampaignStatus(
                     campaignDuration.startDate,
                     campaignDuration.endDate
                   ) === CAMPAIGN_STATUS_ACTIVE && (
-                    <HiOutlineClock className="stroke-green" size={18} />
+                    <Clock color="#0A8800" size={16} strokeWidth={2} />
                   )}
                   {getCampaignStatus(
                     campaignDuration.startDate,
                     campaignDuration.endDate
                   ) === CAMPAIGN_STATUS_ENDED && (
-                    <HiOutlineBan className="stroke-red" size={18} />
+                    <Ban color="#ee3b3b" size={16} strokeWidth={2} />
                   )}
                   <span
                     className={clsx("italic", {
@@ -198,7 +192,7 @@ export default async function EditCollection({
                       )}
                     >
                       <span className="text-gray">Launch</span>
-                      <ChevronRightIcon className="stroke-gray" size={16} />
+                      <ChevronRight color="#828282" size={16} strokeWidth={2} />
                       <span
                         className={clsx({
                           "text-green":
@@ -235,7 +229,11 @@ export default async function EditCollection({
                       )}
                     >
                       <span className="text-gray">End date</span>
-                      <ChevronRightIcon className="stroke-gray" size={16} />
+                      <ChevronRight
+                        color="#828282"
+                        size={16}
+                        strokeWidth={2}
+                      />
                       <span
                         className={clsx({
                           "text-red":

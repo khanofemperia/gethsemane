@@ -1,12 +1,10 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Pencil } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil, Hourglass, Clock, Ban } from "lucide-react";
 import { capitalizeFirstLetter } from "@/lib/utils/common";
 import clsx from "clsx";
 import Link from "next/link";
 import { useState } from "react";
-import { HiOutlineBan, HiOutlineClock } from "react-icons/hi";
-import { IoHourglassOutline } from "react-icons/io5";
 import {
   ChangeCollectionIndexButton,
   ChangeCollectionIndexOverlay,
@@ -175,28 +173,19 @@ export default function CollectionTable({
                                 campaignDuration.startDate,
                                 campaignDuration.endDate
                               ) === CAMPAIGN_STATUS_UPCOMING && (
-                                <IoHourglassOutline
-                                  className="stroke-gold fill-gold"
-                                  size={18}
-                                />
+                                <Hourglass color="#af8100" size={16} strokeWidth={2} />
                               )}
                               {getCampaignStatus(
                                 campaignDuration.startDate,
                                 campaignDuration.endDate
                               ) === CAMPAIGN_STATUS_ACTIVE && (
-                                <HiOutlineClock
-                                  className="stroke-green"
-                                  size={18}
-                                />
+                                <Clock color="#0A8800" size={16} strokeWidth={2} />
                               )}
                               {getCampaignStatus(
                                 campaignDuration.startDate,
                                 campaignDuration.endDate
                               ) === CAMPAIGN_STATUS_ENDED && (
-                                <HiOutlineBan
-                                  className="stroke-red"
-                                  size={18}
-                                />
+                                <Ban color="#ee3b3b" size={16} strokeWidth={2} />
                               )}
                               <span
                                 className={clsx("italic", {

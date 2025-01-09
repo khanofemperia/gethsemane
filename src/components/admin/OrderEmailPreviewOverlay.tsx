@@ -10,7 +10,7 @@ import { OrderConfirmedTemplate } from "./emails/OrderConfirmedTemplate";
 import { OrderShippedTemplate } from "./emails/OrderShippedTemplate";
 import { OrderDeliveredTemplate } from "./emails/OrderDeliveredTemplate";
 import { Spinner } from "@/ui/Spinners/Default";
-import { ArrowLeftIcon, ChevronRightIcon } from "@/icons";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import { OrderStatusEmailAction } from "@/actions/order-status-email";
 
 const overlayNameKeys: Record<EmailType, string> = {
@@ -90,7 +90,7 @@ export function EmailPreviewButton({
       <div>
         <h2 className="font-semibold text-sm mb-1 flex items-center gap-[2px] w-max mx-auto">
           <span>{emailLabels[emailType]}</span>
-          <ChevronRightIcon size={16} className="text-gray" />
+          <ChevronRight color="#6c6c6c" size={16} strokeWidth={2} />
         </h2>
         {email.sentCount === 0 ? (
           <span className="text-xs text-gray">Not sent yet</span>
@@ -100,6 +100,7 @@ export function EmailPreviewButton({
           <span className="text-xs text-gray">Not sent yet</span>
         )}
         <span className="text-xs text-gray">
+          {" "}
           •{" "}
           {isMaxReached ? (
             <span className="text-red">Max sends reached</span>
@@ -252,7 +253,11 @@ export function EmailPreviewOverlay({
                 type="button"
                 className="h-9 px-3 rounded-full flex items-center gap-1 transition ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
               >
-                <ArrowLeftIcon size={20} className="fill-blue" />
+                <ArrowLeft
+                  size={20}
+                  strokeWidth={2}
+                  className="-ml-1 stroke-blue"
+                />
                 <span className="font-semibold text-sm text-blue">
                   {overlayTitles[emailType]}
                 </span>
