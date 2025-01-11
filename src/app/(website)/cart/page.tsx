@@ -2,7 +2,7 @@ import ShowAlert from "@/components/website/ShowAlert";
 import { cookies } from "next/headers";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 import { doc, getDoc } from "firebase/firestore";
 import { ResetUpsellReview } from "@/components/website/ResetUpsellReview";
 import { CartItemList } from "@/components/website/CartItemList";
@@ -243,14 +243,17 @@ const getUpsell = async ({
 }: {
   id: string;
 }): Promise<Partial<UpsellType> | null> => {
-  const documentRef = doc(database, "upsells", id);
-  const snapshot = await getDoc(documentRef);
+  const documentRef = adminDb.collection("upsells").doc(id);
+  const snapshot = await documentRef.get();
 
-  if (!snapshot.exists()) {
+  if (!snapshot.exists) {
     return null;
   }
 
   const data = snapshot.data();
+  if (!data) {
+    return null;
+  }
 
   const productIds = data.products
     ? data.products.map((p: { id: string }) => p.id)
@@ -269,8 +272,16 @@ const getUpsell = async ({
     return null;
   }
 
+  interface ProductData {
+    id: string;
+    index: number;
+    options?: {
+      colors?: Array<{ name: string }>;
+    };
+  }
+
   const updatedProducts = data.products
-    .map((product: any) => {
+    .map((product: ProductData) => {
       const matchedProduct = products.find((p) => p.id === product.id);
       return matchedProduct
         ? {
@@ -279,7 +290,9 @@ const getUpsell = async ({
           }
         : null;
     })
-    .filter((product: any) => product !== null);
+    .filter(
+      (product: any): product is NonNullable<typeof product> => product !== null
+    );
 
   const sortedProducts = updatedProducts.sort(
     (a: any, b: any) => a.index - b.index

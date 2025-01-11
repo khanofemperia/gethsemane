@@ -1,5 +1,5 @@
 import config from "@/lib/config";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 import { capitalizeFirstLetter, formatThousands } from "@/lib/utils/common";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
@@ -221,7 +221,10 @@ export default async function OrderDetails({
                     item.size
                   );
                   return (
-                    <div key={item.index} className="flex gap-2 min-[425px]:gap-3">
+                    <div
+                      key={item.index}
+                      className="flex gap-2 min-[425px]:gap-3"
+                    >
                       <div className="min-w-24 max-w-24 h-24 min-[425px]:min-w-32 min-[425px]:max-w-32 min-[425px]:h-32 overflow-hidden rounded-lg flex items-center justify-center">
                         <Image
                           src={item.mainImage}
@@ -411,16 +414,21 @@ async function getOrderById(id: string): Promise<OrderType | null> {
     return null;
   }
 
-  const documentRef = doc(database, "orders", id);
-  const snapshot = await getDoc(documentRef);
+  const docRef = adminDb.collection("orders").doc(id);
+  const snapshot = await docRef.get();
 
-  if (!snapshot.exists()) {
+  if (!snapshot.exists) {
+    return null;
+  }
+
+  const data = snapshot.data();
+  if (!data) {
     return null;
   }
 
   const order = {
     id: snapshot.id,
-    ...snapshot.data(),
+    ...data,
   } as OrderType;
 
   return order;
