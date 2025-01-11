@@ -1,16 +1,6 @@
 "use server";
 
-import { database } from "@/lib/firebase";
-import {
-  setDoc,
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  writeBatch,
-} from "firebase/firestore";
+import { adminDb } from "@/lib/firebase/admin";
 import { generateId, currentTimestamp } from "@/lib/utils/common";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
@@ -19,7 +9,7 @@ const BATCH_SIZE = 500; // Firestore batch limit
 
 export async function CreateProductAction(data: CreateProductType) {
   try {
-    const documentRef = doc(database, "products", generateId());
+    const productId = generateId();
     const currentTime = currentTimestamp();
 
     const product = {
@@ -62,7 +52,7 @@ export async function CreateProductAction(data: CreateProductType) {
       upsell: "",
     };
 
-    await setDoc(documentRef, product);
+    await adminDb.collection("products").doc(productId).set(product);
     revalidatePath("/admin/products");
 
     return {
@@ -85,9 +75,9 @@ export async function UpdateProductAction(
   } & Partial<Omit<ProductType, "options">>
 ) {
   try {
-    const docRef = doc(database, "products", data.id);
-    const docSnap = await getDoc(docRef);
-    const currentProduct = docSnap.data() as ProductType;
+    const productRef = adminDb.collection("products").doc(data.id);
+    const productSnap = await productRef.get();
+    const currentProduct = productSnap.data() as ProductType;
 
     const updatedProduct = {
       ...currentProduct,
@@ -99,7 +89,7 @@ export async function UpdateProductAction(
       updatedAt: currentTimestamp(),
     };
 
-    await setDoc(docRef, updatedProduct);
+    await productRef.set(updatedProduct);
 
     // Only proceed with upsell updates if pricing changed
     if (
@@ -108,24 +98,27 @@ export async function UpdateProductAction(
         data.pricing.salePrice !== currentProduct.pricing.salePrice)
     ) {
       // Find all upsells containing this product
-      const upsellsRef = collection(database, "upsells");
-      const upsellsSnap = await getDocs(upsellsRef);
-      
-      const upsellsToUpdate: { id: string; products: UpsellType["products"]; currentPricing: PricingType }[] = [];
-      
-      upsellsSnap.docs.forEach(doc => {
+      const upsellsSnap = await adminDb.collection("upsells").get();
+
+      const upsellsToUpdate: {
+        id: string;
+        products: UpsellType["products"];
+        currentPricing: PricingType;
+      }[] = [];
+
+      upsellsSnap.forEach((doc) => {
         const upsell = doc.data() as UpsellType;
-        if (upsell.products.some(product => product.id === data.id)) {
-          const updatedProducts = upsell.products.map(product =>
+        if (upsell.products.some((product) => product.id === data.id)) {
+          const updatedProducts = upsell.products.map((product) =>
             product.id === data.id
               ? { ...product, basePrice: Number(data.pricing!.basePrice) || 0 }
               : product
           );
-          
+
           upsellsToUpdate.push({
             id: doc.id,
             products: updatedProducts,
-            currentPricing: upsell.pricing
+            currentPricing: upsell.pricing,
           });
         }
       });
@@ -138,11 +131,11 @@ export async function UpdateProductAction(
         }
 
         for (const batchItems of batches) {
-          const batch = writeBatch(database);
-          
+          const batch = adminDb.batch();
+
           batchItems.forEach(({ id, products, currentPricing }) => {
             const newPricing = calculateUpsellPricing(products, currentPricing);
-            batch.update(doc(database, "upsells", id), {
+            batch.update(adminDb.collection("upsells").doc(id), {
               products,
               pricing: newPricing,
               updatedAt: currentTimestamp(),
@@ -165,10 +158,10 @@ export async function UpdateProductAction(
       "/collections/[slug]",
       "/categories/[slug]",
       "/cart",
-      "/checkout"
+      "/checkout",
     ];
 
-    paths.forEach(path => revalidatePath(path));
+    paths.forEach((path) => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -188,24 +181,24 @@ export async function SetUpsellAction(data: {
   upsellId: string;
 }) {
   try {
-    const [upsellDocSnap, productDocSnap] = await Promise.all([
-      getDoc(doc(database, "upsells", data.upsellId)),
-      getDoc(doc(database, "products", data.productId))
+    const [upsellDoc, productDoc] = await Promise.all([
+      adminDb.collection("upsells").doc(data.upsellId).get(),
+      adminDb.collection("products").doc(data.productId).get(),
     ]);
 
-    if (!upsellDocSnap.exists()) {
+    if (!upsellDoc.exists) {
       return {
         type: AlertMessageType.ERROR,
         message: "Upsell not found",
       };
     }
 
-    await updateDoc(doc(database, "products", data.productId), {
+    await adminDb.collection("products").doc(data.productId).update({
       upsell: data.upsellId,
     });
 
     // Revalidate paths
-    const productData = productDocSnap.data() as ProductType;
+    const productData = productDoc.data() as ProductType;
     const paths = [
       `/admin/products/${productData.slug}-${productData.id}`,
       "/admin/products",
@@ -216,10 +209,10 @@ export async function SetUpsellAction(data: {
       "/collections/[slug]",
       "/categories/[slug]",
       "/cart",
-      "/checkout"
+      "/checkout",
     ];
 
-    paths.forEach(path => revalidatePath(path));
+    paths.forEach((path) => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -234,15 +227,13 @@ export async function SetUpsellAction(data: {
   }
 }
 
-export async function RemoveUpsellAction(data: {
-  productId: string;
-}) {
+export async function RemoveUpsellAction(data: { productId: string }) {
   try {
-    const productDocRef = doc(database, "products", data.productId);
-    const productDocSnap = await getDoc(productDocRef);
-    const productData = productDocSnap.data() as ProductType;
+    const productRef = adminDb.collection("products").doc(data.productId);
+    const productSnap = await productRef.get();
+    const productData = productSnap.data() as ProductType;
 
-    await updateDoc(productDocRef, {
+    await productRef.update({
       upsell: "",
     });
 
@@ -257,10 +248,10 @@ export async function RemoveUpsellAction(data: {
       "/collections/[slug]",
       "/categories/[slug]",
       "/cart",
-      "/checkout"
+      "/checkout",
     ];
 
-    paths.forEach(path => revalidatePath(path));
+    paths.forEach((path) => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -277,24 +268,21 @@ export async function RemoveUpsellAction(data: {
 
 export async function DeleteProductAction(data: { id: string }) {
   try {
-    const productDocRef = doc(database, "products", data.id);
-    const productSnap = await getDoc(productDocRef);
+    const productRef = adminDb.collection("products").doc(data.id);
+    const productSnap = await productRef.get();
 
-    if (!productSnap.exists()) {
+    if (!productSnap.exists) {
       return {
         type: AlertMessageType.ERROR,
         message: "Product not found",
       };
     }
 
-    await deleteDoc(productDocRef);
-    
-    const paths = [
-      "/admin/products",
-      "/"
-    ];
-    
-    paths.forEach(path => revalidatePath(path));
+    await productRef.delete();
+
+    const paths = ["/admin/products", "/"];
+
+    paths.forEach((path) => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,

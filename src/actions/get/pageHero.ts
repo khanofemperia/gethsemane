@@ -1,7 +1,6 @@
 "use server";
 
-import { database } from "@/lib/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { adminDb } from "@/lib/firebase/admin"; 
 
 /**
  * Retrieve the page hero data for the homepage.
@@ -12,8 +11,8 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
  * @returns {Promise<PageHeroType>} The page hero object containing images, title, destination URL, and visibility.
  */
 export async function getPageHero(): Promise<PageHeroType> {
-  const documentRef = doc(database, "pageHero", "homepageHero");
-  const snapshot = await getDoc(documentRef);
+  const documentRef = adminDb.collection("pageHero").doc("homepageHero"); 
+  const snapshot = await documentRef.get();
 
   const defaultPageHero: Omit<PageHeroType, "id"> = {
     images: {
@@ -25,12 +24,25 @@ export async function getPageHero(): Promise<PageHeroType> {
     visibility: "HIDDEN",
   };
 
-  if (!snapshot.exists()) {
-    await setDoc(documentRef, defaultPageHero);
+  if (!snapshot.exists) {
+    await documentRef.set(defaultPageHero);
     return { id: documentRef.id, ...defaultPageHero };
   }
 
-  return { id: snapshot.id, ...(snapshot.data() as Omit<PageHeroType, "id">) };
+  const data = snapshot.data();
+  if (!data) {
+    return { id: snapshot.id, ...defaultPageHero };
+  }
+
+  const pageHeroData: PageHeroType = {
+    id: snapshot.id,
+    images: data.images || defaultPageHero.images,
+    title: data.title || defaultPageHero.title,
+    destinationUrl: data.destinationUrl || defaultPageHero.destinationUrl,
+    visibility: data.visibility || defaultPageHero.visibility,
+  };
+
+  return pageHeroData;
 }
 
 // -- Type Definitions --

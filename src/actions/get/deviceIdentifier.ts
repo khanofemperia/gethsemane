@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
  * @example Get device identifier from cookies
  * const deviceIdentifier = await getDeviceIdentifier();
  *
- * @returns {Promise<string>} The device identifier string, or an empty string if not found.
+ * @returns {Promise<string>} 
  */
 export async function getDeviceIdentifier() {
   const cookieStore = cookies();

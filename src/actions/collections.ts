@@ -1,15 +1,6 @@
 "use server";
 
-import { database } from "@/lib/firebase";
-import {
-  setDoc,
-  doc,
-  getDocs,
-  collection,
-  updateDoc,
-  getDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { adminDb } from "@/lib/firebase/admin";
 import { generateId } from "@/lib/utils/common";
 import { currentTimestamp } from "@/lib/utils/common";
 import { revalidatePath } from "next/cache";
@@ -26,7 +17,8 @@ export async function CreateCollectionAction(data: {
   };
 }) {
   try {
-    const documentRef = doc(database, "collections", generateId());
+    const collectionsRef = adminDb.collection("collections");
+    const documentRef = collectionsRef.doc(generateId());
     const currentTime = currentTimestamp();
 
     const newCollection = {
@@ -42,9 +34,7 @@ export async function CreateCollectionAction(data: {
       ...(data.bannerImages && { bannerImages: data.bannerImages }),
     };
 
-    const existingCollections = await getDocs(
-      collection(database, "collections")
-    );
+    const existingCollections = await collectionsRef.get();
 
     type CollectionData = {
       id: string;
@@ -55,12 +45,15 @@ export async function CreateCollectionAction(data: {
       .map((doc) => ({ id: doc.id, ...(doc.data() as { index: number }) }))
       .sort((a, b) => a.index - b.index);
 
-    const updatePromises = sortedCollections.map((collection, index) => {
-      const collectionRef = doc(database, "collections", collection.id);
-      return updateDoc(collectionRef, { index: index + 2 });
+    const batch = adminDb.batch();
+    batch.set(documentRef, newCollection);
+
+    sortedCollections.forEach((collection, index) => {
+      const collectionRef = collectionsRef.doc(collection.id);
+      batch.update(collectionRef, { index: index + 2 });
     });
 
-    await Promise.all([setDoc(documentRef, newCollection), ...updatePromises]);
+    await batch.commit();
 
     revalidatePath("/admin/storefront");
 
@@ -83,22 +76,20 @@ export async function ChangeCollectionIndexAction(data: {
 }) {
   try {
     const { id, index } = data;
-
-    const collectionOneRef = doc(database, "collections", id);
-    const collectionOneSnapshot = await getDoc(collectionOneRef);
-    const existingCollections = await getDocs(
-      collection(database, "collections")
-    );
+    const collectionsRef = adminDb.collection("collections");
+    const collectionOneRef = collectionsRef.doc(id);
+    const collectionOneSnapshot = await collectionOneRef.get();
+    const existingCollections = await collectionsRef.get();
 
     if (
-      !collectionOneSnapshot.exists() ||
+      !collectionOneSnapshot.exists ||
       isNaN(index) ||
       index < 1 ||
       index > existingCollections.size
     ) {
       return {
         type: AlertMessageType.ERROR,
-        message: !collectionOneSnapshot.exists()
+        message: !collectionOneSnapshot.exists
           ? "Collection not found"
           : "Index is invalid or out of range",
       };
@@ -116,23 +107,25 @@ export async function ChangeCollectionIndexAction(data: {
     }
 
     const collectionOneBeforeUpdate = collectionOneSnapshot.data();
-    const collectionTwoRef = doc(database, "collections", collectionTwoId);
+    const collectionTwoRef = collectionsRef.doc(collectionTwoId);
 
-    await Promise.all([
-      updateDoc(collectionOneRef, { index, updatedAt: currentTimestamp() }),
-      updateDoc(collectionTwoRef, {
-        index: collectionOneBeforeUpdate.index,
-      }),
-    ]);
+    const batch = adminDb.batch();
+    batch.update(collectionOneRef, { index, updatedAt: currentTimestamp() });
+    batch.update(collectionTwoRef, {
+      index: collectionOneBeforeUpdate?.index,
+    });
+    await batch.commit();
 
     // Revalidate paths to update collections data
     const collectionData = collectionOneBeforeUpdate;
-    revalidatePath("/admin/storefront"); // Admin storefront page
+    revalidatePath("/admin/storefront");
     revalidatePath(
-      `/admin/collections/${collectionData.slug}-${collectionData.id}`
-    ); // Admin edit collection page
-    revalidatePath("/"); // Public main page
-    revalidatePath(`/collections/${collectionData.slug}-${collectionData.id}`); // Public collection page
+      `/admin/collections/${collectionData?.slug}-${collectionData?.id}`
+    );
+    revalidatePath("/");
+    revalidatePath(
+      `/collections/${collectionData?.slug}-${collectionData?.id}`
+    );
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -156,10 +149,10 @@ export async function UpdateCollectionAction(data: {
   visibility?: string;
 }) {
   try {
-    const collectionRef = doc(database, "collections", data.id);
-    const collectionSnapshot = await getDoc(collectionRef);
+    const collectionRef = adminDb.collection("collections").doc(data.id);
+    const collectionSnapshot = await collectionRef.get();
 
-    if (!collectionSnapshot.exists()) {
+    if (!collectionSnapshot.exists) {
       return {
         type: AlertMessageType.ERROR,
         message: "Collection not found",
@@ -188,17 +181,17 @@ export async function UpdateCollectionAction(data: {
       updateData.visibility = data.visibility;
     }
 
-    await updateDoc(collectionRef, {
+    await collectionRef.update({
       ...updateData,
       updatedAt: currentTimestamp(),
     });
 
     // Revalidate paths to update collections data
     const collectionData = collectionSnapshot.data();
-    revalidatePath("/admin/storefront"); // Admin storefront page
-    revalidatePath(`/admin/collections/${collectionData.slug}-${data.id}`); // Admin edit collection page
-    revalidatePath("/"); // Public main page
-    revalidatePath(`/collections/${collectionData.slug}-${data.id}`); // Public collection page
+    revalidatePath("/admin/storefront");
+    revalidatePath(`/admin/collections/${collectionData?.slug}-${data.id}`);
+    revalidatePath("/");
+    revalidatePath(`/collections/${collectionData?.slug}-${data.id}`);
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -219,18 +212,18 @@ export async function AddProductAction(data: {
 }) {
   try {
     const { collectionId, productId } = data;
-    
+
     // Fetch both documents in parallel
     const [productSnapshot, collectionSnapshot] = await Promise.all([
-      getDoc(doc(database, "products", productId)),
-      getDoc(doc(database, "collections", collectionId))
+      adminDb.collection("products").doc(productId).get(),
+      adminDb.collection("collections").doc(collectionId).get(),
     ]);
 
-    if (!productSnapshot.exists()) {
+    if (!productSnapshot.exists) {
       return { type: AlertMessageType.ERROR, message: "Product not found" };
     }
 
-    if (!collectionSnapshot.exists()) {
+    if (!collectionSnapshot.exists) {
       return {
         type: AlertMessageType.ERROR,
         message: "Collection not found",
@@ -238,8 +231,8 @@ export async function AddProductAction(data: {
     }
 
     const collectionData = collectionSnapshot.data();
-    const collectionProducts = Array.isArray(collectionData.products)
-      ? collectionData.products
+    const collectionProducts = Array.isArray(collectionData?.products)
+      ? collectionData?.products
       : [];
 
     const productAlreadyExists = collectionProducts.some(
@@ -257,14 +250,13 @@ export async function AddProductAction(data: {
     collectionProducts.sort((a, b) => a.index - b.index);
     const updatedProducts = collectionProducts.map((product, index) => ({
       ...product,
-      index: index + 2
+      index: index + 2,
     }));
 
     // Add new product at the beginning
     updatedProducts.unshift({ id: productId, index: 1 });
 
-    // Single write operation
-    await updateDoc(doc(database, "collections", collectionId), {
+    await adminDb.collection("collections").doc(collectionId).update({
       products: updatedProducts,
       updatedAt: currentTimestamp(),
     });
@@ -272,11 +264,11 @@ export async function AddProductAction(data: {
     // Revalidate paths
     const paths = [
       "/admin/storefront",
-      `/admin/collections/${collectionData.slug}-${collectionId}`,
+      `/admin/collections/${collectionData?.slug}-${collectionId}`,
       "/",
-      `/collections/${collectionData.slug}-${collectionId}`
+      `/collections/${collectionData?.slug}-${collectionId}`,
     ];
-    paths.forEach(path => revalidatePath(path));
+    paths.forEach((path) => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -297,17 +289,17 @@ export async function RemoveProductAction(data: {
 }) {
   try {
     const { collectionId, productId } = data;
-    const productRef = doc(database, "products", productId);
-    const productSnapshot = await getDoc(productRef);
+    const productRef = adminDb.collection("products").doc(productId);
+    const productSnapshot = await productRef.get();
 
-    if (!productSnapshot.exists()) {
+    if (!productSnapshot.exists) {
       return { type: AlertMessageType.ERROR, message: "Product not found" };
     }
 
-    const collectionRef = doc(database, "collections", collectionId);
-    const collectionSnapshot = await getDoc(collectionRef);
+    const collectionRef = adminDb.collection("collections").doc(collectionId);
+    const collectionSnapshot = await collectionRef.get();
 
-    if (!collectionSnapshot.exists()) {
+    if (!collectionSnapshot.exists) {
       return {
         type: AlertMessageType.ERROR,
         message: "Collection not found",
@@ -324,18 +316,16 @@ export async function RemoveProductAction(data: {
       product.index = index + 1;
     });
 
-    await updateDoc(collectionRef, {
+    await collectionRef.update({
       products: updatedProducts,
       updatedAt: currentTimestamp(),
     });
 
     // Revalidate paths to update collections data
-    revalidatePath("/admin/storefront"); // Admin storefront page
-    revalidatePath(
-      `/admin/collections/${collectionData.slug}-${collectionId}`
-    ); // Admin edit collection page
-    revalidatePath("/"); // Public main page
-    revalidatePath(`/collections/${collectionData.slug}-${collectionId}`); // Public collection page
+    revalidatePath("/admin/storefront");
+    revalidatePath(`/admin/collections/${collectionData.slug}-${collectionId}`);
+    revalidatePath("/");
+    revalidatePath(`/collections/${collectionData.slug}-${collectionId}`);
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -359,18 +349,18 @@ export async function ChangeProductIndexAction(data: {
 }) {
   try {
     const { collectionId, product: productOneChanges } = data;
-    
+
     // Fetch both documents in parallel
     const [productSnapshot, collectionSnapshot] = await Promise.all([
-      getDoc(doc(database, "products", productOneChanges.id)),
-      getDoc(doc(database, "collections", collectionId))
+      adminDb.collection("products").doc(productOneChanges.id).get(),
+      adminDb.collection("collections").doc(collectionId).get(),
     ]);
 
-    if (!productSnapshot.exists()) {
+    if (!productSnapshot.exists) {
       return { type: AlertMessageType.ERROR, message: "Product not found" };
     }
 
-    if (!collectionSnapshot.exists()) {
+    if (!collectionSnapshot.exists) {
       return {
         type: AlertMessageType.ERROR,
         message: "Collection not found",
@@ -411,8 +401,7 @@ export async function ChangeProductIndexAction(data: {
     productOne.index = productOneChanges.index;
     productTwo.index = productOneIndexBeforeSwap;
 
-    // Single write operation
-    await updateDoc(doc(database, "collections", collectionId), {
+    await adminDb.collection("collections").doc(collectionId).update({
       products: collectionData.products,
       updatedAt: currentTimestamp(),
     });
@@ -422,9 +411,9 @@ export async function ChangeProductIndexAction(data: {
       "/admin/storefront",
       `/admin/collections/${collectionData.slug}-${collectionId}`,
       "/",
-      `/collections/${collectionData.slug}-${collectionId}`
+      `/collections/${collectionData.slug}-${collectionId}`,
     ];
-    paths.forEach(path => revalidatePath(path));
+    paths.forEach((path) => revalidatePath(path));
 
     return {
       type: AlertMessageType.SUCCESS,
@@ -441,25 +430,25 @@ export async function ChangeProductIndexAction(data: {
 
 export async function DeleteCollectionAction(data: { id: string }) {
   try {
-    const collectionDocRef = doc(database, "collections", data.id);
-    const collectionSnap = await getDoc(collectionDocRef);
+    const collectionRef = adminDb.collection("collections").doc(data.id);
+    const collectionSnap = await collectionRef.get();
 
-    if (!collectionSnap.exists()) {
+    if (!collectionSnap.exists) {
       return {
         type: AlertMessageType.ERROR,
         message: "Collection not found",
       };
     }
 
-    await deleteDoc(collectionDocRef);
-    
+    await collectionRef.delete();
+
     const reorderResult = await ReorderCollectionIndicesAction();
-    
+
     if (reorderResult.type === AlertMessageType.ERROR) {
       return reorderResult;
     }
 
-    revalidatePath("/admin/storefront"); 
+    revalidatePath("/admin/storefront");
     revalidatePath("/");
 
     return {
@@ -479,37 +468,40 @@ export async function DeleteCollectionAction(data: { id: string }) {
 
 async function ReorderCollectionIndicesAction() {
   try {
-    const collectionsSnapshot = await getDocs(collection(database, "collections"));
-    
+    const collectionsRef = adminDb.collection("collections");
+    const collectionsSnapshot = await collectionsRef.get();
+
     const sortedCollections = collectionsSnapshot.docs
-      .map(doc => ({
+      .map((doc) => ({
         id: doc.id,
-        index: doc.data().index
+        index: doc.data().index,
       }))
       .sort((a, b) => a.index - b.index);
 
-    const updatePromises = sortedCollections.map((collection, idx) => {
-      const collectionRef = doc(database, "collections", collection.id);
-      return updateDoc(collectionRef, {
+    const batch = adminDb.batch();
+
+    sortedCollections.forEach((collection, idx) => {
+      const collectionRef = collectionsRef.doc(collection.id);
+      batch.update(collectionRef, {
         index: idx + 1,
-        updatedAt: currentTimestamp()
+        updatedAt: currentTimestamp(),
       });
     });
 
-    await Promise.all(updatePromises);
+    await batch.commit();
 
     revalidatePath("/admin/storefront");
     revalidatePath("/");
 
     return {
       type: AlertMessageType.SUCCESS,
-      message: "Collection indices reordered successfully"
+      message: "Collection indices reordered successfully",
     };
   } catch (error) {
     console.error("Error reordering collection indices:", error);
     return {
       type: AlertMessageType.ERROR,
-      message: "Failed to reorder collection indices"
+      message: "Failed to reorder collection indices",
     };
   }
 }

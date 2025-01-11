@@ -1,7 +1,6 @@
 "use server";
 
-import { database } from "@/lib/firebase";
-import { setDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
+import { adminDb } from "@/lib/firebase/admin";
 import { generateId, currentTimestamp } from "@/lib/utils/common";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
@@ -12,7 +11,7 @@ export async function CreateUpsellAction(
   }
 ) {
   try {
-    const documentRef = doc(database, "upsells", generateId());
+    const upsellId = generateId();
     const currentTime = currentTimestamp();
 
     const upsell = {
@@ -22,7 +21,7 @@ export async function CreateUpsellAction(
       createdAt: currentTime,
     };
 
-    await setDoc(documentRef, upsell);
+    await adminDb.collection("upsells").doc(upsellId).set(upsell);
     revalidatePath("/admin/upsells");
 
     return {
@@ -41,9 +40,9 @@ export async function UpdateUpsellAction(
     }
 ) {
   try {
-    const docRef = doc(database, "upsells", data.id);
-    const docSnap = await getDoc(docRef);
-    const currentUpsell = docSnap.data() as UpsellType;
+    const upsellRef = adminDb.collection("upsells").doc(data.id);
+    const upsellSnap = await upsellRef.get();
+    const currentUpsell = upsellSnap.data() as UpsellType;
 
     const updatedUpsell = {
       ...currentUpsell,
@@ -51,7 +50,7 @@ export async function UpdateUpsellAction(
       updatedAt: currentTimestamp(),
     };
 
-    await setDoc(docRef, updatedUpsell);
+    await upsellRef.set(updatedUpsell);
 
     // Revalidate paths to update upsell data
     revalidatePath(`/admin/upsells/${data.id}`, "page"); // Admin edit upsell page
@@ -79,17 +78,17 @@ export async function UpdateUpsellAction(
 
 export async function DeleteUpsellAction(data: { id: string }) {
   try {
-    const upsellDocRef = doc(database, "upsells", data.id);
-    const upsellSnap = await getDoc(upsellDocRef);
+    const upsellRef = adminDb.collection("upsells").doc(data.id);
+    const upsellSnap = await upsellRef.get();
 
-    if (!upsellSnap.exists()) {
+    if (!upsellSnap.exists) {
       return {
         type: AlertMessageType.ERROR,
         message: "Upsell not found",
       };
     }
 
-    await deleteDoc(upsellDocRef);
+    await upsellRef.delete();
 
     revalidatePath("/admin"); // Admin overview page
     revalidatePath("/admin/upsells"); // Admin upsells page

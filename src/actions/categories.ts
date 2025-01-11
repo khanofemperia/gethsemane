@@ -1,7 +1,6 @@
 "use server";
 
-import { doc, setDoc } from "firebase/firestore";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
@@ -50,8 +49,10 @@ export async function UpdateCategoriesAction(data: StoreCategoriesType) {
       categories: sortedCategories,
     };
 
-    const categoriesRef = doc(database, "categories", "storeCategories");
-    await setDoc(categoriesRef, updateData);
+    const categoriesRef = adminDb
+      .collection("categories")
+      .doc("storeCategories");
+    await categoriesRef.set(updateData);
 
     revalidatePath("/storefront");
 
@@ -69,7 +70,7 @@ export async function UpdateCategoriesAction(data: StoreCategoriesType) {
   }
 }
 
-// -- Type Definitions --
+// Type Definitions
 
 type CategoryType = {
   index: number;

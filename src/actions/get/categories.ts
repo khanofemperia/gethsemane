@@ -1,7 +1,6 @@
 "use server";
 
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 
 /**
  * Retrieve categories from the database, optionally filtered by visibility.
@@ -18,10 +17,10 @@ import { database } from "@/lib/firebase";
 export async function getCategories(
   filter?: VisibilityFilterType
 ): Promise<StoreCategoriesType | null> {
-  const categoriesRef = doc(database, "categories", "storeCategories");
-  const categoriesDoc = await getDoc(categoriesRef);
+  const categoriesRef = adminDb.collection("categories").doc("storeCategories");
+  const categoriesDoc = await categoriesRef.get();
 
-  if (!categoriesDoc.exists()) {
+  if (!categoriesDoc.exists) {
     return createDefaultCategories(categoriesRef);
   }
 
@@ -40,7 +39,7 @@ export async function getCategories(
       existingCategories,
       categoriesToUpdate
     );
-    await setDoc(categoriesRef, {
+    await categoriesRef.set({
       showOnPublicSite: data.showOnPublicSite,
       categories: existingCategories,
     });
@@ -63,13 +62,13 @@ export async function getCategories(
 // -- Logic & Utilities --
 
 async function createDefaultCategories(
-  categoriesRef: any
+  categoriesRef: FirebaseFirestore.DocumentReference
 ): Promise<StoreCategoriesType> {
   const newCategoriesDoc: StoreCategoriesType = {
     showOnPublicSite: false,
     categories: defaultCategories,
   };
-  await setDoc(categoriesRef, newCategoriesDoc);
+  await categoriesRef.set(newCategoriesDoc);
   return newCategoriesDoc;
 }
 

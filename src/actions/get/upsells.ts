@@ -1,7 +1,6 @@
 "use server";
 
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 
 /**
  * Unified function to retrieve upsells with flexible filtering, field selection, and product inclusion.
@@ -32,14 +31,15 @@ export async function getUpsells(
 ): Promise<UpsellType[] | null> {
   const { ids = [], fields = [], includeProducts } = options;
 
-  const upsellsRef = collection(database, "upsells");
-  let firestoreQuery = query(upsellsRef);
+  const upsellsRef = adminDb.collection("upsells");
+  let queryRef: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
+    upsellsRef;
 
   if (ids.length > 0) {
-    firestoreQuery = query(upsellsRef, where("__name__", "in", ids));
+    queryRef = upsellsRef.where("__name__", "in", ids);
   }
 
-  const snapshot = await getDocs(firestoreQuery);
+  const snapshot = await upsellsRef.get();
 
   if (snapshot.empty) {
     return null;

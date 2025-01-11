@@ -1,13 +1,6 @@
 "use server";
 
-import {
-  collection,
-  documentId,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 
 const BATCH_SIZE = 10; // Firestore limitation for 'in' queries
 
@@ -33,28 +26,23 @@ export async function getCollections(
 ): Promise<CollectionType[] | null> {
   const { ids = [], fields = [], visibility, includeProducts } = options;
 
-  const collectionsRef = collection(database, "collections");
-  let conditions: any[] = [];
+  const collectionsRef = adminDb.collection("collections");
+  let queryRef: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> =
+    collectionsRef;
 
   if (ids.length > 0) {
-    conditions.push(where(documentId(), "in", ids));
+    queryRef = collectionsRef.where("__name__", "in", ids);
   }
   if (visibility) {
-    conditions.push(where("visibility", "==", visibility));
+    queryRef = queryRef.where("visibility", "==", visibility);
   }
 
-  const firestoreQuery =
-    conditions.length > 0
-      ? query(collectionsRef, ...conditions)
-      : query(collectionsRef);
-
-  const snapshot = await getDocs(firestoreQuery);
+  const snapshot = await queryRef.get();
 
   if (snapshot.empty) {
     return null;
   }
 
-  // Extract collections and gather all product IDs
   const collections: CollectionType[] = [];
   const allProductIds = new Set<string>();
 
@@ -94,14 +82,14 @@ export async function getCollections(
     collections.push(collection as CollectionType);
   });
 
-  // If we need to include products and have product IDs, fetch them
   if (includeProducts && allProductIds.size > 0) {
     const productsMap = await fetchProductsInBatches(Array.from(allProductIds));
 
-    // Enhance collections with their products
     const enhancedCollections = collections.map((collection) => {
-      const collectionData = snapshot.docs.find((doc) => doc.id === collection.id)?.data();
-      
+      const collectionData = snapshot.docs
+        .find((doc) => doc.id === collection.id)
+        ?.data();
+
       if (!collectionData?.products?.length) {
         return collection;
       }
@@ -134,20 +122,14 @@ async function fetchProductsInBatches(
   const upsellIds = new Set<string>();
   const batches = [];
 
-  // Split product IDs into batches
   for (let i = 0; i < productIds.length; i += BATCH_SIZE) {
     batches.push(productIds.slice(i, i + BATCH_SIZE));
   }
 
-  // Fetch products in batches
   for (const batchIds of batches) {
-    const productsRef = collection(database, "products");
-    const batchQuery = query(
-      productsRef,
-      where(documentId(), "in", batchIds)
-    );
-
-    const snapshot = await getDocs(batchQuery);
+    const productsRef = adminDb.collection("products");
+    const batchQuery = productsRef.where("__name__", "in", batchIds);
+    const snapshot = await batchQuery.get();
 
     snapshot.docs.forEach((doc) => {
       const data = doc.data();
@@ -162,16 +144,14 @@ async function fetchProductsInBatches(
     });
   }
 
-  // If we have upsells, fetch them
   if (upsellIds.size > 0) {
     const upsellsMap = await fetchUpsellsInBatches(Array.from(upsellIds));
 
-    // Enhance products with upsell data
     for (const [productId, product] of productsMap) {
       if (
-        'upsell' in product &&
+        "upsell" in product &&
         product.upsell &&
-        typeof product.upsell === 'string' &&
+        typeof product.upsell === "string" &&
         upsellsMap.has(product.upsell)
       ) {
         productsMap.set(productId, {
@@ -191,18 +171,15 @@ async function fetchUpsellsInBatches(
   const upsellsMap = new Map<string, UpsellType>();
   const batches = [];
 
-  // Split upsell IDs into batches
   for (let i = 0; i < upsellIds.length; i += BATCH_SIZE) {
     batches.push(upsellIds.slice(i, i + BATCH_SIZE));
   }
 
-  // Process each batch
   for (const batchIds of batches) {
-    const upsellsRef = collection(database, "upsells");
-    const batchQuery = query(upsellsRef, where(documentId(), "in", batchIds));
-    const batchSnapshot = await getDocs(batchQuery);
+    const upsellsRef = adminDb.collection("upsells");
+    const batchQuery = upsellsRef.where("__name__", "in", batchIds);
+    const batchSnapshot = await batchQuery.get();
 
-    // Collect all product IDs from upsells
     const productIds = new Set<string>();
     batchSnapshot.docs.forEach((doc) => {
       const data = doc.data();
@@ -211,7 +188,6 @@ async function fetchUpsellsInBatches(
       });
     });
 
-    // Fetch all referenced products in batches
     const productsMap = new Map<string, ProductType>();
     const productBatches = [];
     const productIdsArray = Array.from(productIds);
@@ -221,12 +197,9 @@ async function fetchUpsellsInBatches(
     }
 
     for (const productBatchIds of productBatches) {
-      const productsRef = collection(database, "products");
-      const productsQuery = query(
-        productsRef,
-        where(documentId(), "in", productBatchIds)
-      );
-      const productsSnapshot = await getDocs(productsQuery);
+      const productsRef = adminDb.collection("products");
+      const productsQuery = productsRef.where("__name__", "in", productBatchIds);
+      const productsSnapshot = await productsQuery.get();
 
       productsSnapshot.docs.forEach((doc) => {
         productsMap.set(doc.id, {
@@ -236,7 +209,6 @@ async function fetchUpsellsInBatches(
       });
     }
 
-    // Build complete upsell objects
     batchSnapshot.docs.forEach((doc) => {
       const upsellData = doc.data();
       const productsInUpsell = upsellData.products

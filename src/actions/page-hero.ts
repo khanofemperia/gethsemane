@@ -1,7 +1,6 @@
 "use server";
 
-import { doc, updateDoc } from "firebase/firestore";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 import { revalidatePath } from "next/cache";
 import { AlertMessageType } from "@/lib/sharedTypes";
 
@@ -17,8 +16,11 @@ export async function UpdatePageHeroAction(data: {
   try {
     const { ...updatedPageHeroData } = data;
 
-    const documentRef = doc(database, "pageHero", "homepageHero");
-    await updateDoc(documentRef, updatedPageHeroData);
+    // Using admin SDK to update the document
+    await adminDb
+      .collection("pageHero")
+      .doc("homepageHero")
+      .update(updatedPageHeroData);
 
     // Revalidate paths to update page hero data
     revalidatePath("/admin/storefront"); // Admin storefront page

@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { setDoc, doc } from "firebase/firestore";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 import { cookies } from "next/headers";
-import { getDoc } from "firebase/firestore";
 import { generateAccessToken } from "@/lib/utils/orders";
 import { getCart } from "@/actions/get/carts";
 import { getProducts } from "@/actions/get/products";
@@ -89,8 +87,9 @@ export async function POST(
       },
     };
 
-    const orderRef = doc(database, "orders", orderData.id);
-    await setDoc(orderRef, newOrder);
+    // Updated to use adminDb
+    const ordersRef = adminDb.collection("orders");
+    await ordersRef.doc(orderData.id).set(newOrder);
 
     revalidatePath("/admin");
     revalidatePath("/admin/orders");
@@ -263,14 +262,15 @@ const getUpsell = async ({
 }: {
   id: string;
 }): Promise<Partial<UpsellType> | null> => {
-  const documentRef = doc(database, "upsells", id);
-  const snapshot = await getDoc(documentRef);
+  // Updated to use adminDb
+  const snapshot = await adminDb.collection("upsells").doc(id).get();
 
-  if (!snapshot.exists()) {
+  if (!snapshot.exists) {
     return null;
   }
 
   const data = snapshot.data();
+  if (!data) return null;
 
   const productIds = data.products
     ? data.products.map((p: { id: string }) => p.id)

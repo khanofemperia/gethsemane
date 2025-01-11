@@ -2,19 +2,11 @@
 
 import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
-import {
-  getDocs,
-  collection,
-  query,
-  where,
-  serverTimestamp,
-  doc,
-  runTransaction,
-} from "firebase/firestore";
 import { revalidatePath } from "next/cache";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 import { generateId } from "@/lib/utils/common";
 import { AlertMessageType } from "@/lib/sharedTypes";
+import { FieldValue } from "firebase-admin/firestore";
 
 export async function AddToCartAction(data: {
   type: "product" | "upsell";
@@ -64,14 +56,16 @@ export async function AddToCartAction(data: {
       const newDeviceIdentifier = setNewDeviceIdentifier();
       const newCartData = {
         device_identifier: newDeviceIdentifier,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
         items: [createCartItem(1)],
       };
 
-      const newCartDocRef = doc(collection(database, "carts"), generateId());
-      await runTransaction(database, async (transaction) => {
-        return transaction.set(newCartDocRef, newCartData);
+      const cartsRef = adminDb.collection("carts");
+      const newCartRef = cartsRef.doc(generateId());
+
+      await adminDb.runTransaction(async (transaction) => {
+        await transaction.set(newCartRef, newCartData);
       });
 
       revalidatePath("/");
@@ -154,11 +148,10 @@ export async function AddToCartAction(data: {
       }
     }
 
-    // Update cart with new items
-    await runTransaction(database, async (transaction) => {
-      return transaction.update(cartDoc, {
+    await adminDb.runTransaction(async (transaction) => {
+      await transaction.update(cartDoc, {
         items: existingCartItems,
-        updatedAt: serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
     });
 
@@ -177,10 +170,10 @@ export async function AddToCartAction(data: {
     const deviceIdentifier = cookies().get("device_identifier")?.value;
     if (!deviceIdentifier) return await generateNewCart();
 
-    const collectionRef = collection(database, "carts");
-    const snapshot = await getDocs(
-      query(collectionRef, where("device_identifier", "==", deviceIdentifier))
-    );
+    const cartsRef = adminDb.collection("carts");
+    const snapshot = await cartsRef
+      .where("device_identifier", "==", deviceIdentifier)
+      .get();
 
     if (snapshot.empty) {
       return await generateNewCart();
@@ -214,10 +207,10 @@ export async function RemoveFromCartAction({
   }
 
   try {
-    const collectionRef = collection(database, "carts");
-    const snapshot = await getDocs(
-      query(collectionRef, where("device_identifier", "==", deviceIdentifier))
-    );
+    const cartsRef = adminDb.collection("carts");
+    const snapshot = await cartsRef
+      .where("device_identifier", "==", deviceIdentifier)
+      .get();
 
     if (snapshot.empty) {
       return {
@@ -236,8 +229,8 @@ export async function RemoveFromCartAction({
 
     // If this was the last item, delete the cart and remove the cookie
     if (filteredItems.length === 0) {
-      await runTransaction(database, async (transaction) => {
-        return transaction.delete(cartDoc);
+      await adminDb.runTransaction(async (transaction) => {
+        await transaction.delete(cartDoc);
       });
 
       // Remove the device_identifier cookie
@@ -267,10 +260,10 @@ export async function RemoveFromCartAction({
       })
     );
 
-    await runTransaction(database, async (transaction) => {
-      return transaction.update(cartDoc, {
+    await adminDb.runTransaction(async (transaction) => {
+      await transaction.update(cartDoc, {
         items: reindexedItems,
-        updatedAt: serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
     });
 
@@ -305,10 +298,10 @@ export async function ClearPurchasedItemsAction({
   }
 
   try {
-    const collectionRef = collection(database, "carts");
-    const snapshot = await getDocs(
-      query(collectionRef, where("device_identifier", "==", deviceIdentifier))
-    );
+    const cartsRef = adminDb.collection("carts");
+    const snapshot = await cartsRef
+      .where("device_identifier", "==", deviceIdentifier)
+      .get();
 
     if (snapshot.empty) {
       return {
@@ -332,17 +325,17 @@ export async function ClearPurchasedItemsAction({
     }));
 
     if (reindexedItems.length === 0) {
-      await runTransaction(database, async (transaction) => {
-        transaction.delete(cartDoc);
+      await adminDb.runTransaction(async (transaction) => {
+        await transaction.delete(cartDoc);
       });
 
       // Clear the device_identifier cookie since cart is gone
       cookies().delete("device_identifier");
     } else {
-      await runTransaction(database, async (transaction) => {
-        return transaction.update(cartDoc, {
+      await adminDb.runTransaction(async (transaction) => {
+        await transaction.update(cartDoc, {
           items: reindexedItems,
-          updatedAt: serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
         });
       });
     }

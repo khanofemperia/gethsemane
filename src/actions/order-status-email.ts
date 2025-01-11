@@ -5,8 +5,7 @@ import { OrderShippedTemplate } from "@/components/admin/emails/OrderShippedTemp
 import { OrderDeliveredTemplate } from "@/components/admin/emails/OrderDeliveredTemplate";
 import { Resend } from "resend";
 import { EmailType, AlertMessageType } from "@/lib/sharedTypes";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 import { revalidatePath } from "next/cache";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -93,10 +92,10 @@ export async function OrderStatusEmailAction(
 
 async function updateEmailStatus(orderId: string, emailType: EmailType) {
   try {
-    const orderRef = doc(database, "orders", orderId);
-    const orderSnap = await getDoc(orderRef);
+    const orderRef = adminDb.collection("orders").doc(orderId);
+    const orderSnap = await orderRef.get();
 
-    if (!orderSnap.exists()) {
+    if (!orderSnap.exists) {
       return {
         type: AlertMessageType.ERROR,
         message: "Order not found",
@@ -159,7 +158,7 @@ async function incrementEmailCount(
       },
     };
 
-    await setDoc(orderRef, updatedOrderData);
+    await orderRef.set(updatedOrderData);
 
     return {
       type: AlertMessageType.SUCCESS,

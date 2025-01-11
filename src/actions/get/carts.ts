@@ -1,17 +1,6 @@
 "use server";
 
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  runTransaction,
-  serverTimestamp,
-  where,
-  FirestoreError,
-} from "firebase/firestore";
-import { database } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase/admin";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -24,23 +13,28 @@ import { revalidatePath } from "next/cache";
  */
 export async function getCarts(): Promise<CartType[]> {
   try {
-    const snapshot = await getDocs(collection(database, "carts"));
+    const snapshot = await adminDb.collection("carts").get();
 
     if (snapshot.empty) {
       return [];
     }
 
-    return snapshot.docs.map((cartDoc) => {
+    return snapshot.docs.map((cartDoc: any) => {
       const cartData = cartDoc.data();
       return {
         id: cartDoc.id,
         device_identifier: cartData.device_identifier,
         items: cartData.items || [],
-        createdAt: cartData.createdAt?.toDate().toISOString(),
-        updatedAt: cartData.updatedAt?.toDate().toISOString(),
+        createdAt: (cartData.createdAt as FirebaseFirestore.Timestamp)
+          ?.toDate()
+          .toISOString(),
+        updatedAt: (cartData.updatedAt as FirebaseFirestore.Timestamp)
+          ?.toDate()
+          .toISOString(),
       };
     });
   } catch (error) {
+    console.error("Error fetching carts:", error);
     return [];
   }
 }
@@ -52,7 +46,7 @@ export async function getCarts(): Promise<CartType[]> {
  * const cart = await getCart("device-identifier");
  *
  * @param {string | undefined} deviceIdentifier - The unique device identifier of the cart.
- * @returns {Promise<CartType | null>} The cart object or null if not found 
+ * @returns {Promise<CartType | null>} The cart object or null if not found
  */
 export async function getCart(
   deviceIdentifier: string | undefined
@@ -62,10 +56,10 @@ export async function getCart(
       return null;
     }
 
-    const collectionRef = collection(database, "carts");
-    const snapshot = await getDocs(
-      query(collectionRef, where("device_identifier", "==", deviceIdentifier))
-    );
+    const snapshot = await adminDb
+      .collection("carts")
+      .where("device_identifier", "==", deviceIdentifier)
+      .get();
 
     if (snapshot.empty) {
       return null;
@@ -82,10 +76,10 @@ export async function getCart(
         index: index + 1,
       }));
 
-      await runTransaction(database, async (transaction) => {
+      await adminDb.runTransaction(async (transaction: any) => {
         transaction.update(cartDoc.ref, {
           items: reindexedItems,
-          updatedAt: serverTimestamp(),
+          updatedAt: FirebaseFirestore.Timestamp.now(),
         });
       });
 
@@ -96,15 +90,15 @@ export async function getCart(
       id: cartDoc.id,
       device_identifier: cartData.device_identifier,
       items: validatedItems,
-      createdAt: cartData.createdAt?.toDate().toISOString(),
-      updatedAt: cartData.updatedAt?.toDate().toISOString(),
+      createdAt: (cartData.createdAt as FirebaseFirestore.Timestamp)
+        ?.toDate()
+        .toISOString(),
+      updatedAt: (cartData.updatedAt as FirebaseFirestore.Timestamp)
+        ?.toDate()
+        .toISOString(),
     };
   } catch (error) {
-    if (error instanceof FirestoreError) {
-      console.error(`Firestore error fetching cart: ${error.code}`, error);
-    } else {
-      console.error("Error fetching cart:", error);
-    }
+    console.error("Error fetching cart:", error);
     return null;
   }
 }
@@ -150,14 +144,14 @@ async function validateCartItems(
 }
 
 async function checkDocumentExists(
-  collection: "products" | "upsells",
+  collectionName: "products" | "upsells",
   id: string
 ): Promise<boolean> {
   if (!id?.trim()) return false;
 
-  const docRef = doc(database, collection, id.trim());
-  const snapshot = await getDoc(docRef);
-  return snapshot.exists();
+  const docRef = adminDb.collection(collectionName).doc(id.trim());
+  const snapshot = await docRef.get();
+  return snapshot.exists;
 }
 
 // -- Type Definitions --
