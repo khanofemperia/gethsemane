@@ -1,77 +1,113 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { adminAuth } from "@/lib/firebase/admin";
+import { DecodedIdToken } from "firebase-admin/auth";
 
+// Constants
 const COOKIE_NAME = "cherlygood_session";
-const ADMIN_ENTRY_KEY = process.env.ADMIN_ENTRY_KEY; // From the .env file
-const ADMIN_ENTRY_POINT = `/admin/${ADMIN_ENTRY_KEY}`; // The correct path for accessing the admin panel
+const ADMIN_ENTRY_KEY = process.env.ADMIN_ENTRY_KEY;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_ENTRY_POINT = `/admin/${ADMIN_ENTRY_KEY}`;
 
-// Protected routes that require authentication (e.g., /profile and any future protected pages)
 const PROTECTED_ROUTES = [
-  "/profile", // Example protected route
-  // Add other protected routes here in the future
-];
+  // Add protected routes here in the future
+  // "/profile",
+  // "/wishlist",
+  // etc.
+] as const;
+
+// Helper functions
+const createRedirectResponse = (url: URL, deleteCookie: boolean = false) => {
+  const response = NextResponse.redirect(url);
+  if (deleteCookie) {
+    response.cookies.delete(COOKIE_NAME);
+  }
+  return response;
+};
+
+const verifySession = async (
+  sessionCookie: string
+): Promise<DecodedIdToken> => {
+  try {
+    return await adminAuth.verifySessionCookie(sessionCookie, true);
+  } catch (error) {
+    throw new Error("Invalid session");
+  }
+};
+
+const isAdmin = (decodedClaims: DecodedIdToken): boolean => {
+  return decodedClaims.email === ADMIN_EMAIL;
+};
+
+const attachUserToRequest = (
+  request: NextRequest,
+  decodedClaims: DecodedIdToken
+) => {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(
+    "user",
+    JSON.stringify({
+      ...decodedClaims,
+      isAdmin: isAdmin(decodedClaims),
+    })
+  );
+  return NextResponse.next({
+    request: { headers: requestHeaders },
+  });
+};
 
 export async function middleware(request: NextRequest) {
   const session = request.cookies.get(COOKIE_NAME);
   const { pathname, search } = request.nextUrl;
 
-  // Handle the special /admin/admin-entry-key route
+  // Handle admin entry point
   if (pathname === ADMIN_ENTRY_POINT) {
-    // If no session, redirect to Google sign-in
     if (!session) {
-      // Redirect to Google Sign-In (or the route you use for Google login)
-      const googleSignInUrl = new URL('/auth/google', request.url);
-      googleSignInUrl.searchParams.set('callbackUrl', pathname + search);
+      const googleSignInUrl = new URL("/auth/google", request.url);
+      googleSignInUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(googleSignInUrl);
     }
 
     try {
-      // Verify session with Google
-      const decodedClaims = await adminAuth.verifySessionCookie(session.value, true);
-      
-      // If session is valid, redirect to the admin dashboard
-      const adminUrl = new URL('/admin/dashboard', request.url);
-      return NextResponse.redirect(adminUrl);
-    } catch (error) {
-      // If the session is invalid, log them out and redirect to Google sign-in
-      const response = NextResponse.redirect(new URL("/auth/google", request.url));
-      response.cookies.delete(COOKIE_NAME);
-      return response;
+      const decodedClaims = await verifySession(session.value);
+
+      if (isAdmin(decodedClaims)) {
+        // If admin, redirect to admin panel
+        return NextResponse.redirect(new URL("/admin", request.url));
+      } else {
+        // If not admin, redirect to home and clear session
+        return createRedirectResponse(new URL("/", request.url), true);
+      }
+    } catch {
+      return createRedirectResponse(new URL("/auth/google", request.url), true);
     }
   }
 
-  // Handle admin routes that require authentication
-  if (pathname.startsWith("/admin")) {
+  // Handle all admin routes
+  if (pathname.startsWith("/admin") && pathname !== ADMIN_ENTRY_POINT) {
     if (!session) {
-      // If no session, redirect to admin entry path
-      const signInUrl = new URL(ADMIN_ENTRY_POINT, request.url);
-      signInUrl.searchParams.set("callbackUrl", pathname + search);
-      return NextResponse.redirect(signInUrl);
+      // If no session, redirect to admin entry point
+      return NextResponse.redirect(new URL(ADMIN_ENTRY_POINT, request.url));
     }
 
     try {
-      const decodedClaims = await adminAuth.verifySessionCookie(session.value, true);
+      const decodedClaims = await verifySession(session.value);
 
-      // Verify admin role
-      if (!decodedClaims.admin) {
-        // If not admin, redirect to homepage without showing signin
+      if (!isAdmin(decodedClaims)) {
+        // If not admin, redirect to home
         return NextResponse.redirect(new URL("/", request.url));
       }
 
-      const requestHeaders = new Headers(request.headers);
-      requestHeaders.set("user", JSON.stringify(decodedClaims));
-      return NextResponse.next({
-        request: { headers: requestHeaders },
-      });
-    } catch (error) {
-      const response = NextResponse.redirect(new URL("/admin/signin", request.url));
-      response.cookies.delete(COOKIE_NAME);
-      return response;
+      return attachUserToRequest(request, decodedClaims);
+    } catch {
+      return createRedirectResponse(
+        new URL(ADMIN_ENTRY_POINT, request.url),
+        true
+      );
     }
   }
 
-  // Handle regular protected routes (e.g., /profile, etc.)
+  // Handle protected routes
   if (PROTECTED_ROUTES.some((route) => pathname.startsWith(route))) {
     if (!session) {
       const signInUrl = new URL("/auth/signin", request.url);
@@ -80,16 +116,10 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      const decodedClaims = await adminAuth.verifySessionCookie(session.value, true);
-      const requestHeaders = new Headers(request.headers);
-      requestHeaders.set("user", JSON.stringify(decodedClaims));
-      return NextResponse.next({
-        request: { headers: requestHeaders },
-      });
-    } catch (error) {
-      const response = NextResponse.redirect(new URL("/auth/signin", request.url));
-      response.cookies.delete(COOKIE_NAME);
-      return response;
+      const decodedClaims = await verifySession(session.value);
+      return attachUserToRequest(request, decodedClaims);
+    } catch {
+      return createRedirectResponse(new URL("/auth/signin", request.url), true);
     }
   }
 
@@ -98,8 +128,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/admin/:path*", // All admin routes
-    "/profile/:path*", // Protected routes like profile
-    // Add other protected routes in the future
+    "/admin/:path*",
+    ...PROTECTED_ROUTES.map((route) => `${route}/:path*`),
   ],
 };

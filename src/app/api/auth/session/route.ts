@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { adminAuth } from "@/lib/firebase/admin";
 
+const COOKIE_NAME = "cherlygood_session";
+
 export async function POST(request: NextRequest) {
   try {
     const { idToken } = await request.json();
@@ -13,7 +15,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Set cookie
-    cookies().set("session", sessionCookie, {
+    cookies().set(COOKIE_NAME, sessionCookie, {
       maxAge: threeMonthsInMilliseconds,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
