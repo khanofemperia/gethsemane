@@ -6,6 +6,10 @@ import { capitalizeFirstLetter } from "@/lib/utils/common";
 const BATCH_SIZE = 10;
 
 /**
+ * Get products from the database with various filtering options
+ *
+ * @example Get all products
+ * const products = await getProducts();
  *
  * @example Get a single product
  * const product = await getProducts({ ids: ["id1"] });
@@ -33,10 +37,6 @@ export async function getProducts(
 ): Promise<(ProductType | ProductWithUpsellType)[] | null> {
   const { ids = [], fields = [], visibility, category } = options;
 
-  if (ids.length === 0) {
-    return null;
-  }
-
   const includeUpsell = fields.includes("upsell");
 
   const productsRef = adminDb.collection("products");
@@ -46,6 +46,7 @@ export async function getProducts(
   if (ids.length > 0) {
     queryRef = queryRef.where("__name__", "in", ids);
   }
+
   if (visibility) {
     queryRef = queryRef.where("visibility", "==", visibility);
   }
