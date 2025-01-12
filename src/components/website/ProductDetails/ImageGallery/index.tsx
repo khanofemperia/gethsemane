@@ -75,7 +75,7 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
             className={`object-cover transition-opacity duration-100 ${
               isCurrentImageLoaded ? "opacity-100" : "opacity-0"
             }`}
-            onLoadingComplete={() => setIsCurrentImageLoaded(true)}
+            onLoad={() => setIsNextImageLoaded(true)}
           />
 
           {/* Preload next image */}
@@ -87,7 +87,7 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
               priority
               sizes="(max-width: 580px) 100vw, 580px"
               className="opacity-0 absolute"
-              onLoadingComplete={() => setIsNextImageLoaded(true)}
+              onLoad={() => setIsNextImageLoaded(true)}
             />
           )}
         </div>
