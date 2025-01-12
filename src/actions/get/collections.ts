@@ -249,7 +249,7 @@ async function fetchUpsellsInBatches(
         createdAt: upsellData.createdAt,
         updatedAt: upsellData.updatedAt,
         products: productsInUpsell,
-        // pricing: upsellData.pricing,
+        pricing: upsellData.pricing,
       } as UpsellType);
     });
   }
