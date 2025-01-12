@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useOverlayStore } from "@/zustand/website/overlayStore";
-import { useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useOptionsStore } from "@/zustand/website/optionsStore";
 import { InCartIndicator } from "./InCartIndicator";
 import clsx from "clsx";
@@ -10,7 +10,7 @@ import { StickyBarInCartIndicator } from "./StickyBarInCartIndicator";
 import { useProductColorImageStore } from "@/zustand/website/ProductColorImageStore";
 import { ChevronRight } from "lucide-react";
 
-export function Options({
+export const Options = memo(function Options({
   productInfo,
   isStickyBarInCartIndicator,
   deviceIdentifier,
@@ -237,21 +237,26 @@ export function Options({
         ))}
     </div>
   );
-}
+});
 
 // -- Logic & Utilities --
 
-function ProductColors({ colors }: ProductColorsType) {
+const ProductColors = memo(function ProductColors({
+  colors,
+}: ProductColorsType) {
   const selectedColor = useOptionsStore((state) => state.selectedColor);
   const setSelectedColor = useOptionsStore((state) => state.setSelectedColor);
   const setSelectedColorImage = useProductColorImageStore(
     (state) => state.setSelectedColorImage
   );
 
-  const handleColorSelect = (name: string, image: string) => {
-    setSelectedColor(name);
-    setSelectedColorImage(image);
-  };
+  const handleColorSelect = useCallback(
+    (name: string, image: string) => {
+      setSelectedColor(name);
+      setSelectedColorImage(image);
+    },
+    [setSelectedColor, setSelectedColorImage]
+  );
 
   return (
     <div className="w-full">
@@ -273,9 +278,9 @@ function ProductColors({ colors }: ProductColorsType) {
       </div>
     </div>
   );
-}
+});
 
-function ProductSizes({
+const ProductSizes = memo(function ProductSizes({
   sizeChart,
   onSizeChartClick,
 }: {
@@ -319,7 +324,6 @@ function ProductSizes({
                 {columns
                   .filter(
                     (column) =>
-                      // Exclude "Size" column and specified measurements
                       column.label !== "Size" &&
                       !["US", "EU", "UK", "NZ", "AU", "DE"].includes(
                         column.label
@@ -359,7 +363,7 @@ function ProductSizes({
       )}
     </div>
   );
-}
+});
 
 // -- Type Definitions --
 
