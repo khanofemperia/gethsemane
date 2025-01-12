@@ -1,53 +1,49 @@
 "use client";
 
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect } from "react";
 import { useProductColorImageStore } from "@/zustand/website/ProductColorImageStore";
 import styles from "./styles.module.css";
 import Image from "next/image";
+import { useState, useMemo } from "react";
 
 export function ImageGallery({ images, productName }: ProductImagesType) {
-  const [currentImage, setCurrentImage] = useState(images.main);
-  const [nextImage, setNextImage] = useState<string | null>(null);
-  const [isCurrentImageLoaded, setIsCurrentImageLoaded] = useState(false);
-  const [isNextImageLoaded, setIsNextImageLoaded] = useState(false);
-
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const { selectedColorImage, resetSelectedColorImage } =
     useProductColorImageStore();
 
+  const productImages = useMemo(
+    () => [images.main, ...(images.gallery ?? [])],
+    [images.main, images.gallery]
+  );
+
   useEffect(() => {
     resetSelectedColorImage();
-    // Preload all images
-    const productImages = [images.main, ...(images.gallery ?? [])];
-    productImages.forEach((imgSrc) => {
-      const img = new window.Image();
-      img.src = imgSrc;
-    });
   }, []);
 
-  const handleImageSelect = (image: string) => {
-    const activeImage = selectedColorImage || currentImage;
-    if (image === activeImage) return;
-
-    // Start loading the next image before switching
-    setNextImage(image);
-    setIsNextImageLoaded(false);
+  const handleImageSelect = (index: number) => {
+    if (index === currentImageIndex) return;
+    setCurrentImageIndex(index);
+    setPreviewIndex(null);
 
     if (selectedColorImage) {
       resetSelectedColorImage();
     }
   };
 
-  // When next image is loaded, make the switch
-  useEffect(() => {
-    if (isNextImageLoaded && nextImage) {
-      setCurrentImage(nextImage);
-      setNextImage(null);
-      setIsCurrentImageLoaded(true);
-    }
-  }, [isNextImageLoaded, nextImage]);
+  const handleMouseEnter = (index: number) => {
+    setPreviewIndex(index);
+  };
 
-  const displayImage = selectedColorImage || currentImage;
-  const productImages = [images.main, ...(images.gallery ?? [])];
+  const handleMouseLeave = () => {
+    setPreviewIndex(null);
+  };
+
+  const displayedImage =
+    selectedColorImage ||
+    (previewIndex !== null
+      ? productImages[previewIndex]
+      : productImages[currentImageIndex]);
 
   return (
     <div className="flex w-full select-none">
@@ -56,40 +52,26 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
       >
         {productImages.map((image, index) => (
           <ThumbnailImage
-            key={index}
+            key={image}
             image={image}
             productName={productName}
-            onSelect={handleImageSelect}
+            onSelect={() => handleImageSelect(index)}
+            onMouseEnter={() => handleMouseEnter(index)}
+            onMouseLeave={handleMouseLeave}
           />
         ))}
       </div>
       <div className="w-full max-w-[580px] h-full flex flex-col gap-5">
         <div className="w-full aspect-square relative flex items-center justify-center bg-lightgray overflow-hidden rounded-3xl [box-shadow:0px_1.6px_3.6px_rgb(0,_0,_0,_0.4),_0px_0px_2.9px_rgb(0,_0,_0,_0.1)]">
-          {/* Current image */}
           <Image
-            src={displayImage}
+            src={displayedImage}
             alt={productName}
-            fill
+            width={580}
+            height={580}
             priority
+            className="object-cover transition-opacity duration-200"
             sizes="(max-width: 580px) 100vw, 580px"
-            className={`object-cover transition-opacity duration-100 ${
-              isCurrentImageLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            onLoad={() => setIsNextImageLoaded(true)}
           />
-
-          {/* Preload next image */}
-          {nextImage && (
-            <Image
-              src={nextImage}
-              alt={productName}
-              fill
-              priority
-              sizes="(max-width: 580px) 100vw, 580px"
-              className="opacity-0 absolute"
-              onLoad={() => setIsNextImageLoaded(true)}
-            />
-          )}
         </div>
       </div>
     </div>
@@ -100,15 +82,20 @@ const ThumbnailImage = memo(function ThumbnailImage({
   image,
   productName,
   onSelect,
+  onMouseEnter,
+  onMouseLeave,
 }: {
   image: string;
   productName: string;
-  onSelect: (image: string) => void;
+  onSelect: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }) {
   return (
-    <div
-      onMouseEnter={() => onSelect(image)}
-      onClick={() => onSelect(image)}
+    <button
+      onClick={onSelect}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       className="w-[56px] h-[56px] relative min-h-[56px] min-w-[56px] rounded-md flex items-center justify-center overflow-hidden"
     >
       <Image
@@ -116,10 +103,10 @@ const ThumbnailImage = memo(function ThumbnailImage({
         alt={productName}
         width={56}
         height={68}
-        priority={true}
+        priority={false}
       />
       <div className="w-full h-full rounded-md absolute top-0 bottom-0 left-0 right-0 ease-in-out duration-200 transition hover:bg-amber/30" />
-    </div>
+    </button>
   );
 });
 
