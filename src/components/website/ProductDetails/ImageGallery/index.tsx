@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useProductColorImageStore } from "@/zustand/website/ProductColorImageStore";
-import Image from "next/image";
 import styles from "./styles.module.css";
+import Image from "next/image";
 
 export function ImageGallery({ images, productName }: ProductImagesType) {
   const [currentImage, setCurrentImage] = useState(images.main);
@@ -55,21 +55,12 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
         className={`${styles.customScrollbar} apply-scrollbar min-w-[62px] max-w-[62px] max-h-[380px] overflow-x-hidden overflow-y-visible flex flex-col gap-2 mr-2`}
       >
         {productImages.map((image, index) => (
-          <div
-            onMouseEnter={() => handleImageSelect(image)}
-            onClick={() => handleImageSelect(image)}
+          <ThumbnailImage
             key={index}
-            className="w-[56px] h-[56px] relative min-h-[56px] min-w-[56px] rounded-md flex items-center justify-center overflow-hidden"
-          >
-            <Image
-              src={image}
-              alt={productName}
-              width={56}
-              height={68}
-              priority={true}
-            />
-            <div className="w-full h-full rounded-md absolute top-0 bottom-0 left-0 right-0 ease-in-out duration-200 transition hover:bg-amber/30"></div>
-          </div>
+            image={image}
+            productName={productName}
+            onSelect={handleImageSelect}
+          />
         ))}
       </div>
       <div className="w-full max-w-[580px] h-full flex flex-col gap-5">
@@ -104,6 +95,33 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
     </div>
   );
 }
+
+const ThumbnailImage = memo(function ThumbnailImage({
+  image,
+  productName,
+  onSelect,
+}: {
+  image: string;
+  productName: string;
+  onSelect: (image: string) => void;
+}) {
+  return (
+    <div
+      onMouseEnter={() => onSelect(image)}
+      onClick={() => onSelect(image)}
+      className="w-[56px] h-[56px] relative min-h-[56px] min-w-[56px] rounded-md flex items-center justify-center overflow-hidden"
+    >
+      <Image
+        src={image}
+        alt={productName}
+        width={56}
+        height={68}
+        priority={true}
+      />
+      <div className="w-full h-full rounded-md absolute top-0 bottom-0 left-0 right-0 ease-in-out duration-200 transition hover:bg-amber/30" />
+    </div>
+  );
+});
 
 type ProductImagesType = {
   images: {
