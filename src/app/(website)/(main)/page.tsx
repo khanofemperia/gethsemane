@@ -4,19 +4,22 @@ import { DiscoveryProducts } from "@/components/website/DiscoveryProducts";
 import { FeaturedProducts } from "@/components/website/FeaturedProducts";
 import { QuickviewOverlay } from "@/components/website/QuickviewOverlay";
 import { UpsellReviewOverlay } from "@/components/website/UpsellReviewOverlay";
-import ShowAlert from "@/components/website/ShowAlert";
-import Image from "next/image";
-import Link from "next/link";
-import { cookies } from "next/headers";
-import { getCart } from "@/actions/get/carts";
 import { getCollections } from "@/actions/get/collections";
 import { getCategories } from "@/actions/get/categories";
+import ShowAlert from "@/components/website/ShowAlert";
 import { getPageHero } from "@/actions/get/pageHero";
 import { getProducts } from "@/actions/get/products";
+import { getCart } from "@/actions/get/carts";
+import { cookies } from "next/headers";
+import Image from "next/image";
+import Link from "next/link";
 
 export default async function Home() {
   const [collections, categoriesData, pageHero] = await Promise.all([
-    getCollections({ fields: ["title", "slug", "products"] }),
+    getCollections({
+      fields: ["title", "slug", "products"],
+      visibility: "PUBLISHED",
+    }),
     getCategories({ visibility: "VISIBLE" }),
     getPageHero(),
   ]);

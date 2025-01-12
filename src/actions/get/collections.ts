@@ -44,7 +44,6 @@ export async function getCollections(
   }
 
   const collections: CollectionType[] = [];
-  const allProductIds = new Set<string>();
 
   snapshot.docs.forEach((docSnapshot) => {
     const data = docSnapshot.data();
@@ -57,7 +56,7 @@ export async function getCollections(
         }
       });
     } else {
-      selectedFields = data;
+                 selectedFields = data;
     }
 
     const collection = {
@@ -73,43 +72,51 @@ export async function getCollections(
       collectionType: data["collectionType"],
     };
 
-    if (includeProducts && data.products?.length) {
-      data.products.forEach((product: { id: string }) => {
-        allProductIds.add(product.id);
-      });
-    }
-
     collections.push(collection as CollectionType);
   });
 
-  if (includeProducts && allProductIds.size > 0) {
-    const productsMap = await fetchProductsInBatches(Array.from(allProductIds));
-
-    const enhancedCollections = collections.map((collection) => {
-      const collectionData = snapshot.docs
-        .find((doc) => doc.id === collection.id)
-        ?.data();
-
-      if (!collectionData?.products?.length) {
-        return collection;
+  if (includeProducts) {
+    const allProductIds = new Set<string>();
+    snapshot.docs.forEach((doc) => {
+      const data = doc.data();
+      if (data.products?.length) {
+        data.products.forEach((product: { id: string }) => {
+          allProductIds.add(product.id);
+        });
       }
-
-      const collectionProducts = collectionData.products
-        .map((productRef: { id: string; index: number }) => {
-          const productData = productsMap.get(productRef.id);
-          return productData
-            ? { ...productData, index: productRef.index }
-            : null;
-        })
-        .filter(Boolean);
-
-      return {
-        ...collection,
-        products: collectionProducts,
-      };
     });
 
-    return enhancedCollections.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+    if (allProductIds.size > 0) {
+      const productsMap = await fetchProductsInBatches(
+        Array.from(allProductIds)
+      );
+
+      return collections
+        .map((collection) => {
+          const collectionData = snapshot.docs
+            .find((doc) => doc.id === collection.id)
+            ?.data();
+
+          if (!collectionData?.products?.length) {
+            return collection;
+          }
+
+          const collectionProducts = collectionData.products
+            .map((productRef: { id: string; index: number }) => {
+              const productData = productsMap.get(productRef.id);
+              return productData
+                ? { ...productData, index: productRef.index }
+                : productRef; 
+            })
+            .filter(Boolean);
+
+          return {
+            ...collection,
+            products: collectionProducts,
+          };
+        })
+        .sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+    }
   }
 
   return collections.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
@@ -198,7 +205,11 @@ async function fetchUpsellsInBatches(
 
     for (const productBatchIds of productBatches) {
       const productsRef = adminDb.collection("products");
-      const productsQuery = productsRef.where("__name__", "in", productBatchIds);
+      const productsQuery = productsRef.where(
+        "__name__",
+        "in",
+        productBatchIds
+      );
       const productsSnapshot = await productsQuery.get();
 
       productsSnapshot.docs.forEach((doc) => {
@@ -218,9 +229,9 @@ async function fetchUpsellsInBatches(
 
           return {
             index: productItem.index,
-            name: productItem.name,
             id: productData.id,
             slug: productData.slug,
+            name: productItem.name,
             images: productData.images,
             basePrice: productData.pricing.basePrice,
             options: productData.options,
@@ -231,13 +242,14 @@ async function fetchUpsellsInBatches(
         );
 
       upsellsMap.set(doc.id, {
+        ...upsellData,
         id: doc.id,
         mainImage: upsellData.mainImage,
         visibility: upsellData.visibility,
         createdAt: upsellData.createdAt,
         updatedAt: upsellData.updatedAt,
         products: productsInUpsell,
-        ...upsellData,
+        // pricing: upsellData.pricing,
       } as UpsellType);
     });
   }
