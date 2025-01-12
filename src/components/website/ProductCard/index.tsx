@@ -1,12 +1,13 @@
 "use client";
 
+import { memo } from "react";
 import { QuickviewButton } from "@/components/website/QuickviewOverlay";
 import { formatThousands } from "@/lib/utils/common";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./styles.module.css";
 
-export function ProductCard({
+export const ProductCard = memo(function ProductCard({
   product,
   cart,
   deviceIdentifier,
@@ -80,4 +81,4 @@ export function ProductCard({
       </div>
     </div>
   );
-}
+});
