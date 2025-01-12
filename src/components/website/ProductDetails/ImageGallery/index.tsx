@@ -7,22 +7,46 @@ import styles from "./styles.module.css";
 
 export function ImageGallery({ images, productName }: ProductImagesType) {
   const [currentImage, setCurrentImage] = useState(images.main);
-  const selectedColorImage = useProductColorImageStore(
-    (state) => state.selectedColorImage
-  );
-  const resetSelectedColorImage = useProductColorImageStore(
-    (state) => state.resetSelectedColorImage
-  );
+  const [nextImage, setNextImage] = useState<string | null>(null);
+  const [isCurrentImageLoaded, setIsCurrentImageLoaded] = useState(false);
+  const [isNextImageLoaded, setIsNextImageLoaded] = useState(false);
+
+  const { selectedColorImage, resetSelectedColorImage } =
+    useProductColorImageStore();
 
   useEffect(() => {
     resetSelectedColorImage();
+    // Preload all images
+    const productImages = [images.main, ...(images.gallery ?? [])];
+    productImages.forEach((imgSrc) => {
+      const img = new window.Image();
+      img.src = imgSrc;
+    });
   }, []);
 
   const handleImageSelect = (image: string) => {
-    resetSelectedColorImage();
-    setCurrentImage(image);
+    const activeImage = selectedColorImage || currentImage;
+    if (image === activeImage) return;
+
+    // Start loading the next image before switching
+    setNextImage(image);
+    setIsNextImageLoaded(false);
+
+    if (selectedColorImage) {
+      resetSelectedColorImage();
+    }
   };
 
+  // When next image is loaded, make the switch
+  useEffect(() => {
+    if (isNextImageLoaded && nextImage) {
+      setCurrentImage(nextImage);
+      setNextImage(null);
+      setIsCurrentImageLoaded(true);
+    }
+  }, [isNextImageLoaded, nextImage]);
+
+  const displayImage = selectedColorImage || currentImage;
   const productImages = [images.main, ...(images.gallery ?? [])];
 
   return (
@@ -50,20 +74,36 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
       </div>
       <div className="w-full max-w-[580px] h-full flex flex-col gap-5">
         <div className="w-full aspect-square relative flex items-center justify-center bg-lightgray overflow-hidden rounded-3xl [box-shadow:0px_1.6px_3.6px_rgb(0,_0,_0,_0.4),_0px_0px_2.9px_rgb(0,_0,_0,_0.1)]">
+          {/* Current image */}
           <Image
-            src={selectedColorImage || currentImage}
+            src={displayImage}
             alt={productName}
-            width={510}
-            height={510}
-            priority={true}
+            fill
+            priority
+            sizes="(max-width: 580px) 100vw, 580px"
+            className={`object-cover transition-opacity duration-100 ${
+              isCurrentImageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            onLoadingComplete={() => setIsCurrentImageLoaded(true)}
           />
+
+          {/* Preload next image */}
+          {nextImage && (
+            <Image
+              src={nextImage}
+              alt={productName}
+              fill
+              priority
+              sizes="(max-width: 580px) 100vw, 580px"
+              className="opacity-0 absolute"
+              onLoadingComplete={() => setIsNextImageLoaded(true)}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 }
-
-// -- Type Definitions --
 
 type ProductImagesType = {
   images: {
