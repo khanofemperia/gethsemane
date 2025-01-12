@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProductColorImageStore } from "@/zustand/website/ProductColorImageStore";
 import Image from "next/image";
 import styles from "./styles.module.css";
@@ -13,6 +13,10 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
   const resetSelectedColorImage = useProductColorImageStore(
     (state) => state.resetSelectedColorImage
   );
+
+  useEffect(() => {
+    resetSelectedColorImage();
+  }, []);
 
   const handleImageSelect = (image: string) => {
     resetSelectedColorImage();
