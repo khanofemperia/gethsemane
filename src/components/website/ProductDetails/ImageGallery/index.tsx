@@ -1,14 +1,12 @@
 "use client";
 
-import { memo, useEffect } from "react";
+import { memo, useEffect, useState, useMemo } from "react";
 import { useProductColorImageStore } from "@/zustand/website/ProductColorImageStore";
 import styles from "./styles.module.css";
 import Image from "next/image";
-import { useState, useMemo } from "react";
 
 export function ImageGallery({ images, productName }: ProductImagesType) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const { selectedColorImage, resetSelectedColorImage } =
     useProductColorImageStore();
 
@@ -24,26 +22,12 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
   const handleImageSelect = (index: number) => {
     if (index === currentImageIndex) return;
     setCurrentImageIndex(index);
-    setPreviewIndex(null);
-
     if (selectedColorImage) {
       resetSelectedColorImage();
     }
   };
 
-  const handleMouseEnter = (index: number) => {
-    setPreviewIndex(index);
-  };
-
-  const handleMouseLeave = () => {
-    setPreviewIndex(null);
-  };
-
-  const displayedImage =
-    selectedColorImage ||
-    (previewIndex !== null
-      ? productImages[previewIndex]
-      : productImages[currentImageIndex]);
+  const displayedImage = selectedColorImage || productImages[currentImageIndex];
 
   return (
     <div className="flex w-full select-none">
@@ -56,8 +40,6 @@ export function ImageGallery({ images, productName }: ProductImagesType) {
             image={image}
             productName={productName}
             onSelect={() => handleImageSelect(index)}
-            onMouseEnter={() => handleMouseEnter(index)}
-            onMouseLeave={handleMouseLeave}
           />
         ))}
       </div>
@@ -82,20 +64,15 @@ const ThumbnailImage = memo(function ThumbnailImage({
   image,
   productName,
   onSelect,
-  onMouseEnter,
-  onMouseLeave,
 }: {
   image: string;
   productName: string;
   onSelect: () => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
 }) {
   return (
     <button
       onClick={onSelect}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={onSelect}
       className="w-[56px] h-[56px] relative min-h-[56px] min-w-[56px] rounded-md flex items-center justify-center overflow-hidden"
     >
       <Image
