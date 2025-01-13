@@ -56,7 +56,7 @@ export async function getCollections(
         }
       });
     } else {
-                 selectedFields = data;
+      selectedFields = data;
     }
 
     const collection = {
@@ -106,7 +106,7 @@ export async function getCollections(
               const productData = productsMap.get(productRef.id);
               return productData
                 ? { ...productData, index: productRef.index }
-                : productRef; 
+                : productRef;
             })
             .filter(Boolean);
 
@@ -219,7 +219,7 @@ async function fetchUpsellsInBatches(
         } as ProductType);
       });
     }
-
+    
     batchSnapshot.docs.forEach((doc) => {
       const upsellData = doc.data();
       const productsInUpsell = upsellData.products

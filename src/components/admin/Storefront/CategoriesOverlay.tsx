@@ -218,9 +218,7 @@ export function CategoriesOverlay({
                 <div className="flex flex-col gap-2">
                   <h2 className="text-xs text-gray">Visibility</h2>
                   <div className="px-[10px] py-2 w-full min-[425px]:w-max rounded-md flex gap-4 min-[425px]:gap-4 items-start justify-between bg-lightgray">
-                    <div className="text-sm">
-                      Show categories on storefront
-                    </div>
+                    <div className="text-sm">Show categories on storefront</div>
                     <div
                       onClick={() =>
                         setCategorySectionVisibility((prevState) => !prevState)
