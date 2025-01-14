@@ -23,17 +23,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (user) {
         // When user signs in, get the ID token and create a session cookie
         const idToken = await getIdToken(user);
-        
+
         // Send the ID token to your backend to create a session cookie
-        await fetch('/api/auth/session', {
-          method: 'POST',
+        await fetch("/api/auth/session", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ idToken }),
         });
       }
-      
+
       setUser(user);
       setLoading(false);
     });
