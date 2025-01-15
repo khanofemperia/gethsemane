@@ -1,4 +1,3 @@
-// SignOutButton.tsx
 "use client";
 
 import { clientAuth } from "@/lib/firebase/client";
@@ -26,11 +25,9 @@ export default function SignOutButton() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      router.push("/"); // Redirect to home page after signing out
-      router.refresh();
+      router.push("/");
     } catch (error) {
       console.error("Error signing out:", error);
-      // Optionally show an error message to the user
     } finally {
       setIsSigningOut(false);
     }
