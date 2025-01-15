@@ -7,19 +7,11 @@ const ADMIN_ENTRY_KEY = process.env.ADMIN_ENTRY_KEY || "";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 export async function POST(request: NextRequest) {
-  console.log("Session API route called");
-
   try {
     const body = await request.json();
     const entryPoint = request.headers.get("X-Entry-Point") || "";
 
-    console.log("Received request:", {
-      idTokenLength: body.idToken?.length ?? 0,
-      entryPoint,
-    });
-
     if (!body.idToken) {
-      console.log("No idToken provided");
       return NextResponse.json(
         { error: "No ID token provided" },
         { status: 400 }
@@ -73,7 +65,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error("Error in session route:", error);
     return NextResponse.json(
       { error: "Authentication failed" },
       { status: 401 }
