@@ -15,71 +15,49 @@ export default function GoogleSignInButton() {
 
   const signInWithGoogle = async () => {
     if (isSigningIn) return;
-
-    console.log("Starting Google sign-in");
     setIsSigningIn(true);
+
     try {
       const result = await signInWithPopup(clientAuth, googleProvider);
+      if (!result?.user) return;
 
-      // Check if admin is trying to sign in through regular flow
-      if (result.user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-        await clientAuth.signOut(); // Sign out immediately
-        alert("Please use your admin key to access the admin panel");
-        setIsSigningIn(false);
-        return;
+      const idToken = await result.user.getIdToken();
+      const response = await fetch("/api/auth/session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Entry-Point": window.location.pathname,
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || `HTTP error! status: ${response.status}`);
       }
 
-      console.log("Sign in successful:", result.user.email);
-
-      if (result?.user) {
-        const idToken = await result.user.getIdToken();
-        console.log("Got ID token, creating session");
-
-        const response = await fetch("/api/auth/session", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // Add referrer for entry point verification
-            "X-Entry-Point": window.location.pathname,
-          },
-          body: JSON.stringify({ idToken }),
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(
-            data.error || `HTTP error! status: ${response.status}`
-          );
-        }
-
-        const data = await response.json();
-        console.log("Session creation response:", data);
-
-        if (data.success) {
-          console.log("Redirecting to:", callbackUrl || "/");
-          router.push(callbackUrl || "/");
-          router.refresh();
-        }
+      const data = await response.json();
+      if (data.success) {
+        router.push(callbackUrl || "/");
+        router.refresh();
       }
     } catch (error) {
       console.error("Error during sign-in:", error);
+      // Sign out on any error to ensure clean state
+      await clientAuth.signOut();
       alert(error instanceof Error ? error.message : "Sign in failed");
     } finally {
       setIsSigningIn(false);
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
       <button disabled className="opacity-50">
         Loading...
       </button>
     );
-  }
-
-  if (user) {
-    return null;
-  }
+  if (user) return null;
 
   return (
     <button
