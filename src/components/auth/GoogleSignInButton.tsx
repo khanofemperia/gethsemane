@@ -42,7 +42,6 @@ export default function GoogleSignInButton() {
         router.refresh();
       }
     } catch (error) {
-      console.error("Error during sign-in:", error);
       // Sign out on any error to ensure clean state
       await clientAuth.signOut();
       alert(error instanceof Error ? error.message : "Sign in failed");
