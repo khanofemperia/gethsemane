@@ -13,7 +13,8 @@ export default function GoogleSignInButton() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
   const [isSigningIn, setIsSigningIn] = useState(false);
-  const { user, loading } = useAuth();
+  const [isSessionValidated, setIsSessionValidated] = useState(false);
+  const { loading } = useAuth();
   const { showAlert } = useAlertStore();
 
   const signInWithGoogle = async () => {
@@ -24,8 +25,8 @@ export default function GoogleSignInButton() {
       const result = await signInWithPopup(clientAuth, googleProvider);
       if (!result?.user) {
         showAlert({
-          message: "No user data received from Google",
-          type: AlertMessageType.ERROR,
+          message: "Unable to sign in at this time",
+          type: AlertMessageType.NEUTRAL,
         });
         return;
       }
@@ -40,25 +41,59 @@ export default function GoogleSignInButton() {
         body: JSON.stringify({ idToken }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || `HTTP error! status: ${response.status}`);
+        setIsSessionValidated(false); // Session validation failed
+        if (data.result === "ADMIN_KEY_REQUIRED") {
+          showAlert({
+            message: "Admin access requires your secure key",
+            type: AlertMessageType.NEUTRAL,
+          });
+          return;
+        }
+        if (data.result === "MISSING_TOKEN") {
+          showAlert({
+            message: "Unable to complete sign-in",
+            type: AlertMessageType.NEUTRAL,
+          });
+          return;
+        }
+        if (data.result === "AUTH_FAILED") {
+          showAlert({
+            message: "Sign-in failed. Please try again",
+            type: AlertMessageType.NEUTRAL,
+          });
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      if (data.success) {
-        showAlert({
-          message: "Successfully signed in",
-          type: AlertMessageType.NEUTRAL,
-        });
+      if (data.result === "SUCCESS") {
+        setIsSessionValidated(true); // Session validated successfully
         router.push(callbackUrl || "/");
       }
     } catch (error) {
-      // Sign out on any error to ensure clean state
+      console.error("Error during sign-in:", error);
+      setIsSessionValidated(false);
       await clientAuth.signOut();
+
+      if (error instanceof Error) {
+        if (error.message.includes("auth/popup-closed-by-user")) {
+          return;
+        }
+        if (error.message.includes("auth/network-request-failed")) {
+          showAlert({
+            message: "Unable to connect. Please check your internet connection",
+            type: AlertMessageType.NEUTRAL,
+          });
+          return;
+        }
+      }
+
       showAlert({
-        message: error instanceof Error ? error.message : "Sign in failed",
-        type: AlertMessageType.ERROR,
+        message: "Sign-in failed. Please try again",
+        type: AlertMessageType.NEUTRAL,
       });
     } finally {
       setIsSigningIn(false);
@@ -76,8 +111,6 @@ export default function GoogleSignInButton() {
     );
   }
 
-  if (user) return null;
-
   return (
     <button
       onClick={signInWithGoogle}
@@ -86,7 +119,11 @@ export default function GoogleSignInButton() {
         isSigningIn ? "opacity-50 cursor-not-allowed" : ""
       }`}
     >
-      {isSigningIn ? "Signing in..." : "Sign in with Google"}
+      {isSigningIn
+        ? "Signing in..."
+        : isSessionValidated
+        ? "Signed in"
+        : "Sign in with Google"}
     </button>
   );
 }

@@ -12,24 +12,25 @@ export async function POST(request: NextRequest) {
     const entryPoint = request.headers.get("X-Entry-Point") || "";
 
     if (!body.idToken) {
-      return NextResponse.json(
-        { error: "No ID token provided" },
-        { status: 400 }
-      );
+      return NextResponse.json({ result: "MISSING_TOKEN" }, { status: 400 });
     }
 
-    // Verify the ID token first
+    // Verify the ID token
     const decodedToken = await adminAuth.verifyIdToken(body.idToken);
     const isAdminEmail = decodedToken.email === ADMIN_EMAIL;
-    const isAdminEntryPoint = entryPoint.includes(`/admin/${ADMIN_ENTRY_KEY}`);
+    const isAdminEntryPoint = entryPoint.includes(
+      `/auth/admin/${ADMIN_ENTRY_KEY}`
+    );
 
-    // Deny access if admin tries regular sign-in or non-admin tries admin entry
-    if (
-      (isAdminEmail && !isAdminEntryPoint) ||
-      (!isAdminEmail && isAdminEntryPoint)
-    ) {
+    // Handle scenario: admin entry point key is correct, but account is not admin email
+    if (!isAdminEmail && isAdminEntryPoint) {
+      return NextResponse.json({ result: "ACCESS_DENIED" }, { status: 403 });
+    }
+
+    // Handle admin account attempting regular sign-in
+    if (isAdminEmail && !isAdminEntryPoint) {
       return NextResponse.json(
-        { error: "Admin access requires your secure key" },
+        { result: "ADMIN_KEY_REQUIRED" },
         { status: 403 }
       );
     }
@@ -63,11 +64,8 @@ export async function POST(request: NextRequest) {
       path: "/",
     });
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Authentication failed" },
-      { status: 401 }
-    );
+    return NextResponse.json({ result: "AUTH_FAILED" }, { status: 401 });
   }
 }

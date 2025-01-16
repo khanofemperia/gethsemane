@@ -93,6 +93,7 @@ export function ProductDetailsWrapper({
 
   return (
     <div
+      id="product-details-wrapper"
       ref={wrapperRef}
       className="h-screen overflow-x-hidden overflow-y-auto md:custom-scrollbar"
     >

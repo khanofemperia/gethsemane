@@ -11,7 +11,8 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 export default function AdminGoogleSignInButton() {
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
-  const { user, loading } = useAuth();
+  const [isSessionValidated, setIsSessionValidated] = useState(false);
+  const { loading } = useAuth();
   const { showAlert } = useAlertStore();
   const currentPath =
     typeof window !== "undefined" ? window.location.pathname : "";
@@ -21,14 +22,13 @@ export default function AdminGoogleSignInButton() {
     setIsSigningIn(true);
 
     try {
-      // Store the entry point before sign in
       const entryPoint = currentPath;
-
       const result = await signInWithPopup(clientAuth, googleProvider);
+
       if (!result?.user) {
         showAlert({
-          message: "No user data received from Google",
-          type: AlertMessageType.ERROR,
+          message: "Unable to sign in at this time",
+          type: AlertMessageType.NEUTRAL,
         });
         return;
       }
@@ -43,37 +43,64 @@ export default function AdminGoogleSignInButton() {
         body: JSON.stringify({ idToken }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || `HTTP error! status: ${response.status}`);
+        setIsSessionValidated(false);
+
+        if (data.result === "ACCESS_DENIED") {
+          showAlert({
+            message: "Not authorized. Visit the homepage to sign in.",
+            type: AlertMessageType.NEUTRAL,
+          });
+        } else if (data.result === "ADMIN_KEY_REQUIRED") {
+          showAlert({
+            message: "Admin access requires your secure key",
+            type: AlertMessageType.NEUTRAL,
+          });
+        } else if (data.result === "MISSING_TOKEN") {
+          showAlert({
+            message: "Unable to complete sign-in",
+            type: AlertMessageType.NEUTRAL,
+          });
+        } else if (data.result === "AUTH_FAILED") {
+          showAlert({
+            message: "Sign-in failed. Please try again",
+            type: AlertMessageType.NEUTRAL,
+          });
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return;
       }
 
-      const data = await response.json();
-      if (data.success) {
-        showAlert({
-          message: "Successfully signed in as admin",
-          type: AlertMessageType.SUCCESS,
-        });
+      if (data.result === "SUCCESS") {
+        setIsSessionValidated(true);
         router.push("/admin");
       }
     } catch (error) {
       console.error("Error during admin sign-in:", error);
+      setIsSessionValidated(false);
       await clientAuth.signOut();
 
-      if (
-        error instanceof Error &&
-        error.message === "Admin access requires your secure key"
-      ) {
-        showAlert({
-          message: "You're not authorized to access the admin panel.",
-          type: AlertMessageType.ERROR,
-        });
-      } else {
-        showAlert({
-          message: error instanceof Error ? error.message : "Sign in failed",
-          type: AlertMessageType.ERROR,
-        });
+      if (error instanceof Error) {
+        if (error.message.includes("auth/popup-closed-by-user")) {
+          return;
+        }
+
+        if (error.message.includes("auth/network-request-failed")) {
+          showAlert({
+            message: "Unable to connect. Please check your internet connection",
+            type: AlertMessageType.NEUTRAL,
+          });
+          return;
+        }
       }
+
+      showAlert({
+        message: "Sign-in failed. Please try again",
+        type: AlertMessageType.NEUTRAL,
+      });
     } finally {
       setIsSigningIn(false);
     }
@@ -90,8 +117,6 @@ export default function AdminGoogleSignInButton() {
     );
   }
 
-  if (user) return null;
-
   return (
     <button
       onClick={signInWithGoogle}
@@ -106,7 +131,11 @@ export default function AdminGoogleSignInButton() {
           d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
         />
       </svg>
-      {isSigningIn ? "Signing in..." : "Sign in as Admin"}
+      {isSigningIn
+        ? "Signing in..."
+        : isSessionValidated
+        ? "Signed in as Admin"
+        : "Sign in as Admin"}
     </button>
   );
 }
