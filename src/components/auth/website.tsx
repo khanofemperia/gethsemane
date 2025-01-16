@@ -13,8 +13,7 @@ export const WebsiteGoogleSignInButton = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
   const [isSigningIn, setIsSigningIn] = useState(false);
-  const [isSessionValidated, setIsSessionValidated] = useState(false);
-  const { loading } = useAuth();
+  const { loading, user } = useAuth();
   const { showAlert } = useAlertStore();
 
   const signInWithGoogle = async () => {
@@ -44,7 +43,6 @@ export const WebsiteGoogleSignInButton = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setIsSessionValidated(false);
         if (data.result === "ADMIN_KEY_REQUIRED") {
           showAlert({
             message: "Admin access requires your secure key",
@@ -70,12 +68,10 @@ export const WebsiteGoogleSignInButton = () => {
       }
 
       if (data.result === "SUCCESS") {
-        setIsSessionValidated(true);
         router.push(callbackUrl || "/");
       }
     } catch (error) {
       console.error("Error during sign-in:", error);
-      setIsSessionValidated(false);
       await clientAuth.signOut();
 
       if (error instanceof Error) {
@@ -121,7 +117,7 @@ export const WebsiteGoogleSignInButton = () => {
     >
       {isSigningIn
         ? "Signing in..."
-        : isSessionValidated
+        : user
         ? "Signed in"
         : "Sign in with Google"}
     </button>

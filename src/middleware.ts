@@ -46,40 +46,43 @@ const verifySessionWithAPI = async (
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Always redirect /admin routes to home if no valid session
-  if (pathname.startsWith("/admin")) {
-    const session = request.cookies.get(COOKIE_NAME);
-
-    if (!session) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-
-    try {
-      const decodedClaims = await verifySessionWithAPI(session.value);
-
-      // If not admin or invalid claims, redirect to home
-      if (!isAdmin(decodedClaims)) {
-        return NextResponse.redirect(new URL("/", request.url));
-      }
-
-      return NextResponse.next();
-    } catch (error) {
-      // Any verification error results in redirect to home
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-  }
-
+  // Handle public routes first
   if (isPublicRoute(pathname)) {
     return NextResponse.next();
   }
 
-  // Handle other authenticated routes here
-  return NextResponse.next();
+  // Get session cookie
+  const session = request.cookies.get(COOKIE_NAME);
+
+  // If no session cookie exists, redirect to home
+  if (!session) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  try {
+    const decodedClaims = await verifySessionWithAPI(session.value);
+
+    // For admin routes, verify admin privileges
+    if (pathname.startsWith("/admin")) {
+      if (!isAdmin(decodedClaims)) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    }
+
+    // Session is valid, allow request to proceed
+    return NextResponse.next();
+  } catch (error) {
+    // Any verification error results in redirect to home
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 }
 
 export const config = {
   matcher: [
-    "/((?!api/auth|_next/static|_next/image|favicon.ico).*)",
+    // Protected routes
     "/admin/:path*",
+
+    // Exclude all static files and API routes except admin paths
+    "/((?!api/auth|_next/static|_next/image|favicon.ico|public|images).*)",
   ],
 };

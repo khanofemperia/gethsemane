@@ -11,8 +11,7 @@ import { AlertMessageType } from "@/lib/sharedTypes";
 export const AdminGoogleSignInButton = () => {
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
-  const [isSessionValidated, setIsSessionValidated] = useState(false);
-  const { loading } = useAuth();
+  const { loading, user } = useAuth();
   const { showAlert } = useAlertStore();
   const currentPath =
     typeof window !== "undefined" ? window.location.pathname : "";
@@ -46,8 +45,6 @@ export const AdminGoogleSignInButton = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setIsSessionValidated(false);
-
         if (data.result === "ACCESS_DENIED") {
           showAlert({
             message: "Not authorized. Visit the homepage to sign in.",
@@ -75,12 +72,10 @@ export const AdminGoogleSignInButton = () => {
       }
 
       if (data.result === "SUCCESS") {
-        setIsSessionValidated(true);
         router.push("/admin");
       }
     } catch (error) {
       console.error("Error during admin sign-in:", error);
-      setIsSessionValidated(false);
       await clientAuth.signOut();
 
       if (error instanceof Error) {
@@ -133,7 +128,7 @@ export const AdminGoogleSignInButton = () => {
       </svg>
       {isSigningIn
         ? "Signing in..."
-        : isSessionValidated
+        : user
         ? "Signed in as Admin"
         : "Sign in as Admin"}
     </button>
