@@ -6,7 +6,10 @@ const COOKIE_NAME = "cherlygood_session";
 export async function POST() {
   try {
     cookies().delete(COOKIE_NAME);
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      redirect: "/",
+    });
   } catch (error) {
     return NextResponse.json({ error: "Failed to logout" }, { status: 500 });
   }

@@ -5,11 +5,14 @@ import { clientAuth, googleProvider } from "@/lib/firebase/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAlertStore } from "@/zustand/website/alertStore";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export default function AdminGoogleSignInButton() {
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const { user, loading } = useAuth();
+  const { showAlert } = useAlertStore();
   const currentPath =
     typeof window !== "undefined" ? window.location.pathname : "";
 
@@ -22,14 +25,20 @@ export default function AdminGoogleSignInButton() {
       const entryPoint = currentPath;
 
       const result = await signInWithPopup(clientAuth, googleProvider);
-      if (!result?.user) return;
+      if (!result?.user) {
+        showAlert({
+          message: "No user data received from Google",
+          type: AlertMessageType.ERROR,
+        });
+        return;
+      }
 
       const idToken = await result.user.getIdToken();
       const response = await fetch("/api/auth/session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Entry-Point": entryPoint, // Use stored entry point
+          "X-Entry-Point": entryPoint,
         },
         body: JSON.stringify({ idToken }),
       });
@@ -40,18 +49,30 @@ export default function AdminGoogleSignInButton() {
       }
 
       const data = await response.json();
-      console.log("data.success:", data.success);
-      router.push("/admin");
+      if (data.success) {
+        showAlert({
+          message: "Successfully signed in as admin",
+          type: AlertMessageType.SUCCESS,
+        });
+        router.push("/admin");
+      }
     } catch (error) {
       console.error("Error during admin sign-in:", error);
       await clientAuth.signOut();
+
       if (
         error instanceof Error &&
-        error.message === "Invalid authentication path"
+        error.message === "Admin access requires your secure key"
       ) {
-        alert("You are not authorized to access the admin area.");
+        showAlert({
+          message: "You're not authorized to access the admin panel.",
+          type: AlertMessageType.ERROR,
+        });
       } else {
-        alert(error instanceof Error ? error.message : "Sign in failed");
+        showAlert({
+          message: error instanceof Error ? error.message : "Sign in failed",
+          type: AlertMessageType.ERROR,
+        });
       }
     } finally {
       setIsSigningIn(false);

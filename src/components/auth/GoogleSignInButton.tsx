@@ -5,6 +5,8 @@ import { clientAuth, googleProvider } from "@/lib/firebase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAlertStore } from "@/zustand/website/alertStore";
+import { AlertMessageType } from "@/lib/sharedTypes";
 
 export default function GoogleSignInButton() {
   const router = useRouter();
@@ -12,6 +14,7 @@ export default function GoogleSignInButton() {
   const callbackUrl = searchParams.get("callbackUrl");
   const [isSigningIn, setIsSigningIn] = useState(false);
   const { user, loading } = useAuth();
+  const { showAlert } = useAlertStore();
 
   const signInWithGoogle = async () => {
     if (isSigningIn) return;
@@ -19,7 +22,13 @@ export default function GoogleSignInButton() {
 
     try {
       const result = await signInWithPopup(clientAuth, googleProvider);
-      if (!result?.user) return;
+      if (!result?.user) {
+        showAlert({
+          message: "No user data received from Google",
+          type: AlertMessageType.ERROR,
+        });
+        return;
+      }
 
       const idToken = await result.user.getIdToken();
       const response = await fetch("/api/auth/session", {
@@ -38,24 +47,35 @@ export default function GoogleSignInButton() {
 
       const data = await response.json();
       if (data.success) {
+        showAlert({
+          message: "Successfully signed in",
+          type: AlertMessageType.NEUTRAL,
+        });
         router.push(callbackUrl || "/");
-        router.refresh();
       }
     } catch (error) {
       // Sign out on any error to ensure clean state
       await clientAuth.signOut();
-      alert(error instanceof Error ? error.message : "Sign in failed");
+      showAlert({
+        message: error instanceof Error ? error.message : "Sign in failed",
+        type: AlertMessageType.ERROR,
+      });
     } finally {
       setIsSigningIn(false);
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <button disabled className="opacity-50">
+      <button
+        disabled
+        className="flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow opacity-50"
+      >
         Loading...
       </button>
     );
+  }
+
   if (user) return null;
 
   return (

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ShowAlert from "@/components/website/ShowAlert";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} body-scrollbar`}>
         <AuthProvider>{children}</AuthProvider>
+        <ShowAlert />
       </body>
     </html>
   );

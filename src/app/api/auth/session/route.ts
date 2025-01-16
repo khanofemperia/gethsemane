@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       (!isAdminEmail && isAdminEntryPoint)
     ) {
       return NextResponse.json(
-        { error: "Invalid authentication path" },
+        { error: "Admin access requires your secure key" },
         { status: 403 }
       );
     }
