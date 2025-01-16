@@ -7,10 +7,6 @@ import { MobileNavbarButton } from "./MobileNavbarOverlay";
 import { ShoppingCart, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
-import {
-  WebsiteGoogleSignInButton,
-  WebsiteSignOutButton,
-} from "@/components/auth/website";
 
 export default function Navbar({
   itemsInCart,
@@ -227,8 +223,6 @@ function DesktopNavbar({
         </div>
       </div>
       <div className="absolute right-4 top-2 md:relative md:right-auto md:top-auto min-w-[160px] w-max h-10 flex items-center justify-end">
-        <WebsiteGoogleSignInButton />
-        <WebsiteSignOutButton />
         <Link
           href="/cart"
           className="relative h-11 w-11 rounded-full flex items-center justify-center ease-in-out transition duration-300 active:bg-lightgray lg:hover:bg-lightgray"

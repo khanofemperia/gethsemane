@@ -3,7 +3,7 @@
 import { signInWithPopup } from "firebase/auth";
 import { clientAuth, googleProvider } from "@/lib/firebase/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlertStore } from "@/zustand/website/alertStore";
 import { AlertMessageType } from "@/lib/sharedTypes";
@@ -13,8 +13,28 @@ export const WebsiteGoogleSignInButton = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { loading, user } = useAuth();
   const { showAlert } = useAlertStore();
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+
+      try {
+        const tokenResult = await user.getIdTokenResult();
+        setIsAdmin(tokenResult.claims.role === "admin");
+      } catch (error) {
+        console.error("Error checking admin status:", error);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user]);
 
   const signInWithGoogle = async () => {
     if (isSigningIn) return;
@@ -118,7 +138,9 @@ export const WebsiteGoogleSignInButton = () => {
       {isSigningIn
         ? "Signing in..."
         : user
-        ? "Signed in"
+        ? isAdmin
+          ? "Sign in with Google"
+          : "Signed in"
         : "Sign in with Google"}
     </button>
   );
