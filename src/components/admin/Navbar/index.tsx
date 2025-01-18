@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu } from "lucide-react";
 import { NewProductMenuButton } from "../NewProductOverlay";
 import { NewUpsellMenuButton } from "../NewUpsellOverlay";
 import { NewCollectionMenuButton } from "../Storefront/NewCollectionOverlay";
@@ -10,6 +9,8 @@ import { DeleteProductAction } from "@/actions/products";
 import { DeleteUpsellAction } from "@/actions/upsells";
 import { DeleteCollectionAction } from "@/actions/collections";
 import { MobileNavbarButton } from "./MobileNavbarOverlay";
+import { clientAuth } from "@/lib/firebase/client";
+import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -73,6 +74,29 @@ function DesktopNavbar() {
       window.removeEventListener("scroll", handleScroll, true);
     };
   }, [isMenuDropdownVisible]);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const signOut = async () => {
+    if (isSigningOut) return;
+
+    setIsSigningOut(true);
+    try {
+      await clientAuth.signOut();
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      router.push("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
 
   const getIdFromPath = () => {
     if (isProductEditingPage) {
@@ -164,7 +188,6 @@ function DesktopNavbar() {
           >
             <Menu strokeWidth={2.5} />
           </button>
-
           {isMenuDropdownVisible && (
             <div className="w-[148px] absolute top-[52px] right-0 z-20 py-[5px] rounded-md shadow-dropdown bg-white">
               {isCollectionListPage && (
@@ -211,8 +234,6 @@ function DesktopNavbar() {
                   {isDeleting ? "Deleting..." : "Delete"}
                 </button>
               )}
-
-              {/* Common Menu Items */}
               {showSeparator && (
                 <div className="h-[1px] my-[5px] bg-[#e5e7eb]"></div>
               )}
@@ -227,12 +248,15 @@ function DesktopNavbar() {
               </button>
               <button
                 onClick={() => {
-                  handleNavigation("#");
                   setMenuDropdownVisible(false);
+                  signOut();
                 }}
-                className="h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray"
+                disabled={isSigningOut}
+                className={`h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${
+                  isSigningOut ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
-                Sign out
+                {isSigningOut ? "Signing out..." : "Sign out"}
               </button>
             </div>
           )}
