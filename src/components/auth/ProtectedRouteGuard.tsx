@@ -1,8 +1,8 @@
 "use client";
-
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { Spinner } from "@/ui/Spinners/Default";
 
 export function ProtectedRouteGuard({
   children,
@@ -26,7 +26,7 @@ export function ProtectedRouteGuard({
     // Add popstate listener to handle back button
     window.addEventListener("popstate", handlePopState);
 
-    // Immediately redirect if we know user is not authenticated
+    // Only redirect if we're not loading and there's no user
     if (!loading && !user) {
       // Clear any admin routes from browser history
       if (window.location.pathname.startsWith("/auth/admin/")) {
@@ -64,23 +64,14 @@ export function ProtectedRouteGuard({
     };
   }, [user, loading, router, requireAdmin]);
 
-  // Return a minimal loading state instead of null
-  if (loading) {
+  // Show loading state for any waiting condition
+  if (loading || !user || (requireAdmin && user && !user.getIdTokenResult())) {
     return (
-      <div className="min-h-screen bg-white">
-        {/* Optional: Add a loading spinner or placeholder here */}
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Spinner color="gray" />
+        <div className="text-xl font-bold ml-3">Loading...</div>
       </div>
     );
-  }
-
-  // Return homepage shell while redirecting
-  if (!user) {
-    return <div className="min-h-screen bg-white" />;
-  }
-
-  // If admin is required, show loading state until role check completes
-  if (requireAdmin) {
-    return <>{children}</>;
   }
 
   return <>{children}</>;
