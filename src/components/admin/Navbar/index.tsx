@@ -247,8 +247,10 @@ function DesktopNavbar() {
               <button
                 onClick={() => signOut()}
                 disabled={isSigningOut}
-                className={`h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${
-                  isSigningOut ? "opacity-50 cursor-not-allowed" : ""
+                className={`h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out ${
+                  isSigningOut
+                    ? "opacity-50 cursor-not-allowed animate-pulse-subtle"
+                    : "active:bg-lightgray lg:hover:bg-lightgray"
                 }`}
               >
                 {isSigningOut ? "Signing out..." : "Sign out"}
