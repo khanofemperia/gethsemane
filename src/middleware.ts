@@ -64,6 +64,27 @@ const isValidAdminEntryKey = (pathname: string): boolean => {
   return false;
 };
 
+const signOutAndRedirect = async (
+  request: NextRequest
+): Promise<NextResponse> => {
+  try {
+    // Call the logout endpoint to properly clean up the session
+    const response = await fetch(`${appConfig.BASE_URL}/api/auth/logout`, {
+      method: "POST",
+      signal: AbortSignal.timeout(5000), // 5 second timeout
+    });
+
+    if (!response.ok) {
+      console.error("Failed to logout properly:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+
+  // Redirect to home page regardless of logout success
+  return NextResponse.redirect(new URL("/", request.url));
+};
+
 const verifySessionWithAPI = async (
   sessionCookie: string
 ): Promise<DecodedIdToken> => {
@@ -101,8 +122,7 @@ export async function middleware(request: NextRequest) {
   // Check for admin entry key route
   if (pathname.startsWith("/auth/admin/")) {
     if (!isValidAdminEntryKey(pathname)) {
-      // Redirect invalid keys to home page
-      return NextResponse.redirect(new URL("/", request.url));
+      return signOutAndRedirect(request);
     }
     return NextResponse.next();
   }
@@ -115,9 +135,9 @@ export async function middleware(request: NextRequest) {
   // Get session cookie
   const session = request.cookies.get(COOKIE_NAME);
 
-  // If no session cookie exists, redirect to home
+  // If no session cookie exists, sign out and redirect
   if (!session) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return signOutAndRedirect(request);
   }
 
   try {
@@ -126,25 +146,19 @@ export async function middleware(request: NextRequest) {
     // For admin routes, verify admin privileges
     if (pathname.startsWith("/admin")) {
       if (!isAdmin(decodedClaims)) {
-        // Redirect unauthorized admin attempts to home
-        return NextResponse.redirect(new URL("/", request.url));
+        // Redirect unauthorized admin attempts after signing out
+        return signOutAndRedirect(request);
       }
     }
 
     // Session is valid, allow request to proceed
     return NextResponse.next();
   } catch (error) {
-    // Handle different types of errors
+    // For all error cases, sign out and redirect appropriately
     if (error instanceof NetworkError) {
-      // For network errors, you might want to show a different page or retry
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/error", request.url));
     }
-    if (error instanceof SessionVerificationError) {
-      // Invalid or expired sessions redirect to home
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-    // Unknown errors redirect to error page
-    return NextResponse.redirect(new URL("/", request.url));
+    return signOutAndRedirect(request);
   }
 }
 
