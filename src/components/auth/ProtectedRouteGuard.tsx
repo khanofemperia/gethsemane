@@ -68,8 +68,7 @@ export function ProtectedRouteGuard({
   if (loading || !user || (requireAdmin && user && !user.getIdTokenResult())) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <Spinner color="gray" />
-        <div className="text-xl font-bold ml-3">Loading...</div>
+        <Spinner color="gray" size={28} />
       </div>
     );
   }
