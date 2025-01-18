@@ -93,8 +93,6 @@ function DesktopNavbar() {
       router.push("/");
     } catch (error) {
       console.error("Error signing out:", error);
-    } finally {
-      setIsSigningOut(false);
     }
   };
 
@@ -247,10 +245,7 @@ function DesktopNavbar() {
                 Public website
               </button>
               <button
-                onClick={() => {
-                  setMenuDropdownVisible(false);
-                  signOut();
-                }}
+                onClick={() => signOut()}
                 disabled={isSigningOut}
                 className={`h-9 w-[calc(100%-10px)] mx-auto px-3 text-sm font-semibold rounded-md flex items-center cursor-pointer transition duration-300 ease-in-out active:bg-lightgray lg:hover:bg-lightgray ${
                   isSigningOut ? "opacity-50 cursor-not-allowed" : ""
