@@ -12,6 +12,7 @@ import { DeleteCollectionAction } from "@/actions/collections";
 import { NewCollectionMenuButton } from "../Storefront/NewCollectionOverlay";
 import { NewProductMenuButton } from "../NewProductOverlay";
 import { NewUpsellMenuButton } from "../NewUpsellOverlay";
+import { clientAuth } from "@/lib/firebase/client";
 
 export function MobileNavbarButton() {
   const showMobileNavbarOverlay = useMobileNavbarStore(
@@ -31,6 +32,7 @@ export function MobileNavbarButton() {
 
 export function MobileNavbarOverlay() {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const router = useRouter();
   const overlayRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -152,6 +154,26 @@ export function MobileNavbarOverlay() {
     }
   };
 
+  const signOut = async () => {
+    if (isSigningOut) return;
+
+    setIsSigningOut(true);
+    try {
+      await clientAuth.signOut();
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      router.push("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <div
       ref={overlayRef}
@@ -239,7 +261,16 @@ export function MobileNavbarOverlay() {
               <button onClick={() => handleNavigation("/")}>
                 Public website
               </button>
-              <button onClick={() => handleNavigation("#")}>Sign out</button>
+              <button
+                onClick={() => signOut()}
+                disabled={isSigningOut}
+                className={clsx({
+                  "opacity-50 cursor-not-allowed": isSigningOut,
+                  "active:bg-lightgray lg:hover:bg-lightgray": !isSigningOut,
+                })}
+              >
+                {isSigningOut ? "Signing out..." : "Sign out"}
+              </button>
             </div>
           </div>
         </div>
