@@ -68,7 +68,7 @@ export const AdminGoogleSignInButton = () => {
       if (!response.ok) {
         if (data.result === "ACCESS_DENIED") {
           showAlert({
-            message: "Not authorized. Visit the homepage to sign in.",
+            message: "Not authorized. Visit the homepage to explore.",
             type: AlertMessageType.NEUTRAL,
           });
         } else if (data.result === "ADMIN_KEY_REQUIRED") {
