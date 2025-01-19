@@ -8,7 +8,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ProtectedRouteGuard requireAdmin={true}>
+    <ProtectedRouteGuard>
       <Navbar />
       <main className="pt-24 pb-10 min-h-screen bg-neutral-50">
         <div className="w-full max-w-screen-lg mx-auto">{children}</div>

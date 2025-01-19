@@ -3,7 +3,7 @@
 import {
   AdminGoogleSignInButton,
   AdminSignOutButton,
-} from "@/components/auth/admin";
+} from "@/components/auth/Admin";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 

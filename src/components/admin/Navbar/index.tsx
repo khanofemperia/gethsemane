@@ -253,7 +253,7 @@ function DesktopNavbar() {
                     : "active:bg-lightgray lg:hover:bg-lightgray"
                 }`}
               >
-                {isSigningOut ? "Signing out..." : "Sign out"}
+                Sign out
               </button>
             </div>
           )}
